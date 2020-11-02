@@ -16,11 +16,13 @@ const useLoadApplication = (props: useLoadApplicationProps) => {
   const { serialNumber } = props
   const [application, setApplication] = useState<ApplicationDetails | undefined>()
   const [templateSections, setSections] = useState<TemplateSectionPayload[]>([])
+  const [shouldSkip, setShouldSkip] = useState(false)
 
   const { data, loading, error } = useGetApplicationQuery({
     variables: {
       serial: serialNumber,
     },
+    skip: shouldSkip,
   })
 
   useEffect(() => {
@@ -33,6 +35,7 @@ const useLoadApplication = (props: useLoadApplicationProps) => {
 
       const sections = getApplicationSections(application.applicationSections)
       setSections(sections)
+      setShouldSkip(true)
     }
   }, [data, loading, error])
 
