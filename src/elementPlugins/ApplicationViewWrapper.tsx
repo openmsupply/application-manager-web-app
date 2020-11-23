@@ -19,7 +19,6 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   const { validation: validationExpression, validationMessage } = templateElement?.parameters
 
   const [responseMutation] = useUpdateResponseMutation()
-  const [parametersEvaluated, setParametersEvaluated] = useState({})
   const [pluginMethods, setPluginMethods] = useState({
     validate: (validationExpress: any, validationMessage: any, evaluator: any) =>
       console.log('notLoaded'),
@@ -33,14 +32,6 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
       validate: defaultValidate,
     })
   }, [])
-
-  useEffect(() => {
-    const parameters = templateElement.parameters
-    const parametersEvaluated = {}
-    for (const key in parameters) {
-      console.log('Parameter', key, parameters[key])
-    }
-  }, [allResponses])
 
   const onUpdate = async (value: string | null | undefined) => {
     const responses = { thisResponse: value, ...allResponses }
