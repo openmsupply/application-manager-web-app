@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.1.4",
-    "@openmsupply/expression-evaluator": "^1.1.1",
+    "@openmsupply/expression-evaluator": "^1.2.1",
     "apollo3-cache-persist": "^0.8.0",
     "graphql": "^15.3.0",
     "query-string": "^6.13.5",

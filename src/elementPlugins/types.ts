@@ -1,8 +1,12 @@
 import { ApplicationResponse, TemplateElement } from '../utils/generated/graphql'
-import { ResponseFull, ResponsesByCode } from '../utils/types'
+import { ElementState, ResponseFull, ResponsesByCode } from '../utils/types'
 
 interface OnUpdateApplicationView {
   (updateObject: { value?: any; isValid: boolean | undefined }): void
+}
+
+type BasicObject = {
+  [key: string]: any
 }
 
 interface ApplicationViewWrapperProps {
@@ -27,12 +31,12 @@ interface ApplicationViewProps extends ApplicationViewWrapperProps {
 }
 
 interface SummaryViewProps {
-  parameters: any
+  parameters: BasicObject
   value: ResponseFull | null
 }
 
 interface SummaryViewWrapperProps {
-  element: any
+  element: ElementState
   value: ResponseFull | null
 }
 

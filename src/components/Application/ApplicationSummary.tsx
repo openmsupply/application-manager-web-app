@@ -14,7 +14,6 @@ const ApplicationSummary: React.FC<ApplicationSummaryProps> = ({
   onSubmitHandler,
   appStatus: { status: status },
 }) => {
-  console.log('appStatus', status)
   return (
     <Container style={{ marginTop: '2em' }}>
       <Header as="h1" content="REVIEW AND SUBMIT" />

@@ -2,6 +2,7 @@ import React from 'react'
 import { ErrorBoundary, pluginProvider } from '.'
 import { Header } from 'semantic-ui-react'
 import { SummaryViewWrapperProps, PluginComponents } from './types'
+import { TemplateElementCategory } from '../utils/generated/graphql'
 
 const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = (props) => {
   const { element, value } = props
@@ -15,7 +16,8 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = (props) => {
     isVisible,
   } = element
 
-  if (!pluginCode || !isVisible || category === 'INFORMATION') return null
+  // Don't show non-question elements -- although this may change
+  if (!pluginCode || !isVisible || category === TemplateElementCategory.Information) return null
 
   const { SummaryView }: PluginComponents = pluginProvider.getPluginElement(pluginCode)
 

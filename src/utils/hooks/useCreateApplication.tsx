@@ -1,174 +1,58 @@
+import { ApolloError } from '@apollo/client'
 import { useState } from 'react'
-import {
-  Application,
-  ApplicationSection,
-  ApplicationSectionsConnection,
-  CreateApplicationMutation,
-  CreateResponseMutation,
-  CreateSectionMutation,
-  TemplateElement,
-  useCreateApplicationMutation,
-  useCreateResponseMutation,
-  useCreateSectionMutation,
-} from '../../utils/generated/graphql'
-import addNewSectionFragment from '../../utils/graphql/fragments/addNewSection.fragment'
-import { ResponsePayload, SectionPayload } from '../types'
+import { useCreateApplicationMutation } from '../../utils/generated/graphql'
 
-const useCreateApplication = () => {
-  const [serialNumber, setSerialNumber] = useState<string | null>(null)
-  const [responses, setCompletedResponse] = useState({})
+export interface createApplicationProps {
+  serial: string
+  name: string
+  templateId: number
+  templateSections: { templateSectionId: number }[]
+  templateResponses: { templateElementId: number }[]
+}
+
+interface useCreateApplicationProps {
+  onCompleted: () => void
+}
+
+const useCreateApplication = ({ onCompleted }: useCreateApplicationProps) => {
+  const [processing, setProcessing] = useState(false)
+  const [error, setError] = useState<ApolloError | undefined>()
 
   const [applicationMutation] = useCreateApplicationMutation({
-    onCompleted: (data: CreateApplicationMutation) =>
-      onCreateApplicationCompleted(data, setSerialNumber, sectionMutation),
-  })
-
-  const [sectionMutation] = useCreateSectionMutation({
-    onCompleted: (data: CreateSectionMutation) =>
-      onCreateSectionCompleted(data, responseMutation, responses, setCompletedResponse),
-
-    // Update cached query of getApplication
-    update(cache, { data: sectionData }) {
-      const newSectionPayload = sectionData?.createApplicationSection
-      if (!newSectionPayload) return //Something wrong with the mutation
-
-      cache.modify({
-        fields: {
-          sections(existingSectionRefs: ApplicationSectionsConnection[] = [], { readField }) {
-            const newSectionRef = cache.writeFragment({
-              data: newSectionPayload,
-              fragment: addNewSectionFragment,
-            })
-
-            // Quick safety check - if the new section is already
-            // present in the cache, we don't need to add it again.
-            return existingSectionRefs.some(
-              (ref) => readField('id', ref) === newSectionPayload.applicationSection?.id
-            )
-              ? existingSectionRefs
-              : [...existingSectionRefs, newSectionRef]
-          },
-        },
-      })
+    onCompleted: () => {
+      setProcessing(false)
+      onCompleted()
+    },
+    onError: (error) => {
+      setProcessing(false)
+      setError(error)
     },
   })
 
-  const [responseMutation] = useCreateResponseMutation({
-    onCompleted: (data: CreateResponseMutation) =>
-      onCreateResponseCompleted(data, responses, setCompletedResponse),
-    // TODO: Update cached query of getResponses -- if needed
-  })
+  const createApplication = ({
+    serial,
+    name,
+    templateId,
+    templateSections,
+    templateResponses,
+  }: createApplicationProps) => {
+    setProcessing(true)
+    applicationMutation({
+      variables: {
+        name,
+        serial,
+        templateId,
+        sections: templateSections,
+        responses: templateResponses,
+      },
+    })
+  }
 
   return {
-    applicationMutation,
-    responses,
+    processing,
+    error,
+    create: createApplication,
   }
-}
-
-function onCreateApplicationCompleted(
-  { createApplication }: CreateApplicationMutation,
-  setSerialNumber: React.Dispatch<React.SetStateAction<string | null>>,
-  sectionMutation: any
-) {
-  const { id, serial, template } = createApplication?.application as Application
-  const sectionsIds = template?.templateSections.nodes.map((section) =>
-    section ? section.id : null
-  )
-
-  if (id && serial && sectionsIds) {
-    console.log(`Success to create application: ${serial}!`)
-    setSerialNumber(serial)
-    createApplicationSections(
-      {
-        applicationId: id,
-        templateSections: sectionsIds,
-      },
-      sectionMutation
-    )
-  } else console.log('Failed to create application - wrong data!', createApplication)
-}
-
-function createApplicationSections(payload: SectionPayload, sectionMutation: any) {
-  const { applicationId, templateSections } = payload
-  try {
-    templateSections.forEach((id) => {
-      sectionMutation({
-        variables: {
-          applicationId,
-          templateSectionId: id,
-        },
-      })
-    })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-function onCreateSectionCompleted(
-  { createApplicationSection }: CreateSectionMutation,
-  responseMutation: any,
-  responses: object,
-  setCompletedResponse: (responses: object) => void
-) {
-  const {
-    application,
-    templateSection,
-  } = createApplicationSection?.applicationSection as ApplicationSection
-  const elements = templateSection?.templateElementsBySectionId.nodes as TemplateElement[]
-
-  if (application && templateSection && elements) {
-    const questions = elements.filter(({ category }) => category === 'QUESTION')
-    console.log(`Success to create application section: ${templateSection.title}`)
-
-    createApplicationResponse(
-      {
-        applicationId: application.id,
-        templateQuestions: questions,
-      },
-      responseMutation,
-      responses,
-      setCompletedResponse
-    )
-  } else console.log('Failed to create application section - wrong data!', createApplicationSection)
-}
-
-function createApplicationResponse(
-  payload: ResponsePayload,
-  responseMutation: any,
-  responses: object,
-  setCompletedResponse: (responses: object) => void
-) {
-  const { applicationId, templateQuestions } = payload
-  try {
-    templateQuestions.forEach(({ id, code }) => {
-      setCompletedResponse({ ...responses, [code]: false })
-      responseMutation({
-        variables: {
-          applicationId,
-          templateElementId: id,
-          timeCreated: new Date(Date.now()),
-        },
-      })
-    })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-function onCreateResponseCompleted(
-  { createApplicationResponse }: CreateResponseMutation,
-  responses: object,
-  setCompletedResponse: (responses: object) => void
-) {
-  const question = createApplicationResponse?.applicationResponse
-    ?.templateElement as TemplateElement
-  if (question) {
-    console.log(`Success to create application response: ${question.code}`)
-    setCompletedResponse({ ...responses, [question.code]: true })
-  } else
-    console.log('Failed to create application response - wrong data!', createApplicationResponse)
-
-  // TODO: Should return an error
 }
 
 export default useCreateApplication
