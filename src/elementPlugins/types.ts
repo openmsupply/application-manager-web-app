@@ -1,5 +1,5 @@
 import { ApplicationResponse, TemplateElement } from '../utils/generated/graphql'
-import { ElementState, ResponseFull, ResponsesByCode } from '../utils/types'
+import { ElementState, ResponseFull, ResponsesFullByCode, ResponsesByCode } from '../utils/types'
 
 interface OnUpdateApplicationView {
   (updateObject: { value?: any; isValid: boolean | undefined }): void
@@ -15,6 +15,7 @@ interface ApplicationViewWrapperProps {
   isEditable: boolean
   isRequired: boolean
   allResponses: ResponsesByCode
+  allResponsesFull: ResponsesFullByCode
   currentResponse: ApplicationResponse | null
   // applicationState,
   // graphQLclient

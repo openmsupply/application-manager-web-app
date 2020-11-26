@@ -47,6 +47,7 @@ const ElementsBox: React.FC<ElementsBoxProps> = ({
           isEditable={elementsState[question.code].isEditable}
           isRequired={elementsState[question.code].isRequired}
           allResponses={responsesByCode}
+          allResponsesFull={responsesFullByCode}
           currentResponse={response}
         />
       ))}

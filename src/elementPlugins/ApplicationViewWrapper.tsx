@@ -13,6 +13,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
     isRequired,
     currentResponse,
     allResponses,
+    allResponsesFull,
   } = props
 
   const { elementTypePluginCode: pluginCode } = templateElement
