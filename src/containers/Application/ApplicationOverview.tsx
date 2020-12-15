@@ -10,6 +10,7 @@ import useUpdateApplication from '../../utils/hooks/useUpdateApplication'
 import { ApplicationElementStates, SectionElementStates, ResponsesByCode } from '../../utils/types'
 import { revalidateAll, getFirstErrorLocation } from '../../utils/helpers/revalidateAll'
 import { useUpdateResponseMutation } from '../../utils/generated/graphql'
+import { logOut } from '../User/Login'
 
 const ApplicationOverview: React.FC = () => {
   const [sectionsPages, setSectionsAndElements] = useState<SectionElementStates[]>()
@@ -111,10 +112,18 @@ const ApplicationOverview: React.FC = () => {
     }
   }
 
+  const getUsername = () => {
+    // TO-DO: get username from Context?
+    return 'nonRegistered'
+  }
+
   const handleSubmit = async () => {
     await revalidateAndUpdate()
     // All OK -- would have been re-directed otherwise:
-    submit()
+    await submit()
+    // TO-DO: Show Successful submit model
+    // Do log out once modal is dismissed
+    if (getUsername() === 'nonRegistered') logOut()
   }
 
   return error ? (
