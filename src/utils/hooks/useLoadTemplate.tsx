@@ -15,6 +15,7 @@ interface useLoadTemplateProps {
 const useLoadTemplate = (props: useLoadTemplateProps) => {
   const { templateCode } = props
   const [template, setTemplate] = useState<TemplateDetails>()
+  const [templateActions, setTemplateActions] = useState<any>()
   const [sections, setSections] = useState<SectionDetails[] | null>(null)
   const [elementsIds, setElementsIds] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
@@ -58,6 +59,8 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     const sections = getTemplateSections(templateSections)
     setSections(sections)
 
+    setTemplateActions(template.templateActions?.nodes)
+
     const elements = [] as number[]
 
     templateSections.nodes.forEach((section) => {
@@ -78,6 +81,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     template,
     sections,
     elementsIds,
+    templateActions,
   }
 }
 

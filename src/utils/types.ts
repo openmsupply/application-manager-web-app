@@ -328,6 +328,8 @@ type TemplatesDetails = {
   permissions: Array<PermissionPolicyType>
   name: string
   code: string
+  templateCategory: any
+  templateFilterJoins: any
 }[]
 
 interface ValidateFunction {
