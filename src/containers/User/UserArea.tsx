@@ -26,6 +26,7 @@ const UserArea: React.FC = () => {
             </Button.Content>
           </Button>
         </Segment>
+        {/* <AppMenu templatePermissions={filteredTemplates} /> */}
         {/* {error ? (
               <Message error list={[error]} />
             ) : (
@@ -46,10 +47,10 @@ const UserArea: React.FC = () => {
                 {strings.LABEL_LOG_OUT}
               </Button.Content>
             </Button>
-            {/* <Label as="button" color="grey" style={{ width: '100%', padding: 10 }}>
-                  {currentUser?.firstName}
-                  <UserSelection />
-                </Label> */}
+            <Label as="button" color="grey" style={{ width: '100%', padding: 10 }}>
+              {currentUser?.firstName}
+              <UserSelection />
+            </Label>
             {/* <Button animated basic inverted onClick={() => logout()}>
                   <Button.Content visible>
                     <Icon name="log out" />

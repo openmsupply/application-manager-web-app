@@ -16,10 +16,14 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
   const { templateCode } = props
   const [template, setTemplate] = useState<TemplateDetails>()
   const [templateActions, setTemplateActions] = useState<any>()
+  const [templateStages, setTemplateStages] = useState<any>()
+  const [templateFilters, setTemplateFilters] = useState<any>()
   const [sections, setSections] = useState<SectionDetails[] | null>(null)
   const [elementsIds, setElementsIds] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const [templateCategory, setTemplateCategory] = useState<any>()
 
   const { data, loading: apolloLoading, error: apolloError } = useGetTemplateQuery({
     variables: {
@@ -55,12 +59,22 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
       name: name as string,
       startMessage: startMessage ? startMessage : undefined,
     })
+    console.log('Template Yow', template)
+    setTemplateCategory(template.templateCategory)
 
     const sections = getTemplateSections(templateSections)
     setSections(sections)
 
+    setTemplateFilters(
+      template.templateFilterJoins?.nodes
+        .map((templateFilterJoin: any) => ({
+          ...templateFilterJoin.templateFilter,
+          templateFilterJoinId: templateFilterJoin.id,
+        }))
+        .flat()
+    )
     setTemplateActions(template.templateActions?.nodes)
-
+    setTemplateStages(template.templateStages?.nodes)
     const elements = [] as number[]
 
     templateSections.nodes.forEach((section) => {
@@ -82,6 +96,9 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     sections,
     elementsIds,
     templateActions,
+    templateCategory,
+    templateStages,
+    templateFilters,
   }
 }
 

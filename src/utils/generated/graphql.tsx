@@ -20522,16 +20522,31 @@ export type TemplateFragment = (
       { __typename?: 'TemplateAction' }
       & Pick<TemplateAction, 'actionCode' | 'condition' | 'id' | 'nodeId' | 'parameterQueries' | 'sequence' | 'trigger'>
     )>> }
+  ), templateStages: (
+    { __typename?: 'TemplateStagesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateStage' }
+      & Pick<TemplateStage, 'number' | 'description' | 'title'>
+    )>> }
   ), templateFilterJoins: (
     { __typename?: 'TemplateFilterJoinsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'TemplateFilterJoin' }
-      & { templateFilter?: Maybe<(
+      & Pick<TemplateFilterJoin, 'id' | 'templateId' | 'templateFilterId'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+      )>, templateFilter?: Maybe<(
         { __typename?: 'Filter' }
-        & Pick<Filter, 'code' | 'icon' | 'query' | 'title' | 'userRole'>
+        & Pick<Filter, 'id' | 'code' | 'icon' | 'query' | 'title' | 'userRole'>
       )> }
     )>> }
   ) }
+);
+
+export type TemplateBasicsFragment = (
+  { __typename?: 'Template' }
+  & Pick<Template, 'code' | 'id' | 'name' | 'startMessage'>
 );
 
 export type TemplateStageFragment = (
@@ -20593,6 +20608,127 @@ export type CreateReviewMutation = (
   )> }
 );
 
+export type CreateTemplateActionMutationVariables = Exact<{
+  data: TemplateActionInput;
+}>;
+
+
+export type CreateTemplateActionMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplateAction?: Maybe<(
+    { __typename?: 'CreateTemplateActionPayload' }
+    & { templateAction?: Maybe<(
+      { __typename?: 'TemplateAction' }
+      & Pick<TemplateAction, 'id' | 'condition' | 'parameterQueries' | 'actionCode' | 'trigger' | 'templateId'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+        & { templateActions: (
+          { __typename?: 'TemplateActionsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplateAction' }
+            & Pick<TemplateAction, 'id'>
+          )>> }
+        ) }
+      )> }
+    )> }
+  )> }
+);
+
+export type CreateTemplateCategoryMutationVariables = Exact<{
+  icon?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateTemplateCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplateCategory?: Maybe<(
+    { __typename?: 'CreateTemplateCategoryPayload' }
+    & Pick<CreateTemplateCategoryPayload, 'clientMutationId'>
+  )> }
+);
+
+export type CreateTemplateFilterMutationVariables = Exact<{
+  userRole?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateTemplateFilterMutation = (
+  { __typename: 'Mutation' }
+  & { createFilter?: Maybe<(
+    { __typename?: 'CreateFilterPayload' }
+    & { filter?: Maybe<(
+      { __typename?: 'Filter' }
+      & Pick<Filter, 'id'>
+    )> }
+  )> }
+);
+
+export type CreateTemplatePermissionMutationVariables = Exact<{
+  data: TemplatePermissionInput;
+}>;
+
+
+export type CreateTemplatePermissionMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplatePermission?: Maybe<(
+    { __typename?: 'CreateTemplatePermissionPayload' }
+    & { templatePermission?: Maybe<(
+      { __typename?: 'TemplatePermission' }
+      & Pick<TemplatePermission, 'id' | 'level' | 'stageNumber' | 'restrictions' | 'templateId' | 'permissionNameId'>
+      & { permissionName?: Maybe<(
+        { __typename?: 'PermissionName' }
+        & Pick<PermissionName, 'id'>
+        & { templatePermissions: (
+          { __typename?: 'TemplatePermissionsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplatePermission' }
+            & Pick<TemplatePermission, 'id'>
+          )>> }
+        ) }
+      )>, template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+        & { templatePermissions: (
+          { __typename?: 'TemplatePermissionsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplatePermission' }
+            & Pick<TemplatePermission, 'id'>
+          )>> }
+        ) }
+      )> }
+    )> }
+  )> }
+);
+
+export type CreateTemplateStageMutationVariables = Exact<{
+  data: TemplateStageInput;
+}>;
+
+
+export type CreateTemplateStageMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplateStage?: Maybe<(
+    { __typename?: 'CreateTemplateStagePayload' }
+    & { templateStage?: Maybe<(
+      { __typename?: 'TemplateStage' }
+      & Pick<TemplateStage, 'id' | 'number' | 'title' | 'description'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+        & { templateStages: (
+          { __typename?: 'TemplateStagesConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplateStage' }
+            & Pick<TemplateStage, 'id'>
+          )>> }
+        ) }
+      )> }
+    )> }
+  )> }
+);
+
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -20607,6 +20743,124 @@ export type CreateUserMutation = (
     & { user?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
+    )> }
+  )> }
+);
+
+export type DeleteTemplateActionMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteTemplateActionMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTemplateAction?: Maybe<(
+    { __typename?: 'DeleteTemplateActionPayload' }
+    & { template?: Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'id'>
+      & { templateActions: (
+        { __typename?: 'TemplateActionsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateAction' }
+          & Pick<TemplateAction, 'id'>
+        )>> }
+      ) }
+    )> }
+  )> }
+);
+
+export type DeleteTemplateFilterJionMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteTemplateFilterJionMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTemplateFilterJoin?: Maybe<(
+    { __typename?: 'DeleteTemplateFilterJoinPayload' }
+    & { template?: Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'id'>
+      & { templateFilterJoins: (
+        { __typename?: 'TemplateFilterJoinsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateFilterJoin' }
+          & Pick<TemplateFilterJoin, 'id'>
+        )>> }
+      ) }
+    )>, templateFilter?: Maybe<(
+      { __typename?: 'Filter' }
+      & Pick<Filter, 'id'>
+      & { templateFilterJoinsByTemplateFilterId: (
+        { __typename?: 'TemplateFilterJoinsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateFilterJoin' }
+          & Pick<TemplateFilterJoin, 'id'>
+        )>> }
+      ) }
+    )>, templateFilterJoin?: Maybe<(
+      { __typename?: 'TemplateFilterJoin' }
+      & Pick<TemplateFilterJoin, 'id'>
+    )> }
+  )> }
+);
+
+export type JoinFilterToTemplateMutationVariables = Exact<{
+  templateId: Scalars['Int'];
+  filterId: Scalars['Int'];
+}>;
+
+
+export type JoinFilterToTemplateMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplateFilterJoin?: Maybe<(
+    { __typename?: 'CreateTemplateFilterJoinPayload' }
+    & { templateFilterJoin?: Maybe<(
+      { __typename?: 'TemplateFilterJoin' }
+      & Pick<TemplateFilterJoin, 'id' | 'templateId' | 'templateFilterId'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+        & { templateFilterJoins: (
+          { __typename?: 'TemplateFilterJoinsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplateFilterJoin' }
+            & Pick<TemplateFilterJoin, 'id'>
+          )>> }
+        ) }
+      )>, templateFilter?: Maybe<(
+        { __typename?: 'Filter' }
+        & Pick<Filter, 'id'>
+        & { templateFilterJoinsByTemplateFilterId: (
+          { __typename?: 'TemplateFilterJoinsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplateFilterJoin' }
+            & Pick<TemplateFilterJoin, 'id'>
+          )>> }
+        ) }
+      )> }
+    )> }
+  )> }
+);
+
+export type SetTemplateCategoryMutationVariables = Exact<{
+  templateId: Scalars['Int'];
+  categoryId: Scalars['Int'];
+}>;
+
+
+export type SetTemplateCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplate?: Maybe<(
+    { __typename?: 'UpdateTemplatePayload' }
+    & { template?: Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'templateCategoryId' | 'id'>
+      & { templateCategory?: Maybe<(
+        { __typename?: 'TemplateCategory' }
+        & Pick<TemplateCategory, 'id'>
+      )> }
     )> }
   )> }
 );
@@ -20681,6 +20935,100 @@ export type UpdateReviewResponseMutation = (
   & { updateReviewResponse?: Maybe<(
     { __typename?: 'UpdateReviewResponsePayload' }
     & Pick<UpdateReviewResponsePayload, 'clientMutationId'>
+  )> }
+);
+
+export type UpdateTemplateActionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: TemplateActionPatch;
+}>;
+
+
+export type UpdateTemplateActionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateAction?: Maybe<(
+    { __typename?: 'UpdateTemplateActionPayload' }
+    & { templateAction?: Maybe<(
+      { __typename?: 'TemplateAction' }
+      & Pick<TemplateAction, 'id' | 'parameterQueries' | 'condition' | 'templateId' | 'actionCode' | 'trigger'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+      )> }
+    )> }
+  )> }
+);
+
+export type UpdateTemplateBasicsMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: TemplatePatch;
+}>;
+
+
+export type UpdateTemplateBasicsMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplate?: Maybe<(
+    { __typename?: 'UpdateTemplatePayload' }
+    & { template?: Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'id' | 'name' | 'code' | 'startMessage'>
+    )> }
+  )> }
+);
+
+export type UpdateTemplateCategoryMutationVariables = Exact<{
+  id: Scalars['Int'];
+  icon?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateTemplateCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateCategory?: Maybe<(
+    { __typename?: 'UpdateTemplateCategoryPayload' }
+    & { templateCategory?: Maybe<(
+      { __typename?: 'TemplateCategory' }
+      & Pick<TemplateCategory, 'id' | 'icon' | 'title'>
+    )> }
+  )> }
+);
+
+export type UpdateTemplateFilterMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: FilterPatch;
+}>;
+
+
+export type UpdateTemplateFilterMutation = (
+  { __typename?: 'Mutation' }
+  & { updateFilter?: Maybe<(
+    { __typename?: 'UpdateFilterPayload' }
+    & { filter?: Maybe<(
+      { __typename?: 'Filter' }
+      & Pick<Filter, 'id' | 'code' | 'icon' | 'query' | 'title' | 'userRole'>
+    )> }
+  )> }
+);
+
+export type UpdateTemplateStageMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: TemplateStagePatch;
+}>;
+
+
+export type UpdateTemplateStageMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateStage?: Maybe<(
+    { __typename?: 'UpdateTemplateStagePayload' }
+    & { templateStage?: Maybe<(
+      { __typename?: 'TemplateStage' }
+      & Pick<TemplateStage, 'id' | 'title' | 'description' | 'templateId'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+      )> }
+    )> }
   )> }
 );
 
@@ -20811,6 +21159,77 @@ export type GetElementsAndResponsesQuery = (
   )> }
 );
 
+export type GetPermissionNamesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPermissionNamesQuery = (
+  { __typename?: 'Query' }
+  & { permissionNames?: Maybe<(
+    { __typename?: 'PermissionNamesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'PermissionName' }
+      & Pick<PermissionName, 'name' | 'id' | 'permissionPolicyId'>
+      & { templatePermissions: (
+        { __typename?: 'TemplatePermissionsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplatePermission' }
+          & Pick<TemplatePermission, 'stageNumber' | 'level' | 'templateId' | 'restrictions' | 'id'>
+        )>> }
+      ), permissionPolicy?: Maybe<(
+        { __typename?: 'PermissionPolicy' }
+        & Pick<PermissionPolicy, 'description' | 'id' | 'name' | 'rules' | 'type' | 'defaultRestrictions'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type GetPermissionNamesForTemplateQueryVariables = Exact<{
+  templateId: Scalars['Int'];
+}>;
+
+
+export type GetPermissionNamesForTemplateQuery = (
+  { __typename?: 'Query' }
+  & { permissionNames?: Maybe<(
+    { __typename?: 'PermissionNamesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'PermissionName' }
+      & Pick<PermissionName, 'name' | 'id'>
+      & { templatePermissions: (
+        { __typename?: 'TemplatePermissionsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplatePermission' }
+          & Pick<TemplatePermission, 'stageNumber' | 'level' | 'templateId' | 'restrictions' | 'id'>
+        )>> }
+      ), permissionPolicy?: Maybe<(
+        { __typename?: 'PermissionPolicy' }
+        & Pick<PermissionPolicy, 'type' | 'rules' | 'name' | 'description' | 'defaultRestrictions' | 'id'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type GetPermissionPoliciesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPermissionPoliciesQuery = (
+  { __typename?: 'Query' }
+  & { permissionPolicies?: Maybe<(
+    { __typename?: 'PermissionPoliciesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'PermissionPolicy' }
+      & Pick<PermissionPolicy, 'defaultRestrictions' | 'description' | 'id' | 'name' | 'rules' | 'type'>
+      & { permissionNames: (
+        { __typename?: 'PermissionNamesConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'PermissionName' }
+          & Pick<PermissionName, 'name' | 'nodeId' | 'permissionPolicyId'>
+        )>> }
+      ) }
+    )>> }
+  )> }
+);
+
 export type GetReviewQueryVariables = Exact<{
   reviewId: Scalars['Int'];
 }>;
@@ -20930,6 +21349,58 @@ export type GetTemplateQuery = (
         )>> }
       ) }
       & TemplateFragment
+    )>> }
+  )> }
+);
+
+export type GetTemplateCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTemplateCategoriesQuery = (
+  { __typename?: 'Query' }
+  & { templateCategories?: Maybe<(
+    { __typename?: 'TemplateCategoriesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateCategory' }
+      & Pick<TemplateCategory, 'icon' | 'title' | 'id'>
+    )>> }
+  )> }
+);
+
+export type GetTemplateFiltersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTemplateFiltersQuery = (
+  { __typename?: 'Query' }
+  & { filters?: Maybe<(
+    { __typename?: 'FiltersConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Filter' }
+      & Pick<Filter, 'code' | 'icon' | 'id' | 'query' | 'title' | 'userRole'>
+    )>> }
+  )> }
+);
+
+export type GetTemplatePermissionsQueryVariables = Exact<{
+  templateId: Scalars['Int'];
+}>;
+
+
+export type GetTemplatePermissionsQuery = (
+  { __typename?: 'Query' }
+  & { templatePermissions?: Maybe<(
+    { __typename?: 'TemplatePermissionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplatePermission' }
+      & Pick<TemplatePermission, 'level' | 'id' | 'nodeId' | 'restrictions'>
+      & { permissionName?: Maybe<(
+        { __typename?: 'PermissionName' }
+        & Pick<PermissionName, 'name'>
+        & { permissionPolicy?: Maybe<(
+          { __typename?: 'PermissionPolicy' }
+          & Pick<PermissionPolicy, 'description' | 'name' | 'rules' | 'type'>
+        )> }
+      )> }
     )>> }
   )> }
 );
@@ -21069,9 +21540,23 @@ export const TemplateFragmentDoc = gql`
       trigger
     }
   }
+  templateStages {
+    nodes {
+      number
+      description
+      title
+    }
+  }
   templateFilterJoins {
     nodes {
+      id
+      templateId
+      templateFilterId
+      template {
+        id
+      }
       templateFilter {
+        id
         code
         icon
         query
@@ -21080,6 +21565,14 @@ export const TemplateFragmentDoc = gql`
       }
     }
   }
+}
+    `;
+export const TemplateBasicsFragmentDoc = gql`
+    fragment TemplateBasics on Template {
+  code
+  id
+  name
+  startMessage
 }
     `;
 export const TemplateStageFragmentDoc = gql`
@@ -21179,6 +21672,221 @@ export function useCreateReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateReviewMutationHookResult = ReturnType<typeof useCreateReviewMutation>;
 export type CreateReviewMutationResult = Apollo.MutationResult<CreateReviewMutation>;
 export type CreateReviewMutationOptions = Apollo.BaseMutationOptions<CreateReviewMutation, CreateReviewMutationVariables>;
+export const CreateTemplateActionDocument = gql`
+    mutation createTemplateAction($data: TemplateActionInput!) {
+  createTemplateAction(input: {templateAction: $data}) {
+    templateAction {
+      id
+      condition
+      parameterQueries
+      actionCode
+      trigger
+      templateId
+      template {
+        id
+        templateActions {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateTemplateActionMutationFn = Apollo.MutationFunction<CreateTemplateActionMutation, CreateTemplateActionMutationVariables>;
+
+/**
+ * __useCreateTemplateActionMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateActionMutation, { data, loading, error }] = useCreateTemplateActionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateTemplateActionMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplateActionMutation, CreateTemplateActionMutationVariables>) {
+        return Apollo.useMutation<CreateTemplateActionMutation, CreateTemplateActionMutationVariables>(CreateTemplateActionDocument, baseOptions);
+      }
+export type CreateTemplateActionMutationHookResult = ReturnType<typeof useCreateTemplateActionMutation>;
+export type CreateTemplateActionMutationResult = Apollo.MutationResult<CreateTemplateActionMutation>;
+export type CreateTemplateActionMutationOptions = Apollo.BaseMutationOptions<CreateTemplateActionMutation, CreateTemplateActionMutationVariables>;
+export const CreateTemplateCategoryDocument = gql`
+    mutation createTemplateCategory($icon: String, $title: String) {
+  createTemplateCategory(input: {templateCategory: {icon: $icon, title: $title}}) {
+    clientMutationId
+  }
+}
+    `;
+export type CreateTemplateCategoryMutationFn = Apollo.MutationFunction<CreateTemplateCategoryMutation, CreateTemplateCategoryMutationVariables>;
+
+/**
+ * __useCreateTemplateCategoryMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateCategoryMutation, { data, loading, error }] = useCreateTemplateCategoryMutation({
+ *   variables: {
+ *      icon: // value for 'icon'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useCreateTemplateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplateCategoryMutation, CreateTemplateCategoryMutationVariables>) {
+        return Apollo.useMutation<CreateTemplateCategoryMutation, CreateTemplateCategoryMutationVariables>(CreateTemplateCategoryDocument, baseOptions);
+      }
+export type CreateTemplateCategoryMutationHookResult = ReturnType<typeof useCreateTemplateCategoryMutation>;
+export type CreateTemplateCategoryMutationResult = Apollo.MutationResult<CreateTemplateCategoryMutation>;
+export type CreateTemplateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateTemplateCategoryMutation, CreateTemplateCategoryMutationVariables>;
+export const CreateTemplateFilterDocument = gql`
+    mutation createTemplateFilter($userRole: String) {
+  __typename
+  createFilter(input: {filter: {code: "New Filter", title: "New Filter", userRole: $userRole, query: {}}}) {
+    filter {
+      id
+    }
+  }
+}
+    `;
+export type CreateTemplateFilterMutationFn = Apollo.MutationFunction<CreateTemplateFilterMutation, CreateTemplateFilterMutationVariables>;
+
+/**
+ * __useCreateTemplateFilterMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateFilterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateFilterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateFilterMutation, { data, loading, error }] = useCreateTemplateFilterMutation({
+ *   variables: {
+ *      userRole: // value for 'userRole'
+ *   },
+ * });
+ */
+export function useCreateTemplateFilterMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplateFilterMutation, CreateTemplateFilterMutationVariables>) {
+        return Apollo.useMutation<CreateTemplateFilterMutation, CreateTemplateFilterMutationVariables>(CreateTemplateFilterDocument, baseOptions);
+      }
+export type CreateTemplateFilterMutationHookResult = ReturnType<typeof useCreateTemplateFilterMutation>;
+export type CreateTemplateFilterMutationResult = Apollo.MutationResult<CreateTemplateFilterMutation>;
+export type CreateTemplateFilterMutationOptions = Apollo.BaseMutationOptions<CreateTemplateFilterMutation, CreateTemplateFilterMutationVariables>;
+export const CreateTemplatePermissionDocument = gql`
+    mutation createTemplatePermission($data: TemplatePermissionInput!) {
+  createTemplatePermission(input: {templatePermission: $data}) {
+    templatePermission {
+      id
+      level
+      stageNumber
+      restrictions
+      templateId
+      permissionNameId
+      permissionName {
+        id
+        templatePermissions {
+          nodes {
+            id
+          }
+        }
+      }
+      template {
+        id
+        templatePermissions {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateTemplatePermissionMutationFn = Apollo.MutationFunction<CreateTemplatePermissionMutation, CreateTemplatePermissionMutationVariables>;
+
+/**
+ * __useCreateTemplatePermissionMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplatePermissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplatePermissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplatePermissionMutation, { data, loading, error }] = useCreateTemplatePermissionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateTemplatePermissionMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplatePermissionMutation, CreateTemplatePermissionMutationVariables>) {
+        return Apollo.useMutation<CreateTemplatePermissionMutation, CreateTemplatePermissionMutationVariables>(CreateTemplatePermissionDocument, baseOptions);
+      }
+export type CreateTemplatePermissionMutationHookResult = ReturnType<typeof useCreateTemplatePermissionMutation>;
+export type CreateTemplatePermissionMutationResult = Apollo.MutationResult<CreateTemplatePermissionMutation>;
+export type CreateTemplatePermissionMutationOptions = Apollo.BaseMutationOptions<CreateTemplatePermissionMutation, CreateTemplatePermissionMutationVariables>;
+export const CreateTemplateStageDocument = gql`
+    mutation createTemplateStage($data: TemplateStageInput!) {
+  createTemplateStage(input: {templateStage: $data}) {
+    templateStage {
+      id
+      number
+      title
+      description
+      template {
+        id
+        templateStages {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateTemplateStageMutationFn = Apollo.MutationFunction<CreateTemplateStageMutation, CreateTemplateStageMutationVariables>;
+
+/**
+ * __useCreateTemplateStageMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateStageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateStageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateStageMutation, { data, loading, error }] = useCreateTemplateStageMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateTemplateStageMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplateStageMutation, CreateTemplateStageMutationVariables>) {
+        return Apollo.useMutation<CreateTemplateStageMutation, CreateTemplateStageMutationVariables>(CreateTemplateStageDocument, baseOptions);
+      }
+export type CreateTemplateStageMutationHookResult = ReturnType<typeof useCreateTemplateStageMutation>;
+export type CreateTemplateStageMutationResult = Apollo.MutationResult<CreateTemplateStageMutation>;
+export type CreateTemplateStageMutationOptions = Apollo.BaseMutationOptions<CreateTemplateStageMutation, CreateTemplateStageMutationVariables>;
 export const CreateUserDocument = gql`
     mutation createUser($email: String!, $password: String!, $username: String!) {
   createUser(input: {user: {email: $email, passwordHash: $password, username: $username}}) {
@@ -21216,6 +21924,187 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const DeleteTemplateActionDocument = gql`
+    mutation deleteTemplateAction($id: Int!) {
+  deleteTemplateAction(input: {id: $id}) {
+    template {
+      id
+      templateActions {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+export type DeleteTemplateActionMutationFn = Apollo.MutationFunction<DeleteTemplateActionMutation, DeleteTemplateActionMutationVariables>;
+
+/**
+ * __useDeleteTemplateActionMutation__
+ *
+ * To run a mutation, you first call `useDeleteTemplateActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTemplateActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTemplateActionMutation, { data, loading, error }] = useDeleteTemplateActionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTemplateActionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTemplateActionMutation, DeleteTemplateActionMutationVariables>) {
+        return Apollo.useMutation<DeleteTemplateActionMutation, DeleteTemplateActionMutationVariables>(DeleteTemplateActionDocument, baseOptions);
+      }
+export type DeleteTemplateActionMutationHookResult = ReturnType<typeof useDeleteTemplateActionMutation>;
+export type DeleteTemplateActionMutationResult = Apollo.MutationResult<DeleteTemplateActionMutation>;
+export type DeleteTemplateActionMutationOptions = Apollo.BaseMutationOptions<DeleteTemplateActionMutation, DeleteTemplateActionMutationVariables>;
+export const DeleteTemplateFilterJionDocument = gql`
+    mutation deleteTemplateFilterJion($id: Int!) {
+  deleteTemplateFilterJoin(input: {id: $id}) {
+    template {
+      id
+      templateFilterJoins {
+        nodes {
+          id
+        }
+      }
+    }
+    templateFilter {
+      id
+      templateFilterJoinsByTemplateFilterId {
+        nodes {
+          id
+        }
+      }
+    }
+    templateFilterJoin {
+      id
+    }
+  }
+}
+    `;
+export type DeleteTemplateFilterJionMutationFn = Apollo.MutationFunction<DeleteTemplateFilterJionMutation, DeleteTemplateFilterJionMutationVariables>;
+
+/**
+ * __useDeleteTemplateFilterJionMutation__
+ *
+ * To run a mutation, you first call `useDeleteTemplateFilterJionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTemplateFilterJionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTemplateFilterJionMutation, { data, loading, error }] = useDeleteTemplateFilterJionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTemplateFilterJionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTemplateFilterJionMutation, DeleteTemplateFilterJionMutationVariables>) {
+        return Apollo.useMutation<DeleteTemplateFilterJionMutation, DeleteTemplateFilterJionMutationVariables>(DeleteTemplateFilterJionDocument, baseOptions);
+      }
+export type DeleteTemplateFilterJionMutationHookResult = ReturnType<typeof useDeleteTemplateFilterJionMutation>;
+export type DeleteTemplateFilterJionMutationResult = Apollo.MutationResult<DeleteTemplateFilterJionMutation>;
+export type DeleteTemplateFilterJionMutationOptions = Apollo.BaseMutationOptions<DeleteTemplateFilterJionMutation, DeleteTemplateFilterJionMutationVariables>;
+export const JoinFilterToTemplateDocument = gql`
+    mutation joinFilterToTemplate($templateId: Int!, $filterId: Int!) {
+  createTemplateFilterJoin(input: {templateFilterJoin: {templateFilterId: $filterId, templateId: $templateId}}) {
+    templateFilterJoin {
+      id
+      templateId
+      templateFilterId
+      template {
+        id
+        templateFilterJoins {
+          nodes {
+            id
+          }
+        }
+      }
+      templateFilter {
+        id
+        templateFilterJoinsByTemplateFilterId {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type JoinFilterToTemplateMutationFn = Apollo.MutationFunction<JoinFilterToTemplateMutation, JoinFilterToTemplateMutationVariables>;
+
+/**
+ * __useJoinFilterToTemplateMutation__
+ *
+ * To run a mutation, you first call `useJoinFilterToTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinFilterToTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinFilterToTemplateMutation, { data, loading, error }] = useJoinFilterToTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      filterId: // value for 'filterId'
+ *   },
+ * });
+ */
+export function useJoinFilterToTemplateMutation(baseOptions?: Apollo.MutationHookOptions<JoinFilterToTemplateMutation, JoinFilterToTemplateMutationVariables>) {
+        return Apollo.useMutation<JoinFilterToTemplateMutation, JoinFilterToTemplateMutationVariables>(JoinFilterToTemplateDocument, baseOptions);
+      }
+export type JoinFilterToTemplateMutationHookResult = ReturnType<typeof useJoinFilterToTemplateMutation>;
+export type JoinFilterToTemplateMutationResult = Apollo.MutationResult<JoinFilterToTemplateMutation>;
+export type JoinFilterToTemplateMutationOptions = Apollo.BaseMutationOptions<JoinFilterToTemplateMutation, JoinFilterToTemplateMutationVariables>;
+export const SetTemplateCategoryDocument = gql`
+    mutation setTemplateCategory($templateId: Int!, $categoryId: Int!) {
+  updateTemplate(input: {patch: {templateCategoryId: $categoryId}, id: $templateId}) {
+    template {
+      templateCategory {
+        id
+      }
+      templateCategoryId
+      id
+    }
+  }
+}
+    `;
+export type SetTemplateCategoryMutationFn = Apollo.MutationFunction<SetTemplateCategoryMutation, SetTemplateCategoryMutationVariables>;
+
+/**
+ * __useSetTemplateCategoryMutation__
+ *
+ * To run a mutation, you first call `useSetTemplateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetTemplateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setTemplateCategoryMutation, { data, loading, error }] = useSetTemplateCategoryMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      categoryId: // value for 'categoryId'
+ *   },
+ * });
+ */
+export function useSetTemplateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<SetTemplateCategoryMutation, SetTemplateCategoryMutationVariables>) {
+        return Apollo.useMutation<SetTemplateCategoryMutation, SetTemplateCategoryMutationVariables>(SetTemplateCategoryDocument, baseOptions);
+      }
+export type SetTemplateCategoryMutationHookResult = ReturnType<typeof useSetTemplateCategoryMutation>;
+export type SetTemplateCategoryMutationResult = Apollo.MutationResult<SetTemplateCategoryMutation>;
+export type SetTemplateCategoryMutationOptions = Apollo.BaseMutationOptions<SetTemplateCategoryMutation, SetTemplateCategoryMutationVariables>;
 export const UpdateReviewDocument = gql`
     mutation updateReview($reviewId: Int!, $trigger: Trigger = ON_REVIEW_SUBMIT, $reviewResponses: [ReviewResponseOnReviewResponseForReviewResponseReviewIdFkeyUsingReviewResponsePkeyUpdate!]) {
   updateReview(input: {id: $reviewId, patch: {trigger: $trigger, reviewResponsesUsingId: {updateById: $reviewResponses}}}) {
@@ -21362,6 +22251,206 @@ export function useUpdateReviewResponseMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateReviewResponseMutationHookResult = ReturnType<typeof useUpdateReviewResponseMutation>;
 export type UpdateReviewResponseMutationResult = Apollo.MutationResult<UpdateReviewResponseMutation>;
 export type UpdateReviewResponseMutationOptions = Apollo.BaseMutationOptions<UpdateReviewResponseMutation, UpdateReviewResponseMutationVariables>;
+export const UpdateTemplateActionDocument = gql`
+    mutation updateTemplateAction($id: Int!, $data: TemplateActionPatch!) {
+  updateTemplateAction(input: {patch: $data, id: $id}) {
+    templateAction {
+      id
+      parameterQueries
+      condition
+      templateId
+      actionCode
+      trigger
+      template {
+        id
+      }
+    }
+  }
+}
+    `;
+export type UpdateTemplateActionMutationFn = Apollo.MutationFunction<UpdateTemplateActionMutation, UpdateTemplateActionMutationVariables>;
+
+/**
+ * __useUpdateTemplateActionMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateActionMutation, { data, loading, error }] = useUpdateTemplateActionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateTemplateActionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateActionMutation, UpdateTemplateActionMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateActionMutation, UpdateTemplateActionMutationVariables>(UpdateTemplateActionDocument, baseOptions);
+      }
+export type UpdateTemplateActionMutationHookResult = ReturnType<typeof useUpdateTemplateActionMutation>;
+export type UpdateTemplateActionMutationResult = Apollo.MutationResult<UpdateTemplateActionMutation>;
+export type UpdateTemplateActionMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateActionMutation, UpdateTemplateActionMutationVariables>;
+export const UpdateTemplateBasicsDocument = gql`
+    mutation updateTemplateBasics($id: Int!, $data: TemplatePatch!) {
+  updateTemplate(input: {patch: $data, id: $id}) {
+    template {
+      id
+      name
+      code
+      startMessage
+    }
+  }
+}
+    `;
+export type UpdateTemplateBasicsMutationFn = Apollo.MutationFunction<UpdateTemplateBasicsMutation, UpdateTemplateBasicsMutationVariables>;
+
+/**
+ * __useUpdateTemplateBasicsMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateBasicsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateBasicsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateBasicsMutation, { data, loading, error }] = useUpdateTemplateBasicsMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateTemplateBasicsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateBasicsMutation, UpdateTemplateBasicsMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateBasicsMutation, UpdateTemplateBasicsMutationVariables>(UpdateTemplateBasicsDocument, baseOptions);
+      }
+export type UpdateTemplateBasicsMutationHookResult = ReturnType<typeof useUpdateTemplateBasicsMutation>;
+export type UpdateTemplateBasicsMutationResult = Apollo.MutationResult<UpdateTemplateBasicsMutation>;
+export type UpdateTemplateBasicsMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateBasicsMutation, UpdateTemplateBasicsMutationVariables>;
+export const UpdateTemplateCategoryDocument = gql`
+    mutation updateTemplateCategory($id: Int!, $icon: String, $title: String) {
+  updateTemplateCategory(input: {patch: {icon: $icon, title: $title}, id: $id}) {
+    templateCategory {
+      id
+      icon
+      title
+    }
+  }
+}
+    `;
+export type UpdateTemplateCategoryMutationFn = Apollo.MutationFunction<UpdateTemplateCategoryMutation, UpdateTemplateCategoryMutationVariables>;
+
+/**
+ * __useUpdateTemplateCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateCategoryMutation, { data, loading, error }] = useUpdateTemplateCategoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      icon: // value for 'icon'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useUpdateTemplateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateCategoryMutation, UpdateTemplateCategoryMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateCategoryMutation, UpdateTemplateCategoryMutationVariables>(UpdateTemplateCategoryDocument, baseOptions);
+      }
+export type UpdateTemplateCategoryMutationHookResult = ReturnType<typeof useUpdateTemplateCategoryMutation>;
+export type UpdateTemplateCategoryMutationResult = Apollo.MutationResult<UpdateTemplateCategoryMutation>;
+export type UpdateTemplateCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateCategoryMutation, UpdateTemplateCategoryMutationVariables>;
+export const UpdateTemplateFilterDocument = gql`
+    mutation updateTemplateFilter($id: Int!, $data: FilterPatch!) {
+  updateFilter(input: {patch: $data, id: $id}) {
+    filter {
+      id
+      code
+      icon
+      query
+      title
+      userRole
+    }
+  }
+}
+    `;
+export type UpdateTemplateFilterMutationFn = Apollo.MutationFunction<UpdateTemplateFilterMutation, UpdateTemplateFilterMutationVariables>;
+
+/**
+ * __useUpdateTemplateFilterMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateFilterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateFilterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateFilterMutation, { data, loading, error }] = useUpdateTemplateFilterMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateTemplateFilterMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateFilterMutation, UpdateTemplateFilterMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateFilterMutation, UpdateTemplateFilterMutationVariables>(UpdateTemplateFilterDocument, baseOptions);
+      }
+export type UpdateTemplateFilterMutationHookResult = ReturnType<typeof useUpdateTemplateFilterMutation>;
+export type UpdateTemplateFilterMutationResult = Apollo.MutationResult<UpdateTemplateFilterMutation>;
+export type UpdateTemplateFilterMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateFilterMutation, UpdateTemplateFilterMutationVariables>;
+export const UpdateTemplateStageDocument = gql`
+    mutation updateTemplateStage($id: Int!, $data: TemplateStagePatch!) {
+  updateTemplateStage(input: {patch: $data, id: $id}) {
+    templateStage {
+      id
+      title
+      description
+      templateId
+      template {
+        id
+      }
+    }
+  }
+}
+    `;
+export type UpdateTemplateStageMutationFn = Apollo.MutationFunction<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>;
+
+/**
+ * __useUpdateTemplateStageMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateStageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateStageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateStageMutation, { data, loading, error }] = useUpdateTemplateStageMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateTemplateStageMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>(UpdateTemplateStageDocument, baseOptions);
+      }
+export type UpdateTemplateStageMutationHookResult = ReturnType<typeof useUpdateTemplateStageMutation>;
+export type UpdateTemplateStageMutationResult = Apollo.MutationResult<UpdateTemplateStageMutation>;
+export type UpdateTemplateStageMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>;
 export const GetApplicationDocument = gql`
     query getApplication($serial: String!) {
   applicationBySerial(serial: $serial) {
@@ -21575,6 +22664,158 @@ export function useGetElementsAndResponsesLazyQuery(baseOptions?: Apollo.LazyQue
 export type GetElementsAndResponsesQueryHookResult = ReturnType<typeof useGetElementsAndResponsesQuery>;
 export type GetElementsAndResponsesLazyQueryHookResult = ReturnType<typeof useGetElementsAndResponsesLazyQuery>;
 export type GetElementsAndResponsesQueryResult = Apollo.QueryResult<GetElementsAndResponsesQuery, GetElementsAndResponsesQueryVariables>;
+export const GetPermissionNamesDocument = gql`
+    query getPermissionNames {
+  permissionNames {
+    nodes {
+      name
+      id
+      templatePermissions {
+        nodes {
+          stageNumber
+          level
+          templateId
+          restrictions
+          id
+        }
+      }
+      permissionPolicyId
+      permissionPolicy {
+        description
+        id
+        name
+        rules
+        type
+        defaultRestrictions
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPermissionNamesQuery__
+ *
+ * To run a query within a React component, call `useGetPermissionNamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPermissionNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPermissionNamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPermissionNamesQuery(baseOptions?: Apollo.QueryHookOptions<GetPermissionNamesQuery, GetPermissionNamesQueryVariables>) {
+        return Apollo.useQuery<GetPermissionNamesQuery, GetPermissionNamesQueryVariables>(GetPermissionNamesDocument, baseOptions);
+      }
+export function useGetPermissionNamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPermissionNamesQuery, GetPermissionNamesQueryVariables>) {
+          return Apollo.useLazyQuery<GetPermissionNamesQuery, GetPermissionNamesQueryVariables>(GetPermissionNamesDocument, baseOptions);
+        }
+export type GetPermissionNamesQueryHookResult = ReturnType<typeof useGetPermissionNamesQuery>;
+export type GetPermissionNamesLazyQueryHookResult = ReturnType<typeof useGetPermissionNamesLazyQuery>;
+export type GetPermissionNamesQueryResult = Apollo.QueryResult<GetPermissionNamesQuery, GetPermissionNamesQueryVariables>;
+export const GetPermissionNamesForTemplateDocument = gql`
+    query getPermissionNamesForTemplate($templateId: Int!) {
+  permissionNames(filter: {templatePermissions: {every: {templateId: {equalTo: $templateId}}}}) {
+    nodes {
+      name
+      templatePermissions {
+        nodes {
+          stageNumber
+          level
+          templateId
+          restrictions
+          id
+        }
+      }
+      permissionPolicy {
+        type
+        rules
+        name
+        description
+        defaultRestrictions
+        id
+      }
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPermissionNamesForTemplateQuery__
+ *
+ * To run a query within a React component, call `useGetPermissionNamesForTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPermissionNamesForTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPermissionNamesForTemplateQuery({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useGetPermissionNamesForTemplateQuery(baseOptions?: Apollo.QueryHookOptions<GetPermissionNamesForTemplateQuery, GetPermissionNamesForTemplateQueryVariables>) {
+        return Apollo.useQuery<GetPermissionNamesForTemplateQuery, GetPermissionNamesForTemplateQueryVariables>(GetPermissionNamesForTemplateDocument, baseOptions);
+      }
+export function useGetPermissionNamesForTemplateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPermissionNamesForTemplateQuery, GetPermissionNamesForTemplateQueryVariables>) {
+          return Apollo.useLazyQuery<GetPermissionNamesForTemplateQuery, GetPermissionNamesForTemplateQueryVariables>(GetPermissionNamesForTemplateDocument, baseOptions);
+        }
+export type GetPermissionNamesForTemplateQueryHookResult = ReturnType<typeof useGetPermissionNamesForTemplateQuery>;
+export type GetPermissionNamesForTemplateLazyQueryHookResult = ReturnType<typeof useGetPermissionNamesForTemplateLazyQuery>;
+export type GetPermissionNamesForTemplateQueryResult = Apollo.QueryResult<GetPermissionNamesForTemplateQuery, GetPermissionNamesForTemplateQueryVariables>;
+export const GetPermissionPoliciesDocument = gql`
+    query getPermissionPolicies {
+  permissionPolicies {
+    nodes {
+      defaultRestrictions
+      description
+      id
+      name
+      permissionNames {
+        nodes {
+          name
+          nodeId
+          permissionPolicyId
+        }
+      }
+      rules
+      type
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPermissionPoliciesQuery__
+ *
+ * To run a query within a React component, call `useGetPermissionPoliciesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPermissionPoliciesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPermissionPoliciesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPermissionPoliciesQuery(baseOptions?: Apollo.QueryHookOptions<GetPermissionPoliciesQuery, GetPermissionPoliciesQueryVariables>) {
+        return Apollo.useQuery<GetPermissionPoliciesQuery, GetPermissionPoliciesQueryVariables>(GetPermissionPoliciesDocument, baseOptions);
+      }
+export function useGetPermissionPoliciesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPermissionPoliciesQuery, GetPermissionPoliciesQueryVariables>) {
+          return Apollo.useLazyQuery<GetPermissionPoliciesQuery, GetPermissionPoliciesQueryVariables>(GetPermissionPoliciesDocument, baseOptions);
+        }
+export type GetPermissionPoliciesQueryHookResult = ReturnType<typeof useGetPermissionPoliciesQuery>;
+export type GetPermissionPoliciesLazyQueryHookResult = ReturnType<typeof useGetPermissionPoliciesLazyQuery>;
+export type GetPermissionPoliciesQueryResult = Apollo.QueryResult<GetPermissionPoliciesQuery, GetPermissionPoliciesQueryVariables>;
 export const GetReviewDocument = gql`
     query getReview($reviewId: Int!) {
   review(id: $reviewId) {
@@ -21776,6 +23017,128 @@ export function useGetTemplateLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetTemplateQueryHookResult = ReturnType<typeof useGetTemplateQuery>;
 export type GetTemplateLazyQueryHookResult = ReturnType<typeof useGetTemplateLazyQuery>;
 export type GetTemplateQueryResult = Apollo.QueryResult<GetTemplateQuery, GetTemplateQueryVariables>;
+export const GetTemplateCategoriesDocument = gql`
+    query getTemplateCategories {
+  templateCategories {
+    nodes {
+      icon
+      title
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTemplateCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetTemplateCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTemplateCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTemplateCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTemplateCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>) {
+        return Apollo.useQuery<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>(GetTemplateCategoriesDocument, baseOptions);
+      }
+export function useGetTemplateCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>) {
+          return Apollo.useLazyQuery<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>(GetTemplateCategoriesDocument, baseOptions);
+        }
+export type GetTemplateCategoriesQueryHookResult = ReturnType<typeof useGetTemplateCategoriesQuery>;
+export type GetTemplateCategoriesLazyQueryHookResult = ReturnType<typeof useGetTemplateCategoriesLazyQuery>;
+export type GetTemplateCategoriesQueryResult = Apollo.QueryResult<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>;
+export const GetTemplateFiltersDocument = gql`
+    query getTemplateFilters {
+  filters {
+    nodes {
+      code
+      icon
+      id
+      query
+      title
+      userRole
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTemplateFiltersQuery__
+ *
+ * To run a query within a React component, call `useGetTemplateFiltersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTemplateFiltersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTemplateFiltersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTemplateFiltersQuery(baseOptions?: Apollo.QueryHookOptions<GetTemplateFiltersQuery, GetTemplateFiltersQueryVariables>) {
+        return Apollo.useQuery<GetTemplateFiltersQuery, GetTemplateFiltersQueryVariables>(GetTemplateFiltersDocument, baseOptions);
+      }
+export function useGetTemplateFiltersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTemplateFiltersQuery, GetTemplateFiltersQueryVariables>) {
+          return Apollo.useLazyQuery<GetTemplateFiltersQuery, GetTemplateFiltersQueryVariables>(GetTemplateFiltersDocument, baseOptions);
+        }
+export type GetTemplateFiltersQueryHookResult = ReturnType<typeof useGetTemplateFiltersQuery>;
+export type GetTemplateFiltersLazyQueryHookResult = ReturnType<typeof useGetTemplateFiltersLazyQuery>;
+export type GetTemplateFiltersQueryResult = Apollo.QueryResult<GetTemplateFiltersQuery, GetTemplateFiltersQueryVariables>;
+export const GetTemplatePermissionsDocument = gql`
+    query getTemplatePermissions($templateId: Int!) {
+  templatePermissions(condition: {templateId: $templateId}) {
+    nodes {
+      level
+      id
+      nodeId
+      restrictions
+      permissionName {
+        name
+        permissionPolicy {
+          description
+          name
+          rules
+          type
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTemplatePermissionsQuery__
+ *
+ * To run a query within a React component, call `useGetTemplatePermissionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTemplatePermissionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTemplatePermissionsQuery({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useGetTemplatePermissionsQuery(baseOptions?: Apollo.QueryHookOptions<GetTemplatePermissionsQuery, GetTemplatePermissionsQueryVariables>) {
+        return Apollo.useQuery<GetTemplatePermissionsQuery, GetTemplatePermissionsQueryVariables>(GetTemplatePermissionsDocument, baseOptions);
+      }
+export function useGetTemplatePermissionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTemplatePermissionsQuery, GetTemplatePermissionsQueryVariables>) {
+          return Apollo.useLazyQuery<GetTemplatePermissionsQuery, GetTemplatePermissionsQueryVariables>(GetTemplatePermissionsDocument, baseOptions);
+        }
+export type GetTemplatePermissionsQueryHookResult = ReturnType<typeof useGetTemplatePermissionsQuery>;
+export type GetTemplatePermissionsLazyQueryHookResult = ReturnType<typeof useGetTemplatePermissionsLazyQuery>;
+export type GetTemplatePermissionsQueryResult = Apollo.QueryResult<GetTemplatePermissionsQuery, GetTemplatePermissionsQueryVariables>;
 export const GetTemplatesDocument = gql`
     query getTemplates($status: TemplateStatus = AVAILABLE) {
   templates(condition: {status: $status}) {

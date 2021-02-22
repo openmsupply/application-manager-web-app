@@ -92,7 +92,7 @@ const SiteLayout: React.FC = () => {
         <Route exact path="/admin/templates/new">
           <TemplateNew />
         </Route>
-        <Route exact path="/admin/templates/:templateId/:step">
+        <Route exact path="/admin/templates/:templateCode">
           <Template />
         </Route>
         <Route exact path="/admin/users">
