@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import { Header, Message } from 'semantic-ui-react'
 
 import { Loading, NoMatch } from '../../components'
@@ -10,7 +10,8 @@ import { FullStructure, User } from '../../utils/types'
 import strings from '../../utils/constants'
 
 const ApplicationWrapper: React.FC = () => {
-  const { pathname, query } = useRouter()
+  const { query } = useRouter()
+  const { path } = useRouteMatch()
   const { serialNumber } = query
   const {
     userState: { currentUser },
@@ -28,16 +29,16 @@ const ApplicationWrapper: React.FC = () => {
     <Loading />
   ) : structure ? (
     <Switch>
-      <Route exact path="/applicationNEW/:serialNumber">
+      <Route exact path={path}>
         <ApplicationStartNEW structure={structure} />
       </Route>
-      <Route exact path="/applicationNEW/:serialNumber/:sectionCode/Page:page">
+      <Route exact path={`${path}/:sectionCode/Page:page`}>
         <ApplicationPageNEW structure={structure} />
       </Route>
-      <Route exact path="/applicationNEW/:serialNumber/summary">
+      <Route exact path={`${path}/summary`}>
         <ApplicationSummaryNEW structure={structure} />
       </Route>
-      <Route exact path="/applicationNEW/:serialNumber/submission">
+      <Route exact path={`${path}/summary/submission`}>
         <ApplicationSubmissionNEW structure={structure} />
       </Route>
       <Route>
