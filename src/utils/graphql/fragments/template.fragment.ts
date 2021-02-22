@@ -24,6 +24,26 @@ export default gql`
         trigger
       }
     }
+    templatePermissions {
+      nodes {
+        id
+        permissionName {
+          name
+          id
+          permissionPolicy {
+            name
+            id
+            rules
+            type
+          }
+          permissionPolicyId
+        }
+        restrictions
+        stageNumber
+        templateId
+        level
+      }
+    }
     templateStages {
       nodes {
         number

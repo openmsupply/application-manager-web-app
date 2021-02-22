@@ -20522,6 +20522,20 @@ export type TemplateFragment = (
       { __typename?: 'TemplateAction' }
       & Pick<TemplateAction, 'actionCode' | 'condition' | 'id' | 'nodeId' | 'parameterQueries' | 'sequence' | 'trigger'>
     )>> }
+  ), templatePermissions: (
+    { __typename?: 'TemplatePermissionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplatePermission' }
+      & Pick<TemplatePermission, 'id' | 'restrictions' | 'stageNumber' | 'templateId' | 'level'>
+      & { permissionName?: Maybe<(
+        { __typename?: 'PermissionName' }
+        & Pick<PermissionName, 'name' | 'id' | 'permissionPolicyId'>
+        & { permissionPolicy?: Maybe<(
+          { __typename?: 'PermissionPolicy' }
+          & Pick<PermissionPolicy, 'name' | 'id' | 'rules' | 'type'>
+        )> }
+      )> }
+    )>> }
   ), templateStages: (
     { __typename?: 'TemplateStagesConnection' }
     & { nodes: Array<Maybe<(
@@ -20806,6 +20820,29 @@ export type DeleteTemplateFilterJionMutation = (
   )> }
 );
 
+export type DeleteTemplatePermissionMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteTemplatePermissionMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTemplatePermission?: Maybe<(
+    { __typename?: 'DeleteTemplatePermissionPayload' }
+    & { template?: Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'id'>
+      & { templatePermissions: (
+        { __typename?: 'TemplatePermissionsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplatePermission' }
+          & Pick<TemplatePermission, 'id'>
+        )>> }
+      ) }
+    )> }
+  )> }
+);
+
 export type JoinFilterToTemplateMutationVariables = Exact<{
   templateId: Scalars['Int'];
   filterId: Scalars['Int'];
@@ -21007,6 +21044,27 @@ export type UpdateTemplateFilterMutation = (
     & { filter?: Maybe<(
       { __typename?: 'Filter' }
       & Pick<Filter, 'id' | 'code' | 'icon' | 'query' | 'title' | 'userRole'>
+    )> }
+  )> }
+);
+
+export type UpdateTemplatePermissionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: TemplatePermissionPatch;
+}>;
+
+
+export type UpdateTemplatePermissionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplatePermission?: Maybe<(
+    { __typename?: 'UpdateTemplatePermissionPayload' }
+    & { templatePermission?: Maybe<(
+      { __typename?: 'TemplatePermission' }
+      & Pick<TemplatePermission, 'id' | 'restrictions'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+      )> }
     )> }
   )> }
 );
@@ -21540,6 +21598,26 @@ export const TemplateFragmentDoc = gql`
       trigger
     }
   }
+  templatePermissions {
+    nodes {
+      id
+      permissionName {
+        name
+        id
+        permissionPolicy {
+          name
+          id
+          rules
+          type
+        }
+        permissionPolicyId
+      }
+      restrictions
+      stageNumber
+      templateId
+      level
+    }
+  }
   templateStages {
     nodes {
       number
@@ -22013,6 +22091,45 @@ export function useDeleteTemplateFilterJionMutation(baseOptions?: Apollo.Mutatio
 export type DeleteTemplateFilterJionMutationHookResult = ReturnType<typeof useDeleteTemplateFilterJionMutation>;
 export type DeleteTemplateFilterJionMutationResult = Apollo.MutationResult<DeleteTemplateFilterJionMutation>;
 export type DeleteTemplateFilterJionMutationOptions = Apollo.BaseMutationOptions<DeleteTemplateFilterJionMutation, DeleteTemplateFilterJionMutationVariables>;
+export const DeleteTemplatePermissionDocument = gql`
+    mutation deleteTemplatePermission($id: Int!) {
+  deleteTemplatePermission(input: {id: $id}) {
+    template {
+      id
+      templatePermissions {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+export type DeleteTemplatePermissionMutationFn = Apollo.MutationFunction<DeleteTemplatePermissionMutation, DeleteTemplatePermissionMutationVariables>;
+
+/**
+ * __useDeleteTemplatePermissionMutation__
+ *
+ * To run a mutation, you first call `useDeleteTemplatePermissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTemplatePermissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTemplatePermissionMutation, { data, loading, error }] = useDeleteTemplatePermissionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTemplatePermissionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTemplatePermissionMutation, DeleteTemplatePermissionMutationVariables>) {
+        return Apollo.useMutation<DeleteTemplatePermissionMutation, DeleteTemplatePermissionMutationVariables>(DeleteTemplatePermissionDocument, baseOptions);
+      }
+export type DeleteTemplatePermissionMutationHookResult = ReturnType<typeof useDeleteTemplatePermissionMutation>;
+export type DeleteTemplatePermissionMutationResult = Apollo.MutationResult<DeleteTemplatePermissionMutation>;
+export type DeleteTemplatePermissionMutationOptions = Apollo.BaseMutationOptions<DeleteTemplatePermissionMutation, DeleteTemplatePermissionMutationVariables>;
 export const JoinFilterToTemplateDocument = gql`
     mutation joinFilterToTemplate($templateId: Int!, $filterId: Int!) {
   createTemplateFilterJoin(input: {templateFilterJoin: {templateFilterId: $filterId, templateId: $templateId}}) {
@@ -22410,6 +22527,45 @@ export function useUpdateTemplateFilterMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateTemplateFilterMutationHookResult = ReturnType<typeof useUpdateTemplateFilterMutation>;
 export type UpdateTemplateFilterMutationResult = Apollo.MutationResult<UpdateTemplateFilterMutation>;
 export type UpdateTemplateFilterMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateFilterMutation, UpdateTemplateFilterMutationVariables>;
+export const UpdateTemplatePermissionDocument = gql`
+    mutation updateTemplatePermission($id: Int!, $data: TemplatePermissionPatch!) {
+  updateTemplatePermission(input: {patch: $data, id: $id}) {
+    templatePermission {
+      id
+      restrictions
+      template {
+        id
+      }
+    }
+  }
+}
+    `;
+export type UpdateTemplatePermissionMutationFn = Apollo.MutationFunction<UpdateTemplatePermissionMutation, UpdateTemplatePermissionMutationVariables>;
+
+/**
+ * __useUpdateTemplatePermissionMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplatePermissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplatePermissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplatePermissionMutation, { data, loading, error }] = useUpdateTemplatePermissionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateTemplatePermissionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplatePermissionMutation, UpdateTemplatePermissionMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplatePermissionMutation, UpdateTemplatePermissionMutationVariables>(UpdateTemplatePermissionDocument, baseOptions);
+      }
+export type UpdateTemplatePermissionMutationHookResult = ReturnType<typeof useUpdateTemplatePermissionMutation>;
+export type UpdateTemplatePermissionMutationResult = Apollo.MutationResult<UpdateTemplatePermissionMutation>;
+export type UpdateTemplatePermissionMutationOptions = Apollo.BaseMutationOptions<UpdateTemplatePermissionMutation, UpdateTemplatePermissionMutationVariables>;
 export const UpdateTemplateStageDocument = gql`
     mutation updateTemplateStage($id: Int!, $data: TemplateStagePatch!) {
   updateTemplateStage(input: {patch: $data, id: $id}) {

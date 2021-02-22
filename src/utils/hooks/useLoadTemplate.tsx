@@ -17,6 +17,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
   const [template, setTemplate] = useState<TemplateDetails>()
   const [templateActions, setTemplateActions] = useState<any>()
   const [templateStages, setTemplateStages] = useState<any>()
+  const [templatePermissions, setTemplatePermissions] = useState<any>()
   const [templateFilters, setTemplateFilters] = useState<any>()
   const [sections, setSections] = useState<SectionDetails[] | null>(null)
   const [elementsIds, setElementsIds] = useState<number[]>([])
@@ -61,7 +62,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     })
     console.log('Template Yow', template)
     setTemplateCategory(template.templateCategory)
-
+    setTemplatePermissions(template.templatePermissions.nodes)
     const sections = getTemplateSections(templateSections)
     setSections(sections)
 
@@ -97,6 +98,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     elementsIds,
     templateActions,
     templateCategory,
+    templatePermissions
     templateStages,
     templateFilters,
   }

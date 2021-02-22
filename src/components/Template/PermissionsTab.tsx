@@ -26,6 +26,8 @@ import {
   useUpdateTemplateStageMutation,
   TemplatePermissionsOrderBy,
   useCreateTemplatePermissionMutation,
+  useDeleteTemplatePermissionMutation,
+  useUpdateTemplatePermissionMutation,
 } from '../../utils/generated/graphql'
 import useLoadTemplate from '../../utils/hooks/useLoadTemplate'
 import { useRouter } from '../../utils/hooks/useRouter'
@@ -33,54 +35,73 @@ import GeneralTab from './GeneralTab'
 import ActionsTab from './ActionsTab'
 import TextareaAutosize from 'react-textarea-autosize'
 import stageFragment from '../../utils/graphql/fragments/stage.fragment'
+import deleteTemplatePermissionMutation from '../../utils/graphql/mutations/deleteTemplatePermission.mutation'
+import JsonTextArea from './JsonTextArea'
 
 const options = {
   Apply: 'APPLY',
   Review: 'REVIEW',
   Assign: 'ASSIGN',
 }
+
+const TemplatePermission: React.FC = ({ templatePermission }: any) => {
+  const [deleteTemplatePermission] = useDeleteTemplatePermissionMutation()
+  const [updateTemplatePermission] = useUpdateTemplatePermissionMutation()
+  const [change, setChanges] = useState({})
+  const updateChanges = (key: any) => (_: any, { value }: any) =>
+    setChanges({ ...change, [key]: value })
+
+  const mutateTemplatePermission = ({}) =>
+    updateTemplatePermission({ variables: { id: templatePermission.id, data: change } })
+
+  return (
+    <Form>
+      <Form.Field>
+        <label>Restrictions</label>
+        <JsonTextArea
+          defaultValue={templatePermission.restrictions || '{}'}
+          onChange={updateChanges('restrictions')}
+          onBlur={mutateTemplatePermission}
+        />
+      </Form.Field>
+      <Button
+        onClick={() => {
+          deleteTemplatePermission({ variables: { id: templatePermission.id } })
+        }}
+      >
+        Delete
+      </Button>
+    </Form>
+  )
+}
+
 const PermissionList: React.FC = ({
   permissionPolicyType,
-  permissionNames,
-  templateId,
+  templatePermissions,
   level = null,
   stageNumber = null,
 }: any) => {
-  console.log()
+  console.log(templatePermissions, permissionPolicyType)
 
   const panels = (
-    permissionNames?.permissionNames?.nodes?.filter(
-      (permissionName: any) =>
-        permissionName.permissionPolicy.type === permissionPolicyType &&
-        permissionName?.templatePermissions?.nodes.find(
-          (templatePermission: any) =>
-            templatePermission.templateId === templateId &&
-            (level === null || templatePermission.level === level) &&
-            (stageNumber === null || templatePermission.stageNumber === stageNumber)
-        )
-    ) || []
-  ).map((permissionName: any) => ({
-    key: permissionName.templatePermission.id,
-    title: `${permissionName.name} - ${permissionName.permissionPolicy.name} {Description}`,
+    templatePermissions?.filter((templatePermission: any) => {
+      console.log(
+        'hmm',
+        templatePermission.permissionName.permissionPolicy.type,
+        permissionPolicyType
+      )
+      return (
+        templatePermission.permissionName.permissionPolicy.type === permissionPolicyType &&
+        (level === null || templatePermission.level === level) &&
+        (stageNumber === null || templatePermission.stageNumber === stageNumber)
+      )
+    }) || []
+  ).map((templatePermission: any, index: any) => ({
+    key: templatePermission.id,
+    title: `${templatePermission.permissionName.name} - ${templatePermission.permissionName.permissionPolicy.name} {Description}`,
     content: {
       content: (
-        <Form>
-          <Form.Field>
-            <label>Restrictions</label>
-            <TextareaAutosize
-              minRows={1}
-              rows={1}
-              defaultValue={JSON.stringify(
-                permissionName?.templatePermission?.restrictions,
-                null,
-                ' '
-              )}
-            />
-          </Form.Field>
-
-          <Button>Save</Button>
-          <Button>Delete</Button>
-        </Form>
+        <TemplatePermission key={templatePermission.id} templatePermission={templatePermission} />
       ),
     },
   }))
@@ -104,6 +125,7 @@ const Permissions: React.FC = ({ all }: any) => {
   const { data: permissionNames } = useGetPermissionNamesQuery()
   const [maxStage, setMaxStage] = useState(all.templateStages.length)
   const [createStageMutation] = useCreateTemplateStageMutation()
+  const [createTemplatePermission] = useCreateTemplatePermissionMutation()
 
   console.log(
     permissionPolicies?.permissionPolicies?.nodes.filter(
@@ -124,7 +146,22 @@ const Permissions: React.FC = ({ all }: any) => {
               icon="add"
               style={{ margin: 20 }}
               text={type}
+              onClick={(...all) => {
+                console.log('clicked', all)
+              }}
               options={getPermissionNames(permissionPolicyType, permissionNames)}
+              onChange={(_, { value }) => {
+                createTemplatePermission({
+                  variables: {
+                    data: {
+                      templateId: all.template.id,
+
+                      restrictions: {},
+                      permissionNameId: Number(value),
+                    },
+                  },
+                })
+              }}
             />
           ) : (
             <Button
@@ -158,20 +195,24 @@ const Permissions: React.FC = ({ all }: any) => {
           {type === 'Apply' ? (
             <PermissionList
               permissionPolicyType={permissionPolicyType}
-              permissionNames={permissionNames}
-              templateId={all.template.id}
+              templatePermissions={all.templatePermissions}
             />
           ) : (
-            all.templateStages.map((templateStage: any) => (
-              <Stage
-                key={templateStage.id}
-                all={all}
-                type={type}
-                permissionPolicyType={permissionPolicyType}
-                templateStage={templateStage}
-                permissionNames={permissionNames}
-              />
-            ))
+            [...all.templateStages]
+              .sort((templateStage1: any, templateStage2: any) => {
+                console.log(templateStage1.number, templateStage2.number)
+                return templateStage1.number - templateStage2.number
+              })
+              .map((templateStage: any) => (
+                <Stage
+                  key={templateStage.id}
+                  all={all}
+                  type={type}
+                  permissionPolicyType={permissionPolicyType}
+                  templateStage={templateStage}
+                  permissionNames={permissionNames}
+                />
+              ))
           )}
         </Message>
       ))}
@@ -265,8 +306,8 @@ const Stage: React.FC = ({
       {type === 'Assign' ? (
         <PermissionList
           permissionPolicyType={permissionPolicyType}
-          permissionNames={permissionNames}
-          templateId={all.template.id}
+          templatePermissions={all.templatePermissions}
+          stageNumber={templateStage.number}
         />
       ) : (
         levels.map((level: any) => (
@@ -297,8 +338,7 @@ const Stage: React.FC = ({
 
             <PermissionList
               permissionPolicyType={permissionPolicyType}
-              permissionNames={permissionNames}
-              templateId={all.template.id}
+              templatePermissions={all.templatePermissions}
               level={level}
               stageNumber={templateStage.number}
             />
