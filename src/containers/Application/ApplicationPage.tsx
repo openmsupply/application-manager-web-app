@@ -79,8 +79,8 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
     }
   }, [methodToCallOnRevalidation, lastValidation])
 
-  // useEffect(() => {
-  //   if (!structure) return
+  useEffect(() => {
+    if (!structure) return
 
     // Re-direct based on application status and progress
     if (structure.info.current?.status === ApplicationStatus.ChangesRequired)
@@ -89,7 +89,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
       push(`/applicationNEW/${structure.info.serial}/summary`)
 
   //   // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
-  // }, [structure])
+  }, [structure])
 
   if (error) return <NoMatch />
   if (isLoading) return <Loading />
