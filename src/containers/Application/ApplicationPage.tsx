@@ -15,10 +15,40 @@ interface ApplicationProps {
   responses?: ResponsesByCode
 }
 
+// TODO relocate to sharable type
+
+type LastValidPage = { sectionCode: string; pageName: string } | null
+
+interface MethodToCallOnRevalidation {
+  (firstInvalidPage: LastValidPage): null
+}
+
+const getFirstInvalidPage: (
+  fullStructure: FullStructure
+) => { sectionCode: string; pageName: string } | null = (fullStructure) => {
+  // return { sectionCode: 'S1', pageName: 'Page 2' }
+  return null
+}
+
 const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
-  const [isStrictPage, setIsStrictPage] = useState(null)
-  const { error, isLoading, fullStructure, responsesByCode } = useGetFullApplicationStructure(
+  const [isStrictPage, setIsStrictPage] = useState<LastValidPage>(null)
+
+  const [
+    methodToCallOnRevalidation,
+    setMethodToCallOnRevalidation,
+  ] = useState<MethodToCallOnRevalidation | null>(null)
+  const [shouldRevalidate, setShouldRevalidate] = useState<boolean>(false)
+  const [lastRevalidationRequest, setLastRevalidationRequest] = useState(new Date())
+
+  const {
+    error,
+    isLoading,
+    fullStructure,
+    responsesByCode,
+    lastValidation,
+  } = useGetFullApplicationStructure(
     structure
+    setShouldRevalidate
   )
   const {
     userState: { currentUser },
@@ -27,17 +57,39 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
 
   console.log('Structure', fullStructure)
 
+  /* Method to pass to progress bar, next button and submit button  to cause revalidation before aciton can be proceeded
+     Should always be called on submit, but only be called on next or progress bar navigation when isLinear */
+  // TODO may rename if we want to display loading modal
+  const requestRevalidation = (methodToCall: MethodToCallOnRevalidation) => {
+    setMethodToCallOnRevalidation(methodToCall)
+    setShouldRevalidate(true)
+    setLastRevalidationRequest(new Date())
+    // TODO show loading modal
+  }
+
   useEffect(() => {
-    if (!structure) return
+    if (methodToCallOnRevalidation != null && lastValidation > lastRevalidationRequest) {
+      const lastValidPage = getFirstInvalidPage(fullStructure)
+      methodToCallOnRevalidation(lastValidPage)
+      setMethodToCallOnRevalidation(null)
+      setShouldRevalidate(false)
 
-    // Re-direct based on application status and progress
-    if (structure.info.current?.status === ApplicationStatus.ChangesRequired)
-      push(`/application/${structure.info.serial}`)
-    if (structure.info.current?.status !== ApplicationStatus.Draft)
-      push(`/application/${structure.info.serial}/summary`)
+      if(lastValidPage != null) setIsStrictPage(lastValidPage)
+      // TODO hide loading modal
+    }
+  }, [methodToCallOnRevalidation, lastValidation])
 
-    // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
-  }, [structure])
+  // useEffect(() => {
+  //   if (!structure) return
+
+  //   // Re-direct based on application status and progress
+  //   if (structure.info.current?.status === ApplicationStatus.ChangesRequired)
+  //     push(`/application/${structure.info.serial}`)
+  //   if (structure.info.current?.status !== ApplicationStatus.Draft)
+  //     push(`/application/${structure.info.serial}/summary`)
+
+  //   // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
+  // }, [structure])
 
   if (error) return <NoMatch />
   if (isLoading) return <Loading />
