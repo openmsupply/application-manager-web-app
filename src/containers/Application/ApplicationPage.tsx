@@ -88,7 +88,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
     if (structure.info.current?.status !== ApplicationStatus.Draft)
       push(`/applicationNEW/${structure.info.serial}/summary`)
 
-  //   // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
+     // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
   }, [structure])
 
   if (error) return <NoMatch />
