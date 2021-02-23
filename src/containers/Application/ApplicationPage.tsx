@@ -9,6 +9,9 @@ import { Loading, NoMatch } from '../../components'
 import strings from '../../utils/constants'
 import messages from '../../utils/messages'
 import { Button, Grid, Header, Segment, Sticky } from 'semantic-ui-react'
+import { revalidateAll } from '../../utils/helpers/validation/revalidateAll'
+import ApplicationPageWrapper from './ApplicationPageWrapper'
+import { ApplicationViewWrapper } from '../../formElementPlugins'
 
 interface ApplicationProps {
   structure: FullStructure
@@ -33,51 +36,56 @@ const getFirstInvalidPage: (
 const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
   const [isStrictPage, setIsStrictPage] = useState<LastValidPage>(null)
 
-  const [
-    methodToCallOnRevalidation,
-    setMethodToCallOnRevalidation,
-  ] = useState<MethodToCallOnRevalidation | null>(null)
-  const [shouldRevalidate, setShouldRevalidate] = useState<boolean>(false)
-  const [lastRevalidationRequest, setLastRevalidationRequest] = useState(new Date())
+  const [methodToCallOnRevalidation, setMethodToCallOnRevalidation] = useState<any>(null)
+  const [shouldProcessValidation, setShouldProcessValidation] = useState<boolean>(false)
+  const [lastRevalidationRequest, setLastRevalidationRequest] = useState<number>(Date.now())
 
   const {
     error,
     isLoading,
     fullStructure,
     responsesByCode,
-    lastValidation,
-  } = useGetFullApplicationStructure(
-    structure
-    setShouldRevalidate
-  )
+    lastValidationTimestamp,
+  } = useGetFullApplicationStructure({
+    structure,
+    shouldProcessValidation,
+  })
   const {
     userState: { currentUser },
   } = useUserState()
   const { push } = useRouter()
 
   console.log('Structure', fullStructure)
-
+  console.log('Responses', responsesByCode)
   /* Method to pass to progress bar, next button and submit button  to cause revalidation before aciton can be proceeded
      Should always be called on submit, but only be called on next or progress bar navigation when isLinear */
   // TODO may rename if we want to display loading modal
   const requestRevalidation = (methodToCall: MethodToCallOnRevalidation) => {
-    setMethodToCallOnRevalidation(methodToCall)
-    setShouldRevalidate(true)
-    setLastRevalidationRequest(new Date())
+    console.log({ methodToCall })
+    setMethodToCallOnRevalidation(() => methodToCall)
+    setShouldProcessValidation(true)
+    setLastRevalidationRequest(Date.now())
     // TODO show loading modal
   }
 
   useEffect(() => {
-    if (methodToCallOnRevalidation != null && lastValidation > lastRevalidationRequest) {
+    console.log({
+      methodToCallOnRevalidation,
+      lastRevalidationRequest,
+      lastValidationTimestamp,
+      shouldProcessValidation,
+    })
+    if (methodToCallOnRevalidation && lastValidationTimestamp > lastRevalidationRequest) {
       const lastValidPage = getFirstInvalidPage(fullStructure)
+      console.log('Full structure after validation', fullStructure)
       methodToCallOnRevalidation(lastValidPage)
       setMethodToCallOnRevalidation(null)
-      setShouldRevalidate(false)
+      setShouldProcessValidation(false)
 
-      if(lastValidPage != null) setIsStrictPage(lastValidPage)
+      if (lastValidPage != null) setIsStrictPage(lastValidPage)
       // TODO hide loading modal
     }
-  }, [methodToCallOnRevalidation, lastValidation])
+  }, [methodToCallOnRevalidation, lastValidationTimestamp])
 
   useEffect(() => {
     if (!structure) return
@@ -88,9 +96,10 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
     if (structure.info.current?.status !== ApplicationStatus.Draft)
       push(`/applicationNEW/${structure.info.serial}/summary`)
 
-     // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
+    // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
   }, [structure])
 
+  console.log(error, isLoading)
   if (error) return <NoMatch />
   if (isLoading) return <Loading />
 
@@ -115,7 +124,11 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
         </Grid.Column>
         <Grid.Column width={10} stretched>
           <Segment basic>
-            <PageElements structure={structure} responses={responsesByCode} />
+            <PageElements
+              structure={fullStructure}
+              responses={responsesByCode}
+              requestRevalidation={requestRevalidation}
+            />
             <NavigationBox />
           </Segment>
         </Grid.Column>
@@ -141,9 +154,55 @@ const ProgressBar: React.FC<ApplicationProps> = ({ structure }) => {
   return <p>Progress Bar here</p>
 }
 
-const PageElements: React.FC<ApplicationProps> = ({ structure, responses }) => {
+const PageElements: React.FC<ApplicationProps> = ({
+  structure,
+  responses,
+  requestRevalidation,
+}) => {
+  const ps1p1q2 = structure?.sections.S1.pages['Page 1'].state[1] || {}
+  const ps1p1q3 = structure?.sections.S1.pages['Page 1'].state[2] || {}
+  const ps1p1q4 = structure?.sections.S1.pages['Page 1'].state[3] || {}
+
+  const callThisMethod = (data: any) => {
+    console.log('Validating done', data)
+  }
   // Placeholder -- to be replaced with new component
-  return <p>Page Elements go here</p>
+  return (
+    <div>
+      <ApplicationViewWrapper
+        key={1}
+        {...{
+          ...ps1p1q2.element,
+          initialValue: responses[ps1p1q2.element.code],
+          currentResponse: ps1p1q2.response,
+          allResponses: responses,
+        }}
+      />
+      <ApplicationViewWrapper
+        key={2}
+        {...{
+          ...ps1p1q3.element,
+          initialValue: responses[ps1p1q3.element.code],
+          currentResponse: ps1p1q3.response,
+          allResponses: responses,
+        }}
+      />
+      <ApplicationViewWrapper
+        key={3}
+        {...{
+          ...ps1p1q4.element,
+          initialValue: responses[ps1p1q4.element.code],
+          currentResponse: ps1p1q4.response,
+          allResponses: responses,
+        }}
+      />
+      <p>Page Elements go here</p>
+      <pre>{JSON.stringify(ps1p1q2 || {}, null, ' ')}</pre>
+      <pre>{JSON.stringify(ps1p1q3 || {}, null, ' ')}</pre>
+      <pre>{JSON.stringify(ps1p1q4 || {}, null, ' ')}</pre>
+      <Button onClick={() => requestRevalidation(callThisMethod)}>revalidate</Button>
+    </div>
+  )
 }
 
 const NavigationBox: React.FC = () => {

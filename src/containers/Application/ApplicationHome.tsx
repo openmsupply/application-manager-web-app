@@ -7,9 +7,9 @@ interface ApplicationProps {
 }
 
 const ApplicationHome: React.FC<ApplicationProps> = ({ structure }) => {
-  const { error, isLoading, fullStructure, responsesByCode } = useGetFullApplicationStructure(
-    structure
-  )
+  const { error, isLoading, fullStructure, responsesByCode } = useGetFullApplicationStructure({
+    structure,
+  })
 
   console.log('isLoading', isLoading)
   console.log('FULL STRUCTURE', fullStructure)
