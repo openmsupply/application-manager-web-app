@@ -47,8 +47,8 @@ const UserArea: React.FC = () => {
                 {strings.LABEL_LOG_OUT}
               </Button.Content>
             </Button>
-            <Label as="button" color="grey" style={{ width: '100%', padding: 10 }}>
-              {currentUser?.firstName}
+            <Label as="button" color="grey" style={{ position: 'fixed', right: 0, top: 0 }}>
+              {currentUser?.username}
               <UserSelection />
             </Label>
             {/* <Button animated basic inverted onClick={() => logout()}>

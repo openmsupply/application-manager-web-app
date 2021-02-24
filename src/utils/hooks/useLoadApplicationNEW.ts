@@ -36,7 +36,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
     variables: {
       serial: serialNumber,
     },
-    fetchPolicy: networkFetch ? 'network-only' : 'cache-first',
+    // fetchPolicy: networkFetch ? 'network-only' : 'cache-first',
     notifyOnNetworkStatusChange: true,
   })
 
@@ -127,6 +127,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
           baseElements.push({
             // ...element,
             code: element.code,
+            fullElement: element,
             pluginCode: element.elementTypePluginCode,
             sectionIndex: sectionNode?.templateSection?.index,
             sectionCode: sectionNode?.templateSection?.code,
@@ -142,12 +143,13 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
       })
     })
 
+    setIsLoading(false)
+    console.log('setting full structure', structure)
     setFullStructure({
       info: applicationDetails,
       stages: stagesDetails,
       sections: buildSectionsStructure({ sections, baseElements }),
     })
-    setIsLoading(false)
   }, [data, loading])
 
   return {
@@ -155,6 +157,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
     isLoading: loading || isLoading,
     structure,
     template,
+    refetch,
   }
 }
 

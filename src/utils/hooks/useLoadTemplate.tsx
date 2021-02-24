@@ -21,6 +21,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
   const [templatePermissions, setTemplatePermissions] = useState<any>()
   const [templateFilters, setTemplateFilters] = useState<any>()
   const [sectionsStructure, setSectionsStructure] = useState<SectionsStructure>()
+  const [wholeTemplate, setWholeTemplate] = useState<any>();
 
   const [elementsIds, setElementsIds] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
@@ -82,7 +83,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     setTemplateActions(template.templateActions?.nodes)
     setTemplateStages(template.templateStages?.nodes)
     const elements = [] as number[]
-
+    setWholeTemplate(template);
     templateSections.forEach((section) => {
       const { templateElementsBySectionId } = section as TemplateSection
       templateElementsBySectionId.nodes.forEach((element) => {
@@ -105,6 +106,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     templateCategory,
     templatePermissions
     templateStages,
+    wholeTemplate,
     templateFilters,
   }
 }

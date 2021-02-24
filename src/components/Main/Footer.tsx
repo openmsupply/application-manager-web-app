@@ -8,7 +8,7 @@ const Footer: React.FC = () => (
       circular
       centered
       size="mini"
-      src="./images/logo-32x32.png"
+      src="/images/logo-32x32.png"
       style={{ background: 'white', padding: 4 }}
     />
   </Segment>
