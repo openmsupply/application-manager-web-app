@@ -43,6 +43,9 @@ const reducer = (state: ContextApplicationState, action: ApplicationActions) => 
     case 'setElementTimestamp':
       const newTimestamps = { ...state.inputElementsActivity }
       newTimestamps[action.timestampType] = Date.now()
+      console.log('type', action.timestampType)
+
+      console.log(newTimestamps)
 
       newTimestamps.areTimestampsInSequence = isArraySorted([
         newTimestamps.elementEnteredTimestamp,

@@ -36,56 +36,60 @@ const getFirstInvalidPage: (
 const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
   const [isStrictPage, setIsStrictPage] = useState<LastValidPage>(null)
 
-  const [methodToCallOnRevalidation, setMethodToCallOnRevalidation] = useState<any>(null)
-  const [shouldProcessValidation, setShouldProcessValidation] = useState<boolean>(false)
-  const [lastRevalidationRequest, setLastRevalidationRequest] = useState<number>(Date.now())
-
   const {
-    error,
-    isLoading,
-    fullStructure,
-    responsesByCode,
-    lastValidationTimestamp,
-  } = useGetFullApplicationStructure({
+    applicationState: {
+      inputElementsActivity: { areTimestampsInSequence, elementsStateUpdatedTimestamp },
+    },
+  } = useApplicationState()
+
+  const [revalidationState, setRevalidationState] = useState({
+    methodToCallOnRevalidation: null,
+    shouldProcessValidation: false,
+    lastRevalidationRequest: Date.now(),
+  })
+
+  const shouldRevalidate = areTimestampsInSequence && revalidationState.shouldProcessValidation
+  const revalidateAfterTimestamp = shouldRevalidate ? elementsStateUpdatedTimestamp : 0
+
+  const { error, fullStructure } = useGetFullApplicationStructure({
     structure,
-    shouldProcessValidation,
+    shouldRevalidate,
+    revalidateAfterTimestamp,
   })
   const {
     userState: { currentUser },
   } = useUserState()
   const { push } = useRouter()
 
-  console.log('Structure', fullStructure)
-  console.log('Responses', responsesByCode)
   /* Method to pass to progress bar, next button and submit button  to cause revalidation before aciton can be proceeded
      Should always be called on submit, but only be called on next or progress bar navigation when isLinear */
   // TODO may rename if we want to display loading modal
   const requestRevalidation = (methodToCall: MethodToCallOnRevalidation) => {
-    console.log({ methodToCall })
-    setMethodToCallOnRevalidation(() => methodToCall)
-    setShouldProcessValidation(true)
-    setLastRevalidationRequest(Date.now())
+    setRevalidationState({
+      methodToCallOnRevalidation: methodToCall,
+      shouldProcessValidation: true,
+      lastRevalidationRequest: Date.now(),
+    })
     // TODO show loading modal
   }
 
   useEffect(() => {
-    console.log({
-      methodToCallOnRevalidation,
-      lastRevalidationRequest,
-      lastValidationTimestamp,
-      shouldProcessValidation,
-    })
-    if (methodToCallOnRevalidation && lastValidationTimestamp > lastRevalidationRequest) {
+    if (
+      revalidationState.methodToCallOnRevalidation &&
+      (fullStructure?.lastValidationTimestamp || new Date('00-00-00')) >
+        revalidationState.lastRevalidationRequest
+    ) {
       const lastValidPage = getFirstInvalidPage(fullStructure)
-      console.log('Full structure after validation', fullStructure)
-      methodToCallOnRevalidation(lastValidPage)
-      setMethodToCallOnRevalidation(null)
-      setShouldProcessValidation(false)
-
+      console.log('S1Q3 after revalidation', fullStructure.sections.S1.pages['Page 1'].state[3])
+      setRevalidationState({
+        ...revalidationState,
+        methodToCallOnRevalidation: null,
+        shouldProcessValidation: false,
+      })
       if (lastValidPage != null) setIsStrictPage(lastValidPage)
       // TODO hide loading modal
     }
-  }, [methodToCallOnRevalidation, lastValidationTimestamp])
+  }, [revalidationState, fullStructure])
 
   useEffect(() => {
     if (!structure) return
@@ -99,10 +103,15 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
     // TO-DO: Redirect based on Progress (wait till Progress calculation is done)
   }, [structure])
 
-  console.log(error, isLoading)
-  if (error) return <NoMatch />
-  if (isLoading) return <Loading />
+  console.log({
+    revalidationState,
+    lastValidationTimestamp: fullStructure?.lastValidationTimestamp,
+    areTimestampsInSequence,
+  })
 
+  if (error) return <NoMatch />
+  if (!fullStructure) return <Loading />
+  console.log('S1Q3 Before render', fullStructure.sections.S1.pages['Page 1'].state[3])
   return (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
       {/* <ModalWarning showModal={showModal} /> */}
@@ -126,7 +135,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
           <Segment basic>
             <PageElements
               structure={fullStructure}
-              responses={responsesByCode}
+              responses={fullStructure.responsesByCode}
               requestRevalidation={requestRevalidation}
             />
             <NavigationBox />
@@ -197,8 +206,8 @@ const PageElements: React.FC<ApplicationProps> = ({
         }}
       />
       <p>Page Elements go here</p>
-      <pre>{JSON.stringify(ps1p1q2 || {}, null, ' ')}</pre>
-      <pre>{JSON.stringify(ps1p1q3 || {}, null, ' ')}</pre>
+      {/* <pre>{JSON.stringify(ps1p1q2 || {}, null, ' ')}</pre>
+      <pre>{JSON.stringify(ps1p1q3 || {}, null, ' ')}</pre> */}
       <pre>{JSON.stringify(ps1p1q4 || {}, null, ' ')}</pre>
       <Button onClick={() => requestRevalidation(callThisMethod)}>revalidate</Button>
     </div>

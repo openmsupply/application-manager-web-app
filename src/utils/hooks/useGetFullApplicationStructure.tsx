@@ -14,14 +14,16 @@ import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 
 interface useGetFullApplicationStructureProps {
   structure: FullStructure
-  shouldProcessValidation?: boolean
+  shouldRevalidate?: boolean
+  revalidateAfterTimestamp?: number
   firstRunValidation?: boolean
 }
 
 const useGetFullApplicationStructure = ({
   structure,
-  shouldProcessValidation,
-  firstRunValidation,
+  shouldRevalidate = false,
+  revalidateAfterTimestamp = 0,
+  firstRunValidation = true,
 }: useGetFullApplicationStructureProps) => {
   const {
     info: { serial },
@@ -30,15 +32,13 @@ const useGetFullApplicationStructure = ({
     userState: { currentUser },
   } = useUserState()
   const [fullStructure, setFullStructure] = useState<FullStructure>()
-  const [responsesByCode, setResponsesByCode] = useState<ResponsesByCode>({})
-  const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
-  const [firstRunProcessValidation, setFirstRunProcessValidation] = useState(
-    firstRunValidation || true
-  )
-  const [lastValidationTimestamp, setLastValidationTimestamp] = useState<number>()
+  const [firstRunProcessValidation, setFirstRunProcessValidation] = useState(firstRunValidation)
+  const [lastRefetchedTimestamp, setLastRefetchedTimestamp] = useState<number>(0)
+  const [lastProcessedTimestamp, setLastProcessedTimestamp] = useState<number>(0)
+  const [previousSerial, setPreviousSerial] = useState<string>('')
 
-  const newStructure = { ...structure } // This MIGHT need to be deep-copied
+  const newStructure = { ...JSON.parse(JSON.stringify(structure)) } // This MIGHT need to be deep-copied
 
   const networkFetch = true // To-DO: make this conditional
   const { data, error, loading } = useGetAllResponsesQuery({
@@ -50,22 +50,45 @@ const useGetFullApplicationStructure = ({
   })
 
   useEffect(() => {
-    if (loading) {
+    const {
+      info: { serial },
+    } = structure
+
+    if (!previousSerial) {
+      setPreviousSerial(serial)
       return
     }
+    if (serial != previousSerial) {
+      setPreviousSerial(serial)
+      setLastProcessedTimestamp(0)
+    }
+  }, [structure])
 
+  useEffect(() => {
+    if (!data) return
+    setLastRefetchedTimestamp(Date.now())
+  }, [data])
+
+  useEffect(() => {
     if (error) {
       setIsError(true)
       return
     }
 
     if (!data) return
-    setIsLoading(true)
+
+    const isDataUpToDate = lastProcessedTimestamp > lastRefetchedTimestamp
+    const shouldRevalidationWaitForRefetech = revalidateAfterTimestamp > lastRefetchedTimestamp
+    const shouldRevalidateThisRun = shouldRevalidate && !shouldRevalidationWaitForRefetech
+
+    if (isDataUpToDate && !shouldRevalidateThisRun) return
 
     // Build responses by code (and only keep latest)
     const responseObject: any = {}
-    const responseArray = data?.applicationBySerial?.applicationResponses
-      ?.nodes as ApplicationResponse[]
+    const fullResponsesByCode: any = {}
+    const responseArray = JSON.parse(
+      JSON.stringify(data?.applicationBySerial?.applicationResponses?.nodes)
+    ) as ApplicationResponse[]
     responseArray?.forEach((response) => {
       const { id, isValid, value, templateElement, timeCreated } = response
       const code = templateElement?.code as string
@@ -76,6 +99,7 @@ const useGetFullApplicationStructure = ({
           timeCreated,
           ...value,
         }
+      fullResponsesByCode[code] = response
     })
 
     const flattenedElements = flattenStructureElements(newStructure)
@@ -92,34 +116,47 @@ const useGetFullApplicationStructure = ({
     evaluateAndValidateElements(
       flattenedElements.map((elem: PageElement) => elem.element),
       responseObject,
-      evaluationParameters
+      evaluationParameters,
+      shouldRevalidateThisRun || firstRunProcessValidation
     ).then((result) => {
       result.forEach((evaluatedElement, index) => {
         flattenedElements[index].element = evaluatedElement
         flattenedElements[index].response = responseObject[evaluatedElement.code]
       })
+
+      if (shouldRevalidateThisRun || firstRunProcessValidation) {
+        newStructure.lastValidationTimestamp = Date.now()
+      }
+
+      newStructure.responsesByCode = responseObject
+
+      setLastProcessedTimestamp(Date.now())
+      setFirstRunProcessValidation(false)
       setFullStructure(newStructure)
-      setResponsesByCode(responseObject)
-      setIsLoading(false)
     })
-  }, [data, error, loading])
+  }, [lastRefetchedTimestamp, shouldRevalidate, revalidateAfterTimestamp, error])
 
   async function evaluateAndValidateElements(
     elements: TemplateElementStateNEW[],
     responseObject: ResponsesByCode,
-    evaluationParameters: EvaluatorParameters
+    evaluationParameters: EvaluatorParameters,
+    shouldValidate: boolean
   ) {
     const elementPromiseArray: Promise<ElementStateNEW>[] = []
     elements.forEach((element) => {
-      elementPromiseArray.push(evaluateSingleElement(element, responseObject, evaluationParameters))
+      elementPromiseArray.push(
+        evaluateSingleElement(element, responseObject, evaluationParameters, shouldValidate)
+      )
     })
+
     return await Promise.all(elementPromiseArray)
   }
 
   const evaluateExpressionWithFallBack = (
     expression: IQueryNode,
     evaluationParameters: EvaluatorParameters,
-    fallBackValue: any
+    fallBackValue: any,
+    element: any
   ) =>
     new Promise(async (resolve) => {
       try {
@@ -133,30 +170,50 @@ const useGetFullApplicationStructure = ({
   async function evaluateSingleElement(
     element: TemplateElementStateNEW,
     responseObject: ResponsesByCode,
-    evaluationParameters: EvaluatorParameters
+    evaluationParameters: EvaluatorParameters,
+    shouldValidate: boolean
   ): Promise<ElementStateNEW> {
+    const evaluatoParametersForElement = {
+      APIfetch: fetch,
+      objects: {
+        currentUser: evaluationParameters.objects.currentUser,
+
+        responses: {
+          ...evaluationParameters.objects.responses,
+          thisResponse: responseObject[element.code]?.text || '',
+        },
+      },
+    }
+
     const isEditable = evaluateExpressionWithFallBack(
       element.isEditableExpression,
-      evaluationParameters,
-      true
+      evaluatoParametersForElement,
+      true,
+      element
     )
     const isRequired = evaluateExpressionWithFallBack(
       element.isRequiredExpression,
-      evaluationParameters,
-      false
+      evaluatoParametersForElement,
+      false,
+      element
     )
     const isVisible = evaluateExpressionWithFallBack(
       element.isVisibleExpression,
-      evaluationParameters,
-      true
+      evaluatoParametersForElement,
+      true,
+      element
     )
-    const isValid =
-      shouldProcessValidation || firstRunProcessValidation
-        ? evaluateExpressionWithFallBack(element.validationExpression, evaluationParameters, false)
-        : new Promise(() => responseObject[element.code]?.isValid)
-    setFirstRunProcessValidation(false)
+    const isValid = shouldValidate
+      ? evaluateExpressionWithFallBack(
+          element.validationExpression,
+          evaluatoParametersForElement,
+          false,
+          element
+        )
+      : new Promise((resolve) => resolve(responseObject[element.code]?.isValid))
+
     const results = await Promise.all([isEditable, isRequired, isVisible, isValid])
-    if (shouldProcessValidation || firstRunProcessValidation) setLastValidationTimestamp(Date.now())
+
     const evaluatedElement = {
       ...element,
       isEditable: results[0] as boolean,
@@ -165,14 +222,19 @@ const useGetFullApplicationStructure = ({
     }
     // Update isValid field in Response, in-place
     if (responseObject[element.code]) responseObject[element.code].isValid = results[3] as boolean
+
+    console.log({
+      shouldValidate,
+      isValid: results[3],
+      elementCode: element.code,
+      val: responseObject[element.code],
+    })
     return evaluatedElement
   }
 
   return {
     fullStructure,
     error: isError ? error : false,
-    isLoading: loading || isLoading,
-    responsesByCode,
   }
 }
 

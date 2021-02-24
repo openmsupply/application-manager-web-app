@@ -95,25 +95,25 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
     if (!jsonValue.customValidation) {
       // Validate and Save response -- generic
       const validationResult: ValidationState = await onUpdate(jsonValue.text)
-      if (jsonValue.text !== undefined)
-        await responseMutation({
-          variables: {
-            id: currentResponse?.id as number,
-            value: jsonValue,
-            isValid: validationResult.isValid,
-          },
-        })
-      if (jsonValue.text === allResponses[code]?.text) {
-        setApplicationState({
-          type: 'setElementTimestamp',
-          timestampType: 'elementsStateUpdatedTimestamp',
-        })
-      }
+      if (jsonValue.text !== undefined) console.log('response mutatition')
+      await responseMutation({
+        variables: {
+          id: currentResponse?.id as number,
+          value: jsonValue,
+          isValid: validationResult.isValid,
+        },
+      })
+
+      setApplicationState({
+        type: 'setElementTimestamp',
+        timestampType: 'elementsStateUpdatedTimestamp',
+      })
     } else {
       // Save response for plugins with internal validation
       const { isValid, validationMessage } = jsonValue.customValidation
       setValidationState({ isValid, validationMessage })
       delete jsonValue.customValidation // Don't want to save this field
+      console.log('response mutatition')
       await responseMutation({
         variables: {
           id: currentResponse?.id as number,

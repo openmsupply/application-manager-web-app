@@ -51,7 +51,9 @@ const SiteLayout: React.FC = () => {
         </Route>
         {/* Application router NEW*/}
         <Route path="/applicationNEW/:serialNumber">
-          <ApplicationWrapper />
+          <ApplicationProvider>
+            <ApplicationWrapper />
+          </ApplicationProvider>
         </Route>
         {/* Application current routes */}
         <Route exact path="/application/:serialNumber">
