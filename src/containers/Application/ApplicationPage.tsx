@@ -18,7 +18,7 @@ interface ApplicationProps {
 type SectionAndPage = { sectionCode: string; pageName: string } | null
 
 interface MethodToCallOnRevalidation {
-  (firstInvalidPage: SectionAndPage): null
+  (firstInvalidPage: SectionAndPage): void
 }
 
 const getFirstInvalidPage: (
@@ -82,6 +82,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
       revalidationState.methodToCallOnRevalidation &&
       fullStructure.lastValidationTimestamp > revalidationState.lastRevalidationRequest
     ) {
+      console.log('Re validated field -> ', fullStructure.sections.S1.pages.Page1.state[3])
       const lastValidPage = getFirstInvalidPage(fullStructure)
       setRevalidationState({
         ...revalidationState,
@@ -153,7 +154,14 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
         style={{ backgroundColor: 'white', boxShadow: ' 0px -5px 8px 0px rgba(0,0,0,0.1)' }}
       >
         <Segment basic textAlign="right">
-          <Button color="blue" onClick={() => {}}>
+          <Button
+            color="blue"
+            onClick={() => {
+              requestRevalidation((sectionAndPage: SectionAndPage) => {
+                console.log('revalidation finished', sectionAndPage)
+              })
+            }}
+          >
             {/* TO-DO */}
             {strings.BUTTON_SUMMARY}
           </Button>
