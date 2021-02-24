@@ -7,14 +7,13 @@ interface ApplicationProps {
 }
 
 const ApplicationHome: React.FC<ApplicationProps> = ({ structure }) => {
-  const { error, isLoading, fullStructure, responsesByCode } = useGetFullApplicationStructure({
+  const { error, fullStructure } = useGetFullApplicationStructure({
     structure,
   })
 
-  console.log('isLoading', isLoading)
   console.log('FULL STRUCTURE', fullStructure)
-  console.log('responsesByCode', responsesByCode)
-  console.log('isLoading', isLoading)
+  console.log('responsesByCode', fullStructure?.responsesByCode)
+  console.log('isLoading', !fullStructure)
 
   return <p>START PAGE</p>
 }

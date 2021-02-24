@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { FullStructure, ResponsesByCode, ElementStateNEW } from '../../utils/types'
+import {
+  FullStructure,
+  ResponsesByCode,
+  ElementStateNEW,
+  MethodToCallOnRevalidation,
+  SectionAndPage,
+} from '../../utils/types'
 import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicationStructure'
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { useUserState } from '../../contexts/UserState'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { Loading, NoMatch } from '../../components'
+import { Loading } from '../../components'
 import strings from '../../utils/constants'
 import { Button, Grid, Header, Message, Segment, Sticky } from 'semantic-ui-react'
 import { PageElements } from '../../components/Application'
@@ -15,15 +21,8 @@ interface ApplicationProps {
   responses?: ResponsesByCode
 }
 
-type SectionAndPage = { sectionCode: string; pageName: string } | null
-
-interface MethodToCallOnRevalidation {
-  (firstInvalidPage: SectionAndPage): void
-}
-
-const getFirstInvalidPage: (
-  fullStructure: FullStructure | undefined
-) => { sectionCode: string; pageName: string } | null = (fullStructure) => {
+const getFirstInvalidPage = (fullStructure: FullStructure): SectionAndPage | null => {
+  // TODO implement, should rely on .progress
   // return { sectionCode: 'S1', pageName: 'Page 2' }
   return null
 }
@@ -44,7 +43,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
     state: { isLastElementUpdateProcessed, elementUpdatedTimestamp },
   } = useFormElementUpdateTracker()
 
-  const [strictSectionPage, setStrictSectionPage] = useState<SectionAndPage>(null)
+  const [strictSectionPage, setStrictSectionPage] = useState<SectionAndPage | null>(null)
   const [revalidationState, setRevalidationState] = useState<RevalidationState>({
     methodToCallOnRevalidation: null,
     shouldProcessValidation: false,
@@ -61,7 +60,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
   })
 
   const currentSection = query.sectionCode
-  const currentPage = `Page${query.page}`
+  const currentPage = `Page ${query.page}`
 
   /* Method to pass to progress bar, next button and submit button  to cause revalidation before aciton can be proceeded
      Should always be called on submit, but only be called on next or progress bar navigation when isLinear */
@@ -80,16 +79,16 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
     if (
       fullStructure &&
       revalidationState.methodToCallOnRevalidation &&
-      fullStructure.lastValidationTimestamp > revalidationState.lastRevalidationRequest
+      (fullStructure?.lastValidationTimestamp || 0) > revalidationState.lastRevalidationRequest
     ) {
-      console.log('Re validated field -> ', fullStructure.sections.S1.pages.Page1.state[3])
-      const lastValidPage = getFirstInvalidPage(fullStructure)
+      const firstInvalidPage = getFirstInvalidPage(fullStructure)
+
       setRevalidationState({
         ...revalidationState,
         methodToCallOnRevalidation: null,
         shouldProcessValidation: false,
       })
-      if (lastValidPage != null) setStrictSectionPage(lastValidPage)
+      revalidationState.methodToCallOnRevalidation(firstInvalidPage, setStrictSectionPage)
       // TODO hide loading modal
     }
   }, [revalidationState, fullStructure])
@@ -138,8 +137,8 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
                 elements={getCurrentPageElements(fullStructure, currentSection, currentPage)}
                 responsesByCode={fullStructure.responsesByCode}
                 isStrictPage={
-                  currentSection === (strictSectionPage?.sectionCode || '') &&
-                  currentPage === (strictSectionPage?.pageName || '')
+                  currentSection === strictSectionPage?.sectionCode &&
+                  currentPage === strictSectionPage?.pageName
                 }
                 isEditable
               />

@@ -33,7 +33,7 @@ export const buildSectionsStructure = ({
       // Will build the array of elements
       const state = elements.map((element) => ({ element }))
 
-      const pageName = `Page${pageNumber}`
+      const pageName = `Page ${pageNumber}`
       return { ...pages, [pageName]: { number: pageNumber, state } }
     }, {})
 

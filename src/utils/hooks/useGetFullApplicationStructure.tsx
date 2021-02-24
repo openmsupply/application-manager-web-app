@@ -58,10 +58,6 @@ const useGetFullApplicationStructure = ({
   }, [data])
 
   useEffect(() => {
-    if (loading) {
-      return
-    }
-
     if (error) {
       setIsError(true)
       return
