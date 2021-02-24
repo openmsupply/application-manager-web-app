@@ -6,5 +6,6 @@ export default gql`
     serial
     name
     outcome
+    trigger
   }
 `

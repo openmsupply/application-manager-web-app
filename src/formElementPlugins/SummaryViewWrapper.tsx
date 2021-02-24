@@ -35,8 +35,12 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = (props) => {
     })
   }, [])
 
-  // Don't show non-question elements -- although this may change
-  if (!pluginCode || !isVisible || category === TemplateElementCategory.Information) return null
+  if (
+    !pluginCode ||
+    !isVisible
+    // || category === TemplateElementCategory.Information
+  )
+    return null
 
   const DefaultSummaryView: React.FC = () => {
     const combinedParams = { ...parameters, ...evaluatedParameters }
@@ -57,11 +61,12 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = (props) => {
       parameters={{ ...parameters, ...evaluatedParameters }}
       response={response}
       Markdown={Markdown}
+      DefaultSummaryView={DefaultSummaryView}
     />
   )
 
   return (
-    <ErrorBoundary pluginCode={pluginCode} FallbackComponent={DefaultSummaryView}>
+    <ErrorBoundary pluginCode={pluginCode}>
       <React.Suspense fallback="Loading Plugin">
         {parametersLoaded && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
       </React.Suspense>

@@ -1,6 +1,8 @@
 export default {
   APPLICATIONS_LIST_EMPTY: 'No applications found',
   APPLICATIONS_MISSING_USER_ROLE: 'No user role found',
+  APPLICATION_MISSING_TEMPLATE: '',
+  APPLICATION_TRIGGER_RUNNING: 'Trigger is running. Please wait to reload page again.',
   VALIDATION_FAIL: {
     title: 'Validation failed',
     message: 'Please fix invalid fields before continuing',

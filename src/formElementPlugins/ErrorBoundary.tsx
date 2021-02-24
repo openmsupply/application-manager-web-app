@@ -34,9 +34,8 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   render() {
-    if (this.props.FallbackComponent) {
-      return <this.props.FallbackComponent />
-    } else if (this.state.hasError) {
+    if (this.state.hasError) {
+      if (this.props.FallbackComponent) return <this.props.FallbackComponent />
       return (
         <Label basic color="red">
           {`${this.state.errorMessage}

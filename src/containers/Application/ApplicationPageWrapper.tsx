@@ -6,223 +6,162 @@ import {
   ButtonProps,
   Grid,
   Header,
-  Label,
+  Message,
+  MessageProps,
   ModalProps,
   Segment,
   Sticky,
 } from 'semantic-ui-react'
 import { ApplicationStatus, useUpdateResponseMutation } from '../../utils/generated/graphql'
-import useLoadApplication from '../../utils/hooks/useLoadApplication'
-import useGetResponsesAndElementState from '../../utils/hooks/useGetResponsesAndElementState'
 import { useApplicationState } from '../../contexts/ApplicationState'
 import { useUserState } from '../../contexts/UserState'
 import { ElementsBox, NavigationBox } from './'
-import validatePage, {
+import {
   getCombinedStatus,
   getPageElementsStatuses,
   PROGRESS_STATUS,
-} from '../../utils/helpers/application/validatePage'
-import getPageElements from '../../utils/helpers/application/getPageElements'
-import { revalidateAll } from '../../utils/helpers/application/revalidateAll'
+} from '../../utils/helpers/validation/validatePage'
 import strings from '../../utils/constants'
 import messages from '../../utils/messages'
 import {
-  ApplicationElementStates,
-  ApplicationStage,
-  ElementState,
-  ProgressInApplication,
-  ProgressStatus,
-  ResponsesByCode,
+  CurrentPage,
+  Page,
   ResumeSection,
-  SectionDetails,
+  SectionsStructure,
+  StageAndStatus,
   User,
-  ValidationMode,
 } from '../../utils/types'
-import { TemplateElementCategory } from '../../utils/generated/graphql'
-import getPreviousPage from '../../utils/helpers/application/getPreviousPage'
-import useGetSectionsProgress from '../../utils/hooks/useGetSectionProgress'
+import useLoadSectionsStructure from '../../utils/hooks/useLoadSectionsStructure'
+import useRevalidateApplication from '../../utils/hooks/useRevalidateApplication'
+import { getPageElementsInStructure } from '../../utils/helpers/structure/getElementsInStructure'
+import { checkSectionsProgress } from '../../utils/helpers/structure/checkSectionsProgress'
 
 const ApplicationPageWrapper: React.FC = () => {
+  const [isRevalidated, setIsRevalidated] = useState(false)
+  const [pageElements, setPageElements] = useState<Page>()
+  const [showModal, setShowModal] = useState<ModalProps>({ open: false })
+  const [loadStart, setLoadStart] = useState(false)
+  const [summaryButtonClicked, setSummaryButtonClicked] = useState(false)
+  const [sections, setSections] = useState<SectionsStructure>()
+
+  const { query, push, replace } = useRouter()
+  const { serialNumber, sectionCode, page } = query
+
   const {
     applicationState: {
       inputElementsActivity: { areTimestampsInSequence },
     },
     setApplicationState,
   } = useApplicationState()
-  const [currentSection, setCurrentSection] = useState<SectionDetails>()
-  const [pageElements, setPageElements] = useState<ElementState[]>([])
-  const [progressInApplication, setProgressInApplication] = useState<ProgressInApplication>()
-  const [forceValidation, setForceValidation] = useState<boolean>(false)
-  const [showModal, setShowModal] = useState<ModalProps>({ open: false })
-  const [loadStart, setLoadStart] = useState(false)
-  const [summaryButtonClicked, setSummaryButtonClicked] = useState(false)
+
   const {
     userState: { currentUser },
   } = useUserState()
-  const { query, push, replace } = useRouter()
-  const { serialNumber, sectionCode, page } = query
 
   const {
     error,
-    loading,
-    application,
     template,
-    sections,
+    application,
+    allResponses,
+    sectionsStructure,
+    currentSection,
     isApplicationReady,
-  } = useLoadApplication({
+  } = useLoadSectionsStructure({
     serialNumber: serialNumber as string,
+    currentUser: currentUser as User,
+    sectionCode,
     networkFetch: true,
+    setApplicationState,
   })
 
-  const {
-    error: responsesError,
-    loading: responsesLoading,
-    responsesByCode,
-    elementsState,
-  } = useGetResponsesAndElementState({
+  const { validatedSections, isProcessing } = useRevalidateApplication({
     serialNumber: serialNumber as string,
+    currentUser: currentUser as User,
+    sectionsStructure: sectionsStructure as SectionsStructure,
     isApplicationReady,
-  })
-
-  const { sectionsProgress, isLoadingProgress } = useGetSectionsProgress({
-    currentUser,
-    sections,
-    elementsState,
-    responsesByCode,
+    isRevalidated,
+    setIsRevalidated,
   })
 
   const [responseMutation] = useUpdateResponseMutation()
+
+  // Flag to run validation over application after changes to sections structure
+  useEffect(() => {
+    if (sectionsStructure) {
+      setIsRevalidated(false)
+    }
+  }, [sectionsStructure])
 
   // Wait for application to be loaded to:
   // 1 - ProcessRedirect: Will redirect to summary in case application is SUBMITTED
   // 2 - Set hook to load sections progress in the start page (if startMessage existing), OR
   // 3 - Set the current section state of the application
   useEffect(() => {
-    if (elementsState && responsesByCode && isApplicationReady) {
-      const stage = application?.stage
-      const { status } = stage as ApplicationStage
-      if (status !== ApplicationStatus.Draft && status !== ApplicationStatus.ChangesRequired) {
-        replace(`/application/${serialNumber}/summary`)
-      } else if (!sectionCode || !page) {
-        if (template?.startMessage) setLoadStart(true)
-        else {
-          // Redirects to first section/page if not Start Message defined
-          const firstSection = sections[0].code
-          replace(`/application/${serialNumber}/${firstSection}/Page1`)
-        }
-      } else setCurrentSection(sections.find(({ code }) => code === sectionCode))
+    if (!isApplicationReady || !validatedSections) return
+    const { sectionsWithProgress } = validatedSections
+    setSections(sectionsWithProgress)
+
+    const { status } = application?.current as StageAndStatus
+    if (status !== ApplicationStatus.Draft && status !== ApplicationStatus.ChangesRequired) {
+      replace(`/application/${serialNumber}/summary`)
+    } else if (!sectionCode || !page) {
+      if (template?.startMessage) setLoadStart(true)
+      // Redirects to first section/page if not Start Message defined
+      else replace(`/application/${serialNumber}/${currentSection?.code}/Page1`)
     }
-  }, [elementsState, responsesByCode, sectionCode, page, isApplicationReady])
+  }, [sectionCode, page, isApplicationReady, validatedSections])
 
-  // Update timestamp to keep track of when elements have been properly updated
-  // after losing focus.
+  // Wait for loading (and validation of all responses) or
+  // changes of section/page to rebuild the progress bar
   useEffect(() => {
-    setApplicationState({
-      type: 'setElementTimestamp',
-      timestampType: 'elementsStateUpdatedTimestamp',
+    if (!sections || !sectionCode || !page) return
+    const elements = getPageElementsInStructure({
+      sectionsStructure: sections,
+      sectionCode,
+      page: Number(page),
     })
-  }, [elementsState])
-
-  // Wait for loading (and evaluating elements and responses)
-  // or a change of section/page to rebuild the progress bar
-  useEffect(() => {
-    if (responsesLoading || !elementsState || !currentSection) return
-
-    const progressStructure = buildProgressInApplication({
-      elementsState,
-      responses: responsesByCode,
-      sections: sections,
-      isLinear: application?.isLinear as boolean,
-      currentSection: currentSection.index,
-      currentPage: Number(page),
-    })
-    setProgressInApplication(progressStructure)
-
-    const elements = getPageElements({
-      elementsState,
-      sectionIndex: currentSection.index,
-      pageNumber: Number(page),
-    })
-
     setPageElements(elements)
-  }, [responsesLoading, currentSection, page, elementsState])
-
-  const defaultCurrentPage = {
-    section: currentSection as SectionDetails,
-    page: Number(page),
-  }
-
-  const validateElementsInPage = ({ section, page } = defaultCurrentPage): boolean => {
-    const pageElementsStatuses = getPageElementsStatuses({
-      elementsState: elementsState as ApplicationElementStates,
-      responses: responsesByCode as ResponsesByCode,
-      currentSectionIndex: section.index,
-      page,
-    })
-
-    if (application?.isLinear && responsesByCode) {
-      Object.entries(pageElementsStatuses).forEach(([code, status]) => {
-        if (status === PROGRESS_STATUS.INCOMPLETE) {
-          // Update responses text to re-validate the status (on the page)
-          const response = responsesByCode[code]
-          if (response) {
-            setForceValidation(true)
-            responseMutation({
-              variables: {
-                id: response.id,
-                value: { text: '' },
-                isValid: false,
-              },
-            })
-          }
-        }
-      })
-    }
-
-    const statuses = Object.values(pageElementsStatuses)
-    const validation = getCombinedStatus(statuses)
-
-    // Run STRICT validation for linear and LOOSE for non-linear application
-    return application?.isLinear ? validation === (PROGRESS_STATUS.VALID as ProgressStatus) : true
-  }
+  }, [sections, sectionCode, page])
 
   // Make sure all responses are up-to-date (areTimestampsInSequence)
   // and only proceed when button is clicked AND responses are ready
   useEffect(() => {
     if (areTimestampsInSequence && summaryButtonClicked) {
-      handleSummaryClick()
+      setIsRevalidated(false)
     }
   }, [areTimestampsInSequence, summaryButtonClicked])
 
-  const openModal = () => {
+  // Run after Summary button is clicked -> will wait for evaluation hook to run
+  // and redict to summary page if all questions are valid or show modal
+  useEffect(() => {
+    if (!summaryButtonClicked || !validatedSections) return
+    setSummaryButtonClicked(false)
+    const { sectionsWithProgress, elementsToUpdate } = validatedSections
+    const { isCompleted, firstIncompleteLocation } = checkSectionsProgress(sectionsWithProgress)
+    if (isCompleted) {
+      push(`/application/${serialNumber}/summary`)
+    } else {
+      elementsToUpdate.forEach((updateElement) =>
+        responseMutation({ variables: { ...updateElement } })
+      )
+      if (firstIncompleteLocation) {
+        const code = firstIncompleteLocation
+        const { progress } = sectionsWithProgress[code]
+        push(`/application/${serialNumber}/${code}/Page${progress?.linkedPage || 1}`)
+      }
+      openModal(messages.SUBMISSION_FAIL)
+    }
+  }, [summaryButtonClicked, validatedSections, isRevalidated])
+
+  const openModal = ({ title, message, option }: MessageProps) => {
     setShowModal({
       open: true,
-      ...messages.VALIDATION_FAIL,
+      title,
+      message,
+      option,
       onClick: (event: any, data: ButtonProps) => setShowModal({ open: false }),
       onClose: () => setShowModal({ open: false }),
     })
-  }
-
-  const handleSummaryClick = async () => {
-    setSummaryButtonClicked(false)
-    const revalidate = await revalidateAll({
-      elementsState: elementsState as ApplicationElementStates,
-      responsesByCode: responsesByCode as ResponsesByCode,
-      currentUser: currentUser as User,
-    })
-
-    // Update database if validity changed
-    revalidate.validityFailures.forEach((changedElement) => {
-      responseMutation({
-        variables: {
-          id: changedElement.id,
-          isValid: changedElement.isValid,
-        },
-      })
-    })
-
-    if (!revalidate.allValid) openModal()
-    else push(`/application/${serialNumber}/summary`)
   }
 
   const handleResumeClick = ({ sectionCode, page }: ResumeSection) => {
@@ -230,18 +169,39 @@ const ApplicationPageWrapper: React.FC = () => {
     replace(`/application/${serialNumber}/${sectionCode}/Page${page}`)
   }
 
-  return error || responsesError ? (
+  const handleValidatePage = ({ section, page: currentPage }: CurrentPage) => {
+    const foundSection = sections && sections[section.code]
+    if (!foundSection) {
+      console.log('Problem during validation', section)
+      return false
+    }
+    const foundPage = Object.values(foundSection.pages).find(({ number }) => number === currentPage)
+    if (!foundPage) {
+      console.log('Problem during validation', currentPage)
+      return false
+    }
+    const pageStatuses = getPageElementsStatuses(foundPage.state)
+
+    return application?.isLinear
+      ? getCombinedStatus(Object.values(pageStatuses)) === PROGRESS_STATUS.VALID
+      : true
+  }
+
+  const getSectionDetails = () =>
+    Object.values(sections as SectionsStructure).map(({ details: section }) => section)
+
+  return error ? (
     <NoMatch />
-  ) : loading || responsesLoading || (loadStart && isLoadingProgress) ? (
+  ) : !isApplicationReady || isProcessing || !sections ? (
     <Loading />
-  ) : loadStart && serialNumber && template && sectionsProgress ? (
+  ) : sections && loadStart && template ? (
     <ApplicationStart
       template={template}
-      sections={sectionsProgress}
+      sections={sections}
       resumeApplication={handleResumeClick}
       setSummaryButtonClicked={() => setSummaryButtonClicked(true)}
     />
-  ) : application && sections && serialNumber && currentSection && responsesByCode ? (
+  ) : application && pageElements && allResponses && serialNumber && currentSection ? (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
       <ModalWarning showModal={showModal} />
       <Header textAlign="center">{currentUser?.organisation?.orgName || ''}</Header>
@@ -256,33 +216,28 @@ const ApplicationPageWrapper: React.FC = () => {
         }}
       >
         <Grid.Column width={4}>
-          {!progressInApplication ? (
-            <Loading />
-          ) : (
-            <ProgressBar
-              serialNumber={serialNumber as string}
-              progressStructure={progressInApplication}
-              currentSectionPage={{ sectionIndex: currentSection.index, currentPage: Number(page) }}
-              getPreviousPage={(props) => getPreviousPage({ sections: sections, ...props })}
-              validateElementsInPage={validateElementsInPage}
-            />
-          )}
+          <ProgressBar
+            serialNumber={serialNumber as string}
+            current={{ section: currentSection, page: Number(page) }}
+            isLinear={application.isLinear}
+            sections={sections}
+            validateElementsInPage={handleValidatePage}
+          />
         </Grid.Column>
         <Grid.Column width={10} stretched>
           <Segment basic>
             <ElementsBox
               sectionTitle={currentSection.title}
-              responsesByCode={responsesByCode}
-              elements={pageElements}
-              anyRequiredQuestions={getPageHasRequiredQuestions(pageElements)}
-              forceValidation={forceValidation}
+              responsesByCode={allResponses}
+              page={pageElements}
+              forceValidation={true} // TODO: Check if still needed
             />
             <NavigationBox
-              sections={sections}
+              sections={getSectionDetails()}
               currentSection={currentSection}
               serialNumber={serialNumber}
               currentPage={Number(page as string)}
-              validateElementsInPage={validateElementsInPage}
+              validateElementsInPage={handleValidatePage}
               openModal={openModal}
             />
           </Segment>
@@ -301,105 +256,8 @@ const ApplicationPageWrapper: React.FC = () => {
       </Sticky>
     </Segment.Group>
   ) : (
-    <Label content={strings.ERROR_APPLICATION_SECTION} />
+    <Message error header={strings.ERROR_APPLICATION_SECTION} />
   )
-}
-
-const getPageHasRequiredQuestions = (elements: ElementState[]): boolean =>
-  elements.some(
-    ({ isRequired, isVisible, category }) =>
-      category === TemplateElementCategory.Question && isRequired && isVisible
-  )
-interface buildProgressInApplicationProps {
-  elementsState: ApplicationElementStates | undefined
-  responses: ResponsesByCode | undefined
-  sections: SectionDetails[]
-  isLinear: boolean
-  currentSection: number
-  currentPage: number
-  validationMode?: ValidationMode
-}
-
-function buildProgressInApplication({
-  elementsState,
-  responses,
-  sections,
-  isLinear,
-  currentSection,
-  currentPage,
-  validationMode = 'LOOSE',
-}: buildProgressInApplicationProps): ProgressInApplication {
-  if (!elementsState || !responses) return []
-
-  let previousSectionStatus: ProgressStatus = PROGRESS_STATUS.VALID
-  let previousPageStatus: ProgressStatus = PROGRESS_STATUS.VALID
-
-  const isCurrentPage = (page: number, sectionIndex: number) =>
-    sectionIndex === currentSection && page === currentPage
-  const isCurrentSection = (sectionIndex: number) => sectionIndex === currentSection
-
-  const isPreviousPageValid = (pageNumber: number, sectionIndex: number): boolean => {
-    if (pageNumber === 1 && sectionIndex === 0) return true // First page in first section can be navigated always
-    const previousPage = pageNumber - 1
-    const isPreviousActive =
-      previousPage > 0
-        ? isCurrentPage(previousPage, sectionIndex)
-        : isCurrentSection(sectionIndex - 1)
-    return isPreviousActive ? false : previousPageStatus === PROGRESS_STATUS.VALID
-  }
-
-  const getPageStatus = (sectionIndex: number, page: number, validationMode: ValidationMode) => {
-    const draftPageStatus = validatePage({
-      elementsState,
-      responses,
-      currentSectionIndex: sectionIndex,
-      page,
-    })
-    if (validationMode === 'STRICT')
-      return draftPageStatus === PROGRESS_STATUS.VALID
-        ? PROGRESS_STATUS.VALID
-        : PROGRESS_STATUS.NOT_VALID
-    return draftPageStatus
-  }
-
-  const getPageValidationMode = (pageNumber: number, sectionIndex: number) =>
-    isLinear && isPreviousPageValid(pageNumber, sectionIndex) ? 'STRICT' : 'LOOSE'
-
-  return sections.map((section) => {
-    // Create an array with all pages in each section
-    const pageNumbers = Array.from(Array(section.totalPages).keys(), (n) => n + 1)
-
-    const isPreviousSectionValid = previousSectionStatus === PROGRESS_STATUS.VALID
-    previousPageStatus = previousSectionStatus
-
-    // Run each page using strict validation mode for linear application with visited pages
-    const pages = pageNumbers.map((pageNumber) => {
-      const pageValidationMode = validationMode || getPageValidationMode(pageNumber, section.index)
-
-      const status = getPageStatus(section.index, pageNumber, pageValidationMode)
-      previousPageStatus = status // Update new previous page for next iteration
-
-      return {
-        pageNumber,
-        canNavigate: isLinear ? isPreviousPageValid(pageNumber, section.index) : true,
-        isActive: isCurrentPage(pageNumber, section.index),
-        status,
-      }
-    })
-
-    const progressInSection = {
-      code: section.code,
-      title: section.title,
-      canNavigate: !isLinear || section.index <= currentSection || isPreviousSectionValid,
-      isActive: section.index === currentSection,
-      status: getCombinedStatus(pages.map(({ status }) => status)),
-      pages,
-    }
-
-    previousSectionStatus = progressInSection.status
-
-    return progressInSection
-  })
 }
 
 export default ApplicationPageWrapper

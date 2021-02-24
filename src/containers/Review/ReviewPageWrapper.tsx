@@ -11,8 +11,8 @@ import { useUserState } from '../../contexts/UserState'
 import messages from '../../utils/messages'
 import useSubmitReview from '../../utils/hooks/useSubmitReview'
 import useUpdateReviewResponse from '../../utils/hooks/useUpdateReviewResponse'
-import validateReview from '../../utils/helpers/review/validateReview'
-import listReviewResponses from '../../utils/helpers/review/listReviewerResponses'
+import { validateReview } from '../../utils/helpers/validation/validateReview'
+import listReviewResponses from '../../utils/helpers/review/listReviewResponses'
 
 const decisionAreaInitialState = { open: false, review: null, summaryViewProps: null }
 
@@ -35,7 +35,7 @@ const ReviewPageWrapper: React.FC = () => {
     error,
     isReviewReady,
     applicationName,
-    responsesByCode,
+    allResponses,
     reviewSections,
     reviewStatus,
   } = useLoadReview({
@@ -120,7 +120,7 @@ const ReviewPageWrapper: React.FC = () => {
     <NoMatch />
   ) : !isReviewReady ? (
     <Loading />
-  ) : reviewSections && responsesByCode ? (
+  ) : reviewSections && allResponses ? (
     <>
       <Segment.Group>
         <Segment textAlign="center">
@@ -134,19 +134,19 @@ const ReviewPageWrapper: React.FC = () => {
           />
         </Segment>
         <Segment basic>
-          {reviewSections.map((reviewSection) => {
+          {Object.entries(reviewSections).map(([code, section]) => {
             const { userId } = currentUser as User
-            const assignedToYou = reviewSection.assigned?.id === userId
+            const assignedToYou = section.assigned?.id === userId
             return (
               <ReviewSection
-                key={`Review_${reviewSection.section.code}`}
-                allResponses={responsesByCode}
+                key={`Review_${code}`}
+                allResponses={allResponses}
                 assignedToYou={assignedToYou}
-                reviewSection={reviewSection}
+                reviewSection={section}
                 updateResponses={updateResponses}
                 setDecisionArea={openDecisionArea}
                 canEdit={reviewStatus === ReviewStatus.Draft}
-                showError={reviewSection.section === invalidSection}
+                showError={section.details === invalidSection}
               />
             )
           })}

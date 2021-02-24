@@ -19,9 +19,8 @@ import {
   TemplateList,
   TemplateNew,
   Template,
-  ApplicationStart,
 } from '../../components'
-import { ApplicationCreate, ApplicationPageWrapper } from '../Application'
+import { ApplicationCreate, ApplicationPageWrapper, ApplicationWrapper } from '../Application'
 import { ReviewOverview, ReviewPageWrapper } from '../Review'
 import { ApplicationProvider } from '../../contexts/ApplicationState'
 import ApplicationOverview from '../Application/ApplicationOverview'
@@ -44,11 +43,17 @@ const SiteLayout: React.FC = () => {
         <Route exact path="/applications">
           <ListWrapper />
         </Route>
+        {/* Create application is out of Application router */}
         <Route exact path="/application/new">
           <ApplicationProvider>
             <ApplicationCreate />
           </ApplicationProvider>
         </Route>
+        {/* Application router NEW*/}
+        <Route path="/applicationNEW/:serialNumber">
+          <ApplicationWrapper />
+        </Route>
+        {/* Application current routes */}
         <Route exact path="/application/:serialNumber">
           <ApplicationProvider>
             <ApplicationPageWrapper />
@@ -65,6 +70,7 @@ const SiteLayout: React.FC = () => {
         <Route exact path="/application/:serialNumber/summary">
           <ApplicationOverview />
         </Route>
+        {/* Review */}
         <Route exact path="/application/:serialNumber/review">
           <ReviewOverview />
         </Route>

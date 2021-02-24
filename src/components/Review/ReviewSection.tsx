@@ -15,12 +15,12 @@ import { SummaryViewWrapperProps } from '../../formElementPlugins/types'
 import strings from '../../utils/constants'
 import { ReviewResponseDecision, TemplateElementCategory } from '../../utils/generated/graphql'
 import messages from '../../utils/messages'
-import { ReviewQuestionDecision, ResponsesByCode, SectionElementStates } from '../../utils/types'
+import { ReviewQuestionDecision, ResponsesByCode, SectionState } from '../../utils/types'
 
 interface ReviewSectionProps {
   allResponses: ResponsesByCode
   assignedToYou: boolean
-  reviewSection: SectionElementStates
+  reviewSection: SectionState
   updateResponses: (props: ReviewQuestionDecision[]) => void
   setDecisionArea: (
     review: ReviewQuestionDecision,
@@ -39,7 +39,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   canEdit,
   showError,
 }) => {
-  const { assigned, section, pages } = reviewSection
+  const { assigned, details: section, pages } = reviewSection
   const [isOpen, setIsOpen] = useState(false)
 
   const showSectionAssignment = assignedToYou ? (
@@ -87,8 +87,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
           </Grid>
         </Accordion.Title>
         <Accordion.Content active={isOpen}>
-          {Object.entries(pages).map(([pageName, elements]) => {
-            const elementsToReview = elements
+          {Object.entries(pages).map(([pageName, { state }]) => {
+            const elementsToReview = state
               .filter(({ review }) => review && review.decision === undefined)
               .map(({ review }) => review as ReviewQuestionDecision)
             const reviewsNumber = elementsToReview.length
@@ -97,66 +97,66 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
                 <Header as="h3" style={{ color: 'DarkGrey' }}>
                   {pageName}
                 </Header>
-                {elements.map(({ element, response, review }) => {
+                {state.map(({ element, response, review }) => {
                   const { category } = element
                   const summaryViewProps = {
                     element,
                     response,
                     allResponses,
                   }
-                  if (category === TemplateElementCategory.Question) {
-                    return (
-                      <Segment key={`ReviewElement_${element.code}`}>
-                        <Grid columns={2} verticalAlign="middle">
+                  // if (category === TemplateElementCategory.Question) {
+                  return (
+                    <Segment key={`ReviewElement_${element.code}`}>
+                      <Grid columns={2} verticalAlign="middle">
+                        <Grid.Row>
+                          <Grid.Column>
+                            <SummaryViewWrapper {...summaryViewProps} />
+                          </Grid.Column>
+                          <Grid.Column>
+                            {review && canEdit && (
+                              <Container textAlign="right">
+                                {review?.decision === undefined && (
+                                  <Button
+                                    size="small"
+                                    onClick={() => setDecisionArea(review, summaryViewProps)}
+                                    content={strings.BUTTON_REVIEW_RESPONSE}
+                                  />
+                                )}
+                              </Container>
+                            )}
+                          </Grid.Column>
+                        </Grid.Row>
+                        {review && canEdit && review.decision && (
                           <Grid.Row>
-                            <Grid.Column>
-                              <SummaryViewWrapper {...summaryViewProps} />
-                            </Grid.Column>
-                            <Grid.Column>
-                              {review && canEdit && (
-                                <Container textAlign="right">
-                                  {review?.decision === undefined && (
-                                    <Button
-                                      size="small"
-                                      onClick={() => setDecisionArea(review, summaryViewProps)}
-                                      content={strings.BUTTON_REVIEW_RESPONSE}
-                                    />
-                                  )}
-                                </Container>
-                              )}
-                            </Grid.Column>
+                            <Card fluid>
+                              <Card.Content>
+                                <Grid>
+                                  <Grid.Row>
+                                    <Grid.Column width="10">
+                                      <Card.Header>{review.decision}</Card.Header>
+                                      <Card.Description>{review.comment}</Card.Description>
+                                      {assigned && (
+                                        <Card.Meta>{`${assigned.firstName} ${assigned.lastName}`}</Card.Meta>
+                                      )}
+                                    </Grid.Column>
+                                    <Grid.Column width="2">
+                                      <Icon
+                                        name="pencil square"
+                                        color="blue"
+                                        style={{ minWidth: 100 }}
+                                        onClick={() => setDecisionArea(review, summaryViewProps)}
+                                      />
+                                    </Grid.Column>
+                                  </Grid.Row>
+                                </Grid>
+                              </Card.Content>
+                            </Card>
                           </Grid.Row>
-                          {review && canEdit && review.decision && (
-                            <Grid.Row>
-                              <Card fluid>
-                                <Card.Content>
-                                  <Grid>
-                                    <Grid.Row>
-                                      <Grid.Column width="10">
-                                        <Card.Header>{review.decision}</Card.Header>
-                                        <Card.Description>{review.comment}</Card.Description>
-                                        {assigned && (
-                                          <Card.Meta>{`${assigned.firstName} ${assigned.lastName}`}</Card.Meta>
-                                        )}
-                                      </Grid.Column>
-                                      <Grid.Column width="2">
-                                        <Icon
-                                          name="pencil square"
-                                          color="blue"
-                                          style={{ minWidth: 100 }}
-                                          onClick={() => setDecisionArea(review, summaryViewProps)}
-                                        />
-                                      </Grid.Column>
-                                    </Grid.Row>
-                                  </Grid>
-                                </Card.Content>
-                              </Card>
-                            </Grid.Row>
-                          )}
-                        </Grid>
-                      </Segment>
-                    )
-                  }
+                        )}
+                      </Grid>
+                    </Segment>
+                  )
+                  // }
                 })}
                 {reviewsNumber > 0 && (
                   <Button

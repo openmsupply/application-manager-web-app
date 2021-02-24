@@ -9,7 +9,7 @@ import {
   SerialNumberCell,
   StageCell,
   StatusCell,
-} from '../../../components/List'
+} from '../../../components/List/Cells'
 import { APPLICATION_COLUMNS, USER_ROLES } from '../../data'
 import COLUMNS_PER_ROLE from '../../data/columnsPerUserRole'
 import { ColumnDetails } from '../../types'
@@ -28,52 +28,52 @@ import { ColumnDetails } from '../../types'
 const allColumns: { [key in APPLICATION_COLUMNS]: ColumnDetails } = {
   SERIAL_NUMBER: {
     headerName: 'Serial number',
-    filters: ['serial'],
+    sortName: 'serial',
     ColumnComponent: SerialNumberCell,
   },
   LAST_ACTIVE_DATE: {
     headerName: 'Last active date',
-    filters: ['last-active-date'],
+    sortName: 'last-active-date',
     ColumnComponent: LastActiveDateCell,
   },
   DEADLINE_DATE: {
     headerName: 'Deadline date',
-    filters: ['deadline-date'],
+    sortName: '', // Not yet implemented
     ColumnComponent: DeadlineCell,
   },
   APPLICATION_NAME: {
     headerName: 'Name',
-    filters: ['search'],
+    sortName: 'name',
     ColumnComponent: ApplicationNameCell,
   },
   APPLICANT: {
     headerName: 'Applicant',
-    filters: ['applicant'],
+    sortName: 'applicant',
     ColumnComponent: ApplicantCell,
   },
   ORGANISATION: {
     headerName: 'Organisation',
-    filters: ['org'],
+    sortName: 'org',
     ColumnComponent: OrganisationCell,
   },
   CONSOLIDATOR: {
     headerName: 'Consolidator',
-    filters: ['consolidator'],
+    sortName: 'consolidator', // Not implemented in query
     ColumnComponent: ConsolidatorCell,
   },
   STAGE: {
     headerName: 'Stage',
-    filters: ['search', 'stage'],
+    sortName: 'stage',
     ColumnComponent: StageCell,
   },
   STATUS: {
     headerName: 'Status',
-    filters: ['search', 'action'],
+    sortName: 'status',
     ColumnComponent: StatusCell,
   },
   OUTCOME: {
     headerName: 'Outcome',
-    filters: ['outcome'],
+    sortName: 'outcome',
     ColumnComponent: OutcomeCell,
   },
 }

@@ -6,8 +6,12 @@ export default gql`
       condition: { serial: $serial, stageIsCurrent: true, statusIsCurrent: true }
     ) {
       nodes {
-        ...Stage
+        stage
+        stageId
+        status
+        statusHistoryTimeCreated
       }
     }
   }
 `
+// TODO: Remove after re-structure is finished

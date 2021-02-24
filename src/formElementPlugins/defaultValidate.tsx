@@ -8,7 +8,8 @@ const defaultValidate = async (
   validationMessage: string,
   evaluatorParameters: EvaluatorParameters
 ): Promise<ValidationState> => {
-  if (!validationExpress) return { isValid: true }
+  if (!validationExpress || evaluatorParameters?.objects?.responses.thisResponse === undefined)
+    return { isValid: true }
   const isValid = (await evaluateExpression(validationExpress, evaluatorParameters)) as boolean
   if (isValid) return { isValid }
   return { isValid, validationMessage }

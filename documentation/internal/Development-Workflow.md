@@ -1,6 +1,6 @@
 _This should help Front-end developers understand the flow of how React components and GraphQL calls interact and the current project structure._
 
-# Project Structure
+# Project Workflow
 
 We have a few rules to maintain our structure comprehensive. This rules may change with time, and we should keep this file up-to-date with the current ones. Check the rules in each section below.
 Inside the `/src` folder all files used for the Front-end are distribuited in the following structure:
@@ -35,7 +35,7 @@ Inside the `/src` folder all files used for the Front-end are distribuited in th
 
 #### Example
 
-![ApplicationPage example](images/Development_Workflow_ApplicationPage_components.png)
+![ApplicationPage example](images/Development-Workflow-ApplicationPage.png)
 
 ### contexts
 
@@ -101,7 +101,7 @@ _What is a mutation?_ Something to be posted to the GraphQL server. Has some def
 
 #### helpers
 
-Add here any methods that can be used in other places - that aren't hooks or compnents itselves.
+Add here any methods that can be used in other places - that aren't hooks or components itselves.
 
 #### hooks
 
@@ -151,9 +151,7 @@ We are using 2 options for local states:
 
 ##### Example of local state
 
-**TODO**: Rename ApplicationPage => ApplicationPageWrapper (if we decide that we want to keep the wrapper thingy).
-
-**To be created** => In ApplicationPageWrapper:
+In ApplicationPageWrapper:
 
 - List of all questions and responses
 
@@ -181,10 +179,10 @@ How to use:
    - Response value: string | null
 
 4. The two object evaluated elements and the Q&R are passed to `ElementsBox`.
-5. The `ElementsBox` passes each related element to the `ApplicationViewWrapper`. Question elements would also receive the Q&R object (the map of all responses in the application) and the mutation to update the response `onFieldChage`. It should only update to the server and CACHE if the response is valid.
+5. The `ElementsBox` passes each related element to the `ApplicationViewWrapper`. Question elements would also receive the Q&R object (the map of all responses in the application) and the mutation to update the response `onFieldChange`. It should only update to the server and CACHE if the response is valid.
 6. The `ApplicationPage` will update the elements and Q&R object when the **elements' query and responses** gets triggerd by a new mutation of one of the elements' valid response on the current application.
 
-![states diagram](images/Development_Workflow_states.png)
+![states diagram](images/Development-Workflow-States.png)
 
 ##### Example of context state
 
@@ -204,7 +202,7 @@ This context area is used between components to share a few states:
 
 Process of creating one Application, going through each page until reach the summary page where the user can submit.
 
-![development_workflow_applications](images/Development_workflow_applications.png)
+![development_workflow_applications](images/Development-Workflow-Applications.png)
 
 ---
 
@@ -246,7 +244,7 @@ When starting to create a query first check:
 - If there isn't one already, create a new file that just returns the query (using the GraphQL query language).
   - The query will also defined what is returned!
   - Use a GUI tool to see the results for your query/mutation to the GraphQL server: `http://localhost:5000/graphiql` (if the server is running on localhost:5000).
-  - Another helper is using the extension described in [here](setup/Apollo-clinet.md) on sections "VS code extension for typing GraphQL" to have autocomplete on the query you are writing directly on your file.
+  - Another helper is using the extension described in [here](setup/Apollo-client.md) on sections "VS code extension for typing GraphQL" to have autocomplete on the query you are writing directly on your file.
 
 After you have finished adding the query/mutation:
 

@@ -15,14 +15,12 @@ import useGetReviewAssignment from '../../utils/hooks/useGetReviewAssignment'
 import { useRouter } from '../../utils/hooks/useRouter'
 import strings from '../../utils/constants'
 import { Link } from 'react-router-dom'
-import { ReviewStatus } from '../../utils/generated/graphql'
-import { AssignmentDetails, SectionDetails } from '../../utils/types'
+import { AssignmentDetails, SectionState } from '../../utils/types'
 import useCreateReview from '../../utils/hooks/useCreateReview'
 import { useUserState } from '../../contexts/UserState'
 import getReviewStartLabel from '../../utils/helpers/review/getReviewStartLabel'
 import { REVIEW_STATUS } from '../../utils/data/reviewStatus'
 
-// TODO: Rename to ReviewStart
 const ReviewOverview: React.FC = () => {
   const {
     push,
@@ -36,14 +34,6 @@ const ReviewOverview: React.FC = () => {
     reviewerId: currentUser?.userId as number,
     serialNumber,
   })
-
-  useEffect(() => {
-    if (assignment && assignment.review) {
-      const { id, status } = assignment.review
-      if (status === ReviewStatus.Submitted || status === ReviewStatus.Draft)
-        push(`/application/${serialNumber}/review/${id}`)
-    }
-  }, [assignment])
 
   const { processing, error: createReviewError, create } = useCreateReview({
     reviewerId: currentUser?.userId as number,
@@ -70,7 +60,7 @@ const ReviewOverview: React.FC = () => {
     })
   }
 
-  const getProgresOrLabel = ({ assigned, progress }: SectionDetails) => {
+  const getProgresOrLabel = ({ assigned, progress }: SectionState) => {
     if (assigned) {
       if (progress && progress.done > 0 && progress.total > 0) {
         return (
@@ -95,6 +85,7 @@ const ReviewOverview: React.FC = () => {
   const getActionButton = ({ review }: AssignmentDetails) => {
     if (review) {
       const { id, status } = review
+
       return (
         <Button
           as={Link}
@@ -156,17 +147,17 @@ const ReviewOverview: React.FC = () => {
       >
         <List divided relaxed="very">
           {sectionsAssigned &&
-            sectionsAssigned.map((section) => {
-              const { code: sectionCode, progress, title } = section
+            Object.entries(sectionsAssigned).map(([sectionCode, sectionState]) => {
+              const { details, progress } = sectionState
               return (
                 <List.Item
                   key={`list-item-${sectionCode}`}
                   children={
                     <Grid>
                       <Grid.Column width={10}>
-                        <p>{title}</p>
+                        <p>{details.title}</p>
                       </Grid.Column>
-                      <Grid.Column width={4}>{getProgresOrLabel(section)}</Grid.Column>
+                      <Grid.Column width={4}>{getProgresOrLabel(sectionState)}</Grid.Column>
                       <Grid.Column width={2}>
                         {progress && (
                           <Button color="blue">{strings.BUTTON_APPLICATION_RESUME}</Button>

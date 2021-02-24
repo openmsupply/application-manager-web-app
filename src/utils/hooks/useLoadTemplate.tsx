@@ -5,8 +5,9 @@ import {
   TemplateSection,
   useGetTemplateQuery,
 } from '../generated/graphql'
+import { buildTemplateSectionsStructure } from '../helpers/structure/buildSectionsStructure'
 import { getTemplateSections } from '../helpers/application/getSectionsDetails'
-import { SectionDetails, TemplateDetails } from '../types'
+import { SectionsStructure, TemplateDetails } from '../types'
 
 interface useLoadTemplateProps {
   templateCode: string
@@ -19,7 +20,8 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
   const [templateStages, setTemplateStages] = useState<any>()
   const [templatePermissions, setTemplatePermissions] = useState<any>()
   const [templateFilters, setTemplateFilters] = useState<any>()
-  const [sections, setSections] = useState<SectionDetails[] | null>(null)
+  const [sectionsStructure, setSectionsStructure] = useState<SectionsStructure>()
+
   const [elementsIds, setElementsIds] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -52,7 +54,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
       return
     }
 
-    const { id, code, name, startMessage, templateSections } = template
+    const { id, code, name, startMessage } = template
 
     setTemplate({
       id,
@@ -63,8 +65,11 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     console.log('Template Yow', template)
     setTemplateCategory(template.templateCategory)
     setTemplatePermissions(template.templatePermissions.nodes)
+
+    const templateSections = template.templateSections.nodes as TemplateSection[]
     const sections = getTemplateSections(templateSections)
-    setSections(sections)
+    const sectionsStructure = buildTemplateSectionsStructure(sections)
+    setSectionsStructure(sectionsStructure)
 
     setTemplateFilters(
       template.templateFilterJoins?.nodes
@@ -78,7 +83,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     setTemplateStages(template.templateStages?.nodes)
     const elements = [] as number[]
 
-    templateSections.nodes.forEach((section) => {
+    templateSections.forEach((section) => {
       const { templateElementsBySectionId } = section as TemplateSection
       templateElementsBySectionId.nodes.forEach((element) => {
         if (element?.id && element.category === 'QUESTION') elements.push(element.id)
@@ -94,7 +99,7 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     apolloError,
     error,
     template,
-    sections,
+    sectionsStructure,
     elementsIds,
     templateActions,
     templateCategory,

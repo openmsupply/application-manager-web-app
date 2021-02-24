@@ -137,6 +137,7 @@ _Multi-choice question, with one allowed option, displayed as Drop-down list (Co
 - **description\***: `string` -- as above [Optional]
 - **options\***: `array[string]` -- as above
 - **default**: `string`/`number` -- if not provided, defaults to index 0.
+- **search**: `boolean` (default: `false`) -- if `true`, the list of options can be searched and filtered by user
 - **hasOther**: `boolean` -- if `true`, an additional text-entry field is provided so the user can add their own alternative option _(not yet implemented)_
 
 #### Response type

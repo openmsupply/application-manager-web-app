@@ -24,7 +24,25 @@ interface ApplicationViewWrapperProps {
   // applicationState,
   // graphQLclient
   initialValue: any // Could be a primative or an object with any shape
-  forceValidation: boolean // Run validation on formElement on load - usualy would run only onChange events
+  forceValidation?: boolean // Run validation on formElement on load - usualy would run only onChange events
+}
+
+interface ApplicationViewWrapperPropsNEW {
+  code: string
+  pluginCode: string // TODO: Create type OR use existing from graphql
+  isVisible: boolean
+  isEditable: boolean
+  isRequired: boolean
+  isValid: boolean
+  isStrictPage: boolean | undefined
+  parameters: any // TODO: Create type for existing pre-defined types for parameters (TemplateElement)
+  validationExpression: IQueryNode
+  validationMessage: string | null
+  allResponses: ResponsesByCode
+  currentResponse: ResponseFull | null
+  // applicationState,
+  // graphQLclient
+  initialValue: any // Could be a primative or an object with any shape
 }
 
 type ValidationState = {
@@ -48,6 +66,7 @@ interface SummaryViewProps {
   parameters: BasicObject
   response: ResponseFull | null
   Markdown: any
+  DefaultSummaryView: React.FC
 }
 
 interface SummaryViewWrapperProps {
@@ -104,6 +123,7 @@ export {
   TemplateViewProps,
   OnUpdateTemplateView,
   ApplicationViewWrapperProps,
+  ApplicationViewWrapperPropsNEW,
   ApplicationViewProps,
   ValidationState,
   TemplateViewWrapperProps,

@@ -14,9 +14,11 @@ const ApplicationCreate: React.FC = () => {
   const { push, query } = useRouter()
   const { type } = query
 
-  const { apolloError, error, loading, template, sections, elementsIds } = useLoadTemplate({
-    templateCode: type as string,
-  })
+  const { apolloError, error, loading, template, sectionsStructure, elementsIds } = useLoadTemplate(
+    {
+      templateCode: type as string,
+    }
+  )
 
   const {
     userState: { currentUser },
@@ -29,9 +31,9 @@ const ApplicationCreate: React.FC = () => {
 
   const { processing, error: creationError, create } = useCreateApplication({
     onCompleted: () => {
-      if (serialNumber && sections && sections.length > 0) {
+      if (serialNumber && sectionsStructure && Object.keys(sectionsStructure).length > 0) {
         // Call Application page on first section
-        const firstSection = sections[0].code
+        const firstSection = Object.keys(sectionsStructure)[0]
         // The pageNumber starts in 1 when is a new application
         push(`${serialNumber}/${firstSection}/Page1`)
       }
@@ -41,7 +43,7 @@ const ApplicationCreate: React.FC = () => {
   const handleCreate = () => {
     setApplicationState({ type: 'reset' })
 
-    if (!template || !sections) {
+    if (!template || !sectionsStructure) {
       console.log('Problem to create application - unexpected parameters')
       return
     }
@@ -55,8 +57,8 @@ const ApplicationCreate: React.FC = () => {
       templateId: template.id,
       userId: currentUser?.userId,
       orgId: currentUser?.organisation?.orgId,
-      templateSections: sections.map((section) => {
-        return { templateSectionId: section.id }
+      templateSections: Object.values(sectionsStructure).map(({ details: { id } }) => {
+        return { templateSectionId: id }
       }),
       templateResponses: elementsIds.map((id) => {
         return { templateElementId: id }
@@ -72,10 +74,10 @@ const ApplicationCreate: React.FC = () => {
     />
   ) : loading || processing ? (
     <Loading />
-  ) : template && sections ? (
+  ) : template && sectionsStructure ? (
     <ApplicationStart
       template={template}
-      sections={sections}
+      sections={sectionsStructure}
       startApplication={() => handleCreate()}
     />
   ) : (

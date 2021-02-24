@@ -7,11 +7,11 @@ import {
   useGetReviewStatusQuery,
   User,
 } from '../generated/graphql'
-import { SectionStructure } from '../types'
-import useLoadApplication from './useLoadApplication'
-import useGetResponsesAndElementState from './useGetResponsesAndElementState'
+import { SectionsStructure, User as UserType } from '../types'
 import useTriggerProcessing from './useTriggerProcessing'
-import buildSectionsStructure from '../helpers/application/buildSectionsStructure'
+import { useUserState } from '../../contexts/UserState'
+import useLoadSectionsStructure from './useLoadSectionsStructure'
+import updateSectionsReviews from '../helpers/structure/updateSectionsReviews'
 
 interface UseLoadReviewProps {
   reviewId: number
@@ -20,28 +20,31 @@ interface UseLoadReviewProps {
 
 const useLoadReview = ({ reviewId, serialNumber }: UseLoadReviewProps) => {
   const [applicationName, setApplicationName] = useState<string>('')
-  const [reviewSections, setReviewSections] = useState<SectionStructure>()
+  const [reviewSections, setReviewSections] = useState<SectionsStructure>()
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>()
   const [isReviewReady, setIsReviewReady] = useState(false)
   const [isReviewLoaded, setIsReviewLoaded] = useState(false)
   const [reviewError, setReviewError] = useState<string>()
+  const {
+    userState: { currentUser },
+  } = useUserState()
 
-  const { error: applicationError, application, sections, isApplicationReady } = useLoadApplication(
-    {
-      serialNumber,
-    }
-  )
-
-  const { error: responsesError, responsesByCode, elementsState } = useGetResponsesAndElementState({
-    serialNumber,
+  const {
+    error: structureError,
+    application,
+    allResponses,
+    sectionsStructure,
     isApplicationReady,
+  } = useLoadSectionsStructure({
+    serialNumber: serialNumber as string,
+    currentUser: currentUser as UserType,
   })
 
   const { data, error, loading } = useGetReviewQuery({
     variables: {
       reviewId,
     },
-    skip: !isApplicationReady || !elementsState,
+    skip: !isApplicationReady,
     fetchPolicy: 'network-only',
   })
 
@@ -67,21 +70,19 @@ const useLoadReview = ({ reviewId, serialNumber }: UseLoadReviewProps) => {
     }
 
     if (application) setApplicationName(application.name)
-    if (data?.review?.reviewResponses && elementsState && responsesByCode) {
+    if (data?.review?.reviewResponses && sectionsStructure && isApplicationReady) {
       const reviewResponses = data.review.reviewResponses.nodes as ReviewResponse[]
       const reviewer = data.review.reviewer as User
-      const sectionsStructure = buildSectionsStructure({
-        sections,
-        elementsState,
-        responsesByCode,
+      const reviewStructure = updateSectionsReviews({
+        sectionsStructure,
         reviewResponses,
         reviewer,
       })
 
-      setReviewSections(sectionsStructure)
+      setReviewSections(reviewStructure)
       setIsReviewLoaded(true)
     }
-  }, [data])
+  }, [data, isApplicationReady])
 
   useEffect(() => {
     if (!statusData) return
@@ -98,12 +99,12 @@ const useLoadReview = ({ reviewId, serialNumber }: UseLoadReviewProps) => {
     isReviewReady,
     reviewSections,
     reviewStatus,
-    responsesByCode,
+    allResponses,
     error: error
       ? (error.message as string)
       : statusError
       ? (statusError.message as string)
-      : applicationError || responsesError || reviewError || triggerError,
+      : structureError || reviewError || triggerError,
   }
 }
 

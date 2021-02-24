@@ -4,6 +4,7 @@ import ApplicationSelectType from './ApplicationSelectType'
 import ApplicationStart from './ApplicationStart'
 import SectionSummary from './SectionSummary'
 import ProgressBar from './ProgressBar'
+import PageElements from './PageElements'
 
 export {
   ApplicationEdit,
@@ -11,5 +12,6 @@ export {
   ApplicationSelectType,
   ApplicationStart,
   SectionSummary,
+  PageElements,
   ProgressBar,
 }

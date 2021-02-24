@@ -14,7 +14,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   Markdown,
   getDefaultIndex,
 }) => {
-  const { label, description, placeholder, options, default: defaultOption } = parameters
+  const { label, description, placeholder, search, options, default: defaultOption } = parameters
 
   useEffect(() => {
     onUpdate(value)
@@ -47,6 +47,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       <Dropdown
         fluid
         selection
+        search={search}
         placeholder={placeholder}
         options={dropdownOptions}
         onChange={handleChange}

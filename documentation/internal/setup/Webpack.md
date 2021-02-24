@@ -1,6 +1,7 @@
 # Webpack setup
 
 ## References
+
 Inital setup was done following this tutorial: https://medium.com/free-code-camp/learn-webpack-for-react-a36d4cac5060
 
 Semantic-ui on Webpack tutorial: https://medium.com/webmonkeys/webpack-2-semantic-ui-theming-a216ddf60daf
@@ -10,9 +11,10 @@ Typescript in webpack tutorial: https://www.smashingmagazine.com/2020/05/typescr
 Hot loading App tutorial: https://dev.to/cronokirby/react-typescript-parcel-setting-up-hot-module-reloading-4f3f
 
 ## Init
-**Note**: This setup is using *yarn* to install npm packages.
 
-* Create basic structure:
+**Note**: This setup is using _yarn_ to install npm packages.
+
+- Create basic structure:
 
 `yarn init -y`\
 `mkdir public`\
@@ -21,17 +23,20 @@ Hot loading App tutorial: https://dev.to/cronokirby/react-typescript-parcel-sett
 ## Webpack with React and Typescrit
 
 ### Install dependecies (React)
+
 `yarn add react react-dom react-router-dom`
 
 ### Install dev dependencies (Typescript + loaders + webpack)
+
 `yarn add -D typescript @types/node @types/react @types/react-dom @types/react-router-dom react-hot-loader awesome-typescript-loader source-map-loader css-loader style-loader html-webpack-plugin webpack webpack-dev-server webpack-cli webpack-merge`
 
 ### Configure Typescript
-* Add a file `tsconfig.json` for all your Typescript configurations:
+
+- Add a file `tsconfig.json` for all your Typescript configurations:
 
 `touch tsconfig.json`
 
-* Open the file `tsconfig.json` and copy the following Typescript configuration:
+- Open the file `tsconfig.json` and copy the following Typescript configuration:
 
 ```
 {
@@ -54,12 +59,13 @@ Hot loading App tutorial: https://dev.to/cronokirby/react-typescript-parcel-sett
 ```
 
 ### Add some content to the public folder
+
 `cd public`\
 `touch index.html`
 
-* Add the `favicon.ico` in here to load on the tab.
+- Add the `favicon.ico` in here to load on the tab.
 
-* Open `public/index.html` and copy the following:
+- Open `public/index.html` and copy the following:
 
 ```
 <!DOCTYPE html>
@@ -81,12 +87,12 @@ Hot loading App tutorial: https://dev.to/cronokirby/react-typescript-parcel-sett
 
 ### Create a very basic App
 
-* Create the entry file with .tsx (Typescript) extension:
+- Create the entry file with .tsx (Typescript) extension:
 
 `cd src`\
 `touch index.tsx`
 
-* Open `index.tsx` and copy the following:
+- Open `index.tsx` and copy the following:
 
 ```
 import React from 'react'
@@ -100,11 +106,11 @@ ReactDOM.render(
 
 ## Webpack for initial setup
 
-* Create on the webpack configuration file on root folder:
+- Create on the webpack configuration file on root folder:
 
 `touch webpack.config.js`
 
-* Open `webpack.config.js` and copy the following:
+- Open `webpack.config.js` and copy the following:
 
 ```
 const webpack = require('webpack');
@@ -163,13 +169,13 @@ module.exports = {
 }
 ```
 
-* Run webpack dev server:
+- Run webpack dev server:
 
 `npx webpack-dev-server`
 
 ## Semantic-ui React
 
-* Install development dependencies (Semantic-ui, LESS and other loaders):
+- Install development dependencies (Semantic-ui, LESS and other loaders):
 
 `yarn add -D semantic-ui-react semantic-ui-less less less-loader url-loader postcss-loader mini-css-extract-plugin`
 
@@ -177,11 +183,11 @@ module.exports = {
 
 ### Use Semantic-ui LESS locally
 
-* Create a folder to store the local settings of Semantic-ui:
+- Create a folder to store the local settings of Semantic-ui:
 
 `mkdir -p semantic\src`
 
-* Copy the files and folders from `node_modules/semantic-ui-less` to a local folder `semantic/src`:
+- Copy the files and folders from `node_modules/semantic-ui-less` to a local folder `semantic/src`:
 
 `cp -Rf node_modules/semantic-ui-less/_site/ semantic/src/site`\
 `cp -Rf node_modules/semantic-ui-less/definitions semantic/src/definitions`\
@@ -189,7 +195,7 @@ module.exports = {
 `cp node_modules/semantic-ui-less/theme.less node_modules/semantic-ui-less/semantic.less semantic/src/`\
 `cp node_modules/semantic-ui-less/theme.config.example semantic/src/theme.config`
 
-**Folders:** 
+**Folders:**
 `site` - Keeps custom style for each component (that's a step before actually creating a **custom package theme**). Change any style defined in here to see the change on the element after the App is recompiled.
 
 `themes` - Has a folder for each **package theme** which can be setup per component on `theme.config` file.
@@ -203,7 +209,7 @@ module.exports = {
 
 `semantic.less` - Just importing all the definintion folder. This file is imported in `index.js`.
 
-* Open the `theme.config` file and copy change the last lines according with the following:
+- Open the `theme.config` file and copy change the last lines according with the following:
 
 ```
 /*******************************
@@ -230,13 +236,13 @@ module.exports = {
 
 ### Add semantic-ui to components in the App
 
-* Create a folder `components` with one file:
+- Create a folder `components` with one file:
 
 `cd src`\
 `mkdir components && cd $_`\
 `touch App.tsx AppMenu.tsx Home.tsx Footer.tsx NoMatch.tsx Register.tsx`
 
-* Open `Home.tsx` and copy the following:
+- Open `Home.tsx` and copy the following:
 
 ```
 import React from 'react'
@@ -251,7 +257,7 @@ const Home: React.FC = () => {
 export default Home
 ```
 
-* Open `Footer.tsx` and copy the following:
+- Open `Footer.tsx` and copy the following:
 
 ```
 import React from 'react'
@@ -267,7 +273,7 @@ const Footer: React.FC = () => (
 export default Footer
 ```
 
-* Open `NoMatch.tsx` and copy the following:
+- Open `NoMatch.tsx` and copy the following:
 
 ```
 import React from 'react'
@@ -285,7 +291,7 @@ const NoMatch: React.FC = () => {
 export default NoMatch
 ```
 
-* Open `Register.tsx` and copy the following:
+- Open `Register.tsx` and copy the following:
 
 ```
 import React, { useState } from 'react'
@@ -309,7 +315,7 @@ const Register: React.FC = () => {
     }
 
     const removeSnackbar = () => {
-        changeSnackback({ 
+        changeSnackback({
             showMessage: false,
             messageText: '',
             messageTitle: '',
@@ -331,10 +337,10 @@ const Register: React.FC = () => {
                     <Form.Field>
                         <Checkbox label='I agree to the Terms and Conditions' />
                     </Form.Field>
-                    <Button 
+                    <Button
                         type='submit'
                         onClick={()=> {
-                            changeSnackback(submitedObject)  
+                            changeSnackback(submitedObject)
                             setTimeout( () => {removeSnackbar()}, 2000)
                         }}>
                             Submit
@@ -357,7 +363,7 @@ const Register: React.FC = () => {
 export default Register
 ```
 
-* Open `AppMenu.tsx` and copy the following:
+- Open `AppMenu.tsx` and copy the following:
 
 ```
 import React, { useState } from 'react'
@@ -385,7 +391,7 @@ const AppMenu: React.FC<AppMenuProps> = (props: AppMenuProps) => {
         }
         const name = props.items[i][0]
         const route = props.items[i][1]
-        
+
         menuItems.push(
             <Menu.Item header
                 key={`app_menu_${name}`}
@@ -395,7 +401,7 @@ const AppMenu: React.FC<AppMenuProps> = (props: AppMenuProps) => {
                 to={route}>
                 {name}
             </Menu.Item>)
-    }    
+    }
 
     return (
         <Menu fluid vertical tabular>
@@ -403,11 +409,11 @@ const AppMenu: React.FC<AppMenuProps> = (props: AppMenuProps) => {
         </Menu>
     )
 }
-  
+
 export default withRouter(AppMenu)
 ```
 
-* Open `App.tsx` and copy the following:
+- Open `App.tsx` and copy the following:
 
 ```
 import React from "react"
@@ -454,7 +460,7 @@ declare const module: any
 export default hot(module)(App)
 ```
 
-* Open `src/index.tsx` and copy the following:
+- Open `src/index.tsx` and copy the following:
 
 ```
 import React from 'react'
@@ -463,20 +469,20 @@ import App from './components/App'
 import '../semantic/src/semantic.less'
 
 ReactDOM.render(
-  <App/>, 
+  <App/>,
   document.getElementById("root")
 )
 ```
 
 ### Webpack composition
 
-* Create the folder build-tools on the root for webpack composition files:
+- Create the folder build-tools on the root for webpack composition files:
 
 `mkdir -p build-utils/addons`\
 `cd build-utils`\
 `touch build-validations.js common-paths.js webpack.common.js webpack.dev.js webpack.prod.js`
 
-* Open `common-paths.js` and copy the following:
+- Open `common-paths.js` and copy the following:
 
 ```
 const path = require('path');
@@ -489,7 +495,7 @@ module.exports = {
 };
 ```
 
-* Open `build-validations.js` and copy the following:
+- Open `build-validations.js` and copy the following:
 
 ```
 const chalk = require('chalk');
@@ -502,7 +508,7 @@ module.exports = {
 };
 ```
 
-* Open `webpack.common.js` and copy the following:
+- Open `webpack.common.js` and copy the following:
 
 ```
 const commonPaths = require('./common-paths')
@@ -547,7 +553,7 @@ const config = {
           test: /\.css$/,
           chunks: 'all',
           enforce: true
-        },        
+        },
         vendor: {
           chunks: 'initial',
           test: 'vendor',
@@ -568,7 +574,7 @@ const config = {
 module.exports = config
 ```
 
-* Open `webpack.dev.js` and copy the following:
+- Open `webpack.dev.js` and copy the following:
 
 ```
 const commonPaths = require('./common-paths');
@@ -613,7 +619,7 @@ const config = {
 module.exports = config;
 ```
 
-* Open `webpack.prod.js` and copy the following:
+- Open `webpack.prod.js` and copy the following:
 
 ```
 const commonPaths = require('./common-paths')
@@ -632,9 +638,9 @@ const config = {
         test: /\.less$/,
           use: [
             {
-              // We configure 'MiniCssExtractPlugin'              
+              // We configure 'MiniCssExtractPlugin'
               loader: MiniCssExtractPlugin.loader,
-            },            
+            },
             {
               loader: 'css-loader',
               options: {
@@ -658,7 +664,7 @@ const config = {
 module.exports = config
 ```
 
-* Open `webpack.config.js` and copy the following:
+- Open `webpack.config.js` and copy the following:
 
 ```
 const buildValidations = require('./build-utils/build-validations');
@@ -666,13 +672,13 @@ const commonConfig = require('./build-utils/webpack.common');
 
 const { merge } = require('webpack-merge');
 
-// We can include Webpack plugins, through addons, that do 
+// We can include Webpack plugins, through addons, that do
 // not need to run every time we are developing.
 // We will see an example when we set up 'Bundle Analyzer'
 const addons = (/* string | string[] */ addonsArg) => {
-  
+
   // Normalize array of addons (flatten)
-  let addons = [...[addonsArg]] 
+  let addons = [...[addonsArg]]
     .filter(Boolean); // If addons is undefined, filter it out
 
   return addons.map(addonName =>
@@ -680,7 +686,7 @@ const addons = (/* string | string[] */ addonsArg) => {
   );
 };
 
-// 'env' will contain the environment variable from 'scripts' 
+// 'env' will contain the environment variable from 'scripts'
 // section in 'package.json'.
 // console.log(env); => { env: 'dev' }
 module.exports = env => {
@@ -690,12 +696,12 @@ module.exports = env => {
     throw new Error(buildValidations.ERR_NO_ENV_FLAG);
   }
 
-  // Select which Webpack configuration to use; development 
+  // Select which Webpack configuration to use; development
   // or production
   // console.log(env.env); => dev
   const envConfig = require(`./build-utils/webpack.${env.env}.js`);
-  
-  // 'webpack-merge' will combine our shared configurations, the 
+
+  // 'webpack-merge' will combine our shared configurations, the
   // environment specific configurations and any addons we are
   // including
   const mergedConfig = merge(
@@ -709,17 +715,17 @@ module.exports = env => {
 }
 ```
 
-* Install packages for PostCSS transpiling
+- Install packages for PostCSS transpiling
 
 Since we added PostCSS to the webpack configuration, we need to install and configure it:
 
 `yarn add -D postcss-loader autoprefixer chalk cssnano postcss-preset-env`
 
-* Create a configuration file for it:
+- Create a configuration file for it:
 
 `touch postcss.config.js`
 
-* Open the `postcss.config.js` and copy the following:
+- Open the `postcss.config.js` and copy the following:
 
 ```
 const postcssPresetEnv = require('postcss-preset-env')
@@ -735,11 +741,11 @@ module.exports = {
 
 ## Building the app with webpack
 
-* Add some util dev dependencies to the project:
+- Add some util dev dependencies to the project:
 
 `yarn add -D rimraf cross-env serve`
 
-* Open `package.json` to add the following scripts:
+- Open `package.json` to add the following scripts:
 
 ```
     "scripts": {
@@ -750,39 +756,43 @@ module.exports = {
     },
 ```
 
-* Test running on development mode:
+- Test running on development mode:
 
 `yarn dev`
 
-* Test bundle for production:
+- Test bundle for production:
 
 `yarn build`
 
-* Test serving bundled app:
+- Test serving bundled app:
 
 `yarn serve`
 
 ## Basic setup finished
-Great job! 
+
+Great job!
 
 Now we have the basic front-end repo configured to use Semantic-ui React components with themes that use LESS files to define the style for each semantic-ui React component used in the App.
 
 ### App style
-On the `semantic/src/themes` folder are your **package themes** and `semantic/src/theme.config` keeps what style theme is being used for each component. You can create a new theme folder and use by its name. 
 
-The styles are inherited from `default` package theme. So, even if you change on `theme.config` to use another package theme what isn't defined there will be using the `default` style. You can also use definitions on `semantic/src/site` folder to add custom style on top of the selected package theme for each component. 
+On the `semantic/src/themes` folder are your **package themes** and `semantic/src/theme.config` keeps what style theme is being used for each component. You can create a new theme folder and use by its name.
+
+The styles are inherited from `default` package theme. So, even if you change on `theme.config` to use another package theme what isn't defined there will be using the `default` style. You can also use definitions on `semantic/src/site` folder to add custom style on top of the selected package theme for each component.
 
 ## Prettier & Eslint for code styling
 
 ### Install dev dependencies
+
 `yarn add -D eslint eslint-plugin-prettier eslint-plugin-react eslint-plugin-react-hooks`
 
 ### Configure Prettier and Eslint
 
-* Create the config files for prettier eslint on the root:
-`touch .prettierrc .eslintrc`
+- Create the config files for prettier eslint on the root:
+  `touch .prettierrc .eslintrc`
 
-* Open `.prettierrc` and copy the following:
+- Open `.prettierrc` and copy the following:
+
 ```
 {
   "bracketSpacing": true,
@@ -793,7 +803,7 @@ The styles are inherited from `default` package theme. So, even if you change on
 }
 ```
 
-* Open `.eslintrc` and copy the following:
+- Open `.eslintrc` and copy the following:
 
 ```
 {
@@ -839,46 +849,50 @@ The styles are inherited from `default` package theme. So, even if you change on
 }
 ```
 
-* Add one pre-commit hook for linting stagged files:
+- Add one pre-commit hook for linting stagged files:
 
 `npx mrm lint-staged`
 
 This will install husky and lint-staged, then add a configuration to the project’s package.json that will automatically format supported files in a pre-commit hook.
 
 ## Node minimal version
+
 Since Semantic-ui-less doesn't run well in node v10.15.0 there is a resctriction on the `package.json` when installing this sub-project. Setup installation error to check if using node >v13.8.0: [Package.json docs](https://docs.npmjs.com/files/package.json#engines)
 
 - Added in `package.json`:
 
-    `"engines" : { "node" : ">=13.8.0" }`
+  `"engines" : { "node" : ">=13.8.0" }`
 
 - New file on the root folder (same as package.json) `.npmrc` with:
 
-    `engine-strict=true`
+  `engine-strict=true`
 
 ### Testing
-* Change to node v10.15.0 (example using nvm):
 
-    `nvm use v10.15.0`
+- Change to node v10.15.0 (example using nvm):
 
-* Remove existing installed dependencies and re-install:
+  `nvm use v10.15.0`
 
-    `rm -rf node_modules`\
-    `yarn install`
+- Remove existing installed dependencies and re-install:
 
-* Check out the error displayed:
-![error-node-version](images/error_node_version.png)
+  `rm -rf node_modules`\
+   `yarn install`
 
-**Note**: You need to be using a node version > v13.8.0 to build this project. 
+- Check out the error displayed:
+  ![error-node-version](images/Webpack-error-node-version.png)
+
+**Note**: You need to be using a node version > v13.8.0 to build this project.
 
 To check out what is your node version:
 
-`node -v` 
+`node -v`
 
 # Summary
+
 Webpack setp
 
 ## Included packages:
+
 - **Typescript**
 - **React**
 - **React-dom**
@@ -888,9 +902,11 @@ Webpack setp
 - **LESS**
 
 ### Back
+
 - [Home](Home.md)
 
 ## Next
+
 - [Apollo client](apollo-client.md)
 - [Auth & App Router]
 - [Themes]

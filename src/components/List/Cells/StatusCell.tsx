@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, Label, Progress, Segment } from 'semantic-ui-react'
-import { ApplicationStatus } from '../../utils/generated/graphql'
-import { CellProps } from '../../utils/types'
+import { ApplicationStatus } from '../../../utils/generated/graphql'
+import { CellProps } from '../../../utils/types'
 
 enum ACTIONS {
   EDIT_DRAFT = 'Edit draft',

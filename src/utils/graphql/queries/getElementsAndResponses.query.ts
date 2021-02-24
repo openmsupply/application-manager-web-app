@@ -28,3 +28,4 @@ export default gql`
     }
   }
 `
+// TODO: Remove after re-structure is finished

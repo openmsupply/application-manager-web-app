@@ -1,24 +1,11 @@
-import { useEffect, useState } from 'react'
-import {
-  ApplicationResponse,
-  useGetElementsAndResponsesQuery,
-  useUpdateApplicationMutation,
-} from '../generated/graphql'
-import { UseGetApplicationProps } from '../types'
+import { useState } from 'react'
+import { useUpdateApplicationMutation } from '../generated/graphql'
+import { ResponseFull, UseGetApplicationProps } from '../types'
 
 const useSubmitApplication = ({ serialNumber }: UseGetApplicationProps) => {
   const [submitted, setSubmitted] = useState(false)
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState('')
-
-  // Hook to get existing responses in cache - triggered when user submits application
-  const { data, error: responsesError } = useGetElementsAndResponsesQuery({
-    variables: {
-      serial: serialNumber,
-    },
-    skip: !submitted,
-    fetchPolicy: 'cache-only',
-  })
 
   const [applicationSubmitMutation] = useUpdateApplicationMutation({
     onCompleted: () => {
@@ -30,21 +17,11 @@ const useSubmitApplication = ({ serialNumber }: UseGetApplicationProps) => {
     },
   })
 
-  useEffect(() => {
-    if (responsesError) {
-      setProcessing(false)
-      setError(responsesError.message)
-    }
-    if (
-      !data?.applicationBySerial?.applicationResponses ||
-      data?.applicationBySerial?.applicationResponses.nodes.length === 0
-    )
-      return
-
-    // Transform in array to be included in update patch
-    const responses = data?.applicationBySerial?.applicationResponses.nodes as ApplicationResponse[]
-    const responsesPatch = responses.map((response) => {
-      return { id: response.id, patch: { value: response?.value } }
+  const submit = (responses: ResponseFull[]) => {
+    setSubmitted(true)
+    setProcessing(true)
+    const responsesPatch = responses.map(({ id, ...response }) => {
+      return { id, patch: { value: response } }
     })
 
     // Send Application in one-block mutation to update Application + Responses
@@ -54,12 +31,6 @@ const useSubmitApplication = ({ serialNumber }: UseGetApplicationProps) => {
         responses: responsesPatch,
       },
     })
-  }, [data, responsesError])
-
-  const submit = () => {
-    setSubmitted(true)
-    setProcessing(true)
-    // TO-DO: Whole Application Validity Check here (Use Nicole's validatePage method)
   }
 
   return {

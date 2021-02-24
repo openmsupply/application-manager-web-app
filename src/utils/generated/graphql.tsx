@@ -20487,7 +20487,7 @@ export type AddNewUserFragment = (
 
 export type ApplicationFragment = (
   { __typename?: 'Application' }
-  & Pick<Application, 'id' | 'serial' | 'name' | 'outcome'>
+  & Pick<Application, 'id' | 'serial' | 'name' | 'outcome' | 'trigger'>
 );
 
 export type ElementFragment = (
@@ -20497,7 +20497,11 @@ export type ElementFragment = (
 
 export type ResponseFragment = (
   { __typename?: 'ApplicationResponse' }
-  & Pick<ApplicationResponse, 'id' | 'value' | 'isValid'>
+  & Pick<ApplicationResponse, 'id' | 'isValid' | 'value' | 'templateElementId' | 'timeCreated'>
+  & { templateElement?: Maybe<(
+    { __typename?: 'TemplateElement' }
+    & Pick<TemplateElement, 'code'>
+  )> }
 );
 
 export type SectionFragment = (
@@ -20506,8 +20510,8 @@ export type SectionFragment = (
 );
 
 export type StageFragment = (
-  { __typename?: 'ApplicationStageStatusAll' }
-  & Pick<ApplicationStageStatusAll, 'serial' | 'stageHistoryId' | 'stage' | 'stageId' | 'stageNumber' | 'status' | 'statusHistoryTimeCreated'>
+  { __typename?: 'ApplicationStageStatusLatest' }
+  & Pick<ApplicationStageStatusLatest, 'stage' | 'stageId' | 'status' | 'statusHistoryTimeCreated'>
 );
 
 export type TemplateFragment = (
@@ -21090,6 +21094,26 @@ export type UpdateTemplateStageMutation = (
   )> }
 );
 
+export type GetAllResponsesQueryVariables = Exact<{
+  serial: Scalars['String'];
+}>;
+
+
+export type GetAllResponsesQuery = (
+  { __typename?: 'Query' }
+  & { applicationBySerial?: Maybe<(
+    { __typename?: 'Application' }
+    & Pick<Application, 'id' | 'serial'>
+    & { applicationResponses: (
+      { __typename?: 'ApplicationResponsesConnection' }
+      & { nodes: Array<Maybe<(
+        { __typename?: 'ApplicationResponse' }
+        & ResponseFragment
+      )>> }
+    ) }
+  )> }
+);
+
 export type GetApplicationQueryVariables = Exact<{
   serial: Scalars['String'];
 }>;
@@ -21137,6 +21161,53 @@ export type GetApplicationQuery = (
   )> }
 );
 
+export type GetApplicationNewQueryVariables = Exact<{
+  serial: Scalars['String'];
+}>;
+
+
+export type GetApplicationNewQuery = (
+  { __typename?: 'Query' }
+  & { applicationBySerial?: Maybe<(
+    { __typename?: 'Application' }
+    & { template?: Maybe<(
+      { __typename?: 'Template' }
+      & { templateStages: (
+        { __typename?: 'TemplateStagesConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateStage' }
+          & TemplateStageFragment
+        )>> }
+      ) }
+      & TemplateFragment
+    )>, applicationSections: (
+      { __typename?: 'ApplicationSectionsConnection' }
+      & { nodes: Array<Maybe<(
+        { __typename?: 'ApplicationSection' }
+        & Pick<ApplicationSection, 'id'>
+        & { templateSection?: Maybe<(
+          { __typename?: 'TemplateSection' }
+          & { templateElementsBySectionId: (
+            { __typename?: 'TemplateElementsConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'TemplateElement' }
+              & ElementFragment
+            )>> }
+          ) }
+          & SectionFragment
+        )> }
+      )>> }
+    ) }
+    & ApplicationFragment
+  )>, applicationStageStatusLatests?: Maybe<(
+    { __typename?: 'ApplicationStageStatusLatestsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'ApplicationStageStatusLatest' }
+      & StageFragment
+    )>> }
+  )> }
+);
+
 export type GetApplicationStatusQueryVariables = Exact<{
   serial: Scalars['String'];
 }>;
@@ -21148,7 +21219,7 @@ export type GetApplicationStatusQuery = (
     { __typename?: 'ApplicationStageStatusAllsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'ApplicationStageStatusAll' }
-      & StageFragment
+      & Pick<ApplicationStageStatusAll, 'stage' | 'stageId' | 'status' | 'statusHistoryTimeCreated'>
     )>> }
   )> }
 );
@@ -21327,12 +21398,26 @@ export type GetReviewAssignmentQuery = (
     { __typename?: 'ReviewAssignmentsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'ReviewAssignment' }
-      & Pick<ReviewAssignment, 'id' | 'applicationId' | 'reviewerId' | 'stageId'>
-      & { reviews: (
+      & Pick<ReviewAssignment, 'id' | 'applicationId' | 'stageId'>
+      & { reviewer?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>
+      )>, reviews: (
         { __typename?: 'ReviewsConnection' }
         & { nodes: Array<Maybe<(
           { __typename?: 'Review' }
           & Pick<Review, 'id' | 'status'>
+          & { reviewResponses: (
+            { __typename?: 'ReviewResponsesConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'ReviewResponse' }
+              & Pick<ReviewResponse, 'id' | 'comment' | 'decision'>
+              & { applicationResponse?: Maybe<(
+                { __typename?: 'ApplicationResponse' }
+                & Pick<ApplicationResponse, 'id'>
+              )> }
+            )>> }
+          ) }
         )>> }
       ), reviewQuestionAssignments: (
         { __typename?: 'ReviewQuestionAssignmentsConnection' }
@@ -21530,6 +21615,7 @@ export const ApplicationFragmentDoc = gql`
   serial
   name
   outcome
+  trigger
 }
     `;
 export const ElementFragmentDoc = gql`
@@ -21551,8 +21637,13 @@ export const ElementFragmentDoc = gql`
 export const ResponseFragmentDoc = gql`
     fragment Response on ApplicationResponse {
   id
-  value
   isValid
+  value
+  templateElement {
+    code
+  }
+  templateElementId
+  timeCreated
 }
     `;
 export const SectionFragmentDoc = gql`
@@ -21564,12 +21655,9 @@ export const SectionFragmentDoc = gql`
 }
     `;
 export const StageFragmentDoc = gql`
-    fragment Stage on ApplicationStageStatusAll {
-  serial
-  stageHistoryId
+    fragment Stage on ApplicationStageStatusLatest {
   stage
   stageId
-  stageNumber
   status
   statusHistoryTimeCreated
 }
@@ -22607,6 +22695,45 @@ export function useUpdateTemplateStageMutation(baseOptions?: Apollo.MutationHook
 export type UpdateTemplateStageMutationHookResult = ReturnType<typeof useUpdateTemplateStageMutation>;
 export type UpdateTemplateStageMutationResult = Apollo.MutationResult<UpdateTemplateStageMutation>;
 export type UpdateTemplateStageMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>;
+export const GetAllResponsesDocument = gql`
+    query getAllResponses($serial: String!) {
+  applicationBySerial(serial: $serial) {
+    id
+    serial
+    applicationResponses {
+      nodes {
+        ...Response
+      }
+    }
+  }
+}
+    ${ResponseFragmentDoc}`;
+
+/**
+ * __useGetAllResponsesQuery__
+ *
+ * To run a query within a React component, call `useGetAllResponsesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllResponsesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllResponsesQuery({
+ *   variables: {
+ *      serial: // value for 'serial'
+ *   },
+ * });
+ */
+export function useGetAllResponsesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllResponsesQuery, GetAllResponsesQueryVariables>) {
+        return Apollo.useQuery<GetAllResponsesQuery, GetAllResponsesQueryVariables>(GetAllResponsesDocument, baseOptions);
+      }
+export function useGetAllResponsesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllResponsesQuery, GetAllResponsesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllResponsesQuery, GetAllResponsesQueryVariables>(GetAllResponsesDocument, baseOptions);
+        }
+export type GetAllResponsesQueryHookResult = ReturnType<typeof useGetAllResponsesQuery>;
+export type GetAllResponsesLazyQueryHookResult = ReturnType<typeof useGetAllResponsesLazyQuery>;
+export type GetAllResponsesQueryResult = Apollo.QueryResult<GetAllResponsesQuery, GetAllResponsesQueryVariables>;
 export const GetApplicationDocument = gql`
     query getApplication($serial: String!) {
   applicationBySerial(serial: $serial) {
@@ -22671,15 +22798,82 @@ export function useGetApplicationLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetApplicationQueryHookResult = ReturnType<typeof useGetApplicationQuery>;
 export type GetApplicationLazyQueryHookResult = ReturnType<typeof useGetApplicationLazyQuery>;
 export type GetApplicationQueryResult = Apollo.QueryResult<GetApplicationQuery, GetApplicationQueryVariables>;
-export const GetApplicationStatusDocument = gql`
-    query getApplicationStatus($serial: String!) {
-  applicationStageStatusAlls(condition: {serial: $serial, stageIsCurrent: true, statusIsCurrent: true}) {
+export const GetApplicationNewDocument = gql`
+    query getApplicationNew($serial: String!) {
+  applicationBySerial(serial: $serial) {
+    ...Application
+    template {
+      ...Template
+      templateStages {
+        nodes {
+          ...TemplateStage
+        }
+      }
+    }
+    applicationSections {
+      nodes {
+        id
+        templateSection {
+          ...Section
+          templateElementsBySectionId {
+            nodes {
+              ...Element
+            }
+          }
+        }
+      }
+    }
+  }
+  applicationStageStatusLatests(condition: {serial: $serial}) {
     nodes {
       ...Stage
     }
   }
 }
-    ${StageFragmentDoc}`;
+    ${ApplicationFragmentDoc}
+${TemplateFragmentDoc}
+${TemplateStageFragmentDoc}
+${SectionFragmentDoc}
+${ElementFragmentDoc}
+${StageFragmentDoc}`;
+
+/**
+ * __useGetApplicationNewQuery__
+ *
+ * To run a query within a React component, call `useGetApplicationNewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetApplicationNewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetApplicationNewQuery({
+ *   variables: {
+ *      serial: // value for 'serial'
+ *   },
+ * });
+ */
+export function useGetApplicationNewQuery(baseOptions?: Apollo.QueryHookOptions<GetApplicationNewQuery, GetApplicationNewQueryVariables>) {
+        return Apollo.useQuery<GetApplicationNewQuery, GetApplicationNewQueryVariables>(GetApplicationNewDocument, baseOptions);
+      }
+export function useGetApplicationNewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetApplicationNewQuery, GetApplicationNewQueryVariables>) {
+          return Apollo.useLazyQuery<GetApplicationNewQuery, GetApplicationNewQueryVariables>(GetApplicationNewDocument, baseOptions);
+        }
+export type GetApplicationNewQueryHookResult = ReturnType<typeof useGetApplicationNewQuery>;
+export type GetApplicationNewLazyQueryHookResult = ReturnType<typeof useGetApplicationNewLazyQuery>;
+export type GetApplicationNewQueryResult = Apollo.QueryResult<GetApplicationNewQuery, GetApplicationNewQueryVariables>;
+export const GetApplicationStatusDocument = gql`
+    query getApplicationStatus($serial: String!) {
+  applicationStageStatusAlls(condition: {serial: $serial, stageIsCurrent: true, statusIsCurrent: true}) {
+    nodes {
+      stage
+      stageId
+      status
+      statusHistoryTimeCreated
+    }
+  }
+}
+    `;
 
 /**
  * __useGetApplicationStatusQuery__
@@ -23026,12 +23220,27 @@ export const GetReviewAssignmentDocument = gql`
     nodes {
       id
       applicationId
-      reviewerId
+      reviewer {
+        id
+        username
+        firstName
+        lastName
+      }
       stageId
       reviews {
         nodes {
           id
           status
+          reviewResponses {
+            nodes {
+              id
+              comment
+              decision
+              applicationResponse {
+                id
+              }
+            }
+          }
         }
       }
       reviewQuestionAssignments {

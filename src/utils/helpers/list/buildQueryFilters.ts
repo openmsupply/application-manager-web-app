@@ -15,6 +15,8 @@ export default function buildQueryFilters(filters: BasicStringObject) {
     if (!mapQueryToFilterField[key]) return filterObj
     return { ...filterObj, ...mapQueryToFilterField[key](value) }
   }, {})
+  // If no filters, return a dummy filter to prevent GraphQL empty object error
+  if (Object.keys(graphQLfilter).length === 0) return { templateCode: { isNull: false } }
   return graphQLfilter
 }
 

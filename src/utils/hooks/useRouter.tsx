@@ -8,6 +8,7 @@ interface RouterResult {
   pathname: string
   push: (path: string) => void
   query: BasicStringObject
+  updateQuery: Function
   replace: (path: string) => void
   match: match
   history: any
@@ -16,17 +17,28 @@ interface RouterResult {
 }
 
 /**
- * @function: replaceKebabCaseKeys
- * For each filter key in the query (which will use snake-case: e.g. user-role)
- * will convert to camelCase (e.g userRole) before returning query to components.
+ * @function: replaceKebabCaseKeys / restoreKebabCaseKeys
+ * For each filter key in the query, converts from kebab-case to camelCase
+ * or vice-versa.
  * - @param parsedQuery - URL query after parsed to object
- * - @returns Object with all query {key: value} with keys in camelCase format.
+ * - @returns Object with all query {key: value} with keys in
+ * camelCase/kebab-case format.
  */
 const replaceKebabCaseKeys = (parsedQuery: { [key: string]: any }) => {
-  if (Object.keys(parsedQuery).length === 0) return parsedQuery
-  const replacedKeys = Object.keys(parsedQuery).map((key) => {
-    const convertedKey = key.replace(/-([a-z])/g, (m, w) => w.toUpperCase())
-    return [[convertedKey], parsedQuery[key]]
+  return replaceObjectKeys(parsedQuery, (key: string) =>
+    key.replace(/-([a-z])/g, (_, w) => w.toUpperCase())
+  )
+}
+const restoreKebabCaseKeys = (parsedQuery: { [key: string]: any }) => {
+  return replaceObjectKeys(parsedQuery, (key: string) =>
+    key.replace(/([a-z])([A-Z])/g, (_, w1, w2) => `${w1}-${w2.toLowerCase()}`)
+  )
+}
+const replaceObjectKeys = (object: { [key: string]: any }, replacementFunction: Function) => {
+  if (Object.keys(object).length === 0) return object
+  const replacedKeys = Object.keys(object).map((key) => {
+    const convertedKey = replacementFunction(key)
+    return [[convertedKey], object[key]]
   })
   return Object.fromEntries(replacedKeys)
 }
@@ -42,7 +54,20 @@ export function useRouter(): RouterResult {
 
   return useMemo(() => {
     // Convert string to object, then replace snake with camelCase
-    const queryFilters = replaceKebabCaseKeys(queryString.parse(location.search))
+    const queryFilters = replaceKebabCaseKeys(queryString.parse(location.search, { sort: false }))
+
+    // Add new key-value pairs to existing query string and update URL
+    const updateQuery = (newQueries: { [key: string]: string }) => {
+      const newQueryObject = { ...queryFilters }
+      Object.entries(newQueries).forEach(([key, value]) => {
+        if (!value) {
+          delete newQueryObject[key]
+        } else newQueryObject[key] = value
+      })
+      history.push({
+        search: queryString.stringify(restoreKebabCaseKeys(newQueryObject), { sort: false }),
+      })
+    }
 
     return {
       // For convenience add push(), replace(), pathname at top level
@@ -58,6 +83,7 @@ export function useRouter(): RouterResult {
         ...queryFilters,
         ...params,
       },
+      updateQuery,
 
       // Include match, location, history objects so we have
       // access to extra React Router functionality if needed.

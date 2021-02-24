@@ -5,16 +5,17 @@ import strings from '../../utils/constants'
 import {
   EvaluatorParameters,
   ResumeSection,
-  SectionDetails,
+  SectionsStructure,
   TemplateDetails,
 } from '../../utils/types'
 import ApplicationSelectType from './ApplicationSelectType'
 import Markdown from '../../utils/helpers/semanticReactMarkdown'
 import evaluate from '@openmsupply/expression-evaluator'
 import { useUserState } from '../../contexts/UserState'
+import { checkSectionsProgress } from '../../utils/helpers/structure/checkSectionsProgress'
 export interface ApplicationStartProps extends RouteComponentProps {
   template: TemplateDetails
-  sections: SectionDetails[]
+  sections: SectionsStructure
   resumeApplication?: (props: ResumeSection) => void
   startApplication?: () => void
   setSummaryButtonClicked?: () => void
@@ -45,25 +46,10 @@ const ApplicationStart: React.FC<ApplicationStartProps> = ({
       setStartMessageEvaluated(result)
     )
 
-    const isApplicationCompleted = Object.values(sections).every(
-      ({ progress }) => progress?.completed && progress.valid
-    )
-    if (!isApplicationCompleted) findFirstIncompleteSection()
-
-    setIsApplicationCompleted(isApplicationCompleted)
+    const { isCompleted, firstIncompleteLocation } = checkSectionsProgress(sections)
+    setIsApplicationCompleted(isCompleted)
+    if (firstIncompleteLocation) setFirstIncomplete(firstIncompleteLocation)
   }, [startMessage, currentUser])
-
-  const findFirstIncompleteSection = () => {
-    const firstIncompleteLocation = Object.entries(sections)
-      .filter(([_, section]) => section.progress)
-      .sort(([aKey], [bKey]) => (aKey < bKey ? -1 : 1))
-      .find(([_, section]) => !section.progress?.completed || !section.progress.valid)
-
-    if (firstIncompleteLocation) {
-      const [_, section] = firstIncompleteLocation
-      setFirstIncomplete(section.code)
-    }
-  }
 
   return template ? (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
@@ -95,7 +81,7 @@ const ApplicationStart: React.FC<ApplicationStartProps> = ({
             <Header as="h5">{strings.TITLE_STEPS.toUpperCase()}</Header>
             <List divided relaxed="very">
               {sections &&
-                Object.entries(sections).map(([_, { code: sectionCode, progress, title }]) => {
+                Object.entries(sections).map(([sectionCode, { details, progress }]) => {
                   return (
                     <List.Item
                       key={`list-item-${sectionCode}`}
@@ -109,7 +95,7 @@ const ApplicationStart: React.FC<ApplicationStartProps> = ({
                             )}
                           </Grid.Column>
                           <Grid.Column width={10}>
-                            <p>{title}</p>
+                            <p>{details.title}</p>
                           </Grid.Column>
                           <Grid.Column width={3}>
                             {progress && progress.done > 0 && progress.total > 0 && (

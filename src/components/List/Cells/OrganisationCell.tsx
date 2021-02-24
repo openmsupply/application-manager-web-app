@@ -1,5 +1,5 @@
 import React from 'react'
-import { CellProps } from '../../utils/types'
+import { CellProps } from '../../../utils/types'
 
 const OrganisationCell: React.FC<CellProps> = ({ application }) => {
   // TODO

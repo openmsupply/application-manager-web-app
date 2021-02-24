@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Label } from 'semantic-ui-react'
+import { Container, Label, MessageProps } from 'semantic-ui-react'
 import { useApplicationState } from '../../contexts/ApplicationState'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { CurrentPage, SectionDetails } from '../../utils/types'
 import strings from '../../utils/constants'
-
+import messages from '../../utils/messages'
 interface NavigationBoxProps {
   sections: SectionDetails[]
   currentSection: SectionDetails
   serialNumber: string
   currentPage: number
-  validateElementsInPage: (props?: CurrentPage) => boolean
-  openModal: () => void
+  validateElementsInPage: (props: CurrentPage) => boolean
+  openModal: ({ title, message, option }: MessageProps) => void
 }
 
 const NavigationBox: React.FC<NavigationBoxProps> = ({
@@ -62,9 +62,9 @@ const NavigationBox: React.FC<NavigationBoxProps> = ({
     const page = nextPage > currentSection.totalPages ? 1 : nextPage
 
     // Check if previous page (related to next) is valid
-    const status = validateElementsInPage()
+    const status = validateElementsInPage({ section: currentSection, page: currentPage })
 
-    if (!status) openModal()
+    if (!status) openModal(messages.VALIDATION_FAIL)
     else sendToPage(section.code, page)
   }
 

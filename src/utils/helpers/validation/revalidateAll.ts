@@ -14,6 +14,20 @@ interface RevalidateAllProps {
   sectionCode?: string
   strict?: boolean
 }
+
+/**
+ * @function revalidateAll
+ * Run validation on each response (for question elements) in application
+ * using promises and the defaultValidation method which
+ * uses the evaluationExpression for dynamic evaluations.
+ * Will also build a progress object for each section.
+ * @param elementsState object with all elements in application
+ * @param responsesByCode object with each response by element code
+ * @param currentUser applicant user used to run validation
+ * @param sectionCode [Optional] - to run for one specific section
+ * @param strict [Optional] (default: true) - to run validation using strict mode
+ * that will consider any required element without response as INVALID
+ */
 export const revalidateAll = async ({
   elementsState,
   responsesByCode,
@@ -97,6 +111,7 @@ export const revalidateAll = async ({
 
   return {
     allValid: strictResultArray.every((element) => element.isValid),
+    sectionCode,
     validityFailures,
     progress: {
       total,
