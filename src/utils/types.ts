@@ -18,6 +18,7 @@ import { DateTime } from 'luxon'
 export {
   ApplicationDetails,
   ApplicationElementStates,
+  ApplicationListRow,
   ApplicationStage,
   ApplicationStageMap,
   ApplicationStages,
@@ -46,8 +47,8 @@ export {
   PageElements,
   PageNEW,
   PageElement,
-  PageElementsNEW,
   PageElementsStatuses,
+  Progress,
   ProgressStatus,
   ResponseFull,
   ResponsePayload,
@@ -98,6 +99,10 @@ interface ApplicationDetails {
 
 interface ApplicationElementStates {
   [key: string]: ElementState
+}
+
+interface ApplicationListRow extends ApplicationList {
+  isExpanded: boolean
 }
 
 interface ApplicationStage {
@@ -254,7 +259,8 @@ type PageElements = {
 
 interface PageNEW {
   number: number
-  state: PageElementsNEW
+  progress: Progress
+  state: PageElement[]
 }
 
 type PageElement = {
@@ -263,12 +269,22 @@ type PageElement = {
   review?: ReviewQuestionDecision
 }
 
-type PageElementsNEW = PageElement[]
 interface PageElementsStatuses {
   [code: string]: ProgressStatus
 }
 
+interface Progress {
+  doneRequired: number
+  doneNonRequired: number
+  completed: boolean
+  totalRequired: number
+  totalNonRequired: number
+  totalSum: number
+  valid: boolean
+}
+
 type ProgressStatus = 'VALID' | 'NOT_VALID' | 'INCOMPLETE'
+
 interface ResponseFull {
   id: number
   text: string | null | undefined
@@ -335,6 +351,7 @@ interface SectionProgress {
   valid: boolean
   linkedPage: number
 }
+
 interface SectionState {
   details: SectionDetails
   progress?: SectionProgress
@@ -348,7 +365,8 @@ interface SectionsStructure {
 }
 interface SectionStateNEW {
   details: SectionDetails
-  progress?: SectionProgress
+  invalidPage?: number
+  progress?: Progress
   assigned?: ReviewerDetails
   pages: {
     [pageName: string]: PageNEW

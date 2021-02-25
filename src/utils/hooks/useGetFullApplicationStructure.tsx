@@ -11,18 +11,19 @@ import { ApplicationResponse, useGetAllResponsesQuery } from '../generated/graph
 import { useUserState } from '../../contexts/UserState'
 import evaluateExpression from '@openmsupply/expression-evaluator'
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
+import { generateResponsesProgress } from '../helpers/structure/generateProgress'
 
 interface useGetFullApplicationStructureProps {
   structure: FullStructure
   shouldRevalidate?: boolean
-  revalidateAfterTimestamp?: number
+  minRefetchTimestampForRevalidation?: number
   firstRunValidation?: boolean
 }
 
 const useGetFullApplicationStructure = ({
   structure,
   shouldRevalidate = false,
-  revalidateAfterTimestamp = 0,
+  minRefetchTimestampForRevalidation = 0,
   firstRunValidation = true,
 }: useGetFullApplicationStructureProps) => {
   const {
@@ -66,7 +67,8 @@ const useGetFullApplicationStructure = ({
     if (!data) return
 
     const isDataUpToDate = lastProcessedTimestamp > lastRefetchedTimestamp
-    const shouldRevalidationWaitForRefetech = revalidateAfterTimestamp > lastRefetchedTimestamp
+    const shouldRevalidationWaitForRefetech =
+      minRefetchTimestampForRevalidation > lastRefetchedTimestamp
     const shouldRevalidateThisRun = shouldRevalidate && !shouldRevalidationWaitForRefetech
 
     if (isDataUpToDate && !shouldRevalidateThisRun) return
@@ -116,11 +118,13 @@ const useGetFullApplicationStructure = ({
 
       newStructure.responsesByCode = responseObject
 
+      generateResponsesProgress(newStructure)
+
       setLastProcessedTimestamp(Date.now())
       setFirstRunProcessValidation(false)
       setFullStructure(newStructure)
     })
-  }, [lastRefetchedTimestamp, shouldRevalidate, revalidateAfterTimestamp, error])
+  }, [lastRefetchedTimestamp, shouldRevalidate, minRefetchTimestampForRevalidation, error])
 
   async function evaluateAndValidateElements(
     elements: TemplateElementStateNEW[],
@@ -220,10 +224,4 @@ const flattenStructureElements = (structure: FullStructure) => {
     })
   })
   return flattened
-}
-
-const generateProgressStructure = (structure: FullStructure) => {
-  // TO-DO:
-  // Calculate all Progress objects and update structure in-place
-  // Shouldn't return anything
 }

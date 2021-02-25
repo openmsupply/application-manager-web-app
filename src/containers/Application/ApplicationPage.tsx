@@ -51,12 +51,12 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
   })
 
   const shouldRevalidate = isLastElementUpdateProcessed && revalidationState.shouldProcessValidation
-  const revalidateAfterTimestamp = shouldRevalidate ? elementUpdatedTimestamp : 0
+  const minRefetchTimestampForRevalidation = shouldRevalidate ? elementUpdatedTimestamp : 0
 
   const { error, fullStructure } = useGetFullApplicationStructure({
     structure,
     shouldRevalidate,
-    revalidateAfterTimestamp,
+    minRefetchTimestampForRevalidation,
   })
 
   const currentSection = query.sectionCode
@@ -92,8 +92,6 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
       // TODO hide loading modal
     }
   }, [revalidationState, fullStructure])
-
-  console.log('Structure', fullStructure)
 
   useEffect(() => {
     if (!structure) return
