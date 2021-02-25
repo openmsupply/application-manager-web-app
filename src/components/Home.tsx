@@ -189,14 +189,22 @@ const Home: React.FC = () => {
                               }}
                             >
                               {filteredTemplate.permissions.find((type) => type === 'Apply') ? (
-                                <Button animated>
+                                <Button
+                                  animated
+                                  as={Link}
+                                  to={`/application/new?type=${filteredTemplate.code}`}
+                                >
                                   <Button.Content visible>
                                     <Icon size="large" name="add square" />
                                   </Button.Content>
                                   <Button.Content hidden>Apply</Button.Content>
                                 </Button>
                               ) : null}
-                              <Button animated>
+                              <Button
+                                animated
+                                as={Link}
+                                to={`/applications?type=${filteredTemplate.code}`}
+                              >
                                 <Button.Content visible>
                                   <Icon size="large" name="list alternate" />
                                 </Button.Content>

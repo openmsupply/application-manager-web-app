@@ -9,7 +9,11 @@ const JsonField: React.FC = ({ ...all }: any) => {
   console.log('df: ', all)
   return (
     <TextareaAutosize
-      style={{ background: isErrorState ? 'pink' : 'none' }}
+      style={{
+        background: isErrorState ? 'pink' : 'none',
+        fontFamily: 'Verdana, sans-serif',
+        fontSize: 10,
+      }}
       {...furtherProps}
       minRows={1}
       rows={1}

@@ -5,6 +5,7 @@ import { useUserState } from '../../contexts/UserState'
 import UserSelection from './UserSelection'
 import useListTemplates from '../../utils/hooks/useListTemplates'
 import { AppMenu } from '../../components'
+import { Link } from 'react-router-dom'
 
 const UserArea: React.FC = () => {
   const {
@@ -17,7 +18,7 @@ const UserArea: React.FC = () => {
     <Sticky>
       <Segment inverted vertical style={{ height: 100, padding: 10 }}>
         <Segment inverted floated="left" style={{ margin: 5 }}>
-          <Button animated basic inverted onClick={() => logout()}>
+          <Button animated basic inverted as={Link} to="/">
             <Button.Content visible>
               <Icon name="home" />
             </Button.Content>

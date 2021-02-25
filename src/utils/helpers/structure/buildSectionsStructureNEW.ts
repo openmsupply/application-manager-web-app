@@ -1,3 +1,4 @@
+import { on } from 'process'
 import { ElementBaseNEW, SectionDetails, SectionsStructureNEW } from '../../types'
 interface BuildSectionsStructureProps {
   sections: SectionDetails[]
@@ -20,31 +21,37 @@ export const buildSectionsStructure = ({
 }: BuildSectionsStructureProps): SectionsStructureNEW => {
   // Create the sections and pages structure to display each section's element
   // Will also add the responses for each element, and can add reviews if received by props
-  return sections.reduce((sectionsStructure: SectionsStructureNEW, section) => {
-    const pageNumbers = Array.from(Array(section.totalPages).keys(), (n) => n + 1)
-    const pages = pageNumbers.reduce((pages, pageNumber) => {
-      const elements = getPageElements({
-        baseElements,
-        sectionIndex: section.index,
-        pageNumber,
-      })
-      if (elements.length === 0) return pages
+  return [...sections]
+    .sort((one, two) => one.index - two.index)
+    .reduce((sectionsStructure: SectionsStructureNEW, section) => {
+      let skippedPages = 0
+      const pageNumbers = Array.from(Array(section.totalPages).keys(), (n) => n + 1)
+      const pages = pageNumbers.reduce((pages, pageNumber) => {
+        const elements = getPageElements({
+          baseElements,
+          sectionIndex: section.index,
+          pageNumber,
+        })
+        if (elements.length === 0) {
+          skippedPages++
+          return pages
+        }
 
-      // Will build the array of elements
-      const state = elements.map((element) => ({ element }))
+        // Will build the array of elements
+        const state = elements.map((element) => ({ element }))
 
-      const pageName = `Page ${pageNumber}`
-      return { ...pages, [pageName]: { number: pageNumber, state } }
+        const pageName = `Page ${pageNumber - skippedPages}`
+        return { ...pages, [pageName]: { number: pageNumber - skippedPages, state } }
+      }, {})
+
+      return {
+        ...sectionsStructure,
+        [section.code]: {
+          details: section,
+          pages,
+        },
+      }
     }, {})
-
-    return {
-      ...sectionsStructure,
-      [section.code]: {
-        details: section,
-        pages,
-      },
-    }
-  }, {})
 }
 
 interface GetPageElementsProps {

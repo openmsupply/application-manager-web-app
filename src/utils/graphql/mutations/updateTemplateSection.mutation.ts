@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export default gql`
-  mutation createTemplateSection($data: TemplateSectionInput!) {
-    createTemplateSection(input: { templateSection: $data }) {
+  mutation updateTemplateSection($id: Int!, $data: TemplateSectionPatch!) {
+    updateTemplateSection(input: { patch: $data, id: $id }) {
       templateSection {
         id
         title

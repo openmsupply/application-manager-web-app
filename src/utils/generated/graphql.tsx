@@ -20492,7 +20492,7 @@ export type ApplicationFragment = (
 
 export type ElementFragment = (
   { __typename?: 'TemplateElement' }
-  & Pick<TemplateElement, 'id' | 'code' | 'index' | 'title' | 'elementTypePluginCode' | 'category' | 'visibilityCondition' | 'isRequired' | 'isEditable' | 'validation' | 'validationMessage' | 'parameters'>
+  & Pick<TemplateElement, 'id' | 'code' | 'index' | 'title' | 'sectionId' | 'elementTypePluginCode' | 'category' | 'visibilityCondition' | 'isRequired' | 'isEditable' | 'validation' | 'validationMessage' | 'parameters'>
 );
 
 export type ResponseFragment = (
@@ -20667,6 +20667,22 @@ export type CreateTemplateCategoryMutation = (
   )> }
 );
 
+export type CreateTemplateElementMutationVariables = Exact<{
+  data: TemplateElementInput;
+}>;
+
+
+export type CreateTemplateElementMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplateElement?: Maybe<(
+    { __typename?: 'CreateTemplateElementPayload' }
+    & { templateElement?: Maybe<(
+      { __typename?: 'TemplateElement' }
+      & ElementFragment
+    )> }
+  )> }
+);
+
 export type CreateTemplateFilterMutationVariables = Exact<{
   userRole?: Maybe<Scalars['String']>;
 }>;
@@ -20731,7 +20747,7 @@ export type CreateTemplateSectionMutation = (
     { __typename?: 'CreateTemplateSectionPayload' }
     & { templateSection?: Maybe<(
       { __typename?: 'TemplateSection' }
-      & Pick<TemplateSection, 'id' | 'title' | 'templateId' | 'code'>
+      & Pick<TemplateSection, 'id' | 'title' | 'templateId' | 'code' | 'index'>
       & { template?: Maybe<(
         { __typename?: 'Template' }
         & Pick<Template, 'id'>
@@ -21127,6 +21143,34 @@ export type UpdateTemplatePermissionMutation = (
       & { template?: Maybe<(
         { __typename?: 'Template' }
         & Pick<Template, 'id'>
+      )> }
+    )> }
+  )> }
+);
+
+export type UpdateTemplateSectionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: TemplateSectionPatch;
+}>;
+
+
+export type UpdateTemplateSectionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateSection?: Maybe<(
+    { __typename?: 'UpdateTemplateSectionPayload' }
+    & { templateSection?: Maybe<(
+      { __typename?: 'TemplateSection' }
+      & Pick<TemplateSection, 'id' | 'title' | 'templateId' | 'code' | 'index'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+        & { templateSections: (
+          { __typename?: 'TemplateSectionsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplateSection' }
+            & Pick<TemplateSection, 'id'>
+          )>> }
+        ) }
       )> }
     )> }
   )> }
@@ -21689,6 +21733,7 @@ export const ElementFragmentDoc = gql`
   code
   index
   title
+  sectionId
   elementTypePluginCode
   category
   visibilityCondition
@@ -21983,6 +22028,40 @@ export function useCreateTemplateCategoryMutation(baseOptions?: Apollo.MutationH
 export type CreateTemplateCategoryMutationHookResult = ReturnType<typeof useCreateTemplateCategoryMutation>;
 export type CreateTemplateCategoryMutationResult = Apollo.MutationResult<CreateTemplateCategoryMutation>;
 export type CreateTemplateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateTemplateCategoryMutation, CreateTemplateCategoryMutationVariables>;
+export const CreateTemplateElementDocument = gql`
+    mutation createTemplateElement($data: TemplateElementInput!) {
+  createTemplateElement(input: {templateElement: $data}) {
+    templateElement {
+      ...Element
+    }
+  }
+}
+    ${ElementFragmentDoc}`;
+export type CreateTemplateElementMutationFn = Apollo.MutationFunction<CreateTemplateElementMutation, CreateTemplateElementMutationVariables>;
+
+/**
+ * __useCreateTemplateElementMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateElementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateElementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateElementMutation, { data, loading, error }] = useCreateTemplateElementMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateTemplateElementMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplateElementMutation, CreateTemplateElementMutationVariables>) {
+        return Apollo.useMutation<CreateTemplateElementMutation, CreateTemplateElementMutationVariables>(CreateTemplateElementDocument, baseOptions);
+      }
+export type CreateTemplateElementMutationHookResult = ReturnType<typeof useCreateTemplateElementMutation>;
+export type CreateTemplateElementMutationResult = Apollo.MutationResult<CreateTemplateElementMutation>;
+export type CreateTemplateElementMutationOptions = Apollo.BaseMutationOptions<CreateTemplateElementMutation, CreateTemplateElementMutationVariables>;
 export const CreateTemplateFilterDocument = gql`
     mutation createTemplateFilter($userRole: String) {
   __typename
@@ -22081,6 +22160,7 @@ export const CreateTemplateSectionDocument = gql`
       title
       templateId
       code
+      index
       template {
         id
         templateSections {
@@ -22812,6 +22892,53 @@ export function useUpdateTemplatePermissionMutation(baseOptions?: Apollo.Mutatio
 export type UpdateTemplatePermissionMutationHookResult = ReturnType<typeof useUpdateTemplatePermissionMutation>;
 export type UpdateTemplatePermissionMutationResult = Apollo.MutationResult<UpdateTemplatePermissionMutation>;
 export type UpdateTemplatePermissionMutationOptions = Apollo.BaseMutationOptions<UpdateTemplatePermissionMutation, UpdateTemplatePermissionMutationVariables>;
+export const UpdateTemplateSectionDocument = gql`
+    mutation updateTemplateSection($id: Int!, $data: TemplateSectionPatch!) {
+  updateTemplateSection(input: {patch: $data, id: $id}) {
+    templateSection {
+      id
+      title
+      templateId
+      code
+      index
+      template {
+        id
+        templateSections {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type UpdateTemplateSectionMutationFn = Apollo.MutationFunction<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>;
+
+/**
+ * __useUpdateTemplateSectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateSectionMutation, { data, loading, error }] = useUpdateTemplateSectionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateTemplateSectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>(UpdateTemplateSectionDocument, baseOptions);
+      }
+export type UpdateTemplateSectionMutationHookResult = ReturnType<typeof useUpdateTemplateSectionMutation>;
+export type UpdateTemplateSectionMutationResult = Apollo.MutationResult<UpdateTemplateSectionMutation>;
+export type UpdateTemplateSectionMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>;
 export const UpdateTemplateStageDocument = gql`
     mutation updateTemplateStage($id: Int!, $data: TemplateStagePatch!) {
   updateTemplateStage(input: {patch: $data, id: $id}) {

@@ -121,26 +121,29 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
       let pageCount = 1
       const elementsInSection = sectionNode?.templateSection?.templateElementsBySectionId
         ?.nodes as TemplateElement[]
-      elementsInSection.forEach((element) => {
-        if (element.elementTypePluginCode === 'pageBreak') pageCount++
-        else
-          baseElements.push({
-            // ...element,
-            code: element.code,
-            fullElement: element,
-            pluginCode: element.elementTypePluginCode,
-            sectionIndex: sectionNode?.templateSection?.index,
-            sectionCode: sectionNode?.templateSection?.code,
-            elementIndex: element.index,
-            page: pageCount,
-            isEditableExpression: element.isEditable,
-            isRequiredExpression: element.isRequired,
-            isVisibleExpression: element.visibilityCondition,
-            parameters: element.parameters,
-            validationExpression: element.validation,
-            validationMessage: element.validationMessage,
-          } as TemplateElementStateNEW)
-      })
+
+      ;[...elementsInSection]
+        .sort((one, two) => (one?.index || 0) - (two?.index || 0))
+        .forEach((element) => {
+          if (element.elementTypePluginCode === 'pageBreak') pageCount++
+          else
+            baseElements.push({
+              // ...element,
+              code: element.code,
+              fullElement: element,
+              pluginCode: element.elementTypePluginCode,
+              sectionIndex: sectionNode?.templateSection?.index,
+              sectionCode: sectionNode?.templateSection?.code,
+              elementIndex: element.index,
+              page: pageCount,
+              isEditableExpression: element.isEditable,
+              isRequiredExpression: element.isRequired,
+              isVisibleExpression: element.visibilityCondition,
+              parameters: element.parameters,
+              validationExpression: element.validation,
+              validationMessage: element.validationMessage,
+            } as TemplateElementStateNEW)
+        })
     })
 
     setIsLoading(false)

@@ -64,7 +64,7 @@ export function useRouter(): RouterResult {
           delete newQueryObject[key]
         } else newQueryObject[key] = value
       })
-      history.push({
+      history.replace({
         search: queryString.stringify(restoreKebabCaseKeys(newQueryObject), { sort: false }),
       })
     }
