@@ -14,10 +14,12 @@ import {
   Segment,
   Sticky,
   Form,
+  Checkbox,
 } from 'semantic-ui-react'
 
 import {
   useCreateTemplateCategoryMutation,
+  useCreateTemplateSectionMutation,
   useGetTemplateCategoriesQuery,
   useUpdateTemplateElementMutation,
 } from '../../utils/generated/graphql'
@@ -94,8 +96,10 @@ const GetAppicationDetails: React.FC = ({ structure, all, template, refetch }: a
   const { error, isLoading, fullStructure, responsesByCode } = useGetFullApplicationStructure({
     structure,
   })
+  const [shouldShowConfig, setShouldShowConfig] = useState(true)
+  const [createSection] = useCreateTemplateSectionMutation()
   if (!fullStructure || !responsesByCode) return null
-  console.log(fullStructure)
+
   return (
     <>
       <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
@@ -111,26 +115,52 @@ const GetAppicationDetails: React.FC = ({ structure, all, template, refetch }: a
             flex: 1,
           }}
         >
-          <Grid.Column width={4}></Grid.Column>
+          <Grid.Column width={4}>
+          <Sticky offset={120}>
+            <Segment compact>
+              <Checkbox
+                toggle
+                label="Show Config"
+                checked={shouldShowConfig}
+                onChange={() => setShouldShowConfig(!shouldShowConfig)}
+              />
+          
+              <Button style = {{marginTop: 20}} onClick={async ()=> {
+                await createSection({variables:{ data: {
+                  templateId: all.template.id,
+                  code: 'Some New Section',
+                  title: 'Some New Section'
+
+                }}})
+                refetch();
+              }}>Add Section</Button>
+        
+            </Segment>
+            </Sticky>
+          </Grid.Column>
 
           <Grid.Column width={10} stretched>
             {Object.entries(fullStructure.sections).map(([sectionCode, section]) =>
+            (<><Header as='h2'  content={fullStructure.sections[sectionCode].details.title} /> {
               Object.keys(section.pages).map((page) => (
                 <Segment key={`${sectionCode}-${page}`} basic>
-                  <Segment vertical style={{ marginBottom: 20 }}>
-                    <Header content={fullStructure.sections[sectionCode].details.title} />
+                                      
+                  <Segment vertical style={{ marginBottom: 10 }}>
 
+                 
                     <PageElements
                       refetch={refetch}
+                      pageName={page}
                       elements={getCurrentPageElements(fullStructure, sectionCode, page)}
                       responsesByCode={responsesByCode}
                       isStrictPage={false}
+                      shouldShowConfig={shouldShowConfig}
                       isEditable
                     />
                   </Segment>
                 </Segment>
               ))
-            )}
+              }</>))}
           </Grid.Column>
           <Grid.Column width={2} />
         </Grid>
@@ -163,9 +193,11 @@ interface PageElementProps {
 
 const PageElements: React.FC<PageElementProps> = ({
   elements,
+  pageName
   responsesByCode,
   isStrictPage,
   refetch,
+  shouldShowConfig,
   isEditable = true,
   isReview = false,
 }) => {
@@ -173,6 +205,8 @@ const PageElements: React.FC<PageElementProps> = ({
   console.log(elements)
   return (
     <Form>
+         <Header content={pageName} />
+
       {elements.map((element) => {
         const {
           code,
@@ -208,8 +242,9 @@ const PageElements: React.FC<PageElementProps> = ({
                 allResponses={responsesByCode}
                 currentResponse={response}
               />
-              <TemplateElement refetch={refetch} fullElement={fullElement} />
-              <pre>{JSON.stringify(fullElement, null, ' ')}</pre>
+              {!shouldShowConfig ? null : (
+                <TemplateElement refetch={refetch} fullElement={fullElement} />
+              )}
             </>
           )
         }

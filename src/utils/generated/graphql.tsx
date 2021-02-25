@@ -20720,6 +20720,33 @@ export type CreateTemplatePermissionMutation = (
   )> }
 );
 
+export type CreateTemplateSectionMutationVariables = Exact<{
+  data: TemplateSectionInput;
+}>;
+
+
+export type CreateTemplateSectionMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplateSection?: Maybe<(
+    { __typename?: 'CreateTemplateSectionPayload' }
+    & { templateSection?: Maybe<(
+      { __typename?: 'TemplateSection' }
+      & Pick<TemplateSection, 'id' | 'title' | 'templateId' | 'code'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+        & { templateSections: (
+          { __typename?: 'TemplateSectionsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplateSection' }
+            & Pick<TemplateSection, 'id'>
+          )>> }
+        ) }
+      )> }
+    )> }
+  )> }
+);
+
 export type CreateTemplateStageMutationVariables = Exact<{
   data: TemplateStageInput;
 }>;
@@ -22046,6 +22073,51 @@ export function useCreateTemplatePermissionMutation(baseOptions?: Apollo.Mutatio
 export type CreateTemplatePermissionMutationHookResult = ReturnType<typeof useCreateTemplatePermissionMutation>;
 export type CreateTemplatePermissionMutationResult = Apollo.MutationResult<CreateTemplatePermissionMutation>;
 export type CreateTemplatePermissionMutationOptions = Apollo.BaseMutationOptions<CreateTemplatePermissionMutation, CreateTemplatePermissionMutationVariables>;
+export const CreateTemplateSectionDocument = gql`
+    mutation createTemplateSection($data: TemplateSectionInput!) {
+  createTemplateSection(input: {templateSection: $data}) {
+    templateSection {
+      id
+      title
+      templateId
+      code
+      template {
+        id
+        templateSections {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateTemplateSectionMutationFn = Apollo.MutationFunction<CreateTemplateSectionMutation, CreateTemplateSectionMutationVariables>;
+
+/**
+ * __useCreateTemplateSectionMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateSectionMutation, { data, loading, error }] = useCreateTemplateSectionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateTemplateSectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplateSectionMutation, CreateTemplateSectionMutationVariables>) {
+        return Apollo.useMutation<CreateTemplateSectionMutation, CreateTemplateSectionMutationVariables>(CreateTemplateSectionDocument, baseOptions);
+      }
+export type CreateTemplateSectionMutationHookResult = ReturnType<typeof useCreateTemplateSectionMutation>;
+export type CreateTemplateSectionMutationResult = Apollo.MutationResult<CreateTemplateSectionMutation>;
+export type CreateTemplateSectionMutationOptions = Apollo.BaseMutationOptions<CreateTemplateSectionMutation, CreateTemplateSectionMutationVariables>;
 export const CreateTemplateStageDocument = gql`
     mutation createTemplateStage($data: TemplateStageInput!) {
   createTemplateStage(input: {templateStage: $data}) {

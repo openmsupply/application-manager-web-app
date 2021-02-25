@@ -107,7 +107,7 @@ const useGetFullApplicationStructure = ({
       setResponsesByCode(responseObject)
       setIsLoading(false)
     })
-  }, [data, error, loading])
+  }, [data, error, loading, structure])
 
   async function evaluateAndValidateElements(
     elements: TemplateElementStateNEW[],
