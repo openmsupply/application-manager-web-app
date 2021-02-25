@@ -154,7 +154,8 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
           <Button
             color="blue"
             onClick={() => {
-              requestRevalidation((sectionAndPage: SectionAndPage) => {
+              requestRevalidation((sectionAndPage, setStrictSectionPage) => {
+                setStrictSectionPage(null)
                 console.log('revalidation finished', sectionAndPage)
               })
             }}
