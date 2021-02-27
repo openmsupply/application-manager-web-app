@@ -17,7 +17,7 @@ export default function buildQueryFilters(filters: BasicStringObject, userId: nu
   }, {})
   // If no filters, return a dummy filter to prevent GraphQL empty object error
   if (Object.keys(graphQLfilter).length === 0) return { templateCode: { isNull: true } }
-  return { reviewerId: { equalTo: userId }, ...graphQLfilter }
+  return { reviewerId: { equalTo: userId }, assignerId: { equalTo: userId }, ...graphQLfilter }
 }
 
 const mapQueryToFilterField: FilterMap = {

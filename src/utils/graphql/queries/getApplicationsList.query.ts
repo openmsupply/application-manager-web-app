@@ -35,6 +35,13 @@ export default gql`
         numberOfReviewsSelfAssignedBySomeoneElse
         numberOfSelfAssignableReviews
         numberOfSubmittedReviews
+        numberOfReviewAssignements
+        numberOfAssignedReviewAssignments
+        numberOfAvailableReviewAssignments
+        numberOfQuestions
+        numberOfAssignedQuestions
+        isFullyAssigned
+        numberOfNotAssignedQuestions
       }
       # Use the page and count info for rendering Pagination UI
       pageInfo {
