@@ -17,6 +17,7 @@ import { Form } from 'semantic-ui-react'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import strings from '../utils/constants'
+import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
 
 const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props) => {
   const {
@@ -36,7 +37,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
   } = props
 
   const [responseMutation] = useUpdateResponseMutation()
-  const { setApplicationState } = useApplicationState()
+  const { setState: setUpdateTrackerState } = useFormElementUpdateTracker()
 
   const {
     userState: { currentUser },
@@ -86,11 +87,6 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
   }
 
   const onSave = async (jsonValue: ResponseFull) => {
-    setApplicationState({
-      type: 'setElementTimestamp',
-      timestampType: 'elementLostFocusTimestamp',
-    })
-
     if (!jsonValue.customValidation) {
       // Validate and Save response -- generic
       const validationResult: ValidationState = await onUpdate(jsonValue.text)
@@ -102,12 +98,10 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
             isValid: validationResult.isValid,
           },
         })
-      if (jsonValue.text === allResponses[code]?.text) {
-        setApplicationState({
-          type: 'setElementTimestamp',
-          timestampType: 'elementsStateUpdatedTimestamp',
-        })
-      }
+      setUpdateTrackerState({
+        type: 'setElementTimestamp',
+        timestampType: 'elementUpdatedTimestamp',
+      })
     } else {
       // Save response for plugins with internal validation
       const { isValid, validationMessage } = jsonValue.customValidation
@@ -120,16 +114,16 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
           isValid,
         },
       })
-      setApplicationState({
+      setUpdateTrackerState({
         type: 'setElementTimestamp',
-        timestampType: 'elementsStateUpdatedTimestamp',
+        timestampType: 'elementUpdatedTimestamp',
       })
     }
   }
 
   const setIsActive = () => {
     // Tells application state that a plugin field is in focus
-    setApplicationState({
+    setUpdateTrackerState({
       type: 'setElementTimestamp',
       timestampType: 'elementEnteredTimestamp',
     })

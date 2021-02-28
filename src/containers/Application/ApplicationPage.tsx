@@ -1,35 +1,97 @@
 import React, { useEffect, useState } from 'react'
-import { FullStructure, ResponsesByCode, ElementStateNEW } from '../../utils/types'
+import {
+  FullStructure,
+  ResponsesByCode,
+  ElementStateNEW,
+  MethodToCallOnRevalidation,
+  SectionAndPage,
+} from '../../utils/types'
 import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicationStructure'
 import { ApplicationStatus } from '../../utils/generated/graphql'
-
 import { useUserState } from '../../contexts/UserState'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { Loading, NoMatch } from '../../components'
+import { Loading } from '../../components'
 import strings from '../../utils/constants'
-
 import { Button, Grid, Header, Message, Segment, Sticky } from 'semantic-ui-react'
 import { PageElements } from '../../components/Application'
+import { useFormElementUpdateTracker } from '../../contexts/FormElementUpdateTrackerState'
 
 interface ApplicationProps {
   structure: FullStructure
   responses?: ResponsesByCode
 }
 
+const getFirstInvalidPage = (fullStructure: FullStructure): SectionAndPage | null => {
+  // TODO implement, should rely on .progress
+  // return { sectionCode: 'S1', pageName: 'Page 2' }
+  return null
+}
+
+interface RevalidationState {
+  methodToCallOnRevalidation: MethodToCallOnRevalidation | null
+  shouldProcessValidation: boolean
+  lastRevalidationRequest: number
+}
+
 const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
-  const [strictSectionPage, setStrictSectionPage] = useState({ section: null, page: null })
-  const { error, isLoading, fullStructure, responsesByCode } = useGetFullApplicationStructure({
-    structure,
-  })
   const {
     userState: { currentUser },
   } = useUserState()
   const { push, query } = useRouter()
 
+  const {
+    state: { isLastElementUpdateProcessed, elementUpdatedTimestamp },
+  } = useFormElementUpdateTracker()
+
+  const [strictSectionPage, setStrictSectionPage] = useState<SectionAndPage | null>(null)
+  const [revalidationState, setRevalidationState] = useState<RevalidationState>({
+    methodToCallOnRevalidation: null,
+    shouldProcessValidation: false,
+    lastRevalidationRequest: Date.now(),
+  })
+
+  const shouldRevalidate = isLastElementUpdateProcessed && revalidationState.shouldProcessValidation
+  const minRefetchTimestampForRevalidation = shouldRevalidate ? elementUpdatedTimestamp : 0
+
+  const { error, fullStructure } = useGetFullApplicationStructure({
+    structure,
+    shouldRevalidate,
+    minRefetchTimestampForRevalidation,
+  })
+
   const currentSection = query.sectionCode
   const currentPage = `Page ${query.page}`
 
-  console.log('Structure', fullStructure)
+  /* Method to pass to progress bar, next button and submit button to cause revalidation before action can be proceeded
+     Should always be called on submit, but only be called on next or progress bar navigation when isLinear */
+  // TODO may rename if we want to display loading modal ?
+  const requestRevalidation = (methodToCall: MethodToCallOnRevalidation) => {
+    setRevalidationState({
+      methodToCallOnRevalidation: methodToCall,
+      shouldProcessValidation: true,
+      lastRevalidationRequest: Date.now(),
+    })
+    // TODO show loading modal ?
+  }
+
+  // Revalidation Effect
+  useEffect(() => {
+    if (
+      fullStructure &&
+      revalidationState.methodToCallOnRevalidation &&
+      (fullStructure?.lastValidationTimestamp || 0) > revalidationState.lastRevalidationRequest
+    ) {
+      const firstInvalidPage = getFirstInvalidPage(fullStructure)
+
+      setRevalidationState({
+        ...revalidationState,
+        methodToCallOnRevalidation: null,
+        shouldProcessValidation: false,
+      })
+      revalidationState.methodToCallOnRevalidation(firstInvalidPage, setStrictSectionPage)
+      // TODO hide loading modal
+    }
+  }, [revalidationState, fullStructure])
 
   useEffect(() => {
     if (!structure) return
@@ -44,7 +106,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
   }, [structure])
 
   if (error) return <Message error header={strings.ERROR_APPLICATION_PAGE} list={[error]} />
-  if (!fullStructure || !responsesByCode) return <Loading />
+  if (!fullStructure || !fullStructure.responsesByCode) return <Loading />
 
   return (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
@@ -71,10 +133,10 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
               <Header content={fullStructure.sections[currentSection].details.title} />
               <PageElements
                 elements={getCurrentPageElements(fullStructure, currentSection, currentPage)}
-                responsesByCode={responsesByCode}
+                responsesByCode={fullStructure.responsesByCode}
                 isStrictPage={
-                  currentSection === strictSectionPage?.section &&
-                  currentPage === strictSectionPage?.page
+                  currentSection === strictSectionPage?.sectionCode &&
+                  currentPage === strictSectionPage?.pageName
                 }
                 isEditable
               />

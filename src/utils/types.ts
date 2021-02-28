@@ -18,6 +18,7 @@ import { DateTime } from 'luxon'
 export {
   ApplicationDetails,
   ApplicationElementStates,
+  ApplicationListRow,
   ApplicationStage,
   ApplicationStageMap,
   ApplicationStages,
@@ -26,6 +27,7 @@ export {
   ColumnDetails,
   ColumnsPerRole,
   ContextApplicationState,
+  ContextFormElementUpdateTrackerState,
   ContextListState,
   CurrentPage,
   DecisionAreaState,
@@ -40,12 +42,13 @@ export {
   FullStructure,
   IGraphQLConnection,
   LooseString,
+  MethodToCallOnRevalidation,
   Page,
   PageElements,
   PageNEW,
   PageElement,
-  PageElementsNEW,
   PageElementsStatuses,
+  Progress,
   ProgressStatus,
   ResponseFull,
   ResponsePayload,
@@ -56,12 +59,14 @@ export {
   ReviewQuestion,
   ReviewQuestionDecision,
   ReviewerResponsesPayload,
+  SectionAndPage,
   SectionState,
   SectionDetails,
   SectionProgress,
   SectionsStructure,
   SectionStateNEW,
   SectionsStructureNEW,
+  SortQuery,
   StageAndStatus,
   TemplateDetails,
   TemplateElementState,
@@ -80,7 +85,6 @@ export {
   Organisation,
   LoginPayload,
   BasicStringObject,
-  SortQuery,
 }
 
 interface ApplicationDetails {
@@ -95,6 +99,10 @@ interface ApplicationDetails {
 
 interface ApplicationElementStates {
   [key: string]: ElementState
+}
+
+interface ApplicationListRow extends ApplicationList {
+  isExpanded: boolean
 }
 
 interface ApplicationStage {
@@ -133,6 +141,12 @@ interface ColumnDetails {
 
 type ColumnsPerRole = {
   [role in USER_ROLES]: Array<APPLICATION_COLUMNS>
+}
+
+interface ContextFormElementUpdateTrackerState {
+  elementEnteredTimestamp: number
+  elementUpdatedTimestamp: number
+  isLastElementUpdateProcessed: boolean
 }
 
 interface ContextApplicationState {
@@ -218,9 +232,11 @@ interface EvaluatorParameters {
 }
 
 interface FullStructure {
+  lastValidationTimestamp?: number
   info: ApplicationDetails
   sections: SectionsStructureNEW
   stages: ApplicationStages
+  responsesByCode?: ResponsesByCode
 }
 
 interface IGraphQLConnection {
@@ -243,7 +259,8 @@ type PageElements = {
 
 interface PageNEW {
   number: number
-  state: PageElementsNEW
+  progress: Progress
+  state: PageElement[]
 }
 
 type PageElement = {
@@ -252,12 +269,22 @@ type PageElement = {
   review?: ReviewQuestionDecision
 }
 
-type PageElementsNEW = PageElement[]
 interface PageElementsStatuses {
   [code: string]: ProgressStatus
 }
 
+interface Progress {
+  doneRequired: number
+  doneNonRequired: number
+  completed: boolean
+  totalRequired: number
+  totalNonRequired: number
+  totalSum: number
+  valid: boolean
+}
+
 type ProgressStatus = 'VALID' | 'NOT_VALID' | 'INCOMPLETE'
+
 interface ResponseFull {
   id: number
   text: string | null | undefined
@@ -324,6 +351,7 @@ interface SectionProgress {
   valid: boolean
   linkedPage: number
 }
+
 interface SectionState {
   details: SectionDetails
   progress?: SectionProgress
@@ -337,7 +365,8 @@ interface SectionsStructure {
 }
 interface SectionStateNEW {
   details: SectionDetails
-  progress?: SectionProgress
+  invalidPage?: number
+  progress?: Progress
   assigned?: ReviewerDetails
   pages: {
     [pageName: string]: PageNEW
@@ -465,4 +494,14 @@ type UserRoles = {
 interface SortQuery {
   sortColumn?: string
   sortDirection?: 'ascending' | 'descending'
+}
+
+type SectionAndPage = { sectionCode: string; pageName: string }
+
+interface SetStrictSectionPage {
+  (sectionAndPage: SectionAndPage | null): void
+}
+
+interface MethodToCallOnRevalidation {
+  (firstInvalidPage: SectionAndPage | null, setStrictSectionPage: SetStrictSectionPage): void
 }

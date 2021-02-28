@@ -28,6 +28,7 @@ import ApplicationSubmission from '../Application/ApplicationSubmission'
 import UserArea from '../User/UserArea'
 import ListWrapper from '../List/ListWrapper'
 import ReviewSubmission from '../../components/Review/ReviewSubmission'
+import { FormElementUpdateTrackerProvider } from '../../contexts/FormElementUpdateTrackerState'
 
 const SiteLayout: React.FC = () => {
   return (
@@ -51,7 +52,9 @@ const SiteLayout: React.FC = () => {
         </Route>
         {/* Application router NEW*/}
         <Route path="/applicationNEW/:serialNumber">
-          <ApplicationWrapper />
+          <FormElementUpdateTrackerProvider>
+            <ApplicationWrapper />
+          </FormElementUpdateTrackerProvider>
         </Route>
         {/* Application current routes */}
         <Route exact path="/application/:serialNumber">

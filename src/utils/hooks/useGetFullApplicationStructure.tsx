@@ -11,17 +11,20 @@ import { ApplicationResponse, useGetAllResponsesQuery } from '../generated/graph
 import { useUserState } from '../../contexts/UserState'
 import evaluateExpression from '@openmsupply/expression-evaluator'
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
+import { generateResponsesProgress } from '../helpers/structure/generateProgress'
 
 interface useGetFullApplicationStructureProps {
   structure: FullStructure
-  shouldProcessValidation?: boolean
+  shouldRevalidate?: boolean
+  minRefetchTimestampForRevalidation?: number
   firstRunValidation?: boolean
 }
 
 const useGetFullApplicationStructure = ({
   structure,
-  shouldProcessValidation,
-  firstRunValidation,
+  shouldRevalidate = false,
+  minRefetchTimestampForRevalidation = 0,
+  firstRunValidation = true,
 }: useGetFullApplicationStructureProps) => {
   const {
     info: { serial },
@@ -30,17 +33,16 @@ const useGetFullApplicationStructure = ({
     userState: { currentUser },
   } = useUserState()
   const [fullStructure, setFullStructure] = useState<FullStructure>()
-  const [responsesByCode, setResponsesByCode] = useState<ResponsesByCode>()
-  const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
-  const [firstRunProcessValidation, setFirstRunProcessValidation] = useState(
-    firstRunValidation || true
-  )
-  const [lastValidationTimestamp, setLastValidationTimestamp] = useState<number>()
+  const [firstRunProcessValidation, setFirstRunProcessValidation] = useState(firstRunValidation)
+
+  const [lastRefetchedTimestamp, setLastRefetchedTimestamp] = useState<number>(0)
+  const [lastProcessedTimestamp, setLastProcessedTimestamp] = useState<number>(0)
 
   const newStructure = { ...structure } // This MIGHT need to be deep-copied
 
   const networkFetch = true // To-DO: make this conditional
+
   const { data, error, loading } = useGetAllResponsesQuery({
     variables: {
       serial,
@@ -49,18 +51,27 @@ const useGetFullApplicationStructure = ({
     fetchPolicy: networkFetch ? 'network-only' : 'cache-first',
   })
 
-  useEffect(() => {
-    if (loading) {
-      return
-    }
+  // TODO - might need a use effect if serial is changes (navigated to another application from current page)
 
+  useEffect(() => {
+    if (!data) return
+    setLastRefetchedTimestamp(Date.now())
+  }, [data])
+
+  useEffect(() => {
     if (error) {
       setIsError(true)
       return
     }
 
     if (!data) return
-    setIsLoading(true)
+
+    const isDataUpToDate = lastProcessedTimestamp > lastRefetchedTimestamp
+    const shouldRevalidationWaitForRefetech =
+      minRefetchTimestampForRevalidation > lastRefetchedTimestamp
+    const shouldRevalidateThisRun = shouldRevalidate && !shouldRevalidationWaitForRefetech
+
+    if (isDataUpToDate && !shouldRevalidateThisRun) return
 
     // Build responses by code (and only keep latest)
     const responseObject: any = {}
@@ -93,30 +104,39 @@ const useGetFullApplicationStructure = ({
     evaluateAndValidateElements(
       flattenedElements.map((elem: PageElement) => elem.element),
       responseObject,
-      evaluationParameters
+      evaluationParameters,
+      shouldRevalidateThisRun || firstRunProcessValidation
     ).then((result) => {
       result.forEach((evaluatedElement, index) => {
         flattenedElements[index].element = evaluatedElement
         flattenedElements[index].response = responseObject[evaluatedElement.code]
       })
-      if (shouldProcessValidation || firstRunProcessValidation)
-        setLastValidationTimestamp(Date.now())
-      generateProgressStructure(newStructure) // To-Do
+
+      if (shouldRevalidateThisRun || firstRunProcessValidation) {
+        newStructure.lastValidationTimestamp = Date.now()
+      }
+
+      newStructure.responsesByCode = responseObject
+
+      generateResponsesProgress(newStructure)
+
+      setLastProcessedTimestamp(Date.now())
       setFirstRunProcessValidation(false)
       setFullStructure(newStructure)
-      setResponsesByCode(responseObject)
-      setIsLoading(false)
     })
-  }, [data, error, loading, structure])
+  }, [lastRefetchedTimestamp, shouldRevalidate, minRefetchTimestampForRevalidation, error])
 
   async function evaluateAndValidateElements(
     elements: TemplateElementStateNEW[],
     responseObject: ResponsesByCode,
-    evaluationParameters: EvaluatorParameters
+    evaluationParameters: EvaluatorParameters,
+    shouldValidate: boolean
   ) {
     const elementPromiseArray: Promise<ElementStateNEW>[] = []
     elements.forEach((element) => {
-      elementPromiseArray.push(evaluateSingleElement(element, responseObject, evaluationParameters))
+      elementPromiseArray.push(
+        evaluateSingleElement(element, responseObject, evaluationParameters, shouldValidate)
+      )
     })
     return await Promise.all(elementPromiseArray)
   }
@@ -138,7 +158,8 @@ const useGetFullApplicationStructure = ({
   async function evaluateSingleElement(
     element: TemplateElementStateNEW,
     responseObject: ResponsesByCode,
-    evaluationParameters: EvaluatorParameters
+    evaluationParameters: EvaluatorParameters,
+    shouldValidate: boolean
   ): Promise<ElementStateNEW> {
     const responses = { ...evaluationParameters.objects?.responses }
     const currentEvaluationParameters = {
@@ -167,14 +188,13 @@ const useGetFullApplicationStructure = ({
       currentEvaluationParameters,
       true
     )
-    const isValid =
-      shouldProcessValidation || firstRunProcessValidation
-        ? evaluateExpressionWithFallBack(
-            element.validationExpression,
-            currentEvaluationParameters,
-            false
-          )
-        : async () => responseObject[element.code]?.isValid
+    const isValid = shouldValidate
+      ? evaluateExpressionWithFallBack(
+          element.validationExpression,
+          currentEvaluationParameters,
+          false
+        )
+      : async () => responseObject[element.code]?.isValid
     const results = await Promise.all([isEditable, isRequired, isVisible, isValid])
 
     const evaluatedElement = {
@@ -190,10 +210,7 @@ const useGetFullApplicationStructure = ({
 
   return {
     fullStructure,
-    responsesByCode,
     error: isError ? error : false,
-    isLoading: loading || isLoading,
-    lastValidationTimestamp,
   }
 }
 
@@ -207,10 +224,4 @@ const flattenStructureElements = (structure: FullStructure) => {
     })
   })
   return flattened
-}
-
-const generateProgressStructure = (structure: FullStructure) => {
-  // TO-DO:
-  // Calculate all Progress objects and update structure in-place
-  // Shouldn't return anything
 }
