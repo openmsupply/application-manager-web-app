@@ -20650,6 +20650,23 @@ export type UpdateResponseMutation = (
   )> }
 );
 
+export type UpdateReviewAssignmentMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: ReviewAssignmentPatch;
+}>;
+
+
+export type UpdateReviewAssignmentMutation = (
+  { __typename?: 'Mutation' }
+  & { updateReviewAssignment?: Maybe<(
+    { __typename?: 'UpdateReviewAssignmentPayload' }
+    & { reviewAssignment?: Maybe<(
+      { __typename?: 'ReviewAssignment' }
+      & Pick<ReviewAssignment, 'id' | 'status'>
+    )> }
+  )> }
+);
+
 export type UpdateReviewResponseMutationVariables = Exact<{
   id: Scalars['Int'];
   decision?: Maybe<ReviewResponseDecision>;
@@ -20902,6 +20919,66 @@ export type GetReviewAssignmentQuery = (
       & { reviewer?: Maybe<(
         { __typename?: 'User' }
         & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>
+      )>, reviews: (
+        { __typename?: 'ReviewsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'Review' }
+          & Pick<Review, 'id' | 'status'>
+          & { reviewResponses: (
+            { __typename?: 'ReviewResponsesConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'ReviewResponse' }
+              & Pick<ReviewResponse, 'id' | 'comment' | 'decision'>
+              & { applicationResponse?: Maybe<(
+                { __typename?: 'ApplicationResponse' }
+                & Pick<ApplicationResponse, 'id'>
+              )> }
+            )>> }
+          ) }
+        )>> }
+      ), reviewQuestionAssignments: (
+        { __typename?: 'ReviewQuestionAssignmentsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'ReviewQuestionAssignment' }
+          & { templateElement?: Maybe<(
+            { __typename?: 'TemplateElement' }
+            & Pick<TemplateElement, 'code'>
+            & { section?: Maybe<(
+              { __typename?: 'TemplateSection' }
+              & Pick<TemplateSection, 'id' | 'index'>
+            )>, applicationResponses: (
+              { __typename?: 'ApplicationResponsesConnection' }
+              & { nodes: Array<Maybe<(
+                { __typename?: 'ApplicationResponse' }
+                & Pick<ApplicationResponse, 'id'>
+              )>> }
+            ) }
+          )> }
+        )>> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetReviewAssignmentDemoQueryVariables = Exact<{
+  reviewerId: Scalars['Int'];
+  applicationSerialNumber?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetReviewAssignmentDemoQuery = (
+  { __typename?: 'Query' }
+  & { reviewAssignments?: Maybe<(
+    { __typename?: 'ReviewAssignmentsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'ReviewAssignment' }
+      & Pick<ReviewAssignment, 'id' | 'applicationId' | 'stageId' | 'level' | 'status'>
+      & { reviewer?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>
+      )>, stage?: Maybe<(
+        { __typename?: 'TemplateStage' }
+        & Pick<TemplateStage, 'title'>
       )>, reviews: (
         { __typename?: 'ReviewsConnection' }
         & { nodes: Array<Maybe<(
@@ -21366,6 +21443,42 @@ export function useUpdateResponseMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateResponseMutationHookResult = ReturnType<typeof useUpdateResponseMutation>;
 export type UpdateResponseMutationResult = Apollo.MutationResult<UpdateResponseMutation>;
 export type UpdateResponseMutationOptions = Apollo.BaseMutationOptions<UpdateResponseMutation, UpdateResponseMutationVariables>;
+export const UpdateReviewAssignmentDocument = gql`
+    mutation updateReviewAssignment($id: Int!, $data: ReviewAssignmentPatch!) {
+  updateReviewAssignment(input: {id: $id, patch: $data}) {
+    reviewAssignment {
+      id
+      status
+    }
+  }
+}
+    `;
+export type UpdateReviewAssignmentMutationFn = Apollo.MutationFunction<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>;
+
+/**
+ * __useUpdateReviewAssignmentMutation__
+ *
+ * To run a mutation, you first call `useUpdateReviewAssignmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateReviewAssignmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateReviewAssignmentMutation, { data, loading, error }] = useUpdateReviewAssignmentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateReviewAssignmentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>) {
+        return Apollo.useMutation<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>(UpdateReviewAssignmentDocument, baseOptions);
+      }
+export type UpdateReviewAssignmentMutationHookResult = ReturnType<typeof useUpdateReviewAssignmentMutation>;
+export type UpdateReviewAssignmentMutationResult = Apollo.MutationResult<UpdateReviewAssignmentMutation>;
+export type UpdateReviewAssignmentMutationOptions = Apollo.BaseMutationOptions<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>;
 export const UpdateReviewResponseDocument = gql`
     mutation updateReviewResponse($id: Int!, $decision: ReviewResponseDecision, $comment: String) {
   updateReviewResponse(input: {id: $id, patch: {decision: $decision, comment: $comment}}) {
@@ -21858,6 +21971,87 @@ export function useGetReviewAssignmentLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetReviewAssignmentQueryHookResult = ReturnType<typeof useGetReviewAssignmentQuery>;
 export type GetReviewAssignmentLazyQueryHookResult = ReturnType<typeof useGetReviewAssignmentLazyQuery>;
 export type GetReviewAssignmentQueryResult = Apollo.QueryResult<GetReviewAssignmentQuery, GetReviewAssignmentQueryVariables>;
+export const GetReviewAssignmentDemoDocument = gql`
+    query getReviewAssignmentDemo($reviewerId: Int!, $applicationSerialNumber: String) {
+  reviewAssignments(filter: {reviewerId: {equalTo: $reviewerId}, application: {serial: {equalTo: $applicationSerialNumber}}}) {
+    nodes {
+      id
+      applicationId
+      reviewer {
+        id
+        username
+        firstName
+        lastName
+      }
+      stageId
+      level
+      status
+      stage {
+        title
+      }
+      reviews {
+        nodes {
+          id
+          status
+          reviewResponses {
+            nodes {
+              id
+              comment
+              decision
+              applicationResponse {
+                id
+              }
+            }
+          }
+        }
+      }
+      reviewQuestionAssignments {
+        nodes {
+          templateElement {
+            code
+            section {
+              id
+              index
+            }
+            applicationResponses {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetReviewAssignmentDemoQuery__
+ *
+ * To run a query within a React component, call `useGetReviewAssignmentDemoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReviewAssignmentDemoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReviewAssignmentDemoQuery({
+ *   variables: {
+ *      reviewerId: // value for 'reviewerId'
+ *      applicationSerialNumber: // value for 'applicationSerialNumber'
+ *   },
+ * });
+ */
+export function useGetReviewAssignmentDemoQuery(baseOptions?: Apollo.QueryHookOptions<GetReviewAssignmentDemoQuery, GetReviewAssignmentDemoQueryVariables>) {
+        return Apollo.useQuery<GetReviewAssignmentDemoQuery, GetReviewAssignmentDemoQueryVariables>(GetReviewAssignmentDemoDocument, baseOptions);
+      }
+export function useGetReviewAssignmentDemoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReviewAssignmentDemoQuery, GetReviewAssignmentDemoQueryVariables>) {
+          return Apollo.useLazyQuery<GetReviewAssignmentDemoQuery, GetReviewAssignmentDemoQueryVariables>(GetReviewAssignmentDemoDocument, baseOptions);
+        }
+export type GetReviewAssignmentDemoQueryHookResult = ReturnType<typeof useGetReviewAssignmentDemoQuery>;
+export type GetReviewAssignmentDemoLazyQueryHookResult = ReturnType<typeof useGetReviewAssignmentDemoLazyQuery>;
+export type GetReviewAssignmentDemoQueryResult = Apollo.QueryResult<GetReviewAssignmentDemoQuery, GetReviewAssignmentDemoQueryVariables>;
 export const GetReviewStatusDocument = gql`
     query getReviewStatus($reviewId: Int!) {
   reviewStatusHistories(condition: {isCurrent: true, reviewId: $reviewId}) {

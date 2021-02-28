@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, Label, Progress, Segment } from 'semantic-ui-react'
+import { Icon, Label, Popup, Progress, Segment } from 'semantic-ui-react'
 import { ApplicationStatus } from '../../../utils/generated/graphql'
 import { CellProps } from '../../../utils/types'
 
@@ -16,43 +16,57 @@ const StatusCell: React.FC<CellProps> = ({ application }) => {
   const reviewerActionables = []
   const actionableList = [
     {
-      icon: 'reply',
-      tooltip: 'Applications that can be slef assigned',
+      icon: 'globe',
+      title: 'Self Assign',
+      tooltip: 'Applications that can be self assigned',
       applicationKey: 'numberOfSelfAssignableReviews',
     },
     {
-      icon: 'reply',
-      tooltip: 'Applications that can be slef assigned',
+      icon: 'send',
+      title: 'Continue',
+      tooltip: 'Reviews in progress',
       applicationKey: 'numberOfDraftReviews',
     },
     {
       icon: 'reply',
-      tooltip: 'Applications that can be slef assigned',
+      title: 'Update',
+      tooltip: 'Reviews with changes requested',
       applicationKey: 'numberOfChangesRequestedReviews',
     },
     {
-      icon: 'reply',
-      tooltip: 'Applications that can be slef assigned',
+      icon: 'h',
+      tooltip: 'Not started assigned reviews',
+      title: 'Start',
       applicationKey: 'numberOfAssignedNotStartedReviews',
     },
   ]
 
   actionableList.forEach((actionable) => {
-    if (application[actionable.applicationKey] > 0) {
+    const count = application[actionable.applicationKey]
+    if (count > 0) {
       reviewerActionables.push(
-        <Label>
-          <Icon name={actionable.icon} />
-          {application[actionable.applicationKey]}
-        </Label>
+        <Link to={`/applicationNew/${serial}/review`}>{`${actionable.title}${
+          count > 1 ? `(${count})` : ''
+        }`}</Link>
+
+        // <Popup
+        //   content={actionable.tooltip}
+        //   trigger={
+        //     <Label>
+        //       <Icon name={actionable.icon} />
+        //       {application[actionable.applicationKey]}
+        //     </Label>
+        //   }
+        // />
       )
     }
   })
 
-  if (application.numberOfSelfAssignableReviews > 0) {
+  if (reviewerActionables.length > 0) {
     return (
       <Segment basic textAlign="center">
-        <Progress size="tiny" />
-        <Link to={`/application/${serial}`}></Link>
+        <div>{...reviewerActionables}</div>
+        {/* <Link to={`/application/${serial}/review`}>Details</Link> */}
         {/* <Icon name="trash alternate outline" style={{ marginLeft: 10 }} /> */}
       </Segment>
     )
