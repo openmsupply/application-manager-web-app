@@ -27,6 +27,7 @@ import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicat
 import {
   ActionPluginsOrderBy,
   ReviewAssignmentStatus,
+  Trigger,
   ReviewStatus,
   useUpdateReviewAssignmentMutation,
 } from '../../utils/generated/graphql'
@@ -93,16 +94,59 @@ const ReviewOverview: React.FC = ({ structure }) => {
   //     } else return <Label basic>MISSING PROGRESS... TODO</Label>
   //   } else return <p>{strings.LABEL_ASSIGNED_TO_OTHER}</p>
   // }
+  console.log(structure)
+  console.log(
+    Object.values(structure.sections)
+      .map((section) => Object.values(section.pages).map((page) => page.state))
+      .flat()
+      .flat()
+  )
+  console.log(
+    Object.values(structure.sections)
+      .map((section) => Object.values(section.pages).map((page) => page.state))
+      .flat()
+      .flat()
+      .filter((element) => element.element?.fullElement?.category === 'QUESTION')
+      .map((element) => element.element.fullElement.id)
+  )
+
+  const templateElements = Object.values(structure.sections)
+    .map((section) => Object.values(section.pages).map((page) => page.state))
+    .flat()
+    .flat()
+    .filter((element) => element.element?.fullElement?.category === 'QUESTION')
+    .map((element) => element.element.fullElement.id)
+
+  const reviewQuestionAssignmentsUsingId = {
+    create: templateElements.map((id) => ({
+      templateElementId: id,
+    })),
+  }
+  console.log(reviewQuestionAssignmentsUsingId)
 
   const buttonActionList = [
     {
       topTitle: 'Can Self Assign Review',
       topIcon: 'check circle',
       actionTitle: 'Self Assign',
-      action: (reviewAssignment) =>
+      action: (reviewAssignment) => {
+        const reviewQuestionAssignmentsUsingId = {
+          create: templateElements.map((id) => ({
+            templateElementId: id,
+          })),
+        }
+        console.log(reviewQuestionAssignmentsUsingId)
         updateReviewAssignment({
-          variables: { id: reviewAssignment.id, data: { status: ReviewAssignmentStatus.Assigned } },
-        }),
+          variables: {
+            id: reviewAssignment.id,
+            data: {
+              status: ReviewAssignmentStatus.Assigned,
+              trigger: Trigger.OnReviewSelfAssign,
+              reviewQuestionAssignmentsUsingId,
+            },
+          },
+        })
+      },
       condition: (reviewAssignment) =>
         reviewAssignment.status === ReviewAssignmentStatus.AvailableForSelfAssignment,
     },
@@ -110,6 +154,17 @@ const ReviewOverview: React.FC = ({ structure }) => {
       topTitle: 'Can Start Review',
       actionTitle: 'Start',
       topIcon: 'play',
+      action: (reviewAssignment) => {
+        console.log(reviewAssignment.application.applicationResponses.nodes)
+        create({
+          reviewAssigmentId: reviewAssignment.id,
+          applicationResponses: reviewAssignment.application.applicationResponses.nodes.map(
+            ({ id }) => ({
+              applicationResponseId: id,
+            })
+          ),
+        })
+      },
       condition: (reviewAssignment) =>
         reviewAssignment.status === ReviewAssignmentStatus.Assigned && !reviewAssignment.review,
     },
@@ -117,6 +172,9 @@ const ReviewOverview: React.FC = ({ structure }) => {
       topTitle: 'Can Continue Review',
       actionTitle: 'Continue',
       topIcon: 'edit',
+      action: (reviewAssignment) => {
+        push(`/application/${serialNumber}/review/${reviewAssignment.review.id}`)
+      }
       condition: (reviewAssignment) => reviewAssignment?.review?.status === ReviewStatus.Draft,
     },
     {
@@ -239,8 +297,8 @@ const ReviewOverview: React.FC = ({ structure }) => {
           panels={panels}
           style={{ width: '100%' }}
         />
-        {/* <pre>{JSON.stringify(reviewerAssignments, null, ' ')}</pre>
-        <pre>{JSON.stringify(structure, null, ' ')}</pre> */}
+        <pre>{JSON.stringify(reviewerAssignments, null, ' ')}</pre>
+        <pre>{JSON.stringify(structure, null, ' ')}</pre>
       </Segment>
       {/* <Segment textAlign="center">
         <Label color="blue">{strings.STAGE_PLACEHOLDER}</Label>

@@ -11,6 +11,15 @@ export default gql`
       nodes {
         id
         applicationId
+        application {
+          id
+          serial
+          applicationResponses {
+            nodes {
+              id
+            }
+          }
+        }
         reviewer {
           id
           username

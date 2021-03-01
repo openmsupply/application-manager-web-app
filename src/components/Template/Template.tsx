@@ -87,7 +87,7 @@ const Template: React.FC = () => {
 
 const GetApplication: React.FC = ({ all, children }: any) => {
   const { structure, template, refetch } = useLoadApplicationNEW({
-    serialNumber: `${all?.wholeTemplate?.applications?.nodes[1]?.serial || 0}`,
+    serialNumber: `${all?.wholeTemplate?.applications?.nodes[0]?.serial || 0}`,
   })
 
   if (!structure) return null
@@ -98,14 +98,17 @@ const GetApplication: React.FC = ({ all, children }: any) => {
 }
 
 const GetAppicationDetails: React.FC = ({ structure, all, template, refetch }: any) => {
-  const { error, isLoading, fullStructure, responsesByCode } = useGetFullApplicationStructure({
+  const { error, isLoading, fullStructure } = useGetFullApplicationStructure({
     structure,
   })
   const [shouldShowConfig, setShouldShowConfig] = useState(false)
   const [toggleSectionEdit, setToggleSectionEdit] = useState(false)
   const [currentSectionCode, setCurrentSectionCode] = useState(null)
   const [createElement] = useCreateTemplateElementMutation()
-  if (!fullStructure || !responsesByCode) return null
+
+  if (!fullStructure) return null
+
+  const responsesByCode = fullStructure.responsesByCode
 
   console.log(fullStructure)
   return (
@@ -430,7 +433,7 @@ const TemplateElement: React.FC = ({ fullElement, refetch }) => {
     refetch()
   }
 
-  const { id, index, ...element } = fullElement
+  const { id, ...element } = fullElement
 
   return (
     <Accordion

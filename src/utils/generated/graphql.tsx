@@ -22403,7 +22403,50 @@ export type UpdateReviewAssignmentMutation = (
     { __typename?: 'UpdateReviewAssignmentPayload' }
     & { reviewAssignment?: Maybe<(
       { __typename?: 'ReviewAssignment' }
-      & Pick<ReviewAssignment, 'id' | 'status'>
+      & Pick<ReviewAssignment, 'id' | 'applicationId' | 'stageId' | 'level' | 'status'>
+      & { reviewer?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>
+      )>, stage?: Maybe<(
+        { __typename?: 'TemplateStage' }
+        & Pick<TemplateStage, 'title'>
+      )>, reviews: (
+        { __typename?: 'ReviewsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'Review' }
+          & Pick<Review, 'id' | 'status'>
+          & { reviewResponses: (
+            { __typename?: 'ReviewResponsesConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'ReviewResponse' }
+              & Pick<ReviewResponse, 'id' | 'comment' | 'decision'>
+              & { applicationResponse?: Maybe<(
+                { __typename?: 'ApplicationResponse' }
+                & Pick<ApplicationResponse, 'id'>
+              )> }
+            )>> }
+          ) }
+        )>> }
+      ), reviewQuestionAssignments: (
+        { __typename?: 'ReviewQuestionAssignmentsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'ReviewQuestionAssignment' }
+          & { templateElement?: Maybe<(
+            { __typename?: 'TemplateElement' }
+            & Pick<TemplateElement, 'code'>
+            & { section?: Maybe<(
+              { __typename?: 'TemplateSection' }
+              & Pick<TemplateSection, 'id' | 'index'>
+            )>, applicationResponses: (
+              { __typename?: 'ApplicationResponsesConnection' }
+              & { nodes: Array<Maybe<(
+                { __typename?: 'ApplicationResponse' }
+                & Pick<ApplicationResponse, 'id'>
+              )>> }
+            ) }
+          )> }
+        )>> }
+      ) }
     )> }
   )> }
 );
@@ -22419,7 +22462,28 @@ export type UpdateReviewResponseMutation = (
   { __typename?: 'Mutation' }
   & { updateReviewResponse?: Maybe<(
     { __typename?: 'UpdateReviewResponsePayload' }
-    & Pick<UpdateReviewResponsePayload, 'clientMutationId'>
+    & { reviewResponse?: Maybe<(
+      { __typename?: 'ReviewResponse' }
+      & Pick<ReviewResponse, 'id' | 'decision' | 'comment'>
+      & { applicationResponse?: Maybe<(
+        { __typename?: 'ApplicationResponse' }
+        & Pick<ApplicationResponse, 'id'>
+      )>, review?: Maybe<(
+        { __typename?: 'Review' }
+        & Pick<Review, 'id'>
+        & { reviewResponses: (
+          { __typename?: 'ReviewResponsesConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'ReviewResponse' }
+            & Pick<ReviewResponse, 'id' | 'decision' | 'comment'>
+            & { applicationResponse?: Maybe<(
+              { __typename?: 'ApplicationResponse' }
+              & Pick<ApplicationResponse, 'id'>
+            )> }
+          )>> }
+        ) }
+      )> }
+    )> }
   )> }
 );
 
@@ -22960,7 +23024,17 @@ export type GetReviewAssignmentDemoQuery = (
     & { nodes: Array<Maybe<(
       { __typename?: 'ReviewAssignment' }
       & Pick<ReviewAssignment, 'id' | 'applicationId' | 'stageId' | 'level' | 'status'>
-      & { reviewer?: Maybe<(
+      & { application?: Maybe<(
+        { __typename?: 'Application' }
+        & Pick<Application, 'id' | 'serial'>
+        & { applicationResponses: (
+          { __typename?: 'ApplicationResponsesConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'ApplicationResponse' }
+            & Pick<ApplicationResponse, 'id'>
+          )>> }
+        ) }
+      )>, reviewer?: Maybe<(
         { __typename?: 'User' }
         & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>
       )>, stage?: Maybe<(
@@ -24078,7 +24152,51 @@ export const UpdateReviewAssignmentDocument = gql`
   updateReviewAssignment(input: {id: $id, patch: $data}) {
     reviewAssignment {
       id
+      applicationId
+      reviewer {
+        id
+        username
+        firstName
+        lastName
+      }
+      stageId
+      level
       status
+      stage {
+        title
+      }
+      reviews {
+        nodes {
+          id
+          status
+          reviewResponses {
+            nodes {
+              id
+              comment
+              decision
+              applicationResponse {
+                id
+              }
+            }
+          }
+        }
+      }
+      reviewQuestionAssignments {
+        nodes {
+          templateElement {
+            code
+            section {
+              id
+              index
+            }
+            applicationResponses {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -24112,7 +24230,27 @@ export type UpdateReviewAssignmentMutationOptions = Apollo.BaseMutationOptions<U
 export const UpdateReviewResponseDocument = gql`
     mutation updateReviewResponse($id: Int!, $decision: ReviewResponseDecision, $comment: String) {
   updateReviewResponse(input: {id: $id, patch: {decision: $decision, comment: $comment}}) {
-    clientMutationId
+    reviewResponse {
+      id
+      decision
+      comment
+      applicationResponse {
+        id
+      }
+      review {
+        id
+        reviewResponses {
+          nodes {
+            id
+            decision
+            comment
+            applicationResponse {
+              id
+            }
+          }
+        }
+      }
+    }
   }
 }
     `;
@@ -25093,6 +25231,15 @@ export const GetReviewAssignmentDemoDocument = gql`
     nodes {
       id
       applicationId
+      application {
+        id
+        serial
+        applicationResponses {
+          nodes {
+            id
+          }
+        }
+      }
       reviewer {
         id
         username

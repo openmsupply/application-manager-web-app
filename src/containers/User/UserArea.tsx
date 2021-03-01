@@ -27,6 +27,7 @@ const UserArea: React.FC = () => {
             </Button.Content>
           </Button>
         </Segment>
+
         {/* <AppMenu templatePermissions={filteredTemplates} /> */}
         {/* {error ? (
               <Message error list={[error]} />
@@ -38,6 +39,19 @@ const UserArea: React.FC = () => {
 
         {currentUser && (
           <Segment inverted floated="right" style={{ margin: 5 }}>
+            {!currentUser?.organisation?.orgName ? null : (
+              <Button animated basic inverted onClick={() => logout()} style={{ marginRight: 50 }}>
+                <Button.Content visible>
+                  {' '}
+                  <Icon name="building" />
+                  {currentUser?.organisation?.orgName}
+                </Button.Content>
+                <Button.Content inverted hidden>
+                  <Icon name="exchange" />
+                  Switch Organisation
+                </Button.Content>
+              </Button>
+            )}
             <Button animated basic inverted onClick={() => logout()}>
               <Button.Content visible>
                 <Icon name="user" />
@@ -48,6 +62,7 @@ const UserArea: React.FC = () => {
                 {strings.LABEL_LOG_OUT}
               </Button.Content>
             </Button>
+
             <Label as="button" color="grey" style={{ position: 'fixed', right: 0, top: 0 }}>
               {currentUser?.username}
               <UserSelection />

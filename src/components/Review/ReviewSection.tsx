@@ -33,6 +33,7 @@ interface ReviewSectionProps {
 const ReviewSection: React.FC<ReviewSectionProps> = ({
   allResponses,
   assignedToYou,
+  refetch,
   reviewSection,
   updateResponses,
   setDecisionArea,
@@ -133,11 +134,13 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
                                 <Grid>
                                   <Grid.Row>
                                     <Grid.Column width="10">
-                                      <Card.Header>{review.decision}</Card.Header>
-                                      <Card.Description>{review.comment}</Card.Description>
-                                      {assigned && (
+                                      <Card.Header>
+                                        <Label>{review.decision}</Label>
+                                      </Card.Header>
+                                      <Card.Meta>{review.comment}</Card.Meta>
+                                      {/* {assigned && (
                                         <Card.Meta>{`${assigned.firstName} ${assigned.lastName}`}</Card.Meta>
-                                      )}
+                                      )} */}
                                     </Grid.Column>
                                     <Grid.Column width="2">
                                       <Icon
@@ -163,14 +166,15 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
                     color="blue"
                     inverted
                     style={{ margin: 10 }}
-                    onClick={() => {
-                      updateResponses(
+                    onClick={async () => {
+                      await updateResponses(
                         elementsToReview.map((review) => ({
                           id: review.id,
                           decision: ReviewResponseDecision.Approve,
                           comment: '',
                         }))
                       )
+                      refetch()
                     }}
                   >{`${strings.BUTTON_REVIEW_APPROVE_ALL}(${reviewsNumber})`}</Button>
                 )}
