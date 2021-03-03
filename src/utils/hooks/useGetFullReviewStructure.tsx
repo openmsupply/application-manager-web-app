@@ -9,7 +9,7 @@ import {
 } from '../generated/graphql'
 import addEvaluatedResponsesToStructure from '../helpers/structure/addEvaluatedResponsesToStructure'
 import { useUserState } from '../../contexts/UserState'
-import addLatestCurrentReviewResponse from '../helpers/structure/addCurrentReviewResponses'
+import addOwnedReviewResponse from '../helpers/structure/addOwnedReviewResponse'
 
 interface useGetFullApplicationStructureProps {
   structure: FullStructure
@@ -61,7 +61,7 @@ const useGetFullReviewStructure = ({
 
       const review = data?.reviewAssignment?.reviews?.nodes[0] as Review
       if (review) {
-        newStructure = addLatestCurrentReviewResponse({
+        newStructure = addOwnedReviewResponse({
           structure: evaluatedStructure,
           sortedReviewResponses: review?.reviewResponses.nodes as ReviewResponse[], // Sorted in useGetReviewNewQuery
         })
