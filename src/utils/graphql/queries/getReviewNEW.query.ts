@@ -39,6 +39,9 @@ export default gql`
           reviewResponses(orderBy: TIME_CREATED_DESC) {
             nodes {
               ...reviewResponseFragment
+              applicationResponse {
+                templateElementId
+              }
             }
           }
         }

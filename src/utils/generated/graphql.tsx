@@ -19824,6 +19824,10 @@ export type GetReviewNewQuery = (
           { __typename?: 'ReviewResponsesConnection' }
           & { nodes: Array<Maybe<(
             { __typename?: 'ReviewResponse' }
+            & { applicationResponse?: Maybe<(
+              { __typename?: 'ApplicationResponse' }
+              & Pick<ApplicationResponse, 'templateElementId'>
+            )> }
             & ReviewResponseFragmentFragment
           )>> }
         ) }
@@ -20773,6 +20777,9 @@ export const GetReviewNewDocument = gql`
         reviewResponses(orderBy: TIME_CREATED_DESC) {
           nodes {
             ...reviewResponseFragment
+            applicationResponse {
+              templateElementId
+            }
           }
         }
       }
