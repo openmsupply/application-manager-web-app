@@ -43,25 +43,26 @@ const generateReviewValidity = (newStructure: FullStructure) => {
 
   let firstIncompleteReviewPage: SectionAndPage = null
 
-  if (sums.doneNoneConform === 0 && sums.totalReviewable < sums.doneNoneConform) {
+  if (sums.doneNoneConform === 0 && sums.totalReviewable > sums.doneConform) {
     const firstIncomplete = pages.find(
       (page) =>
-        page.reviewProgress?.totalReviewable ===
+        page.reviewProgress?.totalReviewable !==
         (page.reviewProgress?.doneConform || 0) + (page.reviewProgress?.doneNoneConform || 0)
     )
 
     if (!firstIncomplete) return
-    firstIncompleteReviewPage = {
-      sectionCode: firstIncomplete.sectionCode,
-      pageNumber: firstIncomplete.number,
-    }
+    else
+      firstIncompleteReviewPage = {
+        sectionCode: firstIncomplete.sectionCode,
+        pageNumber: firstIncomplete.number,
+      }
   }
 
   newStructure.firstIncompleteReviewPage = firstIncompleteReviewPage
-  newStructure.canSubmitReviewAs =
-    firstIncompleteReviewPage || sums.doneNoneConform === 0
-      ? ReviewResponseDecision.Approve
-      : ReviewResponseDecision.Decline
+  if (firstIncompleteReviewPage) newStructure.canSubmitReviewAs === null
+  else
+    newStructure.canSubmitReviewAs =
+      sums.doneNoneConform === 0 ? ReviewResponseDecision.Approve : ReviewResponseDecision.Decline
 }
 // Simple helper that will iterate over elements and sum up all of the values for keys
 // returning an object of keys with sums
