@@ -1,4 +1,4 @@
-import { FullStructure, PageElement } from '../../types'
+import { ElementsById, FullStructure } from '../../types'
 
 const addElementsById = (structure: FullStructure) => {
   const pages = Object.values(structure.sections)
@@ -8,7 +8,7 @@ const addElementsById = (structure: FullStructure) => {
     .map((page) => page.state)
     .flat()
 
-  const elementsById: { [templateElementId: string]: PageElement } = {}
+  const elementsById: ElementsById = {}
 
   elementStates.forEach((elementState) => {
     elementsById[elementState.element.id] = elementState

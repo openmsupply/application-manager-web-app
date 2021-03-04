@@ -10,8 +10,9 @@ const addOwnedReviewResponse = ({
   structure: FullStructure
   sortedReviewResponses: ReviewResponse[]
 }) => {
-  const newStructure = addElementsById(structure)
-  const { elementsById } = newStructure
+  const { elementsById } = structure
+
+  if (!elementsById) return structure
 
   const groupedReviewResponses = getGroupedReviewResponses(sortedReviewResponses)
 
@@ -23,7 +24,7 @@ const addOwnedReviewResponse = ({
     if (responseGroup.length === 1) return
   })
 
-  return newStructure
+  return structure
 }
 
 export default addOwnedReviewResponse

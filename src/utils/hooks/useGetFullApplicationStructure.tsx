@@ -25,7 +25,6 @@ const useGetFullApplicationStructure = ({
     userState: { currentUser },
   } = useUserState()
   const [fullStructure, setFullStructure] = useState<FullStructure>()
-  const [isError, setIsError] = useState(false)
   const [firstRunProcessValidation, setFirstRunProcessValidation] = useState(firstRunValidation)
 
   const [lastRefetchedTimestamp, setLastRefetchedTimestamp] = useState<number>(0)
@@ -49,10 +48,7 @@ const useGetFullApplicationStructure = ({
   }, [data])
 
   useEffect(() => {
-    if (error) {
-      setIsError(true)
-      return
-    }
+    if (error) return
 
     if (!data) return
 
@@ -91,7 +87,7 @@ const useGetFullApplicationStructure = ({
 
   return {
     fullStructure,
-    error: isError ? error : false,
+    error: error?.message,
   }
 }
 
