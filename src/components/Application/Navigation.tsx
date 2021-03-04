@@ -64,32 +64,59 @@ const Navigation: React.FC<NavigationProps> = ({
     }
   }
 
+  const getSortedPages = () => {
+    const sectionPageArray: any = []
+    const sortedSections = Object.values(sections).sort(
+      ({ details: { index: aIndex } }, { details: { index: bIndex } }) => aIndex - bIndex
+    )
+    sortedSections.forEach((section) => {
+      const sortedPages = Object.values(section.pages).sort(
+        ({ number: aNum }, { number: bNum }) => aNum - bNum
+      )
+      sortedPages.forEach((page) =>
+        sectionPageArray.push({ sectionCode: section.details.code, pageNumber: page.number })
+      )
+    })
+    return sectionPageArray
+  }
+
+  const getSectionPage = (offset: number) => {
+    const sectionPageArray: SectionAndPage[] = getSortedPages()
+    const currentSortedPageIndex = sectionPageArray.findIndex(
+      ({ sectionCode, pageNumber }) =>
+        sectionCode === current.sectionCode && pageNumber == current.pageNumber
+    )
+    let newIndex = currentSortedPageIndex + offset
+    return newIndex >= sectionPageArray.length
+      ? sectionPageArray[sectionPageArray.length - 1]
+      : newIndex < 0
+      ? sectionPageArray[0]
+      : sectionPageArray[newIndex]
+  }
+
   const sendToPage = (sectionPage: SectionAndPage) => {
     const { sectionCode, pageNumber } = sectionPage
     push(`/applicationNEW/${serialNumber}/${sectionCode}/Page${pageNumber}`)
   }
 
-  const previousButtonHandler = (_: any) => {
-    const previousSectionPage = getPreviousSectionPage()
-    sendToPage(previousSectionPage)
-  }
-
-  const nextPageButtonHandler = (_: any) => {
-    const nextSectionPage = getNextSectionPage()
-    // Use validationMethod to check if can change to page (on linear application) OR
-    // display current page with strict validation
-    requestRevalidation(({ firstStrictInvalidPage, setStrictSectionPage }: MethodToCallProps) => {
-      if (
-        firstStrictInvalidPage !== null &&
-        current.sectionCode === firstStrictInvalidPage.sectionCode &&
-        current.pageNumber === firstStrictInvalidPage.pageNumber
-      ) {
-        setStrictSectionPage(firstStrictInvalidPage)
-      } else {
-        setStrictSectionPage(null)
-        sendToPage(nextSectionPage)
-      }
-    })
+  const navButtonHandler = (offset: number) => {
+    if (offset < 0) sendToPage(getSectionPage(offset))
+    else {
+      // Use validationMethod to check if can change to page (on linear application) OR
+      // display current page with strict validation
+      requestRevalidation(({ firstStrictInvalidPage, setStrictSectionPage }: MethodToCallProps) => {
+        if (
+          firstStrictInvalidPage !== null &&
+          current.sectionCode === firstStrictInvalidPage.sectionCode &&
+          current.pageNumber === firstStrictInvalidPage.pageNumber
+        ) {
+          setStrictSectionPage(firstStrictInvalidPage)
+        } else {
+          setStrictSectionPage(null)
+          sendToPage(getSectionPage(offset))
+        }
+      })
+    }
   }
 
   return (
@@ -103,7 +130,7 @@ const Navigation: React.FC<NavigationProps> = ({
             <Button
               basic
               floated="left"
-              onClick={previousButtonHandler}
+              onClick={() => navButtonHandler(-1)}
               content={strings.BUTTON_PREVIOUS}
             />
           )}
@@ -111,7 +138,7 @@ const Navigation: React.FC<NavigationProps> = ({
             <Button
               basic
               floated="right"
-              onClick={nextPageButtonHandler}
+              onClick={() => navButtonHandler(1)}
               content={strings.BUTTON_NEXT}
             />
           )}
