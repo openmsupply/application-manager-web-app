@@ -121,6 +121,10 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
   if (error) return <Message error header={strings.ERROR_APPLICATION_PAGE} list={[error]} />
   if (!fullStructure || !fullStructure.responsesByCode) return <Loading />
 
+  const {
+    info: { isLinear },
+  } = fullStructure
+
   return (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
       {/* <ModalWarning showModal={showModal} /> */}
@@ -162,6 +166,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
       </Grid>
       <Navigation
         current={{ sectionCode, pageNumber }}
+        isLinear={isLinear}
         sections={fullStructure.sections}
         serialNumber={serialNumber}
         requestRevalidation={requestRevalidation}
