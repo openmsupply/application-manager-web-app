@@ -25,45 +25,6 @@ const Navigation: React.FC<NavigationProps> = ({
 }) => {
   const { push } = useRouter()
 
-  const currentSectionDetails = sections[current.sectionCode].details
-
-  const nextSection = (): SectionDetails | null => {
-    const nextSections = Object.values(sections)
-      .filter(({ details: { index } }) => index > currentSectionDetails.index)
-      .sort(({ details: { index: aIndex } }, { details: { index: bIndex } }) => aIndex - bIndex)
-    return nextSections.length > 0 ? nextSections[0].details : null
-  }
-
-  const previousSection = (): SectionDetails | null => {
-    const previousSections = Object.values(sections)
-      .filter(({ details: { index } }) => index < currentSectionDetails.index)
-      .sort(({ details: { index: aIndex } }, { details: { index: bIndex } }) => bIndex - aIndex)
-    return previousSections.length > 0 ? previousSections[0].details : null
-  }
-
-  const isFirstPage = current.pageNumber - 1 === 0 && previousSection() == null
-  const isLastPage =
-    current.pageNumber + 1 > currentSectionDetails.totalPages && nextSection() == null
-
-  const getPreviousSectionPage = (): SectionAndPage => {
-    const { sectionCode, pageNumber } = current
-    if (pageNumber > 1) return { sectionCode, pageNumber: pageNumber - 1 }
-    return {
-      sectionCode: (previousSection() as SectionDetails).code,
-      pageNumber: (previousSection() as SectionDetails).totalPages,
-    }
-  }
-
-  const getNextSectionPage = (): SectionAndPage => {
-    const { sectionCode, pageNumber } = current
-    if (pageNumber < currentSectionDetails.totalPages)
-      return { sectionCode, pageNumber: pageNumber + 1 }
-    return {
-      sectionCode: (nextSection() as SectionDetails).code,
-      pageNumber: 1,
-    }
-  }
-
   const getSortedPages = () => {
     const sectionPageArray: any = []
     const sortedSections = Object.values(sections).sort(
@@ -80,18 +41,28 @@ const Navigation: React.FC<NavigationProps> = ({
     return sectionPageArray
   }
 
+  const sortedSectionPages: SectionAndPage[] = getSortedPages()
+
+  const getCurrentSectionPageIndex = () =>
+    sortedSectionPages.findIndex(
+      ({ sectionCode, pageNumber }: any) =>
+        sectionCode === current.sectionCode && pageNumber == current.pageNumber
+    )
+
+  const isFirstPage = getCurrentSectionPageIndex() === 0
+  const isLastPage = getCurrentSectionPageIndex() === sortedSectionPages.length - 1
+
   const getSectionPage = (offset: number) => {
-    const sectionPageArray: SectionAndPage[] = getSortedPages()
-    const currentSortedPageIndex = sectionPageArray.findIndex(
+    const currentSortedPageIndex = sortedSectionPages.findIndex(
       ({ sectionCode, pageNumber }) =>
         sectionCode === current.sectionCode && pageNumber == current.pageNumber
     )
     let newIndex = currentSortedPageIndex + offset
-    return newIndex >= sectionPageArray.length
-      ? sectionPageArray[sectionPageArray.length - 1]
+    return newIndex >= sortedSectionPages.length
+      ? sortedSectionPages[sortedSectionPages.length - 1]
       : newIndex < 0
-      ? sectionPageArray[0]
-      : sectionPageArray[newIndex]
+      ? sortedSectionPages[0]
+      : sortedSectionPages[newIndex]
   }
 
   const sendToPage = (sectionPage: SectionAndPage) => {
