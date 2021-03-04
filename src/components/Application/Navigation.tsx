@@ -4,7 +4,6 @@ import {
   MethodRevalidate,
   MethodToCallProps,
   SectionAndPage,
-  SectionDetails,
   SectionsStructureNEW,
 } from '../../utils/types'
 import strings from '../../utils/constants'
