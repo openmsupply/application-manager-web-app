@@ -103,7 +103,10 @@ const PageElements: React.FC<PageElementProps> = ({
                   <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
                 </Grid.Column>
                 <Grid.Column floated="right" textAlign="right">
-                  <ReviewButton reviewResponse={thisReviewLatestResponse as ReviewResponse} />
+                  <ReviewButton
+                    reviewResponse={thisReviewLatestResponse as ReviewResponse}
+                    summaryViewProps={getSummaryViewProps(element)}
+                  />
                 </Grid.Column>
               </Grid>
               <ReviewResponseComponent
@@ -151,22 +154,28 @@ const ReviewResponseComponent: React.FC<{
   )
 }
 
-const ReviewButton: React.FC<{ reviewResponse: ReviewResponse }> = ({ reviewResponse }) => {
-  const [updateReviewResponse] = useUpdateReviewResponseMutation()
+const ReviewButton: React.FC<{
+  reviewResponse: ReviewResponse
+  summaryViewProps: SummaryViewWrapperPropsNEW
+}> = ({ reviewResponse, summaryViewProps }) => {
+  const [toggleDecisionArea, setToggleDecisionArea] = useState(false)
 
   if (!reviewResponse) return null
   if (reviewResponse?.decision) return null
 
   return (
-    <Button
-      content={strings.BUTTON_REVIEW_RESPONSE}
-      size="small"
-      onClick={() =>
-        updateReviewResponse({
-          variables: { id: reviewResponse.id, decision: ReviewResponseDecision.Approve },
-        })
-      }
-    />
+    <>
+      <Button
+        content={strings.BUTTON_REVIEW_RESPONSE}
+        size="small"
+        onClick={() => setToggleDecisionArea(!toggleDecisionArea)}
+      />
+      <DecisionAreaNEW
+        reviewResponse={reviewResponse}
+        toggle={toggleDecisionArea}
+        summaryViewProps={summaryViewProps}
+      />
+    </>
   )
 }
 
