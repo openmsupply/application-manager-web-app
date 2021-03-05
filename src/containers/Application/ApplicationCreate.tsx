@@ -8,6 +8,8 @@ import useCreateApplication from '../../utils/hooks/useCreateApplication'
 import { useUserState } from '../../contexts/UserState'
 import strings from '../../utils/constants'
 
+// TODO: Remove this
+
 const ApplicationCreate: React.FC = () => {
   const { applicationState, setApplicationState } = useApplicationState()
   const { serialNumber } = applicationState

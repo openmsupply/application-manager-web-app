@@ -13,11 +13,12 @@ import { useUserState } from '../../contexts/UserState'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { Loading } from '../../components'
 import strings from '../../utils/constants'
-import { Button, Grid, Header, Message, Segment, Sticky } from 'semantic-ui-react'
+import { Grid, Header, Message, Segment } from 'semantic-ui-react'
 import ProgressBarNEW from '../../components/Application/ProgressBarNEW'
 import { PageElements } from '../../components/Application'
 import { useFormElementUpdateTracker } from '../../contexts/FormElementUpdateTrackerState'
 import checkPageIsAccessible from '../../utils/helpers/structure/checkPageIsAccessible'
+import { Navigation } from '../../components'
 
 interface ApplicationProps {
   structure: FullStructure
@@ -39,7 +40,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
     userState: { currentUser },
   } = useUserState()
   const {
-    query: { sectionCode, page },
+    query: { serialNumber, sectionCode, page },
     push,
   } = useRouter()
 
@@ -120,6 +121,10 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
   if (error) return <Message error header={strings.ERROR_APPLICATION_PAGE} list={[error]} />
   if (!fullStructure || !fullStructure.responsesByCode) return <Loading />
 
+  const {
+    info: { isLinear },
+  } = fullStructure
+
   return (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
       {/* <ModalWarning showModal={showModal} /> */}
@@ -144,42 +149,30 @@ const ApplicationPage: React.FC<ApplicationProps> = ({ structure }) => {
           />
         </Grid.Column>
         <Grid.Column width={10} stretched>
-          <Segment basic>
-            <Segment vertical style={{ marginBottom: 20 }}>
-              <Header content={fullStructure.sections[sectionCode].details.title} />
-              <PageElements
-                elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
-                responsesByCode={fullStructure.responsesByCode}
-                isStrictPage={
-                  sectionCode === strictSectionPage?.sectionCode &&
-                  pageNumber === strictSectionPage?.pageNumber
-                }
-                isEditable
-              />
-            </Segment>
-            <NavigationBox />
+          <Segment vertical style={{ marginBottom: 20 }}>
+            <Header content={fullStructure.sections[sectionCode].details.title} />
+            <PageElements
+              elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
+              responsesByCode={fullStructure.responsesByCode}
+              isStrictPage={
+                sectionCode === strictSectionPage?.sectionCode &&
+                pageNumber === strictSectionPage?.pageNumber
+              }
+              canEdit
+            />
           </Segment>
         </Grid.Column>
         <Grid.Column width={2} />
       </Grid>
-      <Sticky
-        pushing
-        style={{ backgroundColor: 'white', boxShadow: ' 0px -5px 8px 0px rgba(0,0,0,0.1)' }}
-      >
-        <Segment basic textAlign="right">
-          <Button color="blue" onClick={() => {}}>
-            {/* TO-DO */}
-            {strings.BUTTON_SUMMARY}
-          </Button>
-        </Segment>
-      </Sticky>
+      <Navigation
+        current={{ sectionCode, pageNumber }}
+        isLinear={isLinear}
+        sections={fullStructure.sections}
+        serialNumber={serialNumber}
+        requestRevalidation={requestRevalidation}
+      />
     </Segment.Group>
   )
-}
-
-const NavigationBox: React.FC = () => {
-  // Placeholder -- to be replaced with new component
-  return <p>Navigation Buttons</p>
 }
 
 export default ApplicationPage

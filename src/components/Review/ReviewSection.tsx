@@ -17,6 +17,8 @@ import { ReviewResponseDecision, TemplateElementCategory } from '../../utils/gen
 import messages from '../../utils/messages'
 import { ReviewQuestionDecision, ResponsesByCode, SectionState } from '../../utils/types'
 
+// TODO: Remove this
+
 interface ReviewSectionProps {
   allResponses: ResponsesByCode
   assignedToYou: boolean

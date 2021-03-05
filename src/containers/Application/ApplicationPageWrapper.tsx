@@ -36,6 +36,8 @@ import useRevalidateApplication from '../../utils/hooks/useRevalidateApplication
 import { getPageElementsInStructure } from '../../utils/helpers/structure/getElementsInStructure'
 import { checkSectionsProgress } from '../../utils/helpers/structure/checkSectionsProgress'
 
+// TODO: Remove this
+
 const ApplicationPageWrapper: React.FC = () => {
   const [isRevalidated, setIsRevalidated] = useState(false)
   const [pageElements, setPageElements] = useState<Page>()

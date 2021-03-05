@@ -13,6 +13,8 @@ import useRevalidateApplication from '../../utils/hooks/useRevalidateApplication
 import { checkSectionsProgress } from '../../utils/helpers/structure/checkSectionsProgress'
 import { getResponsesInStrucutre } from '../../utils/helpers/structure/getElementsInStructure'
 
+// TODO: Remove this
+
 const ApplicationOverview: React.FC = () => {
   const [isRevalidated, setIsRevalidated] = useState(false)
   const [isSubmittedClicked, setIsSubmittedClicked] = useState(false)

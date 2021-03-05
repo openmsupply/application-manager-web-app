@@ -6,6 +6,8 @@ import strings from '../../utils/constants'
 import { TemplateElementCategory } from '../../utils/generated/graphql'
 import { ResponsesByCode, SectionState } from '../../utils/types'
 
+// TODO: Remove this
+
 interface SectionSummaryProps {
   sectionPages: SectionState
   serialNumber: string

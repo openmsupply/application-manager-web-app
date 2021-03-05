@@ -1,68 +1,98 @@
 import React from 'react'
-import { ElementStateNEW, ResponsesByCode } from '../../utils/types'
+import { Link } from 'react-router-dom'
+import { ElementStateNEW, ResponsesByCode, SectionAndPage } from '../../utils/types'
 import ApplicationViewWrapper from '../../formElementPlugins/ApplicationViewWrapperNEW'
-import SummaryViewWrapper from '../../formElementPlugins/SummaryViewWrapper'
-import { Form } from 'semantic-ui-react'
+import SummaryViewWrapperNEW from '../../formElementPlugins/SummaryViewWrapperNEW'
+import { Form, Grid, Segment, Button } from 'semantic-ui-react'
+import strings from '../../utils/constants'
+import { TemplateElementCategory } from '../../utils/generated/graphql'
 
 interface PageElementProps {
   elements: ElementStateNEW[]
   responsesByCode: ResponsesByCode
   isStrictPage?: boolean
-  isEditable?: boolean
+  canEdit?: boolean
   isReview?: boolean
+  isSummary?: boolean
+  serial?: string
+  sectionAndPage?: SectionAndPage
 }
 
 const PageElements: React.FC<PageElementProps> = ({
   elements,
   responsesByCode,
   isStrictPage,
-  isEditable,
+  canEdit,
   isReview,
+  isSummary,
+  serial,
+  sectionAndPage,
 }) => {
-  // Applicant Editable application
-  return (
-    <Form>
-      {elements.map((element) => {
-        const {
-          code,
-          pluginCode,
-          parameters,
-          isVisible,
-          isRequired,
-          isEditable,
-          validationExpression,
-          validationMessage,
-        } = element
-        const response = responsesByCode?.[code]
-        const isValid = response?.isValid
-
-        // Regular application view
-        if (isEditable && !isReview)
+  // Editable Application page
+  if (canEdit && !isReview && !isSummary)
+    return (
+      <Form>
+        {elements.map((element) => {
           return (
             <ApplicationViewWrapper
-              key={`question_${code}`}
-              code={code}
-              initialValue={response}
-              pluginCode={pluginCode}
-              parameters={parameters}
-              isVisible={isVisible}
-              isEditable={isEditable}
-              isRequired={isRequired}
-              isValid={isValid || true}
+              key={`question_${element.code}`}
+              element={element}
               isStrictPage={isStrictPage}
-              validationExpression={validationExpression}
-              validationMessage={validationMessage}
               allResponses={responsesByCode}
-              currentResponse={response}
+              currentResponse={responsesByCode?.[element.code]}
             />
           )
-        // Summary Page -- TO-DO
-        if (!isEditable && !isReview) return <p>Summary View</p>
-        // Review Page -- TO-DO
-        if (isReview) return <p>Review Elements</p>
-      })}
-    </Form>
-  )
+        })}
+      </Form>
+    )
+
+  // Summary Page
+  if (isSummary) {
+    const { sectionCode, pageNumber } = sectionAndPage as SectionAndPage
+    return (
+      <Form>
+        <Segment.Group>
+          {elements.map((element) => (
+            <Segment key={`question_${element.code}`}>
+              <Grid columns={2} verticalAlign="middle">
+                <Grid.Row>
+                  <Grid.Column width={13}>
+                    <SummaryViewWrapperNEW
+                      element={element}
+                      response={responsesByCode?.[element.code]}
+                      allResponses={responsesByCode}
+                    />
+                  </Grid.Column>
+                  <Grid.Column width={3}>
+                    {element.category === TemplateElementCategory.Question && canEdit && (
+                      <Button
+                        content={strings.BUTTON_SUMMARY_EDIT}
+                        size="small"
+                        as={Link}
+                        to={`/application/${serial}/${sectionCode}/Page${pageNumber}`}
+                      />
+                    )}
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Segment>
+          ))}
+        </Segment.Group>
+      </Form>
+    )
+  }
+
+  // Review Page -- TO-DO
+  if (isReview)
+    return (
+      <Form>
+        {elements.map((element) => {
+          return <p>Review Element</p>
+        })}
+      </Form>
+    )
+
+  return null
 }
 
 export default PageElements

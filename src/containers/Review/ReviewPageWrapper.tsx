@@ -14,6 +14,8 @@ import useUpdateReviewResponse from '../../utils/hooks/useUpdateReviewResponse'
 import { validateReview } from '../../utils/helpers/validation/validateReview'
 import listReviewResponses from '../../utils/helpers/review/listReviewResponses'
 
+// TODO: Remove this
+
 const decisionAreaInitialState = { open: false, review: null, summaryViewProps: null }
 
 const ReviewPageWrapper: React.FC = () => {

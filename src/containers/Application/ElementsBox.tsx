@@ -4,6 +4,7 @@ import { ApplicationViewWrapper } from '../../formElementPlugins'
 import { Page, ResponsesByCode } from '../../utils/types'
 import strings from '../../utils/constants'
 
+// TODO: Remove this
 interface ElementsBoxProps {
   sectionTitle: string
   responsesByCode: ResponsesByCode

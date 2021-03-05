@@ -5,6 +5,8 @@ import { useRouter } from '../../utils/hooks/useRouter'
 import { CurrentPage, SectionDetails } from '../../utils/types'
 import strings from '../../utils/constants'
 import messages from '../../utils/messages'
+
+// TODO: Remove this
 interface NavigationBoxProps {
   sections: SectionDetails[]
   currentSection: SectionDetails

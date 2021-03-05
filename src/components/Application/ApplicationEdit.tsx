@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
 import updateApplication from '../../utils/graphql/mutations/updateApplication.mutation'
 
+// TODO: Remove this
 interface updateApplicationProps {
   id: number
   name: string

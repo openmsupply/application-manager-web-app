@@ -1,6 +1,8 @@
 import React from 'react'
 import { Segment } from 'semantic-ui-react'
 
+// TODO: Remove this
+
 const ReviewSubmission: React.FC = () => {
   return (
     <Segment>

@@ -13,6 +13,7 @@ import { useRouter } from '../../utils/hooks/useRouter'
 import { validatePage } from '../../utils/helpers/validation/validatePage'
 import getPreviousPage from '../../utils/helpers/application/getPreviousPage'
 
+// TODO: Remove this
 interface ProgressBarProps {
   serialNumber: string
   current: CurrentPage

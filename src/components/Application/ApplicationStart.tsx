@@ -13,6 +13,8 @@ import Markdown from '../../utils/helpers/semanticReactMarkdown'
 import evaluate from '@openmsupply/expression-evaluator'
 import { useUserState } from '../../contexts/UserState'
 import { checkSectionsProgress } from '../../utils/helpers/structure/checkSectionsProgress'
+
+// TODO: Remove this
 export interface ApplicationStartProps extends RouteComponentProps {
   template: TemplateDetails
   sections: SectionsStructure

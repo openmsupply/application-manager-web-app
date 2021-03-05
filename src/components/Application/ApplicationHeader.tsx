@@ -1,31 +1,44 @@
 import React from 'react'
-import { Container, Grid, Header, Segment } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+import { Button, Header, Segment } from 'semantic-ui-react'
+import strings from '../../utils/constants'
+import { TemplateDetails, User } from '../../utils/types'
 
 export interface AppHeaderProps {
-  serialNumber: string
-  name: string
-  mode?: string
+  template: TemplateDetails
+  currentUser: User | null
+  ChildComponent: React.FC
 }
 
-const ApplicationHeader: React.FC<AppHeaderProps> = (props) => {
-  const { mode, serialNumber, name } = props
-
+const ApplicationHeader: React.FC<AppHeaderProps> = ({ template, currentUser, ChildComponent }) => {
+  const { code, name } = template
   return (
-    <Container>
-      <Grid columns={2} stackable textAlign='right'>
-        <Grid.Row>
-          <Grid.Column>
-            <Header as='h2' content={`${name}`}>
-            </Header>
-          </Grid.Column>
-          <Grid.Column>
-            <Header as='h3' content={`Number ${serialNumber}`}>
-            </Header>
-          </Grid.Column>
-      </Grid.Row>
-      </Grid>
-      {mode && <Header as="h3" content={mode} />}
-    </Container>
+    <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
+      <Button
+        as={Link}
+        to={`/applications?type=${code}`}
+        icon="angle left"
+        label={{ content: `${name} ${strings.LABEL_APPLICATIONS}`, color: 'grey' }}
+      />
+      <Header textAlign="center">
+        {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
+      </Header>
+      <Segment
+        style={{
+          backgroundColor: 'white',
+          padding: 10,
+          margin: '0px 50px',
+          minHeight: 500,
+          flex: 1,
+        }}
+      >
+        <Header as="h2" textAlign="center">
+          {`${name} ${strings.TITLE_APPLICATION_FORM}`}
+          <Header.Subheader>{strings.TITLE_INTRODUCTION}</Header.Subheader>
+        </Header>
+        <ChildComponent />
+      </Segment>
+    </Segment.Group>
   )
 }
 

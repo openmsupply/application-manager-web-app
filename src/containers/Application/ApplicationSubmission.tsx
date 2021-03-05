@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom'
 import evaluate from '@openmsupply/expression-evaluator'
 import Markdown from '../../utils/helpers/semanticReactMarkdown'
 
+// TODO: Remove this
+
 const ApplicationSubmission: React.FC = () => {
   const [submissionMessageEvaluated, setSubmissionMessageEvaluated] = useState('')
   const {

@@ -1,6 +1,6 @@
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import { TemplateElement } from '../utils/generated/graphql'
-import { ElementState, ResponseFull, ResponsesByCode } from '../utils/types'
+import { ElementState, ElementStateNEW, ResponseFull, ResponsesByCode } from '../utils/types'
 
 interface OnUpdateApplicationView {
   (updateObject: { value?: any; isValid: boolean | undefined }): void
@@ -28,21 +28,22 @@ interface ApplicationViewWrapperProps {
 }
 
 interface ApplicationViewWrapperPropsNEW {
-  code: string
-  pluginCode: string // TODO: Create type OR use existing from graphql
-  isVisible: boolean
-  isEditable: boolean
-  isRequired: boolean
-  isValid: boolean
+  // code: string
+  element: ElementStateNEW
+  // pluginCode: string // TODO: Create type OR use existing from graphql
+  // isVisible: boolean
+  // isEditable: boolean
+  // isRequired: boolean
+  // isValid: boolean
   isStrictPage: boolean | undefined
-  parameters: any // TODO: Create type for existing pre-defined types for parameters (TemplateElement)
-  validationExpression: IQueryNode
-  validationMessage: string | null
+  // // parameters: any // TODO: Create type for existing pre-defined types for parameters (TemplateElement)
+  // validationExpression: IQueryNode
+  // validationMessage: string | null
   allResponses: ResponsesByCode
   currentResponse: ResponseFull | null
   // applicationState,
   // graphQLclient
-  initialValue: any // Could be a primative or an object with any shape
+  // initialValue: any // Could be a primative or an object with any shape
 }
 
 type ValidationState = {
@@ -71,6 +72,11 @@ interface SummaryViewProps {
 
 interface SummaryViewWrapperProps {
   element: ElementState
+  response: ResponseFull | null
+  allResponses: ResponsesByCode
+}
+interface SummaryViewWrapperPropsNEW {
+  element: ElementStateNEW
   response: ResponseFull | null
   allResponses: ResponsesByCode
 }
@@ -128,6 +134,7 @@ export {
   ValidationState,
   TemplateViewWrapperProps,
   SummaryViewWrapperProps,
+  SummaryViewWrapperPropsNEW,
   SummaryViewProps,
   PluginConfig,
   PluginManifest,

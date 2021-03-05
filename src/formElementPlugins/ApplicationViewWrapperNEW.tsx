@@ -20,21 +20,20 @@ import strings from '../utils/constants'
 import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
 
 const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props) => {
+  const { element, isStrictPage, currentResponse, allResponses } = props
+
   const {
     code,
     pluginCode,
     parameters,
-    initialValue,
     isVisible,
     isEditable,
     isRequired,
-    isValid,
-    isStrictPage,
     validationExpression,
     validationMessage,
-    currentResponse,
-    allResponses,
-  } = props
+  } = element
+
+  const isValid = currentResponse?.isValid || true
 
   const [responseMutation] = useUpdateResponseMutation()
   const { setState: setUpdateTrackerState } = useFormElementUpdateTracker()
@@ -42,7 +41,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
   const {
     userState: { currentUser },
   } = useUserState()
-  const [value, setValue] = useState<any>(initialValue?.text)
+  const [value, setValue] = useState<any>(currentResponse?.text)
   const [validationState, setValidationState] = useState<ValidationState>({
     isValid,
   })
@@ -135,12 +134,13 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
     <ApplicationView
       onUpdate={onUpdate}
       onSave={onSave}
+      initialValue={currentResponse}
       {...props}
+      {...element}
       parameters={{ ...parameters, ...evaluatedParameters }}
       value={value}
       setValue={setValue}
       setIsActive={setIsActive}
-      isEditable={isEditable}
       Markdown={Markdown}
       validationState={validationState || { isValid: true }}
       validate={validate}
