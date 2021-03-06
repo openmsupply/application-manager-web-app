@@ -47,7 +47,7 @@ const ReviewPage: React.FC<{ reviewAssignment: ReviewAssignment; structure: Full
               extraSectionTitleContent={(section: SectionStateNEW) => (
                 <SectionProgress section={section} />
               )}
-              extraPageContent={(page: PageNEW) => <MassApprovalButton page={page} />}
+              extraPageContent={(page: PageNEW) => <ApproveAllButton page={page} />}
               responsesByCode={responsesByCode as ResponsesByCode}
               serial={info.serial}
               isReview
@@ -76,7 +76,7 @@ const SectionProgress: React.FC<{ section: SectionStateNEW }> = ({ section }) =>
   )
 }
 
-const MassApprovalButton: React.FC<{ page: PageNEW }> = ({ page }) => {
+const ApproveAllButton: React.FC<{ page: PageNEW }> = ({ page }) => {
   const [updateReviewResponse] = useUpdateReviewResponseMutation()
 
   const reviewResponses = page.state.map((element) => element.thisReviewLatestResponse)
