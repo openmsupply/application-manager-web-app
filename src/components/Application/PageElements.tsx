@@ -3,14 +3,9 @@ import { Link } from 'react-router-dom'
 import { ElementStateNEW, PageElement, ResponsesByCode, SectionAndPage } from '../../utils/types'
 import ApplicationViewWrapper from '../../formElementPlugins/ApplicationViewWrapperNEW'
 import SummaryViewWrapperNEW from '../../formElementPlugins/SummaryViewWrapperNEW'
-import { Form, Grid, Segment, Button, Card, Icon, Label } from 'semantic-ui-react'
+import { Form, Grid, Segment, Button, Icon } from 'semantic-ui-react'
 import strings from '../../utils/constants'
-import {
-  ReviewResponse,
-  ReviewResponseDecision,
-  TemplateElementCategory,
-  useUpdateReviewResponseMutation,
-} from '../../utils/generated/graphql'
+import { ReviewResponse, TemplateElementCategory } from '../../utils/generated/graphql'
 
 import DecisionAreaNEW from '../Review/DecisionAreaNEW'
 import { SummaryViewWrapperPropsNEW } from '../../formElementPlugins/types'
@@ -73,7 +68,7 @@ const PageElements: React.FC<PageElementProps> = ({
                     <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
                   </Grid.Column>
                   {element.category === TemplateElementCategory.Question && canEdit && (
-                    <Grid.Column width={3} floated="right">
+                    <Grid.Column floated="right" textAlign="right">
                       <Button
                         content={strings.BUTTON_SUMMARY_EDIT}
                         size="small"
@@ -102,12 +97,14 @@ const PageElements: React.FC<PageElementProps> = ({
                 <Grid.Column floated="left">
                   <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
                 </Grid.Column>
-                <Grid.Column floated="right" textAlign="right">
-                  <ReviewButton
-                    reviewResponse={thisReviewLatestResponse as ReviewResponse}
-                    summaryViewProps={getSummaryViewProps(element)}
-                  />
-                </Grid.Column>
+                {thisReviewLatestResponse && (
+                  <Grid.Column floated="right" textAlign="right">
+                    <ReviewButton
+                      reviewResponse={thisReviewLatestResponse as ReviewResponse}
+                      summaryViewProps={getSummaryViewProps(element)}
+                    />
+                  </Grid.Column>
+                )}
               </Grid>
               <ReviewResponseComponent
                 reviewResponse={thisReviewLatestResponse as ReviewResponse}
