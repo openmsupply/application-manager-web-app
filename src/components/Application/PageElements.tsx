@@ -135,7 +135,8 @@ const ReviewResponseComponent: React.FC<{
     <>
       <Grid columns="equal">
         <Grid.Column floated="left">
-          {`${reviewResponse?.decision}${reviewResponse?.comment || ''}`}
+          <p>{reviewResponse?.decision}</p>
+          <p>{reviewResponse?.comment || ''}</p>
         </Grid.Column>
         <Grid.Column floated="right" textAlign="right">
           <Icon

@@ -96,7 +96,11 @@ const MassApprovalButton: React.FC<{ page: PageNEW }> = ({ page }) => {
 
   if (responsesToReview.length === 0) return null
 
-  return <Button onClick={massApprove}>{`Approve (${responsesToReview.length})`}</Button>
+  return (
+    <Button
+      onClick={massApprove}
+    >{`${strings.BUTTON_REVIEW_APPROVE_ALL} (${responsesToReview.length})`}</Button>
+  )
 }
 
 export default ReviewPage
