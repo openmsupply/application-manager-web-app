@@ -64,15 +64,3 @@ const getPageElements = ({ baseElements, sectionIndex, pageNumber }: GetPageElem
 
   return result
 }
-
-export const buildTemplateSectionsStructure = (sections: SectionDetails[]) => {
-  return sections.reduce((sectionsStructure: SectionsStructureNEW, section) => {
-    return {
-      ...sectionsStructure,
-      [section.code]: {
-        details: section,
-        pages: {},
-      },
-    }
-  }, {})
-}

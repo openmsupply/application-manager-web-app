@@ -1,7 +1,11 @@
 import React from 'react'
 import { Button, Grid, Icon, List, Progress } from 'semantic-ui-react'
-import { Progress as ProgressType, SectionAndPage, SectionsStructureNEW } from '../../utils/types'
-import strings from '../../utils/constants'
+import {
+  Progress as ProgressType,
+  SectionAndPage,
+  SectionsStructureNEW,
+} from '../../../utils/types'
+import strings from '../../../utils/constants'
 
 interface SectionsProgressProps {
   canEdit: boolean

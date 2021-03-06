@@ -20,7 +20,12 @@ import {
   TemplateNew,
   Template,
 } from '../../components'
-import { ApplicationCreate, ApplicationPageWrapper, ApplicationWrapper } from '../Application'
+import {
+  ApplicationCreate,
+  ApplicationCreateNEW,
+  ApplicationPageWrapper,
+  ApplicationWrapper,
+} from '../Application'
 import { ReviewOverview, ReviewPageWrapper } from '../Review'
 import { ApplicationProvider } from '../../contexts/ApplicationState'
 import ApplicationOverview from '../Application/ApplicationOverview'
@@ -44,19 +49,25 @@ const SiteLayout: React.FC = () => {
         <Route exact path="/applications">
           <ListWrapper />
         </Route>
-        {/* Create application is out of Application router */}
-        <Route exact path="/application/new">
+        {/* Application router NEW*/}
+        {/* Create application new route */}
+        <Route path="/applicationNEW/new">
           <ApplicationProvider>
-            <ApplicationCreate />
+            <ApplicationCreateNEW />
           </ApplicationProvider>
         </Route>
-        {/* Application router NEW*/}
+        {/* Other application routes nested in ApplicationWrapper */}
         <Route path="/applicationNEW/:serialNumber">
           <FormElementUpdateTrackerProvider>
             <ApplicationWrapper />
           </FormElementUpdateTrackerProvider>
         </Route>
         {/* Application current routes - to be removed */}
+        <Route exact path="/application/new">
+          <ApplicationProvider>
+            <ApplicationCreate />
+          </ApplicationProvider>
+        </Route>
         <Route exact path="/application/:serialNumber">
           <ApplicationProvider>
             <ApplicationPageWrapper />

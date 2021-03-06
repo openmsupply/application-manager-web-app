@@ -84,17 +84,6 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
     const applicationSection = application.applicationSections.nodes as ApplicationSection[]
     const sections = getApplicationSections(applicationSection)
 
-    const templateStages = application.template?.templateStages.nodes as TemplateStage[]
-
-    const stagesDetails: ApplicationStages = {
-      stages: templateStages.map((stage) => ({
-        number: stage.number as number,
-        title: stage.title as string,
-        description: stage.description ? stage.description : undefined,
-      })),
-      submissionMessage: application.template?.submissionMessage as string,
-    }
-
     const stages = data.applicationStageStatusLatests?.nodes as ApplicationStageStatusAll[]
     if (stages.length > 1) console.log('StageStatusAll More than one results for 1 application!')
     const { stageId, stage, status, statusHistoryTimeCreated } = stages[0] // Should only have one result
@@ -115,6 +104,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
         date: DateTime.fromISO(statusHistoryTimeCreated),
       },
       firstStrictInvalidPage: null,
+      submissionMessage: application.template?.submissionMessage as string,
     }
 
     const baseElements: ElementBaseNEW[] = []
@@ -145,9 +135,15 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
       })
     })
 
+    const templateStages = application.template?.templateStages.nodes as TemplateStage[]
+
     setFullStructure({
       info: applicationDetails,
-      stages: stagesDetails,
+      stages: templateStages.map((stage) => ({
+        number: stage.number as number,
+        title: stage.title as string,
+        description: stage.description ? stage.description : undefined,
+      })),
       sections: buildSectionsStructure({ sections, baseElements }),
     })
     setIsLoading(false)

@@ -5,7 +5,7 @@ import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicat
 import { ApplicationHeader, Loading } from '../../components'
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
-import SectionsProgress from '../../components/Sections/SectionsProgress'
+import { SectionsProgress } from '../../components/Application/Sections'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { Link } from 'react-router-dom'

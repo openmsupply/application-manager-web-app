@@ -9,6 +9,7 @@ import { buildTemplateSectionsStructure } from '../helpers/structure/buildSectio
 import { getTemplateSections } from '../helpers/application/getSectionsDetails'
 import { SectionsStructure, TemplateDetails } from '../types'
 
+// TODO: Remove this
 interface useLoadTemplateProps {
   templateCode: string
 }

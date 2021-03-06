@@ -56,7 +56,10 @@ const useGetFullReviewStructure = ({
         isValid: false,
       },
     }).then((evaluatedStructure: FullStructure) => {
+      // This is usefull for linking assignments to elements
       let newStructure: FullStructure = addElementsById(evaluatedStructure)
+      // This is usefull for generating progress (maybe also usefull downstream, but dont' want too refactor too much at this stage)
+      newStructure = addSortedSectionsAndPages(newStructure)
 
       const reviewQuestionAssignments = reviewAssignment.reviewQuestionAssignments?.nodes
       if (reviewQuestionAssignments)
@@ -93,6 +96,19 @@ const useGetFullReviewStructure = ({
   }
 }
 
+const addSortedSectionsAndPages = (newStructure: FullStructure): FullStructure => {
+  const sortedSections = Object.values(newStructure.sections).sort(
+    (sectionOne, sectionTwo) => sectionOne.details.index - sectionTwo.details.index
+  )
+  const sortedPages = sortedSections
+    .map((section) =>
+      Object.values(section.pages).sort((pageOne, pageTwo) => pageOne.number - pageTwo.number)
+    )
+    .flat()
+
+  return { ...newStructure, sortedPages, sortedSections }
+}
+
 const addIsAssigned = (
   newStructure: FullStructure,
   reviewQuestionAssignments: ReviewQuestionAssignment[]
@@ -100,7 +116,8 @@ const addIsAssigned = (
   reviewQuestionAssignments.forEach((questionAssignment) => {
     if (!questionAssignment) return
 
-    const assignedElement = newStructure?.elementsById?.[questionAssignment.templateElementId || '']
+    const assignedElement =
+      newStructure?.elementsById?.[questionAssignment.templateElementId as number]
     if (!assignedElement) return
 
     assignedElement.isAssigned = true
