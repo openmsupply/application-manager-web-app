@@ -42,6 +42,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
     userState: { currentUser },
   } = useUserState()
   const [value, setValue] = useState<any>(currentResponse?.text)
+  const [isValueEmpty, setIsValueEmpty] = useState(!currentResponse?.text)
   const [validationState, setValidationState] = useState<ValidationState>({
     isValid,
   })
@@ -80,6 +81,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
       isStrictPage,
       responses,
       evaluationParameters: { objects: { responses, currentUser }, APIfetch: fetch },
+      isValueEmpty,
     })
     setValidationState(newValidationState)
     return newValidationState
@@ -89,7 +91,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
     if (!jsonValue.customValidation) {
       // Validate and Save response -- generic
       const validationResult: ValidationState = await onUpdate(jsonValue.text)
-      if (jsonValue.text !== undefined)
+      if (jsonValue.text !== undefined) {
         await responseMutation({
           variables: {
             id: currentResponse?.id as number,
@@ -97,6 +99,8 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
             isValid: validationResult.isValid,
           },
         })
+        setIsValueEmpty(false)
+      }
       setUpdateTrackerState({
         type: 'setElementUpdated',
         textValue: jsonValue?.text || '',
@@ -106,13 +110,16 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
       const { isValid, validationMessage } = jsonValue.customValidation
       setValidationState({ isValid, validationMessage })
       delete jsonValue.customValidation // Don't want to save this field
-      await responseMutation({
-        variables: {
-          id: currentResponse?.id as number,
-          value: jsonValue,
-          isValid,
-        },
-      })
+      if (jsonValue.text !== undefined) {
+        await responseMutation({
+          variables: {
+            id: currentResponse?.id as number,
+            value: jsonValue,
+            isValid,
+          },
+        })
+        setIsValueEmpty(false)
+      }
       setUpdateTrackerState({
         type: 'setElementUpdated',
         textValue: jsonValue?.text || '',
@@ -205,6 +212,7 @@ const calculateValidationState = async ({
   isStrictPage,
   responses,
   evaluationParameters,
+  isValueEmpty,
 }: {
   validationExpression: IQueryNode | undefined
   validationMessage: string | null | undefined
@@ -212,12 +220,13 @@ const calculateValidationState = async ({
   isStrictPage: boolean | undefined
   responses: any // thisResponse field makes it not "ResponsesByCode"
   evaluationParameters: EvaluatorParameters
+  isValueEmpty: boolean
 }) => {
   const validationResult = validationExpression
     ? await validate(validationExpression, validationMessage as string, evaluationParameters)
     : { isValid: true }
 
-  if (!validationResult.isValid) return validationResult
+  if (!validationResult.isValid && !isValueEmpty) return validationResult
   // !responses.thisResponse, check for null, undefined, empty string
   if (isRequired && isStrictPage && !responses?.thisResponse)
     return {
