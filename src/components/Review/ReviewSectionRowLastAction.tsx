@@ -8,8 +8,10 @@ const ReviewSectionRowLastDate: React.FC<ReviewSectionComponentProps> = ({
   action,
   thisReview,
   assignment,
+  fullStructure,
 }) => {
   const getContent = () => {
+    console.log(action)
     switch (action) {
       case 'canContinue': {
         return (
@@ -28,6 +30,19 @@ const ReviewSectionRowLastDate: React.FC<ReviewSectionComponentProps> = ({
       case 'canStartReview': {
         return (
           <p>{`${strings.ASSIGNED}: ${getSimplifiedTimeDifference(assignment.timeCreated)}`}</p>
+        )
+      }
+
+      case 'canStartReview': {
+        return (
+          <p>{`${strings.ASSIGNED}: ${getSimplifiedTimeDifference(assignment.timeCreated)}`}</p>
+        )
+      }
+
+      case 'canReReview': {
+        console.log(fullStructure?.info.current)
+        return (
+          <p>{`re-submitted: ${getSimplifiedTimeDifference(fullStructure?.info.current?.date)}`}</p>
         )
       }
 
