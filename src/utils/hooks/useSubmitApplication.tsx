@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useUpdateApplicationMutation } from '../generated/graphql'
-import { ResponseFull, UseGetApplicationProps } from '../types'
+import { TemplateElementCategory, useUpdateApplicationMutation } from '../generated/graphql'
+import { FullStructure, ResponseFull, UseGetApplicationProps } from '../types'
 
 const useSubmitApplication = ({ serialNumber }: UseGetApplicationProps) => {
   const [submitted, setSubmitted] = useState(false)
@@ -17,6 +17,22 @@ const useSubmitApplication = ({ serialNumber }: UseGetApplicationProps) => {
       setError(submissionError.message)
     },
   })
+
+  const submitFromStructure = async (structure: FullStructure) => {
+    const elements = Object.values(structure.elementsById || {}).filter(
+      (element) => element.element.category === TemplateElementCategory.Question
+    )
+    const responsesPatch = elements.map(({ latestApplicationResponse }) => {
+      return { id: latestApplicationResponse.id, patch: { value: latestApplicationResponse.value } }
+    })
+
+    return await applicationSubmitMutation({
+      variables: {
+        serial: serialNumber,
+        responses: responsesPatch,
+      },
+    })
+  }
 
   const submit = async (responses: ResponseFull[]) => {
     setProcessing(true)
@@ -38,6 +54,7 @@ const useSubmitApplication = ({ serialNumber }: UseGetApplicationProps) => {
     processing,
     error,
     submit,
+    submitFromStructure,
   }
 }
 
