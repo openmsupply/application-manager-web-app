@@ -8,5 +8,6 @@ export default gql`
     id
     status
     timeUpdated
+    originalReviewResponseId
   }
 `

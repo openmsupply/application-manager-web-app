@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Header, Modal, Radio, Segment, TextArea } from 'semantic-ui-react'
 
-import {
-  ReviewResponse,
-  ReviewResponseDecision,
-  useUpdateReviewResponseMutation,
-} from '../../utils/generated/graphql'
+import { ReviewResponse, ReviewResponseDecision } from '../../utils/generated/graphql'
 import strings from '../../utils/constants'
 import messages from '../../utils/messages'
 import SummaryViewWrapperNEW from '../../formElementPlugins/SummaryViewWrapperNEW'
 import { SummaryViewWrapperPropsNEW } from '../../formElementPlugins/types'
+import useUpdateReviewResponse from '../../utils/hooks/useUpdateReviewResponseNEW'
 
 interface DecisionAreaProps {
   reviewResponse: ReviewResponse
@@ -25,7 +22,7 @@ const DecisionAreaNEW: React.FC<DecisionAreaProps> = ({
   const [isOpen, setIsOpen] = useState(false)
   const [previousToggle, setPreviousToggle] = useState(false)
   const [review, setReview] = useState(reviewResponse)
-  const [updateReviewResponse] = useUpdateReviewResponseMutation()
+  const updateResponse = useUpdateReviewResponse(reviewResponse.id)
 
   useEffect(() => {
     if (toggle != previousToggle) {
@@ -35,14 +32,9 @@ const DecisionAreaNEW: React.FC<DecisionAreaProps> = ({
     }
   }, [toggle])
 
-  const submit = () => {
-    updateReviewResponse({
-      variables: {
-        id: review.id,
-        decision: review.decision,
-        comment: review.comment,
-      },
-    })
+  const submit = async () => {
+    // TODO do we need to handle update error ?
+    await updateResponse(review)
     setIsOpen(false)
   }
 

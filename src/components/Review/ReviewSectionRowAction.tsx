@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Grid, Message } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { ReviewSectionComponentProps } from '../../utils/types'
+import { ReviewAction, ReviewSectionComponentProps } from '../../utils/types'
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
 import useCreateReview from '../../utils/hooks/useCreateReview'
@@ -20,23 +20,27 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
     thisReview,
   } = props
 
-  const reviewPath = `${pathname}${thisReview?.id}`
+  const reviewPath = `${pathname}/${thisReview?.id}`
   const reviewSectionLink = `${reviewPath}?activeSections=${details.code}`
 
   const getContent = () => {
     switch (action) {
-      case 'canContinue': {
-        if (isAssignedToCurrentUser) return <Link to={reviewSectionLink}>{strings.CONTINUE}</Link>
+      case ReviewAction.canContinue: {
+        if (isAssignedToCurrentUser)
+          return <Link to={reviewSectionLink}>{strings.ACTION_CONTINUE}</Link>
 
         return <p>In Review</p>
       }
-      case 'canView': {
-        if (isAssignedToCurrentUser) return <Link to={`${reviewSectionLink}`}>{strings.VIEW}</Link>
-        else return <Link to={`${reviewSectionLink}`}>{strings.VIEW}</Link>
+      case ReviewAction.canView: {
+        if (isAssignedToCurrentUser)
+          return <Link to={`${reviewSectionLink}`}>{strings.ACTION_VIEW}</Link>
+        else return <Link to={`${reviewSectionLink}`}>{strings.ACTION_VIEW}</Link>
       }
 
-      case 'canStartReview': {
+      case ReviewAction.canStartReview: {
         if (isAssignedToCurrentUser) return <StartReviewButton {...props} />
+
+        return null
       }
       default:
         return null
@@ -84,7 +88,7 @@ const StartReviewButton: React.FC<ReviewSectionComponentProps> = ({
 
   if (startReviewError) return <Message error title={strings.ERROR_GENERIC} />
 
-  return <Button onClick={startReview}>{strings.START}</Button>
+  return <Button onClick={startReview}>{strings.ACTION_START}</Button>
 }
 
 export default ReviewSectionRowAction

@@ -40,6 +40,7 @@ export {
   ContextListState,
   CurrentPage,
   DecisionAreaState,
+  DecisionOption,
   ElementBase,
   ElementBaseNEW,
   ElementsById,
@@ -204,6 +205,14 @@ interface CurrentPage {
   section: SectionDetails
   page: number
 }
+
+type DecisionOption = {
+  code: Decision
+  title: string
+  isVisible: boolean
+  value: boolean
+}
+
 interface DecisionAreaState {
   open: boolean
   review: ReviewQuestionDecision | null
@@ -466,15 +475,16 @@ interface ReviewProgress {
   doneConform: number
   doneNonConform: number
 }
-type ReviewAction =
-  | 'canContinue'
-  | 'canView'
-  | 'canReReview'
-  | 'canSelfAssign'
-  | 'canStartReview'
-  | 'canContinueLocked'
-  | 'canUpdate'
-  | 'unknown'
+enum ReviewAction {
+  canContinue = 'CAN_CONTINUE',
+  canView = 'CAN_VIEW',
+  canReReview = 'CAN_RE_REVIEW',
+  canSelfAssign = 'CAN_SELF_ASSIGN',
+  canStartReview = 'CAN_START_REVIEW',
+  canContinueLocked = 'CAN_CONTINUE_LOCKED',
+  canUpdate = 'CAN_UPDATE',
+  unknown = 'UNKNOWN',
+}
 
 interface ChangeRequestsProgress {
   totalChangeRequests: number
