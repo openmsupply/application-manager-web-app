@@ -1,13 +1,20 @@
 import React from 'react'
 import { Grid, Message } from 'semantic-ui-react'
 import { Loading } from '../../components'
-import ReviewSectionRowAction from '../../components/Review/ReviewSectionRowAction'
-import ReviewSectionRowAssigned from '../../components/Review/ReviewSectionRowAssigned'
-import ReviewSectionRowLastDate from '../../components/Review/ReviewSectionRowLastAction'
-import ReviewSectionRowProgress from '../../components/Review/ReviewSectionRowProgress'
+import {
+  ReviewSectionRowAssigned,
+  ReviewSectionRowLastActionDate,
+  ReviewSectionRowProgress,
+  ReviewSectionRowAction,
+} from '../../components/Review'
 import strings from '../../utils/constants'
 import useGetFullReviewStructure from '../../utils/hooks/useGetFullReviewStructure'
-import { AssignmentDetailsNEW, FullStructure, ReviewSectionComponentProps } from '../../utils/types'
+import {
+  AssignmentDetailsNEW,
+  FullStructure,
+  ReviewAction,
+  ReviewSectionComponentProps,
+} from '../../utils/types'
 
 // Component renders a line for review assignment within a section
 // to be used in ReviewHome and Expansions
@@ -44,7 +51,7 @@ const ReviewSectionRow: React.FC<ReviewSectionRowProps> = ({
     assignment,
     thisReview,
     isAssignedToCurrentUser,
-    action: section?.reviewAction?.action || 'unknown',
+    action: section?.reviewAction?.action || ReviewAction.unknown,
   }
 
   return (
@@ -52,7 +59,7 @@ const ReviewSectionRow: React.FC<ReviewSectionRowProps> = ({
       {section?.reviewAction?.isReviewable && (
         <Grid columns="equal" verticalAlign="middle">
           <ReviewSectionRowAssigned {...props} />
-          <ReviewSectionRowLastDate {...props} />
+          <ReviewSectionRowLastActionDate {...props} />
           <ReviewSectionRowProgress {...props} />
           <ReviewSectionRowAction {...props} />
         </Grid>

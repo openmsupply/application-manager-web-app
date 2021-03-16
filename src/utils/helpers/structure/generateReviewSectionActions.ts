@@ -9,12 +9,12 @@ type GenerateSectionActions = (props: {
 }) => void
 
 const levelOneActions: { [key in ReviewStatus | 'unknown']: ReviewAction } = {
-  [ReviewStatus.Draft]: 'canContinue',
-  [ReviewStatus.Submitted]: 'canView',
-  [ReviewStatus.Pending]: 'canReReview',
-  [ReviewStatus.Locked]: 'canContinueLocked',
-  [ReviewStatus.ChangesRequested]: 'canUpdate',
-  unknown: 'unknown',
+  [ReviewStatus.Draft]: ReviewAction.canContinue,
+  [ReviewStatus.Submitted]: ReviewAction.canView,
+  [ReviewStatus.Pending]: ReviewAction.canReReview,
+  [ReviewStatus.Locked]: ReviewAction.canContinueLocked,
+  [ReviewStatus.ChangesRequested]: ReviewAction.canUpdate,
+  unknown: ReviewAction.unknown,
 }
 
 const generateReviewSectionActions: GenerateSectionActions = ({
@@ -25,9 +25,9 @@ const generateReviewSectionActions: GenerateSectionActions = ({
 }) => {
   let baseAction: ReviewAction | undefined
   if (reviewAssignment?.status === ReviewAssignmentStatus.AvailableForSelfAssignment)
-    baseAction = 'canSelfAssign'
+    baseAction = ReviewAction.canSelfAssign
   if (reviewAssignment?.status === ReviewAssignmentStatus.Assigned && !thisReview)
-    baseAction = 'canStartReview'
+    baseAction = ReviewAction.canStartReview
   const isCurrentUserReview = reviewAssignment.reviewer.id === currentUserId
   sections.forEach((section) => {
     // would need to juggled this around a little bit for level > 1 (i.e. only show canStartReview where sections submitted lvl < 1 review with no linked thisReviewResponse)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Checkbox, Form } from 'semantic-ui-react'
 import { Decision } from '../../utils/generated/graphql'
-import { DecisionOption } from '../../utils/hooks/useGetDecisionOptions'
+import { DecisionOption } from '../../utils/types'
 
 type ReviewDecisionProps = {
   decisionOptions: DecisionOption[]

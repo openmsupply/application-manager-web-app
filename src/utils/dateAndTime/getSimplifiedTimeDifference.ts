@@ -9,39 +9,39 @@ type DisplayOptions = {
 const displayOptions: DisplayOptions[] = [
   {
     condition: (duration) => duration.as('day') <= 1,
-    display: () => strings.TODAY,
+    display: () => strings.DATE_TODAY,
   },
   {
     condition: (duration) => duration.as('day') <= 2,
-    display: () => strings.YESTERDAY,
+    display: () => strings.DATE_YESTERDAY,
   },
   {
     condition: (duration) => duration.as('day') <= 8,
-    display: (duration) => `${Math.floor(duration.as('days'))} ${strings.DAYS_AGO}`,
+    display: (duration) => `${Math.floor(duration.as('days'))} ${strings.DATE_DAYS_AGO}`,
   },
   {
     condition: (duration) => duration.as('week') < 2,
-    display: () => strings.LAST_WEEK,
+    display: () => strings.DATE_LAST_WEEK,
   },
   {
     condition: (duration) => duration.as('week') <= 4,
-    display: (duration) => `${Math.floor(duration.as('week'))} ${strings.WEEKS_AGO}`,
+    display: (duration) => `${Math.floor(duration.as('week'))} ${strings.DATE_WEEKS_AGO}`,
   },
   {
     condition: (duration) => duration.as('month') < 2,
-    display: () => strings.LAST_MONTH,
+    display: () => strings.DATE_LAST_MONTH,
   },
   {
     condition: (duration) => duration.as('month') <= 12,
-    display: (duration) => `${Math.floor(duration.as('month'))} ${strings.MONTHS_AGO}`,
+    display: (duration) => `${Math.floor(duration.as('month'))} ${strings.DATE_MONTHS_AGO}`,
   },
   {
     condition: (duration) => duration.as('year') <= 2,
-    display: () => strings.LAST_YEAR,
+    display: () => strings.DATE_LAST_YEAR,
   },
   {
     condition: (duration) => duration.as('year') > 2,
-    display: (duration) => `${Math.floor(duration.as('year'))} ${strings.YEARS_AGO}`,
+    display: (duration) => `${Math.floor(duration.as('year'))} ${strings.DATE_YEARS_AGO}`,
   },
 ]
 

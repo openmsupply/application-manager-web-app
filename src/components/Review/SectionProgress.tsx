@@ -23,8 +23,7 @@ const SectionProgress: React.FC<SectionStateNEW> = ({ reviewProgress, reviewActi
 }
 
 const getProgressTitle = ({ doneNonConform, doneConform, totalReviewable }: ReviewProgress) => {
-  if (doneNonConform > 0)
-    return strings.LABEL_REVIEW_DECLINED.replace('%1', doneNonConform.toString())
+  if (doneNonConform > 0) return `(${doneNonConform}) ${strings.LABEL_REVIEW_DECLINED}`
   else if (doneConform === totalReviewable) return strings.LABEL_REVIEW_COMPLETED
   return null
 }
