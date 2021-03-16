@@ -9,6 +9,7 @@ import { SectionsProgress } from '../../components/Application/Sections'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { Link } from 'react-router-dom'
+import useRestartApplication from '../../utils/hooks/useRestartApplication'
 
 interface ApplicationProps {
   structure: FullStructure
@@ -27,6 +28,7 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
   const { error, fullStructure } = useGetFullApplicationStructure({
     structure,
   })
+  const check = useRestartApplication(fullStructure?.info.serial as string)
 
   useEffect(() => {
     if (!fullStructure) return
@@ -52,6 +54,12 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
   const HomeMain: React.FC = () => {
     return (
       <>
+        {fullStructure.info.current?.status !== ApplicationStatus.Submitted &&
+          fullStructure.info.isChangeRequest && (
+            <Header>
+              There are issues with some of the information you supplied ... change request...{' '}
+            </Header>
+          )}
         <Segment>
           <Header as="h5">{strings.SUBTITLE_APPLICATION_STEPS}</Header>
           <Header as="h5">{strings.TITLE_STEPS.toUpperCase()}</Header>
@@ -71,6 +79,15 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
             <Segment basic textAlign="right">
               <Button as={Link} color="blue" onClick={handleSummaryClicked}>
                 {strings.BUTTON_SUMMARY}
+              </Button>
+              <p>{fullStructure.info.current?.status}</p>
+              <Button
+                onClick={async () => {
+                  await check(fullStructure)
+                  push(`/applicationNEW/${serialNumber}/S1/Page1`)
+                }}
+              >
+                Check Changes Requested
               </Button>
             </Segment>
           </Sticky>
