@@ -29,6 +29,10 @@ const ReviewSectionRowProgress: React.FC<ReviewSectionComponentProps> = ({
         if (isAssignedToCurrentUser) return <SectionProgressBar reviewProgress={reviewProgress} />
         return strings.IN_PROGRESS
       }
+      case 'canReReview': {
+        if (isAssignedToCurrentUser) return <SectionProgressBar reviewProgress={reviewProgress} />
+        return strings.IN_PROGRESS
+      }
       default:
         return null
     }

@@ -61,6 +61,7 @@ const useGetFullReviewStructure = ({
 
     // here we add responses from other review (not from this review assignmnet)
 
+    updateIsNewApplicationResponse(newStructure)
     // There will always just be one review assignment linked to a review. (since review is related to reviewAssignment, many to one relation is created)
     const reviewResponses = data?.reviewAssignment?.reviews?.nodes[0]?.reviewResponses.nodes
     if (reviewResponses) {
@@ -81,7 +82,7 @@ const useGetFullReviewStructure = ({
       thisReview: newStructure.thisReview,
       currentUserId: currentUser?.userId as number,
     })
-
+    console.log(newStructure)
     // generateConsolidationProgress
     setFullReviewStructure(newStructure)
   }, [data, error])
@@ -90,6 +91,20 @@ const useGetFullReviewStructure = ({
     fullReviewStructure,
     error: error?.message,
   }
+}
+
+const updateIsNewApplicationResponse = (structure: FullStructure) => {
+  const latestDate = structure.info.current?.date
+
+  Object.values(structure.elementsById || {}).forEach((element) => {
+    console.log(
+      element?.latestApplicationResponse?.timeUpdated,
+      latestDate,
+      element?.latestApplicationResponse?.timeUpdated === latestDate
+    )
+    element.isNewApplicationResponse =
+      element?.latestApplicationResponse?.timeUpdated === latestDate
+  })
 }
 
 const getFilteredSections = (sectionIds: number[], sections: SectionStateNEW[]) => {
