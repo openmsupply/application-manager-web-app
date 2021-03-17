@@ -14,18 +14,30 @@ const generateSectionReviewProgress = (section: SectionStateNEW) => {
 }
 
 const generatePageReviewProgress = (page: PageNEW) => {
+  // TODO, also check visibility
   const totalReviewable = page.state.filter((element) => element.isAssigned)
-  const doneConform = totalReviewable.filter(
+
+  const totalReviewableLinkedToLatestApplicationResponse = totalReviewable.filter(
+    ({ isThisReviewLatestReponseOutdated }) => !isThisReviewLatestReponseOutdated
+  )
+  const doneConform = totalReviewableLinkedToLatestApplicationResponse.filter(
     (element) => element.thisReviewLatestResponse?.decision === ReviewResponseDecision.Approve
   )
-  const doneNonConform = totalReviewable.filter(
+  const doneNonConform = totalReviewableLinkedToLatestApplicationResponse.filter(
     (element) => element.thisReviewLatestResponse?.decision === ReviewResponseDecision.Decline
+  )
+  const totalNewReviewable = totalReviewable.filter((element) => element.isNewApplicationResponse)
+  const doneNewReviewable = totalNewReviewable.filter(
+    (element) =>
+      !element.isThisReviewLatestReponseOutdated && element.thisReviewLatestResponse?.decision
   )
 
   page.reviewProgress = {
     totalReviewable: totalReviewable.length,
     doneConform: doneConform.length,
     doneNonConform: doneNonConform.length,
+    totalNewReviewable: totalNewReviewable.length,
+    doneNewReviewable: doneNewReviewable.length,
   }
 }
 
@@ -63,6 +75,8 @@ const getSums = (elements: PageNEW[]) => {
     totalReviewable: 0,
     doneConform: 0,
     doneNonConform: 0,
+    totalNewReviewable: 0,
+    doneNewReviewable: 0,
   }
 
   return elements.reduce(
@@ -70,6 +84,8 @@ const getSums = (elements: PageNEW[]) => {
       totalReviewable: sum.totalReviewable + (reviewProgress?.totalReviewable || 0),
       doneConform: sum.doneConform + (reviewProgress?.doneConform || 0),
       doneNonConform: sum.doneNonConform + (reviewProgress?.doneNonConform || 0),
+      totalNewReviewable: sum.totalNewReviewable + (reviewProgress?.totalNewReviewable || 0),
+      doneNewReviewable: sum.doneNewReviewable + (reviewProgress?.doneNewReviewable || 0),
     }),
     initial
   )

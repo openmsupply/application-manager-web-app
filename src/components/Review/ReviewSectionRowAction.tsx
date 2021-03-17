@@ -42,12 +42,63 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
 
         return null
       }
+
+      case ReviewAction.canReReview: {
+        if (isAssignedToCurrentUser) return <ReReviewButton {...props} />
+
+        return null
+      }
       default:
         return null
     }
   }
 
   return <Grid.Column textAlign="right">{getContent()}</Grid.Column>
+}
+
+const ReReviewButton: React.FC<ReviewSectionComponentProps> = ({
+  assignment,
+  fullStructure,
+  section: { details, reviewProgress },
+}) => {
+  // const {
+  //   userState: { currentUser },
+  // } = useUserState()
+  // const {
+  //   location: { pathname },
+  //   push,
+  // } = useRouter()
+
+  // const [startReviewError, setStartReviewError] = useState(false)
+
+  // const { createReviewFromStructure } = useCreateReview({
+  //   reviewAssigmentId: assignment.id,
+  //   reviewerId: currentUser?.userId as number,
+  //   serialNumber: fullStructure.info.serial,
+  //   onCompleted: () => {},
+  // })
+
+  // const startReview = async () => {
+  //   {
+  //     try {
+  //       const result = await createReviewFromStructure(fullStructure)
+  //       const newReviewId = result.data?.createReview?.review?.id
+  //       if (!newReviewId) throw new Error('Review ID is missing from response')
+  //       push(`${pathname}/${newReviewId}?activeSections=${details.code}`)
+  //     } catch (e) {
+  //       console.error(e)
+  //       return setStartReviewError(true)
+  //     }
+  //   }
+  // }
+
+  // if (startReviewError) return <Message error title={strings.ERROR_GENERIC} />
+  console.log(reviewProgress)
+  return (
+    <Button>{`Re-Review (${
+      (reviewProgress?.totalNewReviewable || 0) - (reviewProgress?.doneNewReviewable || 0)
+    })`}</Button>
+  )
 }
 
 const StartReviewButton: React.FC<ReviewSectionComponentProps> = ({

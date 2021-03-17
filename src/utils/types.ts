@@ -343,6 +343,8 @@ type PageElement = {
   previousApplicationResponse: ApplicationResponse
   latestApplicationResponse: ApplicationResponse
   thisReviewLatestResponse?: ReviewResponse
+  isNewApplicationResponse?: boolean
+  isThisReviewLatestReponseOutdated?: boolean
   review?: ReviewQuestionDecision
   assignmentId: number
   isAssigned?: boolean
@@ -473,6 +475,8 @@ interface ReviewProgress {
   totalReviewable: number
   doneConform: number
   doneNonConform: number
+  doneNewReviewable: number
+  totalNewReviewable: number
 }
 enum ReviewAction {
   canContinue = 'CAN_CONTINUE',

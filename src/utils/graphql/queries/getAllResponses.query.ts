@@ -6,6 +6,7 @@ export default gql`
     applicationBySerial(serial: $serial) {
       id
       serial
+      # TODO also filter out drafts, to be only visible to applicant
       applicationResponses(orderBy: TIME_UPDATED_DESC) {
         nodes {
           ...Response

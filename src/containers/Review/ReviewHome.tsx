@@ -22,7 +22,7 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
     userState: { currentUser },
   } = useUserState()
   // default should really be false, but for testing this is much quicker
-  const [viewAllAssignments, setViewAllAssignment] = useState<boolean>(true)
+  const [viewAllAssignments, setViewAllAssignment] = useState<boolean>(false)
 
   if (error) return <Message error title={strings.ERROR_GENERIC} list={[error]} />
 

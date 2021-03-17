@@ -33,13 +33,7 @@ const ReviewSectionRowLastActionDate: React.FC<ReviewSectionComponentProps> = ({
         )
       }
 
-      case 'canStartReview': {
-        return (
-          <p>{`${strings.ASSIGNED}: ${getSimplifiedTimeDifference(assignment.timeCreated)}`}</p>
-        )
-      }
-
-      case 'canReReview': {
+      case ReviewAction.canReReview: {
         console.log(fullStructure?.info.current)
         return (
           <p>{`re-submitted: ${getSimplifiedTimeDifference(fullStructure?.info.current?.date)}`}</p>

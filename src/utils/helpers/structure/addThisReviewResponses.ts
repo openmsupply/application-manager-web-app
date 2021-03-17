@@ -20,6 +20,11 @@ const addThisReviewResponses = ({
     if (!element) return
 
     element.thisReviewLatestResponse = responseGroup[0]
+
+    // this would be true before re-reviews is started, where new application responses are not linked to isThiReviewLatestResponse
+    element.isThisReviewLatestReponseOutdated =
+      element.response?.id != element.thisReviewLatestResponse?.applicationResponse?.id
+
     if (responseGroup.length === 1) return
   })
 
