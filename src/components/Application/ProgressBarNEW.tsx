@@ -95,24 +95,25 @@ const ProgressBarNEW: React.FC<ProgressBarProps> = ({
     )
   }
 
+  // We want to show three states:
+  // error -> if at least one error or if not completed and strict
+  // success -> if completed and valid
+  // empty circle with number -> if none of the above and section (has step), also add key
+  // or empty circle -> if none of the above
   const getIndicator = (progress: Progress, isStrict: boolean, step?: number) => {
     const { completed, valid } = progress
     const isStrictlylInvalid = !valid || (isStrict && !completed)
+    const size = step ? 'large' : 'small'
 
-    if (!completed && !isStrict)
-      return step ? (
-        <Label circular as="a" basic color="blue" key={`progress_${step}`}>
-          {step}
-        </Label>
-      ) : (
-        <Icon name="circle outline" />
-      )
-    return (
-      <Icon
-        name={isStrictlylInvalid ? 'exclamation circle' : 'check circle'}
-        color={isStrictlylInvalid ? 'red' : 'green'}
-        size={step ? 'large' : 'small'}
-      />
+    if (isStrictlylInvalid) return <Icon name={'exclamation circle'} color={'red'} size={size} />
+    if (completed && valid) return <Icon name={'check circle'} color={'green'} size={size} />
+
+    return step ? (
+      <Label circular as="a" basic color="blue" key={`progress_${step}`}>
+        {step}
+      </Label>
+    ) : (
+      <Icon name="circle outline" />
     )
   }
 
