@@ -108,7 +108,7 @@ const PageElements: React.FC<PageElementProps> = ({
     return (
       <Form>
         <Segment.Group>
-          {elements.map(({ element, thisReviewLatestResponse }) => (
+          {elements.map(({ element, thisReviewLatestResponse, isNewApplicationResponse }) => (
             <Segment key={`question_${element.id}`}>
               <Grid columns="equal">
                 <Grid.Column floated="left">
@@ -116,6 +116,7 @@ const PageElements: React.FC<PageElementProps> = ({
                 </Grid.Column>
                 <Grid.Column floated="right" textAlign="right">
                   <ReviewButton
+                    isNewApplicationResponse={isNewApplicationResponse}
                     reviewResponse={thisReviewLatestResponse as ReviewResponse}
                     summaryViewProps={getSummaryViewProps(element)}
                   />
@@ -142,7 +143,7 @@ const ReviewResponseComponent: React.FC<{
 
   if (!reviewResponse) return null
   if (!reviewResponse?.decision) return null
-
+  console.log(summaryViewProps, reviewResponse)
   return (
     <>
       <Grid columns="equal">
@@ -170,9 +171,10 @@ const ReviewResponseComponent: React.FC<{
 }
 
 const ReviewButton: React.FC<{
+  isNewApplicationResponse?: boolean
   reviewResponse: ReviewResponse
   summaryViewProps: SummaryViewWrapperPropsNEW
-}> = ({ reviewResponse, summaryViewProps }) => {
+}> = ({ reviewResponse, summaryViewProps, isNewApplicationResponse }) => {
   const [toggleDecisionArea, setToggleDecisionArea] = useState(false)
 
   if (!reviewResponse) return null
@@ -182,7 +184,11 @@ const ReviewButton: React.FC<{
   return (
     <>
       <Button
-        content={strings.BUTTON_REVIEW_RESPONSE}
+        content={
+          isNewApplicationResponse
+            ? strings.BUTTON_RE_REVIEW_RESPONSE
+            : strings.BUTTON_REVIEW_RESPONSE
+        }
         size="small"
         onClick={() => setToggleDecisionArea(!toggleDecisionArea)}
       />

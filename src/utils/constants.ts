@@ -20,6 +20,7 @@ export default {
   BUTTON_REVIEW_MAKE_UPDATES: 'Make updates',
   BUTTON_REVIEW_RE_REVIEW: 'Review updates',
   BUTTON_REVIEW_RESPONSE: 'Review',
+  BUTTON_RE_REVIEW_RESPONSE: 'Re-Review',
   BUTTON_REVIEW_SUBMIT: 'Submit review',
   BUTTON_REVIEW_VIEW_SUBMISSION: 'View Submission',
   BUTTON_REVIEW_START: 'Start review',

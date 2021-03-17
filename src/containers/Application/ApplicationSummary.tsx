@@ -49,7 +49,8 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
             replace(`/applicationNEW/${fullStructure.info.serial}/${sectionCode}/Page${pageNumber}`)
           } else {
             try {
-              await submitFromStructure(fullStructure)
+              const result = await submitFromStructure(fullStructure)
+              if (result?.errors) throw new Error('Something went wong')
               push(`/applicationNEW/${fullStructure?.info.serial}/submission`)
             } catch {
               setError(true)
