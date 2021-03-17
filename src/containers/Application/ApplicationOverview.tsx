@@ -10,8 +10,7 @@ import { ApplicationStatus, useUpdateResponseMutation } from '../../utils/genera
 import messages from '../../utils/messages'
 import useLoadSectionsStructure from '../../utils/hooks/useLoadSectionsStructure'
 import useRevalidateApplication from '../../utils/hooks/useRevalidateApplication'
-import { checkSectionsProgress } from '../../utils/helpers/structure/checkSectionsProgress'
-import { getResponsesInStrucutre } from '../../utils/helpers/structure/getElementsInStructure'
+import { checkSectionsProgress, getResponsesInStrucutre } from '../../utils/helpers/structure'
 
 // TODO: Remove this
 

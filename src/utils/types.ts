@@ -110,9 +110,9 @@ interface ApplicationDetails {
   name: string
   outcome: string
   isLinear: boolean
+  isChangeRequest: boolean
   current?: StageAndStatus // TODO: Change to compulsory after re-strcture is finished
   firstStrictInvalidPage: SectionAndPage | null
-  isChangeRequest: boolean
   submissionMessage?: string // TODO: Change to compulsory after re-structure is finished
 }
 

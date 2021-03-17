@@ -29,15 +29,18 @@ const useCreateReview = ({
   const [error, setError] = useState<ApolloError | undefined>()
 
   const [createReviewMutation] = useCreateReviewMutation({
+    // TODO: Remove this
     onCompleted: ({ createReview }: CreateReviewMutation) => {
       const { id } = createReview?.review as Review
       setProcessing(false)
       onCompleted(id)
     },
+    // TODO: Remove this
     onError: (error) => {
       setProcessing(false)
       setError(error)
     },
+    // TODO: Remove this
     refetchQueries: [
       {
         query: getReviewAssignmentQuery,
@@ -62,7 +65,7 @@ const useCreateReview = ({
       },
     })
   }
-
+  // TODO: Remove this
   const createReview = ({ applicationResponses }: CreateReviewProps) => {
     setProcessing(true)
     createReviewMutation({

@@ -8,23 +8,36 @@ import {
 import Loading from '../Loading'
 
 type ReviewCommentProps = {
-  reviewDecisionId: number
+  reviewDecisionId?: number
   isEditable: boolean
 }
 
 const ReviewComment: React.FC<ReviewCommentProps> = ({ reviewDecisionId, isEditable }) => {
   const [updateComment] = useUpdateReviewDecisionCommentMutation()
-  const { data, error } = useGetReviewDecisionCommentQuery({ variables: { reviewDecisionId } })
+  const { data, error } = useGetReviewDecisionCommentQuery({
+    variables: { reviewDecisionId: reviewDecisionId as number },
+    skip: !reviewDecisionId,
+  })
   const [comment, setComment] = useState('')
+
+  if (!reviewDecisionId) return null
 
   if (error) return <Message error title={strings.ERROR_GENERIC} list={[error]} />
 
   if (!data) return <Loading />
 
+  if (!isEditable)
+    return data?.reviewDecision?.comment ? (
+      <Message
+        compact
+        attached="bottom"
+        icon="comment outline"
+        header={strings.TITLE_REVIEW_COMMENT}
+        content={data?.reviewDecision?.comment}
+      />
+    ) : null
+
   const initialComment = data?.reviewDecision?.comment || ''
-
-  if (!isEditable) return <p>{initialComment}</p>
-
   return (
     <Form>
       <TextArea

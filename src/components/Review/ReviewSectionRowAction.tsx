@@ -119,6 +119,7 @@ const StartReviewButton: React.FC<ReviewSectionComponentProps> = ({
     reviewAssigmentId: assignment.id,
     reviewerId: currentUser?.userId as number,
     serialNumber: fullStructure.info.serial,
+    // TODO: Remove this
     onCompleted: () => {},
   })
 

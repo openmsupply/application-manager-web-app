@@ -1,7 +1,7 @@
 import React from 'react'
 import { Accordion, Container, Grid, Header, Icon, Label, List, Sticky } from 'semantic-ui-react'
 import strings from '../../utils/constants'
-import checkPageIsAccessible from '../../utils/helpers/structure/checkPageIsAccessible'
+import { checkPageIsAccessible } from '../../utils/helpers/structure'
 import { useRouter } from '../../utils/hooks/useRouter'
 import {
   FullStructure,

@@ -94,7 +94,10 @@ const ReviewPage: React.FC<{
               responsesByCode={responsesByCode as ResponsesByCode}
               serial={info.serial}
               isReview
-              canEdit={reviewAssignment?.review?.status === ReviewStatus.Draft}
+              canEdit={
+                reviewAssignment?.review?.status === ReviewStatus.Draft ||
+                reviewAssignment?.review?.status === ReviewStatus.Locked
+              }
             />
           ))}
         </Segment>

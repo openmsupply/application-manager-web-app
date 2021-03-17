@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
-import { FullStructure, PageNEW, SectionStateNEW } from '../types'
+import { FullStructure } from '../types'
 import {
   ApplicationResponse,
   ApplicationStatus,
-  ReviewResponseDecision,
   useGetAllResponsesQuery,
 } from '../generated/graphql'
 import { useUserState } from '../../contexts/UserState'
-import { generateResponsesProgress } from '../helpers/structure/generateProgress'
-import addEvaluatedResponsesToStructure from '../helpers/structure/addEvaluatedResponsesToStructure'
-import addElementsById from '../helpers/structure/addElementsById'
-import deepEqual from 'deep-equal'
-import generateApplicantChangesRequestedProgress from '../helpers/structure/generateApplicantChangesRequestedProgress'
-import addSortedSectionsAndPages from '../helpers/structure/addSortedSectionsAndPages'
-import addApplicationResponses from '../helpers/structure/addApplicationResponses'
-import addApplicantChangeRequestStatusToElement from '../helpers/structure/addApplicantChangeRequestStatusToElement'
+import {
+  addEvaluatedResponsesToStructure,
+  addElementsById,
+  addSortedSectionsAndPages,
+  addApplicationResponses,
+  addApplicantChangeRequestStatusToElement,
+  generateApplicantChangesRequestedProgress,
+  generateResponsesProgress,
+} from '../helpers/structure'
 
 interface useGetFullApplicationStructureProps {
   structure: FullStructure

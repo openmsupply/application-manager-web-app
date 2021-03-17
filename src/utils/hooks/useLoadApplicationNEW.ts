@@ -11,7 +11,6 @@ import evaluate from '@openmsupply/expression-evaluator'
 import { useUserState } from '../../contexts/UserState'
 import { EvaluatorParameters } from '../../utils/types'
 import { getApplicationSections } from '../helpers/application/getSectionsDetails'
-import { buildSectionsStructure } from '../helpers/structure/buildSectionsStructureNEW'
 import {
   Application,
   ApplicationSection,
@@ -24,6 +23,7 @@ import {
 } from '../generated/graphql'
 import messages from '../messages'
 import { DateTime } from 'luxon'
+import { buildSectionsStructure } from '../helpers/structure'
 
 const MAX_REFETCH = 10
 

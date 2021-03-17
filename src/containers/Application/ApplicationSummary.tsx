@@ -32,6 +32,11 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
 
   useEffect(() => {
     if (!fullStructure) return
+
+    // Re-direct based on application status
+    if (fullStructure.info.current?.status === ApplicationStatus.ChangesRequired)
+      replace(`/applicationNEW/${fullStructure.info.serial}`)
+
     // Re-direct if application is not valid
     if (fullStructure.info.firstStrictInvalidPage) {
       const { sectionCode, pageNumber } = fullStructure.info.firstStrictInvalidPage

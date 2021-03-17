@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
-import { Header, Message } from 'semantic-ui-react'
+import { Message } from 'semantic-ui-react'
 import { Loading, NoMatch } from '../../components'
 import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicationStructure'
 import { useRouter } from '../../utils/hooks/useRouter'
@@ -38,9 +38,6 @@ const ReviewPageWrapperNEW: React.FC<{
   return (
     <>
       <Switch>
-        <Route exact path={`${path}/summary`}>
-          <ReviewSummaryNEW />
-        </Route>
         <Route exact path={path}>
           <ReviewPage {...{ fullApplicationStructure, reviewAssignment }} />
         </Route>
@@ -50,11 +47,6 @@ const ReviewPageWrapperNEW: React.FC<{
       </Switch>
     </>
   )
-}
-
-// To be used in case the decision step is in a separated page...
-const ReviewSummaryNEW: React.FC = () => {
-  return <Header>REVIEW SUMMARY PAGE</Header>
 }
 
 export default ReviewPageWrapperNEW

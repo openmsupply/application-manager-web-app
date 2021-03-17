@@ -6,12 +6,14 @@ import {
   useGetReviewResponsesQuery,
 } from '../generated/graphql'
 import { useUserState } from '../../contexts/UserState'
-import addThisReviewResponses from '../helpers/structure/addThisReviewResponses'
-import addElementsById from '../helpers/structure/addElementsById'
-import generateReviewProgress from '../helpers/structure/generateReviewProgress'
 import { cloneDeep } from '@apollo/client/utilities'
-import generateReviewSectionActions from '../helpers/structure/generateReviewSectionActions'
-import addSortedSectionsAndPages from '../helpers/structure/addSortedSectionsAndPages'
+import {
+  addElementsById,
+  addSortedSectionsAndPages,
+  addThisReviewResponses,
+  generateReviewProgress,
+  generateReviewSectionActions,
+} from '../helpers/structure'
 
 interface useGetFullReviewStructureProps {
   fullApplicationStructure: FullStructure

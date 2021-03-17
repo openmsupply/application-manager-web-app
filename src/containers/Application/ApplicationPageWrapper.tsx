@@ -33,8 +33,7 @@ import {
 } from '../../utils/types'
 import useLoadSectionsStructure from '../../utils/hooks/useLoadSectionsStructure'
 import useRevalidateApplication from '../../utils/hooks/useRevalidateApplication'
-import { getPageElementsInStructure } from '../../utils/helpers/structure/getElementsInStructure'
-import { checkSectionsProgress } from '../../utils/helpers/structure/checkSectionsProgress'
+import { checkSectionsProgress, getPageElementsInStructure } from '../../utils/helpers/structure'
 
 // TODO: Remove this
 

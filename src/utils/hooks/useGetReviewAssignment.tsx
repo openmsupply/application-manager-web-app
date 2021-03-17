@@ -13,7 +13,7 @@ import useLoadSectionsStructure from '../../utils/hooks/useLoadSectionsStructure
 import { AssignmentDetails, SectionsStructure, User as UserType } from '../types'
 import getAssignedQuestions from '../helpers/review/getAssignedQuestions'
 import { useUserState } from '../../contexts/UserState'
-import updateSectionsReviews from '../helpers/structure/updateSectionsReviews'
+import { updateSectionsReviews } from '../helpers/structure'
 
 // TODO: Remove this
 interface UseGetReviewAssignmentProps {

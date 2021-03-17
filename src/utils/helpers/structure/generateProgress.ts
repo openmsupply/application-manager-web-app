@@ -47,7 +47,7 @@ const getSectionProgress = (pages: PageNEW[]): Progress => {
   return sectionProgress
 }
 
-export const generateResponsesProgress = (structure: FullStructure) => {
+const generateResponsesProgress = (structure: FullStructure) => {
   let firstIncompleteSectionCode = ''
   let firstIncompleteSectionIndex = Infinity
   let firstStrictInvalidPageInSection = Infinity
@@ -103,3 +103,5 @@ export const generateResponsesProgress = (structure: FullStructure) => {
       }
     : null
 }
+
+export default generateResponsesProgress

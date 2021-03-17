@@ -52,34 +52,29 @@ const useGetDecisionOptions: UseGetDecisionOptions = (canSubmitReviewAs, thisRev
 
   useEffect(() => {
     setIsDecisionError(false)
-    setDecisionOptions(
-      decisionOptions.map((option) => {
-        let isVisible = false
-        let value = false
-        // if review is NOT DRAFT then use decision from DB (and make it the only one visible)
-        if (!isDraft) {
-          isVisible = value = option.code === decisionInStructure
-        }
-        // if review IS DRAFT, can submit review with non conform decision and reviewer has
-        // ability to make a decsion, present them with NonConform or LOQ, both unchecked
-        if (isDraft && canSubmitReviewAs === Decision.NonConform && reviewerNeedsToMakeDecision) {
-          isVisible =
-            option.code === Decision.NonConform || option.code === Decision.ListOfQuestions
-          value = false
-        }
-        // if review IS DRAFT and other then non conform decision or reviewer can't make a decision
-        // then use computed decision for the state of review
-        else {
-          isVisible = value = option.code === canSubmitReviewAs
-        }
+    const updatedOptions = decisionOptions.map(({ code, title }) => {
+      let isVisible = false
+      let value = false
+      // if review is NOT DRAFT then use decision from DB (and make it the only one visible)
+      if (!isDraft) isVisible = value = code === decisionInStructure
+      // if review IS DRAFT, can can submit review with non conform decision and reviewer has
+      // ability to make a decsion, present them with NonConform or LOQ, both unchecked
+      else if (canSubmitReviewAs === Decision.NonConform && reviewerNeedsToMakeDecision) {
+        isVisible = code === Decision.NonConform || code === Decision.ListOfQuestions
+        value = false
+      }
+      // if review IS DRAFT and other then non conform decision or reviewer can't make a decision
+      // then use computed decision for the state of review
+      else isVisible = value = code === canSubmitReviewAs
 
-        return {
-          ...option,
-          isVisible,
-          value,
-        }
-      })
-    )
+      return {
+        code,
+        title,
+        isVisible,
+        value,
+      }
+    })
+    setDecisionOptions(updatedOptions)
   }, [canSubmitReviewAs, thisReview])
 
   const getDecision = () =>
@@ -94,7 +89,7 @@ const useGetDecisionOptions: UseGetDecisionOptions = (canSubmitReviewAs, thisRev
   }
 
   const getAndSetDecisionError = () => {
-    if (!reviewerNeedsToMakeDecision) return true
+    if (!reviewerNeedsToMakeDecision) return false
     const isDecisionError =
       canSubmitReviewAs === Decision.NonConform && getDecision() === Decision.NoDecision
 

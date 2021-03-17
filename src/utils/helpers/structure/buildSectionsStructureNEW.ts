@@ -14,7 +14,7 @@ interface BuildSectionsStructureProps {
  * @param baseElements Array with all elements in application
  * @returns Object of complete sections structure
  */
-export const buildSectionsStructure = ({
+const buildSectionsStructure = ({
   sections,
   baseElements,
 }: BuildSectionsStructureProps): SectionsStructureNEW => {
@@ -64,3 +64,5 @@ const getPageElements = ({ baseElements, sectionIndex, pageNumber }: GetPageElem
 
   return result
 }
+
+export default buildSectionsStructure

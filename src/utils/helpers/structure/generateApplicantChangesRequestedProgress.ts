@@ -13,7 +13,7 @@ const generateSectionReviewProgress = (section: SectionStateNEW) => {
 
 const generatePageChangeRequestProgress = (page: PageNEW) => {
   const totalChangeRequests = page.state.filter(
-    (element) => element.isChangeRequest && element.element.isVisible
+    ({ isChangeRequest, element: { isVisible } }) => isChangeRequest && isVisible
   )
   const doneChangeRequests = totalChangeRequests.filter((element) => element.isChanged)
 

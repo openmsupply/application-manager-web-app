@@ -8,15 +8,15 @@ import { FullStructure } from '../types'
 
 // below lines are used to get return type of the function that is returned by useRestartApplicationMutation
 type UseRestartApplicationMutation = ReturnType<typeof useRestartApplicationMutation>
-type promiseReturnType = ReturnType<UseRestartApplicationMutation[0]>
+type PromiseReturnType = ReturnType<UseRestartApplicationMutation[0]>
 // hook used to submit review, , as per type definition below (returns promise that resolve with mutation result data)
-type UseRestartApplication = (serial: string) => (structure: FullStructure) => promiseReturnType
+type UseRestartApplication = (serial: string) => (structure: FullStructure) => PromiseReturnType
 
 type ConstructRestartApplicationPatch = (structure: FullStructure) => ApplicationPatch
 
 const useRestartApplication: UseRestartApplication = (serial) => {
   const [restartApplicationMutation] = useRestartApplicationMutation()
-
+  // During re-submission, we still allow for changed to questions that are not in LOQ, thus re-submitting the whole application
   const constructRestartApplicationPatch: ConstructRestartApplicationPatch = (structure) => {
     const reviewableElements = Object.values(structure.elementsById || {}).filter(
       (element) => (element.element.category = TemplateElementCategory.Question)

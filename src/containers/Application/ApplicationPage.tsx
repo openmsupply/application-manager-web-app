@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import {
   FullStructure,
-  ResponsesByCode,
-  ElementStateNEW,
   SectionAndPage,
   MethodRevalidate,
-  MethodToCallProps,
   ApplicationProps,
 } from '../../utils/types'
-import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicationStructure'
+
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { useUserState } from '../../contexts/UserState'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { Loading } from '../../components'
 import strings from '../../utils/constants'
-import { Grid, Header, Message, Segment } from 'semantic-ui-react'
+import { Grid, Header, Segment } from 'semantic-ui-react'
 import ProgressBarNEW from '../../components/Application/ProgressBarNEW'
 import { PageElements } from '../../components/Application'
-import { useFormElementUpdateTracker } from '../../contexts/FormElementUpdateTrackerState'
-import checkPageIsAccessible from '../../utils/helpers/structure/checkPageIsAccessible'
 import { Navigation } from '../../components'
+import { checkPageIsAccessible } from '../../utils/helpers/structure'
 
 const ApplicationPage: React.FC<ApplicationProps> = ({
   structure: fullStructure,
@@ -32,6 +28,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
   const {
     query: { serialNumber, sectionCode, page },
     push,
+    replace,
   } = useRouter()
 
   const pageNumber = Number(page)
@@ -40,10 +37,8 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
     if (!fullStructure) return
 
     // Re-direct based on application status
-    if (fullStructure.info.current?.status === ApplicationStatus.ChangesRequired)
-      push(`/applicationNEW/${fullStructure.info.serial}`)
     if (fullStructure.info.current?.status !== ApplicationStatus.Draft)
-      push(`/applicationNEW/${fullStructure.info.serial}/summary`)
+      replace(`/applicationNEW/${fullStructure.info.serial}`)
 
     // Re-direct if trying to access page higher than allowed
     if (!fullStructure.info.isLinear || !fullStructure.info?.firstStrictInvalidPage) return

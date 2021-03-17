@@ -11,7 +11,7 @@ import { SectionsStructure, User as UserType } from '../types'
 import useTriggerProcessing from './useTriggerProcessing'
 import { useUserState } from '../../contexts/UserState'
 import useLoadSectionsStructure from './useLoadSectionsStructure'
-import updateSectionsReviews from '../helpers/structure/updateSectionsReviews'
+import { updateSectionsReviews } from '../helpers/structure'
 
 // TODO: Remove this
 interface UseLoadReviewProps {
