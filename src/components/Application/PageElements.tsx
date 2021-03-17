@@ -39,15 +39,28 @@ const PageElements: React.FC<PageElementProps> = ({
   if (canEdit && !isReview && !isSummary)
     return (
       <Form>
-        {elements.map(({ element }) => {
+        {elements.map(({ element, isChangeRequest, isChanged, previousApplicationResponse }) => {
           return (
-            <ApplicationViewWrapper
-              key={`question_${element.code}`}
-              element={element}
-              isStrictPage={isStrictPage}
-              allResponses={responsesByCode}
-              currentResponse={responsesByCode?.[element.code]}
-            />
+            <>
+              <ApplicationViewWrapper
+                key={`question_${element.code}`}
+                element={element}
+                isStrictPage={isStrictPage}
+                allResponses={responsesByCode}
+                currentResponse={responsesByCode?.[element.code]}
+              />
+              <pre>
+                {JSON.stringify(
+                  {
+                    isChangeRequest,
+                    isChanged,
+                    comment: previousApplicationResponse?.reviewResponses.nodes[0]?.comment,
+                  },
+                  null,
+                  ' '
+                )}
+              </pre>
+            </>
           )
         })}
       </Form>
