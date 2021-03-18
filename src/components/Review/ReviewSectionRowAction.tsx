@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Grid, Message } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { ReviewAction, ReviewSectionComponentProps } from '../../utils/types'
+import { ReviewAction, ReviewProgress, ReviewSectionComponentProps } from '../../utils/types'
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
 import useCreateReview from '../../utils/hooks/useCreateReview'
@@ -16,7 +16,7 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
 
   const {
     action,
-    section: { details },
+    section: { details, reviewProgress },
     isAssignedToCurrentUser,
 
     thisReview,
@@ -28,8 +28,11 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
   const getContent = () => {
     switch (action) {
       case ReviewAction.canContinue: {
-        if (isAssignedToCurrentUser)
+        if (isAssignedToCurrentUser) {
+          if (reReviewableCount(reviewProgress)) return <ReReviewButton {...props} />
+
           return <Link to={reviewSectionLink}>{strings.ACTION_CONTINUE}</Link>
+        }
 
         return <p>In Review</p>
       }
@@ -57,6 +60,9 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
 
   return <Grid.Column textAlign="right">{getContent()}</Grid.Column>
 }
+
+const reReviewableCount = (reviewProgress?: ReviewProgress) =>
+  (reviewProgress?.totalNewReviewable || 0) - (reviewProgress?.doneNewReviewable || 0)
 
 // RE-REVIEW button
 const ReReviewButton: React.FC<ReviewSectionComponentProps> = ({
@@ -96,9 +102,9 @@ const ReReviewButton: React.FC<ReviewSectionComponentProps> = ({
       : restart
 
   return (
-    <Button onClick={buttonAction}>{`${strings.BUTTON_REVIEW_RE_REVIEW} (${
-      (reviewProgress?.totalNewReviewable || 0) - (reviewProgress?.doneNewReviewable || 0)
-    })`}</Button>
+    <Button onClick={buttonAction}>{`${strings.BUTTON_REVIEW_RE_REVIEW} (${reReviewableCount(
+      reviewProgress
+    )})`}</Button>
   )
 }
 
