@@ -105,7 +105,8 @@ const useGetFullReviewStructure = ({
 const setIsNewApplicationResponse = (structure: FullStructure) => {
   Object.values(structure.elementsById || {}).forEach((element) => {
     element.isNewApplicationResponse =
-      element?.latestApplicationResponse?.timeUpdated === structure.info.current?.date
+      element?.latestApplicationResponse?.timeUpdated === structure.info.current?.date &&
+      !!element?.previousApplicationResponse
   })
 }
 

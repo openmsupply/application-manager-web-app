@@ -6,6 +6,7 @@ import SummaryViewWrapperNEW from '../../formElementPlugins/SummaryViewWrapperNE
 import { Form, Grid, Segment, Button, Icon } from 'semantic-ui-react'
 import strings from '../../utils/constants'
 import {
+  ApplicationResponse,
   ReviewResponse,
   ReviewResponseStatus,
   TemplateElementCategory,
@@ -109,26 +110,34 @@ const PageElements: React.FC<PageElementProps> = ({
     return (
       <Form>
         <Segment.Group>
-          {elements.map(({ element, thisReviewLatestResponse, isNewApplicationResponse }) => (
-            <Segment key={`question_${element.id}`}>
-              <Grid columns="equal">
-                <Grid.Column floated="left">
-                  <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
-                </Grid.Column>
-                <Grid.Column floated="right" textAlign="right">
-                  <ReviewButton
-                    isNewApplicationResponse={isNewApplicationResponse}
-                    reviewResponse={thisReviewLatestResponse as ReviewResponse}
-                    summaryViewProps={getSummaryViewProps(element)}
-                  />
-                </Grid.Column>
-              </Grid>
-              <ReviewResponseComponent
-                reviewResponse={thisReviewLatestResponse as ReviewResponse}
-                summaryViewProps={getSummaryViewProps(element)}
-              />
-            </Segment>
-          ))}
+          {elements.map(
+            ({
+              element,
+              thisReviewLatestResponse,
+              isNewApplicationResponse,
+              latestApplicationResponse,
+            }) => (
+              <Segment key={`question_${element.id}`}>
+                <Grid columns="equal">
+                  <Grid.Column floated="left">
+                    <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
+                  </Grid.Column>
+                  <Grid.Column floated="right" textAlign="right">
+                    <ReviewButton
+                      isNewApplicationResponse={isNewApplicationResponse}
+                      reviewResponse={thisReviewLatestResponse as ReviewResponse}
+                      summaryViewProps={getSummaryViewProps(element)}
+                    />
+                  </Grid.Column>
+                </Grid>
+                <ReviewResponseComponent
+                  latestApplicationResponse={latestApplicationResponse}
+                  reviewResponse={thisReviewLatestResponse as ReviewResponse}
+                  summaryViewProps={getSummaryViewProps(element)}
+                />
+              </Segment>
+            )
+          )}
         </Segment.Group>
       </Form>
     )
@@ -139,11 +148,17 @@ const PageElements: React.FC<PageElementProps> = ({
 const ReviewResponseComponent: React.FC<{
   reviewResponse: ReviewResponse
   summaryViewProps: SummaryViewWrapperPropsNEW
-}> = ({ reviewResponse, summaryViewProps }) => {
+  latestApplicationResponse: ApplicationResponse
+}> = ({ reviewResponse, summaryViewProps, latestApplicationResponse }) => {
   const [toggleDecisionArea, setToggleDecisionArea] = useState(false)
 
   if (!reviewResponse) return null
   if (!reviewResponse?.decision) return null
+  if (!reviewResponse?.decision) return null
+
+  // After review is submitted, reviewResponses are trimmed if they are not changed duplicates
+  // or if they are null, we only want to show reviewResponses that are linked to latestApplicationResponse
+  if (latestApplicationResponse.id !== reviewResponse.applicationResponse?.id) return null
 
   return (
     <>

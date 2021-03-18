@@ -33,7 +33,7 @@ const generatePageReviewProgress = (page: PageNEW) => {
   const totalNewReviewable = totalReviewable.filter((element) => element.isNewApplicationResponse)
   const doneNewReviewable = totalNewReviewable.filter(
     (element) =>
-      !isLatestReviewResponseUpToDate(element) && element.thisReviewLatestResponse?.decision
+      isLatestReviewResponseUpToDate(element) && element.thisReviewLatestResponse?.decision
   )
 
   page.reviewProgress = {
