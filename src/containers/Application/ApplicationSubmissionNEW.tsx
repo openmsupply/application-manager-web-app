@@ -28,7 +28,7 @@ const ApplicationSubmission: React.FC<ApplicationProps> = ({ structure }) => {
     current?.status === ApplicationStatus.Draft ||
     current?.status === ApplicationStatus.ChangesRequired
   )
-    push(`/applicationNEW/${serialNumber}/summary`)
+    push(`/application/${serialNumber}/summary`)
 
   return (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
@@ -67,7 +67,7 @@ const ApplicationSubmission: React.FC<ApplicationProps> = ({ structure }) => {
           <Button
             color="blue"
             as={Link}
-            to={`/applicationNEW/${serialNumber}/summary`}
+            to={`/application/${serialNumber}/summary`}
             style={{ minWidth: 200 }}
             content={`${strings.BUTTON_BACK_TO} ${type}`}
           />

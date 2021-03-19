@@ -51,53 +51,53 @@ const SiteLayout: React.FC = () => {
         </Route>
         {/* Application router NEW*/}
         {/* Create application new route */}
-        <Route path="/applicationNEW/new">
+        <Route path="/application/new">
           <ApplicationProvider>
             <ApplicationCreateNEW />
           </ApplicationProvider>
         </Route>
         {/* Other application routes nested in ApplicationWrapper */}
-        <Route path="/applicationNEW/:serialNumber">
+        <Route path="/application/:serialNumber">
           <FormElementUpdateTrackerProvider>
             <ApplicationWrapper />
           </FormElementUpdateTrackerProvider>
         </Route>
         {/* Application current routes - to be removed */}
-        <Route exact path="/application/new">
+        <Route exact path="/applicationOLD/new">
           <ApplicationProvider>
             <ApplicationCreate />
           </ApplicationProvider>
         </Route>
-        <Route exact path="/application/:serialNumber">
+        <Route exact path="/applicationOLD/:serialNumber">
           <ApplicationProvider>
             <ApplicationPageWrapper />
           </ApplicationProvider>
         </Route>
-        <Route exact path="/application/:serialNumber/:sectionCode/Page:page">
+        <Route exact path="/applicationOLD/:serialNumber/:sectionCode/Page:page">
           <ApplicationProvider>
             <ApplicationPageWrapper />
           </ApplicationProvider>
         </Route>
-        <Route exact path="/application/:serialNumber/submission">
+        <Route exact path="/applicationOLD/:serialNumber/submission">
           <ApplicationSubmission />
         </Route>
-        <Route exact path="/application/:serialNumber/summary">
+        <Route exact path="/applicationOLD/:serialNumber/summary">
           <ApplicationOverview />
         </Route>
         {/* Review current routes - to be removed */}
-        <Route exact path="/application/:serialNumber/review">
+        <Route exact path="/applicationOLD/:serialNumber/review">
           <ReviewOverview />
         </Route>
-        <Route exact path="/application/:serialNumber/review/:reviewId">
+        <Route exact path="/applicationOLD/:serialNumber/review/:reviewId">
           <ReviewPageWrapper />
         </Route>
-        <Route exact path="/application/:serialNumber/review/:reviewId/submission">
+        <Route exact path="/applicationOLD/:serialNumber/review/:reviewId/submission">
           <ReviewSubmission />
         </Route>
-        <Route exact path="/application/:serialNumber/consolidation/">
+        <Route exact path="/applicationOLD/:serialNumber/consolidation/">
           <NoMatch />
         </Route>
-        <Route exact path="/application/:serialNumber/consolidation/:consolidationId">
+        <Route exact path="/applicationOLD/:serialNumber/consolidation/:consolidationId">
           <NoMatch />
         </Route>
         {/* End of Review routes */}

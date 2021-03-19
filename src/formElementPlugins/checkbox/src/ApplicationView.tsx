@@ -59,6 +59,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       {checkboxElements.map((cb: Checkbox, index: number) => {
         return layout === 'inline' ? (
           <Checkbox
+            key={`${index}_${cb.label}`}
             label={cb.label}
             checked={cb.selected}
             onChange={toggle}

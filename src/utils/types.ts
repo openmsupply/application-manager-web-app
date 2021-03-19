@@ -20,7 +20,6 @@ import { ValidationState } from '../formElementPlugins/types'
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import { SummaryViewWrapperProps } from '../formElementPlugins/types'
 import { APPLICATION_COLUMNS, USER_ROLES } from './data'
-import { DateTime } from 'luxon'
 
 export {
   ApplicationDetails,
@@ -345,6 +344,7 @@ type PageElement = {
   previousApplicationResponse: ApplicationResponse
   latestApplicationResponse: ApplicationResponse
   thisReviewLatestResponse?: ReviewResponse
+  isNewApplicationResponse?: boolean
   review?: ReviewQuestionDecision
   assignmentId: number
   isAssigned?: boolean
@@ -375,7 +375,8 @@ interface ResponseFull {
   optionIndex?: number
   reference?: any // Not yet decided how to represent
   isValid?: boolean | null
-  hash?: string
+  hash?: string // Used in Password plugin
+  files?: any[] // Used in FileUpload plugin
   timeCreated?: Date
   reviewResponse?: ReviewResponse
   customValidation?: ValidationState
@@ -475,6 +476,8 @@ interface ReviewProgress {
   totalReviewable: number
   doneConform: number
   doneNonConform: number
+  doneNewReviewable: number
+  totalNewReviewable: number
 }
 enum ReviewAction {
   canContinue = 'CAN_CONTINUE',
@@ -524,7 +527,7 @@ interface SortQuery {
 interface StageAndStatus {
   stage: ApplicationStage
   status: ApplicationStatus
-  date: DateTime
+  date: Date
 }
 
 interface StageDetails {

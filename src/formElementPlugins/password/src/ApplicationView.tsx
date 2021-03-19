@@ -112,9 +112,11 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
             : null
         }
       />
-      {(showPasswordToggle === undefined ? true : showPasswordToggle) && (
-        <Checkbox label="Show password" checked={!masked} onClick={() => setMasked(!masked)} />
-      )}
+      <Form.Field required={false}>
+        {(showPasswordToggle === undefined ? true : showPasswordToggle) && (
+          <Checkbox label="Show password" checked={!masked} onClick={() => setMasked(!masked)} />
+        )}
+      </Form.Field>
     </>
   )
 }

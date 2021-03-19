@@ -27,6 +27,8 @@ Apollo client for data fetching from a GraphQL server [Application-manager-serve
 
 `yarn install`
 
+`cd src/formElementPlugins/ && yarn install`
+
 * Run on development mode:
 
 `yarn dev`

@@ -38,7 +38,7 @@ const ProgressBarNEW: React.FC<ProgressBarProps> = ({
 
   const handleChangeToPage = (sectionCode: string, pageNumber: number) => {
     if (!isLinear) {
-      push(`/applicationNEW/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
+      push(`/application/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
       return
     }
 
@@ -47,7 +47,7 @@ const ProgressBarNEW: React.FC<ProgressBarProps> = ({
     requestRevalidation(({ firstStrictInvalidPage, setStrictSectionPage }: MethodToCallProps) => {
       if (!firstStrictInvalidPage) {
         setStrictSectionPage(null)
-        push(`/applicationNEW/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
+        push(`/application/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
         return
       }
       if (
@@ -58,11 +58,11 @@ const ProgressBarNEW: React.FC<ProgressBarProps> = ({
         })
       ) {
         setStrictSectionPage(null)
-        push(`/applicationNEW/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
+        push(`/application/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
       } else {
         setStrictSectionPage(firstStrictInvalidPage)
         push(
-          `/applicationNEW/${structure.info.serial}/${firstStrictInvalidPage.sectionCode}/Page${firstStrictInvalidPage.pageNumber}`
+          `/application/${structure.info.serial}/${firstStrictInvalidPage.sectionCode}/Page${firstStrictInvalidPage.pageNumber}`
         )
       }
     })

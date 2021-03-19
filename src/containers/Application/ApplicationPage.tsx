@@ -38,7 +38,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
 
     // Re-direct based on application status
     if (fullStructure.info.current?.status !== ApplicationStatus.Draft)
-      replace(`/applicationNEW/${fullStructure.info.serial}`)
+      replace(`/application/${fullStructure.info.serial}`)
 
     // Re-direct if trying to access page higher than allowed
     if (!fullStructure.info.isLinear || !fullStructure.info?.firstStrictInvalidPage) return
@@ -46,7 +46,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
     const current = { sectionCode, pageNumber }
     if (!checkPageIsAccessible({ fullStructure, firstIncomplete, current })) {
       const { sectionCode, pageNumber } = firstIncomplete
-      push(`/applicationNEW/${fullStructure.info.serial}/${sectionCode}/Page${pageNumber}`)
+      push(`/application/${fullStructure.info.serial}/${sectionCode}/Page${pageNumber}`)
     }
   }, [fullStructure, sectionCode, page])
 

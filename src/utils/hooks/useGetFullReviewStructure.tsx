@@ -63,6 +63,8 @@ const useGetFullReviewStructure = ({
 
     // here we add responses from other review (not from this review assignmnet)
 
+    setIsNewApplicationResponse(newStructure)
+
     if ((data.reviewAssignment?.reviews?.nodes?.length || 0) > 1)
       console.error(
         'More then one review associated with reviewAssignment with id',
@@ -98,6 +100,14 @@ const useGetFullReviewStructure = ({
     fullReviewStructure,
     error: error?.message,
   }
+}
+
+const setIsNewApplicationResponse = (structure: FullStructure) => {
+  Object.values(structure.elementsById || {}).forEach((element) => {
+    element.isNewApplicationResponse =
+      element?.latestApplicationResponse?.timeUpdated === structure.info.current?.date &&
+      !!element?.previousApplicationResponse
+  })
 }
 
 const getFilteredSections = (sectionIds: number[], sections: SectionStateNEW[]) => {

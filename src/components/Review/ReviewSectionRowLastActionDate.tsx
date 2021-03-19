@@ -8,26 +8,37 @@ const ReviewSectionRowLastActionDate: React.FC<ReviewSectionComponentProps> = ({
   action,
   thisReview,
   assignment,
+  fullStructure,
 }) => {
   const getContent = () => {
     switch (action) {
       case ReviewAction.canContinue: {
         return (
-          <p>{`${strings.REVIEW_STARTED}: ${getSimplifiedTimeDifference(
+          <p>{`${strings.ACTION_DATE_REVIEW_STARTED}: ${getSimplifiedTimeDifference(
             thisReview?.timeStatusCreated
           )}`}</p>
         )
       }
       case ReviewAction.canView: {
         return (
-          <p>{`${strings.REVIEW_SUBMITTED}: ${getSimplifiedTimeDifference(
+          <p>{`${strings.ACTION_DATE_REVIEW_SUBMITTED}: ${getSimplifiedTimeDifference(
             thisReview?.timeStatusCreated
           )}`}</p>
         )
       }
       case ReviewAction.canStartReview: {
         return (
-          <p>{`${strings.ASSIGNED}: ${getSimplifiedTimeDifference(assignment.timeCreated)}`}</p>
+          <p>{`${strings.ACTION_DATE_ASSIGNED}: ${getSimplifiedTimeDifference(
+            assignment.timeCreated
+          )}`}</p>
+        )
+      }
+
+      case ReviewAction.canReReview: {
+        return (
+          <p>{`${strings.ACTION_DATE_RE_SUBMITTED}: ${getSimplifiedTimeDifference(
+            fullStructure?.info.current?.date
+          )}`}</p>
         )
       }
 

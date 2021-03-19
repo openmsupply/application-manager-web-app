@@ -1,0 +1,8 @@
+{
+  "isCore": true,
+  "code": "fileUpload",
+  "displayName": "File Upload interface",
+  "dynamicParameters": ["label", "description"],
+  "//": "categories types: 'Input'|'Informative'",
+  "category": "Input"
+}

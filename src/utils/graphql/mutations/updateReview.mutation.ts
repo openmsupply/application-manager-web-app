@@ -6,6 +6,13 @@ export default gql`
       review {
         id
         trigger
+        reviewResponses {
+          nodes {
+            id
+            decision
+            comment
+          }
+        }
         reviewDecisions {
           nodes {
             id

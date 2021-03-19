@@ -1,6 +1,23 @@
 _Ongoing authoritative reference of Template Question/Element types, including input parameters and response type (shape). Please ensure this document matches the current implementation at all times._
 
+## Contents
+
+- [Template Element fields](#element-fields)
+- [Question/Element types](#types)
+  - [Short Text Input](#short-text)
+  - [Password](#password)
+  - [Text Information](#text)
+  - [Radio Buttons](#radio)
+  - [Drop-down Selector](#dropdown)
+  - [Checkboxes](#checkbox)
+  - [File Upload](#file)
+  - [Page Break](#page)
+
+<a name="element-fields"/>
+
 ## Template Element fields
+
+These fields are common to all element types and have their own field in the `template_element` table.
 
 - **id, section_id** : database references
 - **code**: `string` -- unique (per template) identifier
@@ -19,12 +36,14 @@ _Ongoing authoritative reference of Template Question/Element types, including i
 - **validation_message**: `string` -- the message that shows in the UI when validation fails.  
   _TO-DO: Handle multiple validation criteria with different messages (eg. "Not a valid email", "Email is not unique")_
 - **parameters**: `JSON` -- the parameters specific to each question/element type. See individual plugins below for parameter breakdown
+  <a name="types"/>
 
 ## Question/Element types
 
 **Note**: all parameter fields can also have a dynamic query object instead of a primitive. The [`evaluateExpression`](https://github.com/openmsupply/application-manager-server/wiki/Query-Syntax) function will return literal strings (or numbers, booleans) as is. The types described for the parameters below are the type that is expected to be _returned_ from a query expression.
 
 **Note**: parameters marked with \* can be defined as dynamic expressions -- these are specified in the `pluginConfig.json` file of each plugin.
+<a name="short-text"/>
 
 ### Short Text Input
 
@@ -47,6 +66,8 @@ _This describes the expected object that will be stored in the `application_resp
 `{ text: <string> }`
 
 ---
+
+<a name="password"/>
 
 ### Password Input
 
@@ -81,6 +102,7 @@ _This describes the expected object that will be stored in the `application_resp
 
 ---
 
+<a name="text"/>
 ### Text Information
 
 - **type/code**: `textInfo`
@@ -96,6 +118,7 @@ _For displaying blocks of text in the application_
 
 ---
 
+<a name="radio"/>
 ### Radio Buttons
 
 - **type/code**: `radioChoice`
@@ -124,6 +147,7 @@ _Multi-choice question, with one allowed selection, displayed as labelled radio 
 
 ---
 
+<a name="dropdown"/>
 ### Drop-down Selector
 
 - **type/code**: `dropdownChoice`
@@ -153,6 +177,7 @@ _Multi-choice question, with one allowed option, displayed as Drop-down list (Co
 
 ---
 
+<a name="checkbox"/>
 ### Checkboxes
 
 - **type/code**: `checkbox`
@@ -194,6 +219,45 @@ _One or more checkboxes, any number of which can be selected/toggled_
 
 ---
 
+<a name="file"/>
+### File Upload
+
+- **type/code**: `fileUpload`
+- **category**: `Question`
+
+_Interface for uploading documents or other files_
+
+#### Input parameters
+
+- **label\***: `string` -- as above
+- **description\***: `string` -- as above [Optional]
+- **fileCountLimit**: `number` -- maximum number of files allowed to upload for this question (default: 1)
+- **fileExtensions**: `array[string]` -- list of allowed file extensions (default: no restrictions). e.g. `["pdf", "doc", "txt", "jpg", "png"]`
+- **fileSizeLimit**: `number` -- maximum file size in KB (default: no limit)
+
+#### Response type
+
+Response object is populated after file upload, based on the server response. Note: only successful uploads are included in the response. Error files or files currently loading are displayed in the UI but filtered out before saving.
+
+```
+{
+  text: <string> -- comma separated list of all filenames
+  files: [
+      {
+        filename: <string>
+        fileUrl: <string>
+        thumbnailUrl: <string>
+        mimetype: <string>
+      },
+      ...
+  ]
+}
+
+```
+
+---
+
+<a name="page"/>
 ### Page Break
 
 - **type/code**: `pageBreak`

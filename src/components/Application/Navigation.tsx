@@ -64,7 +64,7 @@ const Navigation: React.FC<NavigationProps> = ({
 
   const sendToPage = (sectionPage: SectionAndPage) => {
     const { sectionCode, pageNumber } = sectionPage
-    push(`/applicationNEW/${serialNumber}/${sectionCode}/Page${pageNumber}`)
+    push(`/application/${serialNumber}/${sectionCode}/Page${pageNumber}`)
   }
 
   const previousButtonHandler = () => {
@@ -100,7 +100,7 @@ const Navigation: React.FC<NavigationProps> = ({
       if (firstStrictInvalidPage) {
         setStrictSectionPage(firstStrictInvalidPage)
         sendToPage(firstStrictInvalidPage)
-      } else push(`/applicationNEW/${serialNumber}/summary`)
+      } else push(`/application/${serialNumber}/summary`)
     })
   }
 

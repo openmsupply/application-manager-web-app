@@ -111,7 +111,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
           name: stage as string,
         },
         status: status as ApplicationStatus,
-        date: DateTime.fromISO(statusHistoryTimeCreated),
+        date: statusHistoryTimeCreated,
       },
       firstStrictInvalidPage: null,
       isChangeRequest: false,

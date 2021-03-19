@@ -66,6 +66,13 @@ class pluginProvider {
         folderName: 'password',
         category: 'Input',
       },
+      fileUpload: {
+        code: 'fileUpload',
+        displayName: 'File Upload',
+        isCore: true,
+        folderName: 'fileUpload',
+        category: 'Input',
+      },
     }
   }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ErrorBoundary, pluginProvider } from '.'
-import { Grid, Icon, Form, Input } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
 import { SummaryViewWrapperPropsNEW, PluginComponents, ValidationState } from './types'
 import { TemplateElementCategory } from '../utils/generated/graphql'
 import { ElementPluginParameters, User } from '../utils/types'
@@ -34,7 +34,6 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperPropsNEW> = (props) => {
       setParametersLoaded(true)
     })
   }, [])
-
   if (
     !pluginCode ||
     !isVisible
@@ -47,9 +46,12 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperPropsNEW> = (props) => {
     return (
       <Form.Field required={isRequired}>
         {parametersLoaded && (
-          <label style={{ color: 'black' }}>
-            <Markdown text={combinedParams.label} semanticComponent="noParagraph" />
-          </label>
+          <>
+            <label style={{ color: 'black' }}>
+              <Markdown text={combinedParams.label} semanticComponent="noParagraph" />
+            </label>
+            <Markdown text={combinedParams.description} />
+          </>
         )}
         <Markdown text={(response ? response?.text : '') as string} />
       </Form.Field>

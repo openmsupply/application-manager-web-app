@@ -96,9 +96,10 @@ const useGetFullApplicationStructure = ({
       newStructure = addElementsById(newStructure)
       newStructure = addSortedSectionsAndPages(newStructure)
 
+      // even though response is already added to element, we need to add Latest and Previous application response
+      addApplicationResponses(newStructure, applicationResponses)
+
       if (shouldCalculateProgress) {
-        // even thought response is already added to element, we need to Latest and Previous applicaiton response
-        addApplicationResponses(newStructure, applicationResponses)
         addApplicantChangeRequestStatusToElement(newStructure)
 
         generateApplicantChangesRequestedProgress(newStructure)

@@ -17,6 +17,18 @@ export async function postRequest(body: object, endpointUrl: string, headers: ob
   }
 }
 
-export async function getRequest(body: object, endpointUrl: string) {
-  // TO-DO: Generic GET request
+export async function getRequest(endpointUrl: string, headers: object = {}) {
+  try {
+    const response = await fetch(endpointUrl, {
+      method: 'GET',
+      // cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+    })
+    return response.json()
+  } catch (err) {
+    throw err
+  }
 }

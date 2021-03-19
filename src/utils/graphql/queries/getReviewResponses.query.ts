@@ -9,7 +9,7 @@ export default gql`
       reviews(
         filter: {
           or: [
-            { status: { equalTo: SUBMITTED } }
+            { status: { notEqualTo: DRAFT } }
             { and: [{ status: { equalTo: DRAFT } }, { reviewer: { id: { equalTo: $userId } } }] }
           ]
         }
