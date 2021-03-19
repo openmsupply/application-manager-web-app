@@ -148,7 +148,11 @@ const StartReviewButton: React.FC<ReviewSectionComponentProps> = ({
 
   if (startReviewError) return <Message error title={strings.ERROR_GENERIC} />
 
-  return <Button onClick={startReview}>{strings.ACTION_START}</Button>
+  return (
+    <Button as="a" onClick={startReview}>
+      {strings.ACTION_START}
+    </Button>
+  )
 }
 
 export default ReviewSectionRowAction
