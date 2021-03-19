@@ -5,20 +5,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const config = {
   entry: {
     app: `${commonPaths.appEntry}/index.tsx`,
-    vendor: ['semantic-ui-react']
+    vendor: ['semantic-ui-react'],
   },
   output: {
     path: commonPaths.outputPath,
-    publicPath: '/'
+    publicPath: '/',
   },
   resolve: {
-    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   },
   module: {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        loader: "awesome-typescript-loader",
+        loader: 'awesome-typescript-loader',
       },
       // {
       //   enforce: "pre",
@@ -34,8 +34,8 @@ const config = {
         // Load other files, images etc
         test: /\.(png|j?g|gif|ico)?$/,
         use: 'url-loader',
-      }
-    ]
+      },
+    ],
   },
   optimization: {
     splitChunks: {
@@ -44,23 +44,23 @@ const config = {
           name: 'styles',
           test: /\.css$/,
           chunks: 'all',
-          enforce: true
-        },        
+          enforce: true,
+        },
         vendor: {
           chunks: 'initial',
           test: 'vendor',
           name: 'vendor',
-          enforce: true
-        }
-      }
-    }
+          enforce: true,
+        },
+      },
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'public/index.html',
-      favicon: 'public/favicon.ico'
-    })
-  ]
+      favicon: 'public/favicon.ico',
+    }),
+  ],
 }
 
 module.exports = config

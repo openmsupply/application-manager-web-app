@@ -22,7 +22,9 @@
     "@apollo/client": "^3.1.4",
     "@openmsupply/expression-evaluator": "^1.5.2",
     "@types/deep-equal": "^1.0.1",
+    "@types/react-pdf": "^5.0.1",
     "apollo3-cache-persist": "^0.8.0",
+    "copy-webpack-plugin": "^8.0.0",
     "deep-equal": "^2.0.5",
     "graphql": "^15.3.0",
     "luxon": "^1.25.0",
@@ -31,6 +33,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-markdown": "^5.0.3",
+    "react-pdf": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "serve": "^11.3.2"
   },

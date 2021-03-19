@@ -27,12 +27,12 @@ import { ColumnDetails } from '../../types'
 
 const allColumns: { [key in APPLICATION_COLUMNS]: ColumnDetails } = {
   SERIAL_NUMBER: {
-    headerName: 'Serial number',
+    headerName: ' ',
     sortName: 'serial',
     ColumnComponent: SerialNumberCell,
   },
   LAST_ACTIVE_DATE: {
-    headerName: 'Last active date',
+    headerName: 'Active Date',
     sortName: 'last-active-date',
     ColumnComponent: LastActiveDateCell,
   },
@@ -42,7 +42,7 @@ const allColumns: { [key in APPLICATION_COLUMNS]: ColumnDetails } = {
     ColumnComponent: DeadlineCell,
   },
   APPLICATION_NAME: {
-    headerName: 'Name',
+    headerName: 'Application Name',
     sortName: 'name',
     ColumnComponent: ApplicationNameCell,
   },
