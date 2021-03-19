@@ -83,13 +83,13 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
           <Segment vertical style={{ marginBottom: 20 }}>
             <Header content={fullStructure.sections[sectionCode].details.title} />
             <PageElements
+              canEdit={current?.status === ApplicationStatus.Draft}
               elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
               responsesByCode={fullStructure.responsesByCode}
               isStrictPage={
                 sectionCode === strictSectionPage?.sectionCode &&
                 pageNumber === strictSectionPage?.pageNumber
               }
-              canEdit={current?.status === ApplicationStatus.Draft}
             />
           </Segment>
         </Grid.Column>

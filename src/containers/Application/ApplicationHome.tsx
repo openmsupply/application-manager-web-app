@@ -68,7 +68,7 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
             firstStrictInvalidPage={firstStrictInvalidPage}
             restartApplication={async ({ sectionCode, pageNumber }) => {
               await restartApplication(fullStructure)
-              push(`/applicationNEW/${serialNumber}/${sectionCode}/Page${pageNumber}`)
+              push(`/application/${serialNumber}/${sectionCode}/Page${pageNumber}`)
             }}
             resumeApplication={handleResumeClick}
           />

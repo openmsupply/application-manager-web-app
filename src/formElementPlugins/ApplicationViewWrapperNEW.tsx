@@ -164,8 +164,9 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
           style={{
             border: displayResponseWarning ? 'solid 1px' : 'transparent',
             borderColor: isChanged ? 'blue' : !!currentReview ? 'red' : 'black',
-            padding: '5px',
-            margin: '5px',
+            borderRadius: 7,
+            padding: displayResponseWarning ? 4 : 5,
+            margin: 5,
           }}
         >
           {parametersReady && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
@@ -193,13 +194,10 @@ const ChangesToResponseWarning: React.FC<ChangesToResponseWarningProps> = ({
     <div
       style={{
         color: isChanged ? 'grey' : 'red',
-        minHeight: 18, // Used to keep space for warning when not displaying
+        visibility: displayResponseWarning ? 'visible' : 'hidden',
       }}
     >
       <Icon
-        style={{
-          display: displayResponseWarning ? 'inline-block' : 'none',
-        }}
         name={
           currentReview
             ? isChanged
@@ -209,8 +207,7 @@ const ChangesToResponseWarning: React.FC<ChangesToResponseWarningProps> = ({
         }
         color={currentReview ? (isChanged ? 'grey' : 'red') : 'blue'}
       />
-      {displayResponseWarning &&
-        (currentReview ? currentReview.comment : messages.APPLICATION_OTHER_CHANGES_MADE)}
+      {currentReview ? currentReview.comment : messages.APPLICATION_OTHER_CHANGES_MADE}
     </div>
   )
 }
