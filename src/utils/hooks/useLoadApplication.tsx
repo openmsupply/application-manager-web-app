@@ -97,6 +97,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
         stages: templateStages.map((stage) => ({
           number: stage.number as number,
           title: stage.title as string,
+          id: stage.id,
           description: stage.description ? stage.description : undefined,
         })),
         submissionMessage: application.template?.submissionMessage as string,

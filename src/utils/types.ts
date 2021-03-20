@@ -532,6 +532,7 @@ interface StageAndStatus {
 
 interface StageDetails {
   number: number
+  id: number
   title: string
   description?: string
 }

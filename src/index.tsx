@@ -24,7 +24,9 @@ const authLink = setContext((_, { headers }) => {
 // Needed to link or 'chain' commands in Apollo Clients (so that headers can be added to every apollo request)
 // see https://www.apollographql.com/docs/react/networking/authentication/#header
 const httpLink = createHttpLink({
-  uri: config.serverGraphQL,
+  uri: ({ operationName }) => {
+    return `${config.serverGraphQL}?dev=${operationName}`
+  },
 })
 
 const App: React.FC = () => {

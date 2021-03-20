@@ -4,6 +4,7 @@ export default gql`
   fragment TemplateStage on TemplateStage {
     number
     title
+    id
     description
   }
 `

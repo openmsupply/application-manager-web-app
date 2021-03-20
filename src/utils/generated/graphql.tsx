@@ -19960,7 +19960,7 @@ export type TemplateFragment = (
 
 export type TemplateStageFragment = (
   { __typename?: 'TemplateStage' }
-  & Pick<TemplateStage, 'number' | 'title' | 'description'>
+  & Pick<TemplateStage, 'number' | 'title' | 'id' | 'description'>
 );
 
 export type CreateApplicationMutationVariables = Exact<{
@@ -20526,7 +20526,6 @@ export type GetReviewInfoQuery = (
 
 export type GetReviewResponsesQueryVariables = Exact<{
   reviewAssignmentId: Scalars['Int'];
-  userId: Scalars['Int'];
   sectionIds?: Maybe<Array<Scalars['Int']>>;
 }>;
 
@@ -20749,6 +20748,7 @@ export const TemplateStageFragmentDoc = gql`
     fragment TemplateStage on TemplateStage {
   number
   title
+  id
   description
 }
     `;
@@ -21714,10 +21714,10 @@ export type GetReviewInfoQueryHookResult = ReturnType<typeof useGetReviewInfoQue
 export type GetReviewInfoLazyQueryHookResult = ReturnType<typeof useGetReviewInfoLazyQuery>;
 export type GetReviewInfoQueryResult = Apollo.QueryResult<GetReviewInfoQuery, GetReviewInfoQueryVariables>;
 export const GetReviewResponsesDocument = gql`
-    query getReviewResponses($reviewAssignmentId: Int!, $userId: Int!, $sectionIds: [Int!]) {
+    query getReviewResponses($reviewAssignmentId: Int!, $sectionIds: [Int!]) {
   reviewAssignment(id: $reviewAssignmentId) {
     id
-    reviews(filter: {or: [{status: {notEqualTo: DRAFT}}, {and: [{status: {equalTo: DRAFT}}, {reviewer: {id: {equalTo: $userId}}}]}]}) {
+    reviews {
       nodes {
         id
         reviewResponses(orderBy: TIME_UPDATED_DESC, filter: {templateElement: {section: {id: {in: $sectionIds}}}}) {
@@ -21748,7 +21748,6 @@ export const GetReviewResponsesDocument = gql`
  * const { data, loading, error } = useGetReviewResponsesQuery({
  *   variables: {
  *      reviewAssignmentId: // value for 'reviewAssignmentId'
- *      userId: // value for 'userId'
  *      sectionIds: // value for 'sectionIds'
  *   },
  * });
