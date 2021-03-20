@@ -6,19 +6,23 @@ export default gql`
   query getReviewResponses($reviewAssignmentId: Int!, $userId: Int!, $sectionIds: [Int!]) {
     reviewAssignment(id: $reviewAssignmentId) {
       id
-      reviews(
-        filter: {
-          or: [
-            { status: { notEqualTo: DRAFT } }
-            { and: [{ status: { equalTo: DRAFT } }, { reviewer: { id: { equalTo: $userId } } }] }
-          ]
-        }
-      ) {
+      reviews {
         nodes {
           id
           reviewResponses(
             orderBy: TIME_UPDATED_DESC
-            filter: { templateElement: { section: { id: { in: $sectionIds } } } }
+            filter: {
+              templateElement: { section: { id: { in: $sectionIds } } }
+              or: [
+                { status: { notEqualTo: DRAFT } }
+                {
+                  and: [
+                    { status: { equalTo: DRAFT } }
+                    { review: { reviewer: { id: { equalTo: $userId } } } }
+                  ]
+                }
+              ]
+            }
           ) {
             nodes {
               ...reviewResponseFragment

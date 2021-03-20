@@ -1,5 +1,5 @@
 import {
-  ApplicationList,
+  ApplicationListShape,
   ApplicationResponse,
   ApplicationStatus,
   Decision,
@@ -121,7 +121,7 @@ interface ApplicationElementStates {
   [key: string]: ElementState
 }
 
-interface ApplicationListRow extends ApplicationList {
+interface ApplicationListRow extends ApplicationListShape {
   isExpanded: boolean
 }
 
@@ -169,7 +169,7 @@ interface BasicStringObject {
 }
 
 interface CellProps {
-  application: ApplicationList
+  application: ApplicationListShape
 }
 
 interface ColumnDetails {
@@ -532,6 +532,7 @@ interface StageAndStatus {
 
 interface StageDetails {
   number: number
+  id: number
   title: string
   description?: string
 }
