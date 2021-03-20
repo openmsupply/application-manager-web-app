@@ -8,6 +8,7 @@ import StatusCell from './StatusCell'
 import SerialNumberCell from './SerialNumberCell'
 import OrganisationCell from './OrganisationCell'
 import OutcomeCell from './OutcomeCell'
+import ReviewerActionCell from './ReviewerActionCell'
 
 export {
   ApplicationNameCell,
@@ -20,4 +21,5 @@ export {
   StatusCell,
   OrganisationCell,
   OutcomeCell,
+  ReviewerActionCell,
 }

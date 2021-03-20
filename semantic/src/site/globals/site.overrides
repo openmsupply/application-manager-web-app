@@ -6,6 +6,6 @@ p {
   letter-spacing: 0;
 }
 
-p.yow {
-  background: red;
+.ui.basebody.container {
+  background: rgb(248, 248, 248);
 }

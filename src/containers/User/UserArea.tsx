@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Grid, Label, Message, Segment, Sticky } from 'semantic-ui-react'
+import { Button, Container, Grid, Label, Message, Segment, Sticky } from 'semantic-ui-react'
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
 import UserSelection from './UserSelection'
@@ -14,7 +14,7 @@ const UserArea: React.FC = () => {
   const { error, loading, filteredTemplates } = useListTemplates(templatePermissions, isLoading)
 
   return (
-    <Sticky>
+    <Container style={{ position: 'fixed', top: 0, zIndex: 10 }}>
       <Segment inverted vertical>
         <Grid inverted>
           <Grid.Column width={12}>
@@ -43,7 +43,7 @@ const UserArea: React.FC = () => {
           </Grid.Column>
         </Grid>
       </Segment>
-    </Sticky>
+    </Container>
   )
 }
 

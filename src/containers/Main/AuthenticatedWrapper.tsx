@@ -7,10 +7,7 @@ import { Redirect } from 'react-router'
 
 const AuthenticatedContent: React.FC = () => {
   return isLoggedIn() ? (
-    <Container>
-      <SiteLayout />
-      <Footer />
-    </Container>
+    <SiteLayout />
   ) : (
     <Redirect to={{ pathname: '/login', state: { from: location.pathname } }} />
   )
