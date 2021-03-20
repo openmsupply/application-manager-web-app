@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 // For review responses linked to applicationResponses, we want to get either submitted responses
 // Or draft response that belong to current user
 export default gql`
-  query getReviewResponses($reviewAssignmentId: Int!, $sectionIds: [Int!]) {
+  query getReviewResponses($reviewAssignmentId: Int!, $userId: [Int!], $sectionIds: [Int!]) {
     reviewAssignment(id: $reviewAssignmentId) {
       id
       reviews {
