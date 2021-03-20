@@ -1,4 +1,4 @@
-import { ApplicationListsOrderBy } from '../../generated/graphql'
+import { ApplicationListShapesOrderBy } from '../../generated/graphql'
 
 export default function buildSortFields(sortString: string) {
   const sortFields = sortString.split(',')
@@ -7,9 +7,9 @@ export default function buildSortFields(sortString: string) {
 
 const getGraphQLSortName = (field: string) => {
   const [fieldName, direction] = field.split(':')
-  if (!(fieldName in mapSortFields)) return ApplicationListsOrderBy.Natural
+  if (!(fieldName in mapSortFields)) return ApplicationListShapesOrderBy.Natural
   return (mapSortFields[fieldName] +
-    (direction === 'asc' ? 'ASC' : 'DESC')) as ApplicationListsOrderBy
+    (direction === 'asc' ? 'ASC' : 'DESC')) as ApplicationListShapesOrderBy
 }
 
 const mapSortFields: any = {
