@@ -40,10 +40,10 @@ import { Container } from 'semantic-ui-react'
 const SiteLayout: React.FC = () => {
   return (
     <Router>
-      <Container className="basebody" style={{ height: '100%' }}>
+      <Container className="basebody" style={{ height: '100vh' }}>
         <UserArea />
 
-        <Container style={{ height: '100px' }} />
+        <Container style={{ height: '135px' }} />
         <Switch>
           <Route exact path="/">
             <Home />
