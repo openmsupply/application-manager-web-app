@@ -4,6 +4,7 @@ import { Label } from 'semantic-ui-react'
 import { CellProps } from '../../../utils/types'
 
 const StageCell: React.FC<CellProps> = ({ application }) => {
+  console.log(application)
   return (
     <Label
       style={

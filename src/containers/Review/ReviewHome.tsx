@@ -5,6 +5,8 @@ import { Message, Segment, Header, Dropdown, Grid, Button, Icon, Label } from 's
 import { Loading } from '../../components'
 import { useUserState } from '../../contexts/UserState'
 import strings from '../../utils/constants'
+import { useAssignSectionToUserMutation } from '../../utils/generated/graphql'
+import useAssignSectionToUser from '../../utils/hooks/useAssignSectionToUser'
 import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicationStructure'
 import { AssignmentDetailsNEW, FullStructure } from '../../utils/types'
 import ReviewSectionRow from './ReviewSectionRow'
@@ -51,6 +53,10 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
     assignments,
   }
 
+  const assignerAssignments = assignments.filter((assignment) => assignment.isAssigner)
+
+  console.log(assignerAssignments)
+
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -69,7 +75,7 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
       </div>
       <ReviewerAndStageSelection {...reviewerAndStageSelectionProps} />
       {filters &&
-        Object.values(fullApplicationStructure.sections).map(({ details: { id, title } }) => (
+        Object.values(fullApplicationStructure.sections).map(({ details: { id, title, code } }) => (
           <Segment
             className="dreistripes"
             key={id}
@@ -90,6 +96,11 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
             >
               {title}
             </Header>
+            <AssignmentSection
+              sectionCode={code}
+              assignments={assignments}
+              structure={fullApplicationStructure}
+            />
             {getFilteredReviewer(assignments).map((assignment) => (
               <ReviewSectionRow
                 {...{
@@ -103,6 +114,87 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
           </Segment>
         ))}
     </>
+  )
+}
+
+type AssignmentSectionProps = {
+  sectionCode: string
+  assignments: AssignmentDetailsNEW[]
+  structure: FullStructure
+}
+
+const AssignmentSection: React.FC<AssignmentSectionProps> = ({
+  assignments,
+  sectionCode,
+  structure,
+}) => {
+  const assign = useAssignSectionToUser({ structure, sectionCode })
+
+  const assignable = assignments.filter((assignment) => assignment.isAssigner)
+  if (assignable.length === 0) return null
+
+  const assignableTo: AssignmentDetailsNEW[] = []
+
+  assignable.forEach((assignment) => {
+    if (assignableTo.find(({ reviewer }) => reviewer.id === assignment?.review?.id)) return
+    if (!assignment.templateSectionRestrictions?.includes(sectionCode)) return
+
+    assignableTo.push(assignment)
+  })
+
+  const options = [
+    ...assignableTo.map(({ reviewer }) => ({
+      key: reviewer.id,
+      text: `${reviewer.firstName || ''} ${reviewer.lastName || ''}`,
+      value: reviewer.id,
+    })),
+    {
+      key: 0,
+      value: 0,
+      text: 'Not Assigned',
+    },
+  ]
+
+  const findAssignment = assignableTo.find((assignment) =>
+    assignment.reviewQuestionAssignments.find((reviewQuestionAssignment) => {
+      console.log(reviewQuestionAssignment.templateElement)
+      console.log(reviewQuestionAssignment.templateElement?.section?.code)
+      console.log(reviewQuestionAssignment.templateElement?.section?.code === sectionCode)
+      return reviewQuestionAssignment.templateElement?.section?.code === sectionCode
+    })
+  )
+
+  const value = findAssignment?.reviewer.id || 0
+  console.log(sectionCode, assignableTo, value, findAssignment)
+  return (
+    <Grid columns="equal" verticalAlign="middle" style={{ borderRadius: 10 }}>
+      <Grid.Column floated="left">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ fontWeight: 500 }}>Review by </div>
+          <Dropdown
+            options={options}
+            value={value}
+            onChange={async (_: any, { value }: any) => {
+              if (value === 0) return
+              const assignment = assignments.find((assignment) => assignment.reviewer.id === value)
+              if (!assignment) return
+
+              await assign(assignment)
+            }}
+            style={{
+              border: '2px solid rgb(150,150, 150)',
+              marginLeft: 10,
+              fontSize: 12,
+              padding: 10,
+              fontWeight: 800,
+              paddingTop: 2,
+              paddingBottom: 2,
+              borderRadius: 4,
+            }}
+          />
+        </div>
+      </Grid.Column>
+    </Grid>
   )
 }
 

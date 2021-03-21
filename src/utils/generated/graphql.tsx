@@ -21130,6 +21130,38 @@ export type TemplateStageFragment = (
   & Pick<TemplateStage, 'number' | 'title' | 'id' | 'description'>
 );
 
+export type AssignSectionToUserMutationVariables = Exact<{
+  assignmentId: Scalars['Int'];
+  assignmentPatch: ReviewAssignmentPatch;
+}>;
+
+
+export type AssignSectionToUserMutation = (
+  { __typename?: 'Mutation' }
+  & { updateReviewAssignment?: Maybe<(
+    { __typename?: 'UpdateReviewAssignmentPayload' }
+    & { reviewAssignment?: Maybe<(
+      { __typename?: 'ReviewAssignment' }
+      & Pick<ReviewAssignment, 'id' | 'status' | 'timeCreated'>
+      & { reviewQuestionAssignments: (
+        { __typename?: 'ReviewQuestionAssignmentsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'ReviewQuestionAssignment' }
+          & Pick<ReviewQuestionAssignment, 'id' | 'templateElementId'>
+          & { templateElement?: Maybe<(
+            { __typename?: 'TemplateElement' }
+            & Pick<TemplateElement, 'id'>
+            & { section?: Maybe<(
+              { __typename?: 'TemplateSection' }
+              & Pick<TemplateSection, 'id' | 'code'>
+            )> }
+          )> }
+        )>> }
+      ) }
+    )> }
+  )> }
+);
+
 export type CreateApplicationMutationVariables = Exact<{
   name: Scalars['String'];
   serial: Scalars['String'];
@@ -21652,6 +21684,7 @@ export type GetReviewDecisionCommentQuery = (
 
 export type GetReviewInfoQueryVariables = Exact<{
   applicationId?: Maybe<Scalars['Int']>;
+  assignerId: Scalars['Int'];
 }>;
 
 
@@ -21661,11 +21694,20 @@ export type GetReviewInfoQuery = (
     { __typename?: 'ReviewAssignmentsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'ReviewAssignment' }
-      & Pick<ReviewAssignment, 'id' | 'level' | 'status' | 'timeCreated' | 'reviewerId' | 'isLastLevel'>
+      & Pick<ReviewAssignment, 'id' | 'level' | 'status' | 'timeCreated' | 'reviewerId' | 'templateSectionRestrictions' | 'isLastLevel'>
       & { reviewer?: Maybe<(
         { __typename?: 'User' }
         & Pick<User, 'id' | 'firstName' | 'lastName'>
-      )>, reviews: (
+      )>, reviewAssignmentAssignerJoins: (
+        { __typename?: 'ReviewAssignmentAssignerJoinsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'ReviewAssignmentAssignerJoin' }
+          & { assigner?: Maybe<(
+            { __typename?: 'User' }
+            & Pick<User, 'firstName' | 'lastName' | 'id'>
+          )> }
+        )>> }
+      ), reviews: (
         { __typename?: 'ReviewsConnection' }
         & { nodes: Array<Maybe<(
           { __typename?: 'Review' }
@@ -21686,6 +21728,14 @@ export type GetReviewInfoQuery = (
         & { nodes: Array<Maybe<(
           { __typename?: 'ReviewQuestionAssignment' }
           & Pick<ReviewQuestionAssignment, 'id' | 'templateElementId'>
+          & { templateElement?: Maybe<(
+            { __typename?: 'TemplateElement' }
+            & Pick<TemplateElement, 'id'>
+            & { section?: Maybe<(
+              { __typename?: 'TemplateSection' }
+              & Pick<TemplateSection, 'id' | 'code'>
+            )> }
+          )> }
         )>> }
       ) }
     )>> }
@@ -21927,6 +21977,56 @@ export const TemplateStageFragmentDoc = gql`
   description
 }
     `;
+export const AssignSectionToUserDocument = gql`
+    mutation assignSectionToUser($assignmentId: Int!, $assignmentPatch: ReviewAssignmentPatch!) {
+  updateReviewAssignment(input: {id: $assignmentId, patch: $assignmentPatch}) {
+    reviewAssignment {
+      id
+      status
+      timeCreated
+      reviewQuestionAssignments {
+        nodes {
+          id
+          templateElementId
+          templateElement {
+            id
+            section {
+              id
+              code
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type AssignSectionToUserMutationFn = Apollo.MutationFunction<AssignSectionToUserMutation, AssignSectionToUserMutationVariables>;
+
+/**
+ * __useAssignSectionToUserMutation__
+ *
+ * To run a mutation, you first call `useAssignSectionToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignSectionToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignSectionToUserMutation, { data, loading, error }] = useAssignSectionToUserMutation({
+ *   variables: {
+ *      assignmentId: // value for 'assignmentId'
+ *      assignmentPatch: // value for 'assignmentPatch'
+ *   },
+ * });
+ */
+export function useAssignSectionToUserMutation(baseOptions?: Apollo.MutationHookOptions<AssignSectionToUserMutation, AssignSectionToUserMutationVariables>) {
+        return Apollo.useMutation<AssignSectionToUserMutation, AssignSectionToUserMutationVariables>(AssignSectionToUserDocument, baseOptions);
+      }
+export type AssignSectionToUserMutationHookResult = ReturnType<typeof useAssignSectionToUserMutation>;
+export type AssignSectionToUserMutationResult = Apollo.MutationResult<AssignSectionToUserMutation>;
+export type AssignSectionToUserMutationOptions = Apollo.BaseMutationOptions<AssignSectionToUserMutation, AssignSectionToUserMutationVariables>;
 export const CreateApplicationDocument = gql`
     mutation createApplication($name: String!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!], $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
   createApplication(input: {application: {name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, isActive: true, outcome: $outcome, trigger: $trigger, applicationSectionsUsingId: {create: $sections}, applicationResponsesUsingId: {create: $responses}}}) {
@@ -22825,7 +22925,7 @@ export type GetReviewDecisionCommentQueryHookResult = ReturnType<typeof useGetRe
 export type GetReviewDecisionCommentLazyQueryHookResult = ReturnType<typeof useGetReviewDecisionCommentLazyQuery>;
 export type GetReviewDecisionCommentQueryResult = Apollo.QueryResult<GetReviewDecisionCommentQuery, GetReviewDecisionCommentQueryVariables>;
 export const GetReviewInfoDocument = gql`
-    query getReviewInfo($applicationId: Int) {
+    query getReviewInfo($applicationId: Int, $assignerId: Int!) {
   reviewAssignments(condition: {applicationId: $applicationId}, orderBy: TIME_CREATED_DESC) {
     nodes {
       id
@@ -22834,11 +22934,21 @@ export const GetReviewInfoDocument = gql`
       timeCreated
       level
       reviewerId
+      templateSectionRestrictions
       isLastLevel
       reviewer {
         id
         firstName
         lastName
+      }
+      reviewAssignmentAssignerJoins(filter: {assignerId: {equalTo: $assignerId}}) {
+        nodes {
+          assigner {
+            firstName
+            lastName
+            id
+          }
+        }
       }
       reviews {
         nodes {
@@ -22863,6 +22973,13 @@ export const GetReviewInfoDocument = gql`
         nodes {
           id
           templateElementId
+          templateElement {
+            id
+            section {
+              id
+              code
+            }
+          }
         }
       }
     }
@@ -22883,6 +23000,7 @@ export const GetReviewInfoDocument = gql`
  * const { data, loading, error } = useGetReviewInfoQuery({
  *   variables: {
  *      applicationId: // value for 'applicationId'
+ *      assignerId: // value for 'assignerId'
  *   },
  * });
  */

@@ -9,6 +9,7 @@ import {
   User,
 } from '../generated/graphql'
 import messages from '../messages'
+import { useUserState } from '../../contexts/UserState'
 
 const MAX_REFETCH = 10
 interface UseGetReviewInfoProps {
@@ -22,9 +23,14 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
   const [fetchingError, setFetchingError] = useState('')
   const [refetchAttempts, setRefetchAttempts] = useState(0)
 
+  const {
+    userState: { currentUser },
+  } = useUserState()
+
   const { data, loading, error, refetch } = useGetReviewInfoQuery({
     variables: {
       applicationId,
+      assignerId: currentUser?.userId || 0,
     },
     notifyOnNetworkStatusChange: true,
     // if this is removed, there might be an infinite loading when looking at a review for the frist time, after clearing cache
@@ -71,7 +77,16 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
           reviewAssignment.id
         )
 
-      const { id, status, stage: assignmentStage, timeCreated, level, reviewer } = reviewAssignment
+      const {
+        id,
+        status,
+        stage: assignmentStage,
+        timeCreated,
+        level,
+        reviewer,
+        reviewAssignmentAssignerJoins,
+        templateSectionRestrictions,
+      } = reviewAssignment
 
       // Extra field just to use in initial example - might conflict with future queries
       // to get reviewQuestionAssignment
@@ -97,8 +112,10 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
         status,
         stage,
         reviewer: reviewer as User,
+        templateSectionRestrictions,
         level: level || 1,
         totalAssignedQuestions,
+        isAssigner: reviewAssignmentAssignerJoins.nodes.length > 0,
         reviewQuestionAssignments,
         timeCreated,
       }

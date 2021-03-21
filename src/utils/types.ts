@@ -160,8 +160,10 @@ interface AssignmentDetailsNEW {
   review: ReviewDetails | null
   reviewer: GraphQLUser
   totalAssignedQuestions: number
+  isAssigner?: boolean
   stage: ApplicationStage
   reviewQuestionAssignments: ReviewQuestionAssignment[]
+  templateSectionRestrictions?: (string | null)[] | null
 }
 
 interface BasicStringObject {

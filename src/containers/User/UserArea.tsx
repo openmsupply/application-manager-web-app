@@ -1,5 +1,15 @@
 import React from 'react'
-import { Button, Container, Grid, Icon, Label, Message, Segment, Sticky } from 'semantic-ui-react'
+import {
+  Button,
+  Container,
+  Grid,
+  Icon,
+  Label,
+  Message,
+  Segment,
+  Sticky,
+  Image,
+} from 'semantic-ui-react'
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
 import UserSelection from './UserSelection'
@@ -27,22 +37,50 @@ const UserArea: React.FC = () => {
             <Icon name="home" />
             Dashboard
           </Link>
-          <div>Company</div>
+          <div style={{ marginTop: 10, display: 'flex', alignItems: 'center' }}>
+            <Image
+              style={{ height: 60, boxShadow: '0px 0px 3px rgb(240,240,240)' }}
+              src="/images/placeholderOrg2.jpeg"
+              circular
+            />
+            <div
+              style={{
+                marginLeft: 20,
+                color: 'rgb(200,200,200)',
+                fontSize: 27,
+                fontWeight: 500,
+                letterSpacing: 1.2,
+                textTransform: 'uppercase',
+              }}
+            >
+              {currentUser?.organisation?.orgName || 'ABC COMPANY'}
+              <Icon size="small" name="angle down" />
+            </div>
+          </div>
         </div>
-        <Button
-          style={{
-            background: 'rgb(248,248,248)',
-            border: 'none',
-            borderRadius: 20,
-            fontSize: 14,
-            color: 'rgb(50,50,50)',
-            paddingRight: 5,
-          }}
-          onClick={() => logout()}
-        >
-          {currentUser?.firstName || ''} {currentUser?.lastName || ''}
-          <Icon name="log out" />
-        </Button>
+        <div>
+          <Button
+            animated
+            style={{
+              background: 'rgb(248,248,248)',
+              border: 'none',
+              borderRadius: 20,
+              fontSize: 14,
+              color: 'rgb(50,50,50)',
+              paddingRight: 5,
+            }}
+            onClick={() => logout()}
+          >
+            <Button.Content visible>
+              {' '}
+              {currentUser?.firstName || ''} {currentUser?.lastName || ''}
+            </Button.Content>
+            <Button.Content hidden>
+              {' '}
+              <Icon name="log out" />
+            </Button.Content>
+          </Button>
+        </div>
         <Label
           as="button"
           color="grey"
