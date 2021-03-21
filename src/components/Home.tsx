@@ -129,7 +129,7 @@ const Home: React.FC = () => {
   const {
     userState: { currentUser, isLoading, templatePermissions },
   } = useUserState()
-
+  console.log('HERE')
   const { error, loading, filteredTemplates } = useListTemplates(templatePermissions, isLoading)
 
   console.log(filteredTemplates)
