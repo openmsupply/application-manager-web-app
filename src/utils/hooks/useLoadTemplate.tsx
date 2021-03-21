@@ -9,7 +9,6 @@ import { buildTemplateSectionsStructure } from '../helpers/structure/buildSectio
 import { getTemplateSections } from '../helpers/application/getSectionsDetails'
 import { SectionsStructure, TemplateDetails } from '../types'
 
-// TODO: Remove this
 interface useLoadTemplateProps {
   templateCode: string
 }
@@ -17,10 +16,18 @@ interface useLoadTemplateProps {
 const useLoadTemplate = (props: useLoadTemplateProps) => {
   const { templateCode } = props
   const [template, setTemplate] = useState<TemplateDetails>()
+  const [templateActions, setTemplateActions] = useState<any>()
+  const [templateStages, setTemplateStages] = useState<any>()
+  const [templatePermissions, setTemplatePermissions] = useState<any>()
+  const [templateFilters, setTemplateFilters] = useState<any>()
   const [sectionsStructure, setSectionsStructure] = useState<SectionsStructure>()
+  const [wholeTemplate, setWholeTemplate] = useState<any>();
+
   const [elementsIds, setElementsIds] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const [templateCategory, setTemplateCategory] = useState<any>()
 
   const { data, loading: apolloLoading, error: apolloError } = useGetTemplateQuery({
     variables: {
@@ -56,14 +63,27 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
       name: name as string,
       startMessage: startMessage ? startMessage : undefined,
     })
+    console.log('Template Yow', template)
+    setTemplateCategory(template.templateCategory)
+    setTemplatePermissions(template.templatePermissions.nodes)
 
     const templateSections = template.templateSections.nodes as TemplateSection[]
     const sections = getTemplateSections(templateSections)
     const sectionsStructure = buildTemplateSectionsStructure(sections)
     setSectionsStructure(sectionsStructure)
 
+    setTemplateFilters(
+      template.templateFilterJoins?.nodes
+        .map((templateFilterJoin: any) => ({
+          ...templateFilterJoin.templateFilter,
+          templateFilterJoinId: templateFilterJoin.id,
+        }))
+        .flat()
+    )
+    setTemplateActions(template.templateActions?.nodes)
+    setTemplateStages(template.templateStages?.nodes)
     const elements = [] as number[]
-
+    setWholeTemplate(template);
     templateSections.forEach((section) => {
       const { templateElementsBySectionId } = section as TemplateSection
       templateElementsBySectionId.nodes.forEach((element) => {
@@ -82,6 +102,12 @@ const useLoadTemplate = (props: useLoadTemplateProps) => {
     template,
     sectionsStructure,
     elementsIds,
+    templateActions,
+    templateCategory,
+    templatePermissions
+    templateStages,
+    wholeTemplate,
+    templateFilters,
   }
 }
 
