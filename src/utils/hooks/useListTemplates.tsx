@@ -20,7 +20,7 @@ const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: b
     if (data && data?.templates?.nodes) {
       const allTemplates = data?.templates?.nodes as Template[]
       const filteredTemplates: TemplatesDetails = []
-      allTemplates.forEach(({ code, name }) => {
+      allTemplates.forEach(({ code, name, templateCategory, templateFilterJoins }) => {
         const permissionFound = Object.entries(templatePermissions).find(([key]) => key === code)
         if (permissionFound) {
           const [key, permissions] = permissionFound
@@ -28,6 +28,8 @@ const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: b
             name: name as string,
             code,
             permissions: permissions,
+            templateCategory: templateCategory,
+            templateFilterJoins: templateFilterJoins,
           })
         }
       })
