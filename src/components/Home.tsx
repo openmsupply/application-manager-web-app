@@ -133,6 +133,7 @@ const Home: React.FC = () => {
   const { error, loading, filteredTemplates } = useListTemplates(templatePermissions, isLoading)
 
   console.log(filteredTemplates)
+  console.log('HERE')
 
   if (loading) return <Label>loading</Label>
 
