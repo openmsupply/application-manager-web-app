@@ -178,7 +178,7 @@ const SelfAssign: React.FC<ReviewSectionComponentProps> = ({ assignment, fullStr
   const startReview = async () => {
     {
       try {
-        const result = await assign(assignment)
+        const result = await assign(assignment, true)
         const reviewAssignmentId = result.data?.updateReviewAssignment?.reviewAssignment?.id
         if (!reviewAssignmentId) throw new Error('Review Assignment ID is missing from response')
       } catch (e) {

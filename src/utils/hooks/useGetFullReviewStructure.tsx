@@ -91,7 +91,7 @@ const useGetFullReviewStructure = ({
       thisReview: newStructure.thisReview,
       currentUserId: currentUser?.userId as number,
     })
-
+    console.log(fullApplicationStructure)
     // generateConsolidationProgress
     setFullReviewStructure(newStructure)
   }, [data, error])

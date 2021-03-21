@@ -3,6 +3,7 @@ import {
   ReviewAssignmentStatus,
   ReviewAssignmentPatch,
   TemplateElementCategory,
+  Trigger,
 } from '../generated/graphql'
 import { AssignmentDetailsNEW, FullStructure } from '../types'
 
@@ -13,15 +14,15 @@ type PromiseReturnType = ReturnType<UseAssignSectionToUserMutationReturnType[0]>
 type UseAssignSectionToUser = (props: {
   sectionCode?: string
   structure: FullStructure
-}) => (assignment: AssignmentDetailsNEW) => PromiseReturnType
+}) => (assignment: AssignmentDetailsNEW, isSelfAssignment?: boolean) => PromiseReturnType
 
-type ConstructAssignmentPatch = () => ReviewAssignmentPatch
+type ConstructAssignmentPatch = (isSelfAssignment: boolean) => ReviewAssignmentPatch
 
 // Need to duplicate or create new review responses for all assigned questions
 const useAssignSectionToUser: UseAssignSectionToUser = ({ sectionCode, structure }) => {
   const [updateAssignment] = useAssignSectionToUserMutation()
 
-  const constructAssignmentPatch: ConstructAssignmentPatch = () => {
+  const constructAssignmentPatch: ConstructAssignmentPatch = (isSelfAssignment) => {
     const elements = Object.values(structure?.elementsById || {})
     const assignableElements = elements.filter(
       (element) =>
@@ -37,6 +38,7 @@ const useAssignSectionToUser: UseAssignSectionToUser = ({ sectionCode, structure
 
     return {
       status: ReviewAssignmentStatus.Assigned,
+      trigger: isSelfAssignment ? Trigger.OnReviewSelfAssign : Trigger.OnReviewAssign,
       timeCreated: new Date().toISOString(),
       reviewQuestionAssignmentsUsingId: {
         create: createReviewQuestionAssignments,
@@ -44,11 +46,11 @@ const useAssignSectionToUser: UseAssignSectionToUser = ({ sectionCode, structure
     }
   }
 
-  const assign = async (assignment: AssignmentDetailsNEW) =>
+  const assign = async (assignment: AssignmentDetailsNEW, isSelfAssignment = false) =>
     updateAssignment({
       variables: {
         assignmentId: assignment.id,
-        assignmentPatch: constructAssignmentPatch(),
+        assignmentPatch: constructAssignmentPatch(isSelfAssignment),
       },
     })
 
