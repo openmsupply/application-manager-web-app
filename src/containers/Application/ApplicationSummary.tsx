@@ -9,8 +9,6 @@ import { SectionWrapper } from '../../components/Application'
 import strings from '../../utils/constants'
 import { Button, Header, Message, Container, Segment } from 'semantic-ui-react'
 import useQuerySectionActivation from '../../utils/hooks/useQuerySectionActivation'
-import { withRouter } from 'react-router'
-import { NONAME } from 'dns'
 
 const ApplicationSummary: React.FC<ApplicationProps> = ({
   structure: fullStructure,
@@ -58,7 +56,7 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
             try {
               const result = await submitFromStructure(fullStructure)
               if (result?.errors) throw new Error('Something went wrong')
-              push(`/applicationNEW/${fullStructure?.info.serial}/submission`)
+              push(`/application/${fullStructure?.info.serial}/submission`)
             } catch {
               setError(true)
             }
@@ -143,7 +141,7 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
               style={{ alignSelf: 'flex-end', marginRight: 30 }}
               color="blue"
               onClick={handleSubmit}
-              content={strings.BUTTON_SUMMARY}
+              content={strings.BUTTON_SUBMIT}
             />
           </div>
         </Container>
