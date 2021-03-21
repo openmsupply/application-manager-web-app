@@ -1999,6 +1999,8 @@ export type FilterFilter = {
   icon?: Maybe<StringFilter>;
   /** Filter by the object’s `title` field. */
   title?: Maybe<StringFilter>;
+  /** Filter by the object’s `color` field. */
+  color?: Maybe<StringFilter>;
   /** Filter by the object’s `query` field. */
   query?: Maybe<JsonFilter>;
   /** Filter by the object’s `userRole` field. */
@@ -4224,6 +4226,7 @@ export type Filter = Node & {
   code?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<Scalars['String']>;
   /** Reads and enables pagination through a set of `TemplateFilterJoin`. */
@@ -7390,6 +7393,8 @@ export enum FiltersOrderBy {
   IconDesc = 'ICON_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
+  ColorAsc = 'COLOR_ASC',
+  ColorDesc = 'COLOR_DESC',
   QueryAsc = 'QUERY_ASC',
   QueryDesc = 'QUERY_DESC',
   UserRoleAsc = 'USER_ROLE_ASC',
@@ -7408,6 +7413,8 @@ export type FilterCondition = {
   icon?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `title` field. */
   title?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `color` field. */
+  color?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `query` field. */
   query?: Maybe<Scalars['JSON']>;
   /** Checks for equality with the object’s `userRole` field. */
@@ -18114,6 +18121,7 @@ export type UpdateFilterOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterI
   code?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<Scalars['String']>;
   templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
@@ -18193,6 +18201,7 @@ export type FilterPatch = {
   code?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<Scalars['String']>;
   templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
@@ -18204,6 +18213,7 @@ export type TemplateFilterJoinTemplateFilterIdFkeyFilterCreateInput = {
   code?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<Scalars['String']>;
   templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
@@ -18774,6 +18784,7 @@ export type FilterInput = {
   code?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<Scalars['String']>;
   templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
@@ -22634,7 +22645,7 @@ export type TemplateFragment = (
         & Pick<Template, 'id'>
       )>, templateFilter?: Maybe<(
         { __typename?: 'Filter' }
-        & Pick<Filter, 'id' | 'code' | 'icon' | 'query' | 'title' | 'userRole'>
+        & Pick<Filter, 'id' | 'code' | 'icon' | 'query' | 'color' | 'title' | 'userRole'>
       )> }
     )>> }
   ) }
@@ -23050,7 +23061,7 @@ export type GetApplicationListQuery = (
     & Pick<ApplicationListShapesConnection, 'totalCount'>
     & { nodes: Array<Maybe<(
       { __typename?: 'ApplicationListShape' }
-      & Pick<ApplicationListShape, 'id' | 'serial' | 'name' | 'templateCode' | 'templateName' | 'applicant' | 'applicantFirstName' | 'applicantLastName' | 'applicantUsername' | 'orgName' | 'stage' | 'status' | 'outcome' | 'lastActiveDate' | 'reviewAssignedCount' | 'reviewAssignedNotStartedCount' | 'reviewAvailableForSelfAssignmentCount' | 'reviewDraftCount' | 'reviewChangeRequestCount' | 'reviewSubmittedCount' | 'assignReviewerAssignedCount' | 'assignReviewersCount' | 'isFullyAssignedLevel1' | 'assignCount'>
+      & Pick<ApplicationListShape, 'id' | 'serial' | 'name' | 'templateCode' | 'templateName' | 'applicant' | 'applicantFirstName' | 'applicantLastName' | 'applicantUsername' | 'orgName' | 'stage' | 'status' | 'outcome' | 'lastActiveDate' | 'reviewAssignedCount' | 'reviewAssignedNotStartedCount' | 'reviewAvailableForSelfAssignmentCount' | 'reviewDraftCount' | 'reviewChangeRequestCount' | 'reviewSubmittedCount' | 'assignReviewerAssignedCount' | 'assignReviewersCount' | 'assignCount' | 'isFullyAssignedLevel1'>
     )>>, pageInfo: (
       { __typename?: 'PageInfo' }
       & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage'>
@@ -23596,6 +23607,7 @@ export const TemplateFragmentDoc = gql`
         code
         icon
         query
+        color
         title
         userRole
       }
@@ -24303,8 +24315,8 @@ export const GetApplicationListDocument = gql`
       reviewSubmittedCount
       assignReviewerAssignedCount
       assignReviewersCount
-      isFullyAssignedLevel1
       assignCount
+      isFullyAssignedLevel1
     }
     pageInfo {
       hasPreviousPage

@@ -2,6 +2,7 @@ import {
   useAssignSectionToUserMutation,
   ReviewAssignmentStatus,
   ReviewAssignmentPatch,
+  TemplateElementCategory,
 } from '../generated/graphql'
 import { AssignmentDetailsNEW, FullStructure } from '../types'
 
@@ -10,7 +11,7 @@ type UseAssignSectionToUserMutationReturnType = ReturnType<typeof useAssignSecti
 type PromiseReturnType = ReturnType<UseAssignSectionToUserMutationReturnType[0]>
 // hook used to restart a review, , as per type definition below (returns promise that resolve with mutation result data)
 type UseAssignSectionToUser = (props: {
-  sectionCode: string
+  sectionCode?: string
   structure: FullStructure
 }) => (assignment: AssignmentDetailsNEW) => PromiseReturnType
 
@@ -23,7 +24,9 @@ const useAssignSectionToUser: UseAssignSectionToUser = ({ sectionCode, structure
   const constructAssignmentPatch: ConstructAssignmentPatch = () => {
     const elements = Object.values(structure?.elementsById || {})
     const assignableElements = elements.filter(
-      (element) => element.element.sectionCode === sectionCode
+      (element) =>
+        (!sectionCode || element.element.sectionCode === sectionCode) &&
+        element.element.category === TemplateElementCategory.Question
     )
 
     console.log(sectionCode, elements, assignableElements, structure)
@@ -41,7 +44,7 @@ const useAssignSectionToUser: UseAssignSectionToUser = ({ sectionCode, structure
     }
   }
 
-  const submitReview = async (assignment: AssignmentDetailsNEW) =>
+  const assign = async (assignment: AssignmentDetailsNEW) =>
     updateAssignment({
       variables: {
         assignmentId: assignment.id,
@@ -49,7 +52,7 @@ const useAssignSectionToUser: UseAssignSectionToUser = ({ sectionCode, structure
       },
     })
 
-  return submitReview
+  return assign
 }
 
 export default useAssignSectionToUser

@@ -36,28 +36,28 @@ const App: React.FC = () => {
       link: authLink.concat(httpLink),
       cache,
     })
+    setClient(client)
+    // persistCache({
+    //   cache,
+    //   storage: window.localStorage,
+    //   /**
+    //    * Storage options.
+    //    */
+    //   // Maximum size of cache to persist (in bytes).
+    //   // Defaults to 1048576 (1 MB). For unlimited cache size, provide false.
+    //   // If exceeded, persistence will pause and app will start up cold on next launch.
+    //   maxSize: false,
 
-    persistCache({
-      cache,
-      storage: window.localStorage,
-      /**
-       * Storage options.
-       */
-      // Maximum size of cache to persist (in bytes).
-      // Defaults to 1048576 (1 MB). For unlimited cache size, provide false.
-      // If exceeded, persistence will pause and app will start up cold on next launch.
-      maxSize: false,
-
-      /**
-       * Debugging options.
-       */
-      // Enable console logging.
-      // debug: boolean,
-    }).then(() => {
-      // TODO: Check when this would run!
-      client.onResetStore(async () => cache.reset())
-      setClient(client)
-    })
+    //   /**
+    //    * Debugging options.
+    //    */
+    //   // Enable console logging.
+    //   // debug: boolean,
+    // }).then(() => {
+    //   // TODO: Check when this would run!
+    //   client.onResetStore(async () => cache.reset())
+    //   setClient(client)
+    // })
     return () => {}
   }, [])
 

@@ -42,7 +42,7 @@ const Roles: React.FC = (props: any) => (
       left: 'auto',
       right: 0,
       background: 'none',
-      top: '-2em',
+      top: '-1em',
       margin: 0,
       padding: 0,
     }}
@@ -56,8 +56,7 @@ const Roles: React.FC = (props: any) => (
             <Icon
               name={roleInfo.icon}
               circular
-              size="large"
-              style={{ background: 'white', padding: 2, margin: 2 }}
+              style={{ background: 'white', padding: 2, margin: 2, color: 'rgb(120, 120, 120)' }}
             />
           }
         />
@@ -79,14 +78,18 @@ const SingleFilter: React.FC = (props: any) => {
   })
 
   if (loading) return null
-
+  if (applications.length === 0) return null
   return (
-    <List.Item>
-      <List.Icon name={props.filter.icon} />
-      <List.Content>
-        <a href="mailto:jack@semantic-ui.com">{`${applications.length} ${props.filter.title}`}</a>
-      </List.Content>
-    </List.Item>
+    <div style={{ color: props.filter.color, display: 'flex', margin: 2 }}>
+      <Icon name={props.filter.icon} />
+
+      <Link
+        style={{ color: '#003BFE', fontWeight: 300 }}
+        to={`/applications?type=${props.templateType}&${Object.entries(props.filter.query)
+          .map(([key, value]) => `${key}=${value}`)
+          .join('&')}`}
+      >{`${applications.length} ${props.filter.title}`}</Link>
+    </div>
   )
 }
 
@@ -105,7 +108,7 @@ const FilterList: React.FC = (props: any) => {
   })
 
   return (
-    <List>
+    <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 5 }}>
       {filters.map((filter: any) => (
         <SingleFilter filter={filter} templateType={props.filteredTemplate.code} />
       ))}
@@ -121,7 +124,7 @@ const FilterList: React.FC = (props: any) => {
           <a href="http://www.semantic-ui.com">1 Changes Requested</a>
         </List.Content>
       </List.Item> */}
-    </List>
+    </div>
   )
 }
 
@@ -153,10 +156,21 @@ const Home: React.FC = () => {
             centered
             style={{ 'justify-content': 'space-evenly', margin: 0, 'align-items': 'start' }}
           >
-            <Card style={{ maxWidth: 600, width: 'auto' }}>
+            <Card
+              style={{
+                maxWidth: 600,
+                width: 'auto',
+                background: 'none',
+                border: 'none',
+                boxShadow: 'none',
+              }}
+            >
               <Card.Content>
                 <Card.Header textAlign="center">
-                  <Header as="h2">
+                  <Header
+                    as="h2"
+                    style={{ color: 'rgb(120, 120,120', fontSize: 15, textTransform: 'uppercase' }}
+                  >
                     <Icon name={templateCategory.icon} />
                     {templateCategory.title}
                   </Header>
@@ -179,41 +193,66 @@ const Home: React.FC = () => {
                             <Roles roles={filteredTemplate.permissions} />
 
                             <Card.Content style={{ 'align-items': 'center' }}>
-                              <Header as="h3">{filteredTemplate.name}</Header>
-                            </Card.Content>
-                            <Card.Content
-                              extra
-                              style={{
-                                'justify-content': 'center',
-                                display: 'flex',
-                                'flex-direction': 'row',
-                              }}
-                            >
-                              {filteredTemplate.permissions.find((type) => type === 'Apply') ? (
-                                <Button
-                                  animated
-                                  as={Link}
-                                  to={`/application/new?type=${filteredTemplate.code}`}
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                  }}
                                 >
-                                  <Button.Content visible>
-                                    <Icon size="large" name="add square" />
-                                  </Button.Content>
-                                  <Button.Content hidden>Apply</Button.Content>
-                                </Button>
-                              ) : null}
-                              <Button
-                                animated
-                                as={Link}
-                                to={`/applications?type=${filteredTemplate.code}`}
+                                  <Header
+                                    as="h3"
+                                    style={{ padding: 0, margin: 0, fontSize: 15, fontWeight: 600 }}
+                                  >
+                                    {filteredTemplate.name}
+                                  </Header>
+                                </div>
+
+                                {!filteredTemplate.permissions.find(
+                                  (type) => type === 'Apply'
+                                ) ? null : (
+                                  <Button
+                                    style={{
+                                      background: 'none',
+                                      color: '#003BFE',
+                                      letterSpacing: 1.4,
+                                      border: '2px solid #003BFE',
+                                      borderRadius: 8,
+                                      fontSize: 12,
+                                      padding: 10,
+                                      fontWeight: 600,
+                                      paddingTop: 7,
+                                      marginLeft: 20,
+                                      paddingBottom: 7,
+                                      textTransform: 'capitalize',
+                                    }}
+                                    as={Link}
+                                    to={`/application/new?type=${filteredTemplate.code}`}
+                                    content=" + New"
+                                  />
+                                )}
+                              </div>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  marginTop: 20,
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                }}
                               >
-                                <Button.Content visible>
-                                  <Icon size="large" name="list alternate" />
-                                </Button.Content>
-                                <Button.Content hidden>List</Button.Content>
-                              </Button>
-                            </Card.Content>
-                            <Card.Content extra>
-                              <FilterList filteredTemplate={filteredTemplate} />
+                                <FilterList filteredTemplate={filteredTemplate} />
+                                <Link
+                                  style={{
+                                    fontSize: 10,
+                                    color: '#003BFE',
+                                    letterSpacing: 1,
+                                  }}
+                                  to={`/applications?type=${filteredTemplate.code}`}
+                                >
+                                  VIEW ALL
+                                </Link>
+                              </div>
                             </Card.Content>
                           </Card>
                         )

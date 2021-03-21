@@ -36,7 +36,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
       serial: serialNumber,
     },
     skip: isApplicationReady,
-    fetchPolicy: networkFetch ? 'network-only' : 'cache-first',
+    fetchPolicy: 'network-only',
   })
 
   const { error: triggerError, isTriggerProcessing } = useTriggerProcessing({

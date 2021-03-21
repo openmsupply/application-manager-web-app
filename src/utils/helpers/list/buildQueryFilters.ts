@@ -20,6 +20,13 @@ export default function buildQueryFilters(filters: BasicStringObject) {
   return graphQLfilter
 }
 
+const doNumber = (code: string) => (value: string) => {
+  const [first, second] = value.split(':')
+  const firstFilter = { [code]: { greaterThanOrEqualTo: first, lessThanOrEqualTo: second } }
+
+  return { ...firstFilter }
+}
+
 const mapQueryToFilterField: FilterMap = {
   type: (value: string) => ({ templateCode: { equalToInsensitive: value } }),
 
@@ -28,6 +35,16 @@ const mapQueryToFilterField: FilterMap = {
   stage: (values: string) => ({ stage: inList(values) }),
 
   status: (values: string) => ({ status: inEnumList(values, ApplicationStatus) }),
+
+  reviewAssignedNotStartedCount: doNumber('reviewAssignedNotStartedCount'),
+  reviewAssignedCount: doNumber('reviewAssignedCount'),
+  reviewAvailableForSelfAssignmentCount: doNumber('reviewAvailableForSelfAssignmentCount'),
+  reviewDraftCount: doNumber('reviewDraftCount'),
+  reviewChangeRequestCount: doNumber('reviewChangeRequestCount'),
+  reviewSubmittedCount: doNumber('reviewSubmittedCount'),
+  assignReviewerAssignedCount: doNumber('assignReviewerAssignedCount'),
+  assignReviewersCount: doNumber('assignReviewersCount'),
+  assignCount: doNumber('assignCount'),
 
   outcome: (values: string) => ({ outcome: inEnumList(values, ApplicationOutcome) }),
   // action

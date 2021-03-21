@@ -41,7 +41,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
     variables: {
       serial: serialNumber,
     },
-    fetchPolicy: networkFetch ? 'network-only' : 'cache-first',
+    fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
   })
 

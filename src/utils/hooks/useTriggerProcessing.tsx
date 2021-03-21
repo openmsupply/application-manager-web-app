@@ -54,7 +54,7 @@ const useTriggerProcessing = ({ triggerType, ...props }: TriggerQueryProps) => {
     },
     pollInterval: 500,
     skip: skipTrigger && !isProcessing,
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'network-only',
   })
 
   useEffect((): any => {

@@ -36,6 +36,7 @@ const generateReviewSectionActions: GenerateSectionActions = ({
 
     section.reviewAction = {
       isAssignedToCurrentUser,
+      isCurrentUserReview,
       isReviewable,
       action: baseAction || levelOneActions[thisReview?.status || 'unknown'],
     }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container, List, Label, Segment, Button, Search, Grid, Header } from 'semantic-ui-react'
-import { FilterList } from '../../components'
+import { Container, List, Label, Segment, Button, Search, Header } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
 import useListApplications from '../../utils/hooks/useListApplications'
 import strings from '../../utils/constants'
@@ -12,7 +11,6 @@ import { USER_ROLES } from '../../utils/data'
 import { Link } from 'react-router-dom'
 import ApplicationsList from '../../components/List/ApplicationsList'
 import PaginationBar from '../../components/List/Pagination'
-import { NONAME } from 'dns'
 
 const ListWrapper: React.FC = () => {
   const { query, updateQuery } = useRouter()

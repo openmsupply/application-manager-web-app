@@ -55,7 +55,7 @@ const SiteLayout: React.FC = () => {
         }}
       >
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/dashboard">
             <Home />
           </Route>
           <Route exact path="/login">
@@ -63,9 +63,6 @@ const SiteLayout: React.FC = () => {
           </Route>
           <Route exact path="/applications">
             <ListWrapper />
-          </Route>
-          <Route exact path="/dashboard">
-            <Home />
           </Route>
           {/* Application router NEW*/}
           {/* Create application new route */}

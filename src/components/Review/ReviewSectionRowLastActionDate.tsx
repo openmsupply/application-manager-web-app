@@ -46,6 +46,15 @@ const ReviewSectionRowLastActionDate: React.FC<ReviewSectionComponentProps> = ({
         )
       }
 
+      case ReviewAction.canSelfAssign: {
+        return (
+          <LastDate
+            title="APPLICATION SUBMITTED"
+            indicator={getSimplifiedTimeDifference(fullStructure?.info.current?.date)}
+          />
+        )
+      }
+
       default:
         return null
     }

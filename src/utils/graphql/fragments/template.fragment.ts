@@ -64,6 +64,7 @@ export default gql`
           code
           icon
           query
+          color
           title
           userRole
         }

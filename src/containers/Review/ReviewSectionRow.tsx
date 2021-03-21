@@ -44,6 +44,7 @@ const ReviewSectionRow: React.FC<ReviewSectionRowProps> = ({
 
   const thisReview = fullReviewStructure?.thisReview
   const isAssignedToCurrentUser = !!section?.reviewAction?.isAssignedToCurrentUser
+  const isCurrentUserReview = !!section?.reviewAction?.isCurrentUserReview
 
   const props: ReviewSectionComponentProps = {
     fullStructure: fullReviewStructure,
@@ -51,12 +52,20 @@ const ReviewSectionRow: React.FC<ReviewSectionRowProps> = ({
     assignment,
     thisReview,
     isAssignedToCurrentUser,
+    isCurrentUserReview,
     action: section?.reviewAction?.action || ReviewAction.unknown,
   }
 
+  console.log(section?.reviewAction?.isAssignedToCurrentUser)
+
+  const canShowRow =
+    section?.reviewAction?.isReviewable ||
+    (section?.reviewAction?.isCurrentUserReview &&
+      section?.reviewAction?.action === ReviewAction.canSelfAssign)
+
   return (
     <>
-      {section?.reviewAction?.isReviewable && (
+      {canShowRow && (
         <Grid columns="equal" verticalAlign="middle" style={{ borderRadius: 10 }}>
           <ReviewSectionRowAssigned {...props} />
           <ReviewSectionRowLastActionDate {...props} />

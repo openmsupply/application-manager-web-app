@@ -8,6 +8,7 @@ import { useUserState } from '../../contexts/UserState'
 import useCreateReview from '../../utils/hooks/useCreateReview'
 import useRestartReview from '../../utils/hooks/useRestartReview'
 import { ReviewStatus } from '../../utils/generated/graphql'
+import useAssignSectionToUser from '../../utils/hooks/useAssignSectionToUser'
 
 const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) => {
   const {
@@ -19,7 +20,7 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
     action,
     section: { details, reviewProgress },
     isAssignedToCurrentUser,
-
+    isCurrentUserReview,
     thisReview,
   } = props
 
@@ -27,6 +28,7 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
   const reviewSectionLink = `${reviewPath}?activeSections=${details.code}`
 
   const getContent = () => {
+    console.log(action)
     switch (action) {
       case ReviewAction.canContinue: {
         if (isAssignedToCurrentUser) {
@@ -82,7 +84,7 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
       }
 
       case ReviewAction.canStartReview: {
-        if (isAssignedToCurrentUser) return <StartReviewButton {...props} />
+        if (isCurrentUserReview) return <StartReviewButton {...props} />
 
         return (
           <div style={{ color: 'rgb(130, 130, 130)', fontStyle: 'italic', marginRight: 20 }}>
@@ -94,6 +96,10 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
       case ReviewAction.canReReview: {
         if (isAssignedToCurrentUser) return <ReReviewButton {...props} />
 
+        return null
+      }
+      case ReviewAction.canSelfAssign: {
+        if (isCurrentUserReview) return <SelfAssign {...props} />
         return null
       }
       default:
@@ -160,6 +166,45 @@ const ReReviewButton: React.FC<ReviewSectionComponentProps> = ({
       }}
       onClick={buttonAction}
     >{`${strings.BUTTON_REVIEW_RE_REVIEW} (${reReviewableCount(reviewProgress)})`}</Button>
+  )
+}
+
+// START REVIEW button
+const SelfAssign: React.FC<ReviewSectionComponentProps> = ({ assignment, fullStructure }) => {
+  const [startReviewError, setStartReviewError] = useState(false)
+
+  const assign = useAssignSectionToUser({ structure: fullStructure })
+
+  const startReview = async () => {
+    {
+      try {
+        const result = await assign(assignment)
+        const reviewAssignmentId = result.data?.updateReviewAssignment?.reviewAssignment?.id
+        if (!reviewAssignmentId) throw new Error('Review Assignment ID is missing from response')
+      } catch (e) {
+        console.error(e)
+        return setStartReviewError(true)
+      }
+    }
+  }
+
+  if (startReviewError) return <Message error title={strings.ERROR_GENERIC} />
+
+  return (
+    <Button
+      as="a"
+      onClick={startReview}
+      style={{
+        color: '#003BFE',
+        fontWeight: 400,
+        letterSpacing: 1,
+        background: 'none',
+        border: 'none',
+        fontSize: 16,
+      }}
+    >
+      Self Assign
+    </Button>
   )
 }
 

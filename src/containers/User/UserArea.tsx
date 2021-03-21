@@ -39,8 +39,8 @@ const UserArea: React.FC = () => {
           </Link>
           <div style={{ marginTop: 10, display: 'flex', alignItems: 'center' }}>
             <Image
-              style={{ height: 60, boxShadow: '0px 0px 3px rgb(240,240,240)' }}
-              src="/images/placeholderOrg2.jpeg"
+              style={{ height: 60, width: 60, boxShadow: '0px 0px 3px rgb(240,240,240)' }}
+              src="/images/ss.png"
               circular
             />
             <div

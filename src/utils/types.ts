@@ -403,6 +403,7 @@ type ReviewSectionComponentProps = {
   assignment: AssignmentDetailsNEW
   thisReview?: ReviewDetails | null
   action: ReviewAction
+  isCurrentUserReview: boolean
   isAssignedToCurrentUser: boolean
 }
 
@@ -505,6 +506,7 @@ interface SectionStateNEW {
     action: ReviewAction
     isAssignedToCurrentUser: boolean
     isReviewable: boolean
+    isCurrentUserReview: boolean
   }
   changeRequestsProgress?: ChangeRequestsProgress
   assigned?: ReviewerDetails
