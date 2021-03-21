@@ -57,9 +57,18 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
   } = fullStructure
 
   return (
-    <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
-      {/* <ModalWarning showModal={showModal} /> */}
-      <Header textAlign="center">
+    <>
+      <Header
+        textAlign="center"
+        style={{
+          color: 'rgb(150,150,150)',
+          letterSpacing: 1,
+          textTransform: 'uppercase',
+          fontWeight: 400,
+          paddingTop: 25,
+          fontSize: 24,
+        }}
+      >
         {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
       </Header>
       <Grid
@@ -84,6 +93,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
             <Header content={fullStructure.sections[sectionCode].details.title} />
             <PageElements
               canEdit={current?.status === ApplicationStatus.Draft}
+              isChangeRequest={fullStructure.info.isChangeRequest}
               elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
               responsesByCode={fullStructure.responsesByCode}
               isStrictPage={
@@ -102,7 +112,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
         serialNumber={serialNumber}
         requestRevalidation={requestRevalidation as MethodRevalidate}
       />
-    </Segment.Group>
+    </>
   )
 }
 

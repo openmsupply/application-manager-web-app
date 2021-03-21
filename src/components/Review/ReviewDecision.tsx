@@ -19,7 +19,7 @@ const ReviewDecision: React.FC<ReviewDecisionProps> = ({
 }) => {
   if (isEditable)
     return (
-      <Form>
+      <Form style={{ marginRight: 30 }}>
         {decisionOptions
           .filter((option) => option.isVisible)
           .map((option) => (

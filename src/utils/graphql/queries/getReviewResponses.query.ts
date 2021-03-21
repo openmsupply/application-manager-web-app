@@ -26,6 +26,12 @@ export default gql`
           ) {
             nodes {
               ...reviewResponseFragment
+              review {
+                reviewer {
+                  lastName
+                  firstName
+                }
+              }
               applicationResponse {
                 id
                 templateElementId

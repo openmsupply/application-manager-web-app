@@ -9,6 +9,7 @@ import SerialNumberCell from './SerialNumberCell'
 import OrganisationCell from './OrganisationCell'
 import OutcomeCell from './OutcomeCell'
 import ReviewerActionCell from './ReviewerActionCell'
+import ApplicantActionCell from './ApplicantActionCell'
 
 export {
   ApplicationNameCell,
@@ -22,4 +23,5 @@ export {
   OrganisationCell,
   OutcomeCell,
   ReviewerActionCell,
+  ApplicantActionCell,
 }

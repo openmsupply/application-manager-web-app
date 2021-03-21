@@ -9,16 +9,13 @@ const SectionProgress: React.FC<SectionStateNEW> = ({ reviewProgress, reviewActi
       <SectionProgressBar reviewProgress={reviewProgress} />
     ) : (
       <Label
-        basic
         icon={<Icon name="circle" size="mini" color="blue" />}
         content={strings.LABEL_ASSIGNED_TO_YOU}
       />
     )
   }
   return (
-    <Label style={{ backgroundColor: 'White', color: 'Black' }}>
-      {strings.LABEL_ASSIGNED_TO_OTHER}
-    </Label>
+    <Label style={{ background: 'none', color: 'Black' }}>{strings.LABEL_ASSIGNED_TO_OTHER}</Label>
   )
 }
 

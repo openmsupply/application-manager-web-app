@@ -85,7 +85,7 @@ const ApplicationCreateNEW: React.FC = () => {
 
   const NewApplicationInfo: React.FC = () => {
     return template?.sections ? (
-      <Segment basic>
+      <>
         <Header as="h5">{strings.SUBTITLE_APPLICATION_STEPS}</Header>
         <Header as="h5">{strings.TITLE_STEPS.toUpperCase()}</Header>
         <SectionsList sections={template.sections} />
@@ -94,7 +94,7 @@ const ApplicationCreateNEW: React.FC = () => {
         <Button color="blue" loading={processing} onClick={handleCreate}>
           {strings.BUTTON_APPLICATION_START}
         </Button>
-      </Segment>
+      </>
     ) : null
   }
 

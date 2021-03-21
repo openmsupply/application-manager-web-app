@@ -30,23 +30,27 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = (props) => {
   } = useGetDecisionOptions(structure.canSubmitReviewAs, thisReview)
 
   return (
-    <>
-      <ReviewComment
-        isEditable={thisReview?.status == ReviewStatus.Draft}
-        reviewDecisionId={Number(reviewDecision?.id)}
-      />
-      <ReviewDecision
-        decisionOptions={decisionOptions}
-        setDecision={setDecision}
-        isDecisionError={isDecisionError}
-        isEditable={thisReview?.status == ReviewStatus.Draft}
-      />
-      <ReviewSubmitButton
-        {...props}
-        getDecision={getDecision}
-        getAndSetDecisionError={getAndSetDecisionError}
-      />
-    </>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ flexGrow: 1, marginRight: 30, marginLeft: 30 }}>
+        <ReviewComment
+          isEditable={thisReview?.status == ReviewStatus.Draft}
+          reviewDecisionId={Number(reviewDecision?.id)}
+        />
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <ReviewDecision
+          decisionOptions={decisionOptions}
+          setDecision={setDecision}
+          isDecisionError={isDecisionError}
+          isEditable={thisReview?.status == ReviewStatus.Draft}
+        />
+        <ReviewSubmitButton
+          {...props}
+          getDecision={getDecision}
+          getAndSetDecisionError={getAndSetDecisionError}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -128,11 +132,13 @@ const ReviewSubmitButton: React.FC<ReviewSubmitProps & ReviewSubmitButtonProps> 
   if (structure.thisReview?.status !== ReviewStatus.Draft) return null
 
   return (
-    <>
-      <Button onClick={onClick}>{strings.BUTTON_REVIEW_SUBMIT}</Button>
+    <div>
+      <Button style={{ marginRight: 30 }} color="blue" onClick={onClick}>
+        {strings.BUTTON_REVIEW_SUBMIT}
+      </Button>
       <ModalWarning showModal={showWarningModal} />
       {/* TODO add submission modal */}
-    </>
+    </div>
   )
 }
 export default ReviewSubmit

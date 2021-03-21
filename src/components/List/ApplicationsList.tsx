@@ -25,63 +25,56 @@ const ApplicationsList: React.FC<ApplicationsListProps> = ({
 }) => {
   return (
     <>
-      <Segment.Group
-        horizontal
-        style={{ border: 'none', borderRadius: '0px', borderColor: 'none', background: 'none' }}
-      >
-        <Segment style={{ border: 'none', background: 'none', width: '85%' }}>
-          <Table sortable stackable selectable>
-            <Table.Header>
-              <Table.Row>
-                {columns.map(({ headerName, sortName }, index) => (
-                  <Table.HeaderCell
-                    key={`ApplicationList-header-${headerName}`}
-                    sorted={sortName && sortColumn === sortName ? sortDirection : undefined}
-                    onClick={() => handleSort(sortName)}
-                    colSpan={index === columns.length - 1 ? 2 : 1} // Set last column to fill last column (expansion)
-                  >
-                    <p>{headerName}</p>
-                  </Table.HeaderCell>
-                ))}
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {loading ? (
-                <Table.Row colSpan={columns.length} textAlign="center">
-                  <Table.Cell colSpan={columns.length} textAlign="center">
-                    <Loading />
-                  </Table.Cell>
-                </Table.Row>
-              ) : (
-                applications.map((application, index) => {
-                  const { isExpanded } = application
-                  const rowProps = {
-                    index,
-                    columns,
-                    application,
-                    handleExpansion,
-                  }
-                  const sectionsProps = {
-                    index,
-                    application,
-                    colSpan: columns.length + 1,
-                  }
-                  return (
-                    <Fragment key={`ApplicationList-application-${index}`}>
-                      <ApplicationRow {...rowProps} />
-                      {isExpanded && <SectionsExpandedRow {...sectionsProps} />}
-                    </Fragment>
-                  )
-                })
-              )}
-            </Table.Body>
-          </Table>
-          {loading && <Loading />}
-          {applications && applications.length === 0 && (
-            <Message floating color="yellow" header={messages.APPLICATIONS_LIST_EMPTY} />
+      <Table sortable stackable selectable>
+        <Table.Header>
+          <Table.Row>
+            {columns.map(({ headerName, sortName }, index) => (
+              <Table.HeaderCell
+                key={`ApplicationList-header-${headerName}-${index}`}
+                sorted={sortName && sortColumn === sortName ? sortDirection : undefined}
+                onClick={() => handleSort(sortName)}
+                colSpan={index === columns.length - 1 ? 2 : 1} // Set last column to fill last column (expansion)
+              >
+                <p>{headerName}</p>
+              </Table.HeaderCell>
+            ))}
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {loading ? (
+            <Table.Row colSpan={columns.length} textAlign="center">
+              <Table.Cell colSpan={columns.length} textAlign="center">
+                <Loading />
+              </Table.Cell>
+            </Table.Row>
+          ) : (
+            applications.map((application, index) => {
+              const { isExpanded } = application
+              const rowProps = {
+                index,
+                columns,
+                application,
+                handleExpansion,
+              }
+              const sectionsProps = {
+                index,
+                application,
+                colSpan: columns.length + 1,
+              }
+              return (
+                <Fragment key={`ApplicationList-application-${index}`}>
+                  <ApplicationRow {...rowProps} />
+                  {isExpanded && <SectionsExpandedRow {...sectionsProps} />}
+                </Fragment>
+              )
+            })
           )}
-        </Segment>
-      </Segment.Group>
+        </Table.Body>
+      </Table>
+      {loading && <Loading />}
+      {applications && applications.length === 0 && (
+        <Message floating color="yellow" header={messages.APPLICATIONS_LIST_EMPTY} />
+      )}
     </>
   )
 }
@@ -103,15 +96,15 @@ const ApplicationRow: React.FC<ApplicationRowProps> = ({
 
   return (
     <Table.Row
-      key={`ApplicationList-application-${index}`}
+      key={`ApplicationList-application-${application.id}`}
       onClick={() => {
         console.log(query)
         if (query.userRole === 'applicant') push(`/application/${application.serial}`)
         else push(`/application/${application.serial}/review`)
       }}
     >
-      {columns.map(({ headerName, ColumnComponent }) => (
-        <Table.Cell key={`ApplicationList-row-${index}-${headerName}`}>
+      {columns.map(({ headerName, ColumnComponent }, index) => (
+        <Table.Cell key={`ApplicationList-row-${application.id}-${index}`}>
           <ColumnComponent application={application} />
         </Table.Cell>
       ))}
@@ -133,7 +126,7 @@ const SectionsExpandedRow: React.FC<SectionsExpandedRowProps> = ({
 }) => {
   const { serial } = application
   return (
-    <Table.Row key={`ApplicationList-application-${index}-sections`} colSpan={colSpan}>
+    <Table.Row key={`ApplicationList-application-${application.id}-sections`} colSpan={colSpan}>
       <Table.Cell colSpan={colSpan}>
         <Segment color="grey">TODO: SECTIONS</Segment>
       </Table.Cell>

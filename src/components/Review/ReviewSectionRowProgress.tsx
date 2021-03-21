@@ -22,14 +22,14 @@ const ReviewSectionRowProgress: React.FC<ReviewSectionComponentProps> = ({
     switch (action) {
       case ReviewAction.canStartReview: {
         if (isAssignedToCurrentUser) return null
-        return strings.STATUS_NOT_STARTED
+        return null
       }
       case ReviewAction.canView: {
         return <SectionProgressBar reviewProgress={reviewProgress} />
       }
       case ReviewAction.canContinue: {
         if (isAssignedToCurrentUser) return <SectionProgressBar reviewProgress={reviewProgress} />
-        return strings.STATUS_IN_PROGRESS
+        return null
       }
       case ReviewAction.canReReview: {
         return <SectionProgressBar reviewProgress={reviewProgress} />

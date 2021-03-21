@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid } from 'semantic-ui-react'
+import { Grid, Label } from 'semantic-ui-react'
 import getSimplifiedTimeDifference from '../../utils/dateAndTime/getSimplifiedTimeDifference'
 import { ReviewAction, ReviewSectionComponentProps } from '../../utils/types'
 import strings from '../../utils/constants'
@@ -14,31 +14,35 @@ const ReviewSectionRowLastActionDate: React.FC<ReviewSectionComponentProps> = ({
     switch (action) {
       case ReviewAction.canContinue: {
         return (
-          <p>{`${strings.ACTION_DATE_REVIEW_STARTED}: ${getSimplifiedTimeDifference(
-            thisReview?.timeStatusCreated
-          )}`}</p>
+          <LastDate
+            title={strings.ACTION_DATE_REVIEW_STARTED}
+            indicator={getSimplifiedTimeDifference(thisReview?.timeStatusCreated)}
+          />
         )
       }
       case ReviewAction.canView: {
         return (
-          <p>{`${strings.ACTION_DATE_REVIEW_SUBMITTED}: ${getSimplifiedTimeDifference(
-            thisReview?.timeStatusCreated
-          )}`}</p>
+          <LastDate
+            title={strings.ACTION_DATE_REVIEW_SUBMITTED}
+            indicator={getSimplifiedTimeDifference(thisReview?.timeStatusCreated)}
+          />
         )
       }
       case ReviewAction.canStartReview: {
         return (
-          <p>{`${strings.ACTION_DATE_ASSIGNED}: ${getSimplifiedTimeDifference(
-            assignment.timeCreated
-          )}`}</p>
+          <LastDate
+            title={strings.ACTION_DATE_ASSIGNED}
+            indicator={getSimplifiedTimeDifference(assignment.timeCreated)}
+          />
         )
       }
 
       case ReviewAction.canReReview: {
         return (
-          <p>{`${strings.ACTION_DATE_RE_SUBMITTED}: ${getSimplifiedTimeDifference(
-            fullStructure?.info.current?.date
-          )}`}</p>
+          <LastDate
+            title={strings.ACTION_DATE_RE_SUBMITTED}
+            indicator={getSimplifiedTimeDifference(fullStructure?.info.current?.date)}
+          />
         )
       }
 
@@ -48,6 +52,30 @@ const ReviewSectionRowLastActionDate: React.FC<ReviewSectionComponentProps> = ({
   }
 
   return <Grid.Column>{getContent()}</Grid.Column>
+}
+
+const LastDate: React.FC<{ title: string; indicator?: React.ReactNode }> = ({
+  title,
+  indicator,
+}) => {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <div
+        style={{ fontSize: 10, fontWeight: 800, letterSpacing: 0.8, textTransform: 'uppercase' }}
+      >
+        {title}
+      </div>
+      <Label className="dreistripedlabel" style={{ fontSize: 12 }}>
+        {indicator}
+      </Label>
+    </div>
+  )
 }
 
 export default ReviewSectionRowLastActionDate

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Grid, Sticky } from 'semantic-ui-react'
+import { Button, Container, Grid, Icon, Sticky } from 'semantic-ui-react'
 import {
   MethodRevalidate,
   MethodToCallProps,
@@ -9,6 +9,7 @@ import {
 } from '../../utils/types'
 import strings from '../../utils/constants'
 import { useRouter } from '../../utils/hooks/useRouter'
+import { FixedOffsetZone } from 'luxon'
 
 interface NavigationProps {
   current: SectionAndPage
@@ -105,34 +106,71 @@ const Navigation: React.FC<NavigationProps> = ({
   }
 
   return (
-    <Sticky
-      pushing
-      style={{ backgroundColor: 'white', boxShadow: ' 0px -5px 8px 0px rgba(0,0,0,0.1)' }}
+    <Container
+      style={{
+        background: 'white',
+        position: 'fixed',
+        bottom: 65,
+        left: 0,
+        right: 0,
+        boxShadow: '0px -6px 3px -3px #AAAAAA',
+        paddingTop: 10,
+      }}
     >
-      <Grid container>
-        <Grid.Row verticalAlign="middle">
-          <Grid.Column width={5}>
+      <div style={{ display: 'flex' }}>
+        <div
+          style={{
+            flexGrow: 1,
+            display: 'flex',
+            justifyContent: isFirstPage ? 'flex-end' : 'space-between',
+            paddingLeft: 30,
+            paddingRight: 30,
+          }}
+        >
+          {isFirstPage ? null : (
             <Button
-              basic
+              style={{
+                background: 'none',
+                letterSpacing: 1.4,
+                color: '#003BFE',
+                border: 'none',
+                borderRadius: 8,
+                textTransform: 'capitalize',
+              }}
+              icon
               onClick={previousButtonHandler}
               content={strings.BUTTON_PREVIOUS}
-              style={{ display: isFirstPage ? 'none' : 'inline-block' }}
-            />
-          </Grid.Column>
-          <Grid.Column width={5}>
+            >
+              {' '}
+              <Icon name="angle left" /> {strings.BUTTON_PREVIOUS}{' '}
+            </Button>
+          )}
+          {isLastPage ? null : (
             <Button
-              basic
+              style={{
+                background: 'none',
+                color: '#003BFE',
+                letterSpacing: 1.4,
+                border: 'none',
+                borderRadius: 8,
+                textTransform: 'capitalize',
+              }}
+              icon
               onClick={nextPageButtonHandler}
-              content={strings.BUTTON_NEXT}
-              style={{ display: isLastPage ? 'none' : 'inline-block' }}
-            />
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <Button color="blue" onClick={summaryButtonHandler} content={strings.BUTTON_SUMMARY} />
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </Sticky>
+            >
+              {strings.BUTTON_NEXT} <Icon name="angle right" />
+            </Button>
+          )}
+        </div>
+
+        <Button
+          style={{ alignSelf: 'flex-end', marginRight: 30 }}
+          color="blue"
+          onClick={summaryButtonHandler}
+          content={strings.BUTTON_SUMMARY}
+        />
+      </div>
+    </Container>
   )
 }
 

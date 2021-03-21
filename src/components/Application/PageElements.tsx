@@ -1,13 +1,20 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ElementStateNEW, PageElement, ResponsesByCode, SectionAndPage } from '../../utils/types'
+import {
+  ElementStateNEW,
+  FullStructure,
+  PageElement,
+  ResponsesByCode,
+  SectionAndPage,
+} from '../../utils/types'
 import ApplicationViewWrapper from '../../formElementPlugins/ApplicationViewWrapperNEW'
 import SummaryViewWrapperNEW from '../../formElementPlugins/SummaryViewWrapperNEW'
-import { Form, Grid, Segment, Button, Icon } from 'semantic-ui-react'
+import { Form, Grid, Segment, Button, Icon, Label } from 'semantic-ui-react'
 import strings from '../../utils/constants'
 import {
   ApplicationResponse,
   ReviewResponse,
+  ReviewResponseDecision,
   ReviewResponseStatus,
   TemplateElementCategory,
 } from '../../utils/generated/graphql'
@@ -17,6 +24,8 @@ import {
   SummaryViewWrapperPropsNEW,
 } from '../../formElementPlugins/types'
 import DecisionAreaNEW from '../Review/DecisionAreaNEW'
+import { NONAME } from 'dns'
+import getSimplifiedTimeDifference from '../../utils/dateAndTime/getSimplifiedTimeDifference'
 
 interface PageElementProps {
   elements: PageElement[]
@@ -27,10 +36,12 @@ interface PageElementProps {
   isSummary?: boolean
   serial?: string
   sectionAndPage?: SectionAndPage
+  isChangeRequest?: boolean
 }
 
 const PageElements: React.FC<PageElementProps> = ({
   elements,
+
   responsesByCode,
   isStrictPage,
   canEdit,
@@ -38,6 +49,7 @@ const PageElements: React.FC<PageElementProps> = ({
   isSummary,
   serial,
   sectionAndPage,
+  isChangeRequest,
 }) => {
   const visibleElements = elements.filter(({ element }) => element.isVisible)
 
@@ -50,7 +62,7 @@ const PageElements: React.FC<PageElementProps> = ({
           const props: ApplicationViewWrapperPropsNEW = {
             element,
             isStrictPage,
-            isChanged: isChanged as boolean,
+            isChanged: !!isChanged && !!isChangeRequest,
             allResponses: responsesByCode,
             currentResponse: responsesByCode?.[element.code],
             currentReview:
@@ -72,31 +84,42 @@ const PageElements: React.FC<PageElementProps> = ({
     const { sectionCode, pageNumber } = sectionAndPage as SectionAndPage
     return (
       <Form>
-        <Segment.Group>
-          {visibleElements
-            .filter(({ element }) => element.isVisible)
-            .map(({ element }) => {
-              return (
-                <Segment key={`question_${element.code}`}>
-                  <Grid columns="equal">
-                    <Grid.Column floated="left">
-                      <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
+        {visibleElements
+          .filter(({ element }) => element.isVisible)
+          .map(({ element }) => {
+            return (
+              <Segment
+                key={`question_${element.id}`}
+                style={{ borderRadius: 8, border: 'none', boxShadow: 'none', margin: 10 }}
+              >
+                <Grid columns="equal">
+                  <Grid.Column floated="left">
+                    <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
+                  </Grid.Column>
+                  {element.category === TemplateElementCategory.Question && canEdit && (
+                    <Grid.Column floated="right" textAlign="right">
+                      <Button
+                        content={strings.BUTTON_SUMMARY_EDIT}
+                        size="small"
+                        style={{
+                          letterSpacing: 0.8,
+                          fontWeight: 1000,
+                          fontSize: 14,
+                          background: 'none',
+                          color: '#003BFE',
+                          border: 'none',
+                          borderRadius: 8,
+                          textTransform: 'capitalize',
+                        }}
+                        as={Link}
+                        to={`/application/${serial}/${sectionCode}/Page${pageNumber}`}
+                      />
                     </Grid.Column>
-                    {element.category === TemplateElementCategory.Question && canEdit && (
-                      <Grid.Column floated="right" textAlign="right">
-                        <Button
-                          content={strings.BUTTON_SUMMARY_EDIT}
-                          size="small"
-                          as={Link}
-                          to={`/application/${serial}/${sectionCode}/Page${pageNumber}`}
-                        />
-                      </Grid.Column>
-                    )}
-                  </Grid>
-                </Segment>
-              )
-            })}
-        </Segment.Group>
+                  )}
+                </Grid>
+              </Segment>
+            )
+          })}
       </Form>
     )
   }
@@ -106,15 +129,26 @@ const PageElements: React.FC<PageElementProps> = ({
   if (isReview)
     return (
       <Form>
-        <Segment.Group>
-          {visibleElements.map(
-            ({
-              element,
-              thisReviewLatestResponse,
-              isNewApplicationResponse,
-              latestApplicationResponse,
-            }) => (
-              <Segment key={`question_${element.id}`}>
+        {visibleElements.map(
+          ({
+            element,
+            thisReviewLatestResponse,
+            isNewApplicationResponse,
+            latestApplicationResponse,
+          }) => (
+            <>
+              <Segment
+                key={`question_${element.id}`}
+                style={{
+                  borderRadius: 8,
+                  borderBottomLeftRadius: thisReviewLatestResponse?.decision ? 0 : 8,
+                  borderBottomRightRadius: thisReviewLatestResponse?.decision ? 0 : 8,
+                  border: 'none',
+                  boxShadow: 'none',
+                  margin: 10,
+                  marginBottom: thisReviewLatestResponse?.decision ? 0 : 10,
+                }}
+              >
                 <Grid columns="equal">
                   <Grid.Column floated="left">
                     <SummaryViewWrapperNEW {...getSummaryViewProps(element)} />
@@ -127,15 +161,15 @@ const PageElements: React.FC<PageElementProps> = ({
                     />
                   </Grid.Column>
                 </Grid>
-                <ReviewResponseComponent
-                  latestApplicationResponse={latestApplicationResponse}
-                  reviewResponse={thisReviewLatestResponse as ReviewResponse}
-                  summaryViewProps={getSummaryViewProps(element)}
-                />
               </Segment>
-            )
-          )}
-        </Segment.Group>
+              <ReviewResponseComponent
+                latestApplicationResponse={latestApplicationResponse}
+                reviewResponse={thisReviewLatestResponse as ReviewResponse}
+                summaryViewProps={getSummaryViewProps(element)}
+              />
+            </>
+          )
+        )}
       </Form>
     )
 
@@ -158,28 +192,72 @@ const ReviewResponseComponent: React.FC<{
   if (latestApplicationResponse.id !== reviewResponse.applicationResponse?.id) return null
 
   return (
-    <>
-      <Grid columns="equal">
-        <Grid.Column floated="left">
-          <p>{reviewResponse?.decision}</p>
-          <p>{reviewResponse?.comment || ''}</p>
-        </Grid.Column>
-        {reviewResponse.status === ReviewResponseStatus.Draft && (
-          <Grid.Column floated="right" textAlign="right">
-            <Icon
-              name="pencil"
-              color="blue"
-              onClick={() => setToggleDecisionArea(!toggleDecisionArea)}
-            />
-          </Grid.Column>
+    <div
+      style={{
+        display: 'flex',
+        background: 'rgb(249, 255, 255)',
+        margin: 10,
+        marginTop: 0,
+        borderTop: '3px solid rgb(230, 230, 230)',
+        borderBottom: '3px solid rgb(230, 230, 230)',
+        padding: 14,
+      }}
+    >
+      <div style={{ color: 'rgb(150, 150, 150)', marginRight: 20 }}>
+        {reviewResponse.review?.reviewer?.firstName} {reviewResponse.review?.reviewer?.lastName}
+      </div>
+      <div style={{ flexGrow: 1, textAlign: 'left' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon
+            name="circle"
+            size="tiny"
+            color={reviewResponse?.decision === ReviewResponseDecision.Approve ? 'green' : 'red'}
+          />
+          <text
+            style={{
+              fontWeight: 'bolder',
+              fontSize: 16,
+              marginRight: 10,
+            }}
+          >
+            {reviewResponse?.decision === ReviewResponseDecision.Approve
+              ? 'Conform'
+              : 'Non Conform'}
+          </text>
+          <Label style={{ padding: 6 }} size="mini">
+            {getSimplifiedTimeDifference(reviewResponse.timeUpdated)}
+          </Label>
+        </div>
+        {!reviewResponse.comment ? null : (
+          <div
+            style={{
+              color: 'grey',
+
+              display: 'flex',
+              margin: 6,
+            }}
+          >
+            <Icon name="comment alternate outline" color="grey" />
+            <div
+              style={{
+                marginLeft: 6,
+              }}
+            >
+              {reviewResponse.comment}
+            </div>
+          </div>
         )}
-      </Grid>
+      </div>
+      {reviewResponse.status === ReviewResponseStatus.Draft && (
+        <Icon name="edit" color="blue" onClick={() => setToggleDecisionArea(!toggleDecisionArea)} />
+      )}
+
       <DecisionAreaNEW
         reviewResponse={reviewResponse}
         toggle={toggleDecisionArea}
         summaryViewProps={summaryViewProps}
       />
-    </>
+    </div>
   )
 }
 
@@ -203,6 +281,16 @@ const ReviewButton: React.FC<{
             : strings.BUTTON_REVIEW_RESPONSE
         }
         size="small"
+        style={{
+          letterSpacing: 0.8,
+          fontWeight: 1000,
+          fontSize: 17,
+          background: 'none',
+          color: '#003BFE',
+          border: 'none',
+          borderRadius: 8,
+          textTransform: 'capitalize',
+        }}
         onClick={() => setToggleDecisionArea(!toggleDecisionArea)}
       />
       <DecisionAreaNEW

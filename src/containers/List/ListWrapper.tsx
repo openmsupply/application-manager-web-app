@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container, List, Label, Segment, Button, Search, Grid } from 'semantic-ui-react'
+import { Container, List, Label, Segment, Button, Search, Grid, Header } from 'semantic-ui-react'
 import { FilterList } from '../../components'
 import { useRouter } from '../../utils/hooks/useRouter'
 import useListApplications from '../../utils/hooks/useListApplications'
@@ -12,6 +12,7 @@ import { USER_ROLES } from '../../utils/data'
 import { Link } from 'react-router-dom'
 import ApplicationsList from '../../components/List/ApplicationsList'
 import PaginationBar from '../../components/List/Pagination'
+import { NONAME } from 'dns'
 
 const ListWrapper: React.FC = () => {
   const { query, updateQuery } = useRouter()
@@ -95,8 +96,8 @@ const ListWrapper: React.FC = () => {
   return error ? (
     <Label content={strings.ERROR_APPLICATIONS_LIST} error={error} />
   ) : (
-    <Container>
-      <FilterList />
+    <Container style={{ paddingTop: 40 }}>
+      {/* <FilterList />
       <Segment vertical>
         {Object.keys(query).length > 0 && <h3>Query parameters:</h3>}
         <List>
@@ -112,6 +113,10 @@ const ListWrapper: React.FC = () => {
                 placeholder={strings.PLACEHOLDER_SEARCH}
                 onSearchChange={handleSearchChange}
                 open={false}
+                input={{
+                  icon: 'search',
+                  iconPosition: 'left',
+                }}
                 value={searchText}
               />
             </Grid.Column>
@@ -127,7 +132,38 @@ const ListWrapper: React.FC = () => {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      </Segment>
+      </Segment> */}
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Header as="h2" style={{ letterSpacing: 1, fontWeight: 400, margin: 0 }}>
+          {query.type}
+        </Header>
+        <Search
+          // size="large"
+          style={{ flexGrow: 1, marginLeft: 30 }}
+          placeholder={strings.PLACEHOLDER_SEARCH}
+          onSearchChange={handleSearchChange}
+          input={{ icon: 'search', iconPosition: 'left' }}
+          open={false}
+          value={searchText}
+        />
+        {query.userRole === 'applicant' ? (
+          <Button
+            style={{
+              background: 'none',
+              color: '#003BFE',
+              letterSpacing: 1.4,
+              border: '2px solid #003BFE',
+              borderRadius: 8,
+              textTransform: 'capitalize',
+            }}
+            as={Link}
+            to={`/application/new?type=${type}`}
+            content={strings.BUTTON_APPLICATION_NEW}
+          />
+        ) : null}
+      </div>
+
       {columns && applicationsRows && (
         <ApplicationsList
           columns={columns}

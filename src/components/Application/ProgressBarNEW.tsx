@@ -150,10 +150,7 @@ const ProgressBarNEW: React.FC<ProgressBarProps> = ({
   })
 
   return (
-    <Sticky as={Container}>
-      <Header as="h5" style={{ paddingLeft: 30 }}>
-        {strings.TITLE_INTRODUCTION}
-      </Header>
+    <Sticky as={Container} offset={135}>
       <Accordion activeIndex={activeIndex} panels={sectionsList} />
     </Sticky>
   )

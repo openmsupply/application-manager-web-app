@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Grid, Message } from 'semantic-ui-react'
+import { Button, Grid, Icon, Message } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { ReviewAction, ReviewProgress, ReviewSectionComponentProps } from '../../utils/types'
 import strings from '../../utils/constants'
@@ -12,6 +12,7 @@ import { ReviewStatus } from '../../utils/generated/graphql'
 const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) => {
   const {
     location: { pathname },
+    push,
   } = useRouter()
 
   const {
@@ -31,21 +32,63 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
         if (isAssignedToCurrentUser) {
           if (reReviewableCount(reviewProgress)) return <ReReviewButton {...props} />
 
-          return <Link to={reviewSectionLink}>{strings.ACTION_CONTINUE}</Link>
-        }
-
-        return <p>In Review</p>
+          return (
+            <Link
+              style={{
+                color: '#003BFE',
+                fontWeight: 800,
+                letterSpacing: 1,
+                background: 'none',
+                border: 'none',
+                fontSize: 16,
+              }}
+              to={reviewSectionLink}
+            >
+              {strings.ACTION_CONTINUE}
+            </Link>
+          )
+        } else
+          return (
+            <div style={{ color: 'rgb(130, 130, 130)', fontStyle: 'italic', marginRight: 20 }}>
+              In progress
+            </div>
+          )
       }
       case ReviewAction.canView: {
         if (isAssignedToCurrentUser)
-          return <Link to={`${reviewSectionLink}`}>{strings.ACTION_VIEW}</Link>
-        else return <Link to={`${reviewSectionLink}`}>{strings.ACTION_VIEW}</Link>
+          return (
+            <Link
+              style={{
+                color: '#003BFE',
+                fontWeight: 800,
+                letterSpacing: 1,
+                background: 'none',
+                border: 'none',
+                fontSize: 16,
+              }}
+              to={`${reviewSectionLink}`}
+            >
+              {strings.ACTION_VIEW}
+            </Link>
+          )
+        else
+          return (
+            <Icon
+              style={{ color: 'rgb(130, 130, 130)' }}
+              onClick={() => push(reviewSectionLink)}
+              name="angle right"
+            />
+          )
       }
 
       case ReviewAction.canStartReview: {
         if (isAssignedToCurrentUser) return <StartReviewButton {...props} />
 
-        return null
+        return (
+          <div style={{ color: 'rgb(130, 130, 130)', fontStyle: 'italic', marginRight: 20 }}>
+            Not started yet
+          </div>
+        )
       }
 
       case ReviewAction.canReReview: {
@@ -58,7 +101,11 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
     }
   }
 
-  return <Grid.Column textAlign="right">{getContent()}</Grid.Column>
+  return (
+    <Grid.Column textAlign="right" style={{}}>
+      {getContent()}
+    </Grid.Column>
+  )
 }
 
 const reReviewableCount = (reviewProgress?: ReviewProgress) =>
@@ -102,9 +149,17 @@ const ReReviewButton: React.FC<ReviewSectionComponentProps> = ({
       : restart
 
   return (
-    <Button onClick={buttonAction}>{`${strings.BUTTON_REVIEW_RE_REVIEW} (${reReviewableCount(
-      reviewProgress
-    )})`}</Button>
+    <Button
+      style={{
+        color: '#003BFE',
+        fontWeight: 400,
+        letterSpacing: 1,
+        background: 'none',
+        border: 'none',
+        fontSize: 16,
+      }}
+      onClick={buttonAction}
+    >{`${strings.BUTTON_REVIEW_RE_REVIEW} (${reReviewableCount(reviewProgress)})`}</Button>
   )
 }
 
@@ -149,7 +204,18 @@ const StartReviewButton: React.FC<ReviewSectionComponentProps> = ({
   if (startReviewError) return <Message error title={strings.ERROR_GENERIC} />
 
   return (
-    <Button as="a" onClick={startReview}>
+    <Button
+      as="a"
+      onClick={startReview}
+      style={{
+        color: '#003BFE',
+        fontWeight: 400,
+        letterSpacing: 1,
+        background: 'none',
+        border: 'none',
+        fontSize: 16,
+      }}
+    >
       {strings.ACTION_START}
     </Button>
   )

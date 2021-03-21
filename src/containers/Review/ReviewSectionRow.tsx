@@ -57,7 +57,7 @@ const ReviewSectionRow: React.FC<ReviewSectionRowProps> = ({
   return (
     <>
       {section?.reviewAction?.isReviewable && (
-        <Grid columns="equal" verticalAlign="middle">
+        <Grid columns="equal" verticalAlign="middle" style={{ borderRadius: 10 }}>
           <ReviewSectionRowAssigned {...props} />
           <ReviewSectionRowLastActionDate {...props} />
           <ReviewSectionRowProgress {...props} />

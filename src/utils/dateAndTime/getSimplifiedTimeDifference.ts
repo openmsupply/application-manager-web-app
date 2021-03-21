@@ -8,6 +8,22 @@ type DisplayOptions = {
 
 const displayOptions: DisplayOptions[] = [
   {
+    condition: (duration) => duration.as('minute') <= 2,
+    display: () => 'Just Now',
+  },
+  {
+    condition: (duration) => duration.as('minute') <= 60,
+    display: (duration) => `${Math.floor(duration.as('minute'))} mins`,
+  },
+  {
+    condition: (duration) => duration.as('hour') <= 2,
+    display: (duration) => 'Last Hour',
+  },
+  {
+    condition: (duration) => duration.as('hour') <= 24,
+    display: (duration) => `${Math.floor(duration.as('hour'))} hours`,
+  },
+  {
     condition: (duration) => duration.as('day') <= 1,
     display: () => strings.DATE_TODAY,
   },

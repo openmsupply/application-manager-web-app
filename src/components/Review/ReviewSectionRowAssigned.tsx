@@ -7,9 +7,22 @@ const ReviewSectionRowAssigned: React.FC<ReviewSectionComponentProps> = ({
   isAssignedToCurrentUser,
   assignment,
 }) => {
-  if (isAssignedToCurrentUser) return <Grid.Column>{strings.ASSIGNED}</Grid.Column>
   const { lastName, firstName } = assignment.reviewer
-  return <Grid.Column>{`${strings.ASSIGNED_TO} ${firstName} ${lastName}`}</Grid.Column>
+  return (
+    <Grid.Column>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ fontWeight: 500 }}>Review by </div>
+        <div
+          style={{
+            marginLeft: 5,
+            color: isAssignedToCurrentUser ? 'rgb(120, 120, 120)' : 'rgb(82, 123,237)',
+          }}
+        >
+          {isAssignedToCurrentUser ? 'Yourself' : `${firstName || ''} ${lastName || ''}`}
+        </div>
+      </div>
+    </Grid.Column>
+  )
 }
 
 export default ReviewSectionRowAssigned

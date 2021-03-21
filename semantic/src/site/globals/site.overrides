@@ -9,3 +9,33 @@ p {
 .ui.basebody.container {
   background: rgb(248, 248, 248);
 }
+
+.ui.basic.buttons .button, .ui.basic.button  {
+                color: #003BFE
+}
+
+.sup .ui.tiny.progress {
+  margin-bottom: 4px !important;
+}
+
+.sup .ui.form .required.fields:not(.grouped) > .field > label:after {
+  color: rgb(248, 248, 248) !important;
+}
+
+
+/* Table Striping */
+.dreistripes .ui.grid:nth-child(2) {
+  background: rgb(248, 248, 248);
+}
+
+.dreistripes .ui.grid:nth-child(2) .dreistripedlabel {
+  background: white;
+}
+
+.dreistripes .ui.grid:nth-child(1) .dreistripedlabel {
+  background: rgb(248, 248, 248);
+}
+
+
+
+

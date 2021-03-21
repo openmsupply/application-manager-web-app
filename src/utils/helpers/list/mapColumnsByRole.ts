@@ -10,6 +10,7 @@ import {
   ReviewerActionCell,
   StageCell,
   StatusCell,
+  ApplicantActionCell,
 } from '../../../components/List/Cells'
 import { APPLICATION_COLUMNS, USER_ROLES } from '../../data'
 import COLUMNS_PER_ROLE from '../../data/columnsPerUserRole'
@@ -81,6 +82,11 @@ const allColumns: { [key in APPLICATION_COLUMNS]: ColumnDetails } = {
     headerName: '',
     sortName: 'outcome',
     ColumnComponent: ReviewerActionCell,
+  },
+  APPLICANT_ACTION: {
+    headerName: '',
+    sortName: 'outcome',
+    ColumnComponent: ApplicantActionCell,
   },
 }
 

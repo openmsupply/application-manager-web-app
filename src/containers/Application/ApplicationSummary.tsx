@@ -7,8 +7,10 @@ import { useRouter } from '../../utils/hooks/useRouter'
 import { Loading } from '../../components'
 import { SectionWrapper } from '../../components/Application'
 import strings from '../../utils/constants'
-import { Button, Header, Message, Container } from 'semantic-ui-react'
+import { Button, Header, Message, Container, Segment } from 'semantic-ui-react'
 import useQuerySectionActivation from '../../utils/hooks/useQuerySectionActivation'
+import { withRouter } from 'react-router'
+import { NONAME } from 'dns'
 
 const ApplicationSummary: React.FC<ApplicationProps> = ({
   structure: fullStructure,
@@ -69,24 +71,83 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
   if (!fullStructure) return <Loading />
   const { sections, responsesByCode, info } = fullStructure
   return (
-    <Container>
-      <Header as="h1" content={strings.TITLE_APPLICATION_SUBMIT} />
-      {Object.values(sections).map((section) => (
-        <SectionWrapper
-          key={`ApplicationSection_${section.details.id}`}
-          isActive={isSectionActive(section.details.code)}
-          toggleSection={toggleSection(section.details.code)}
-          section={section}
-          responsesByCode={responsesByCode as ResponsesByCode}
-          serial={info.serial}
-          isSummary
-          canEdit={info.current?.status === ApplicationStatus.Draft}
+    <Container style={{ paddingBottom: 60 }}>
+      <Header
+        textAlign="center"
+        style={{
+          color: 'rgb(150,150,150)',
+          letterSpacing: 1,
+          textTransform: 'uppercase',
+          fontWeight: 400,
+          fontSize: 24,
+          paddingTop: 25,
+        }}
+      >
+        {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
+      </Header>
+
+      <Segment
+        style={{
+          background: 'white',
+          border: 'none',
+          borderRadius: 0,
+          boxShadow: 'none',
+          paddingTop: 25,
+        }}
+      >
+        <Header
+          as="h1"
+          textAlign="center"
+          style={{ fontSize: 26, fontWeight: 900, letterSpacing: 1, marginBottom: 4 }}
+          content="Review and submit"
         />
-      ))}
+
+        <Header
+          textAlign="center"
+          style={{ marginTop: 4, color: '#4A4A4A', fontSize: 16, letterSpacing: 0.36 }}
+          as="h3"
+        >
+          Please review each section before submitting form
+        </Header>
+        {Object.values(sections).map((section) => (
+          <SectionWrapper
+            key={`ApplicationSection_${section.details.id}`}
+            isActive={isSectionActive(section.details.code)}
+            toggleSection={toggleSection(section.details.code)}
+            isChangeRequest={fullStructure.info.isChangeRequest}
+            section={section}
+            responsesByCode={responsesByCode as ResponsesByCode}
+            serial={info.serial}
+            isSummary
+            canEdit={info.current?.status === ApplicationStatus.Draft}
+          />
+        ))}
+
+        {/* <ModalWarning showModal={showModal} /> */}
+      </Segment>
+
       {info.current?.status === ApplicationStatus.Draft ? (
-        <Button content={strings.BUTTON_APPLICATION_SUBMIT} onClick={handleSubmit} />
+        <Container
+          style={{
+            background: 'white',
+            position: 'fixed',
+            bottom: 65,
+            left: 0,
+            right: 0,
+            boxShadow: '0px -6px 3px -3px #AAAAAA',
+            paddingTop: 10,
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              style={{ alignSelf: 'flex-end', marginRight: 30 }}
+              color="blue"
+              onClick={handleSubmit}
+              content={strings.BUTTON_SUMMARY}
+            />
+          </div>
+        </Container>
       ) : null}
-      {/* <ModalWarning showModal={showModal} /> */}
     </Container>
   )
 }
