@@ -3,6 +3,7 @@ import { Grid, Label } from 'semantic-ui-react'
 import getSimplifiedTimeDifference from '../../utils/dateAndTime/getSimplifiedTimeDifference'
 import { ReviewAction, ReviewSectionComponentProps } from '../../utils/types'
 import strings from '../../utils/constants'
+import { ReviewAssignmentStatus } from '../../utils/generated/graphql'
 
 const ReviewSectionRowLastActionDate: React.FC<ReviewSectionComponentProps> = ({
   action,

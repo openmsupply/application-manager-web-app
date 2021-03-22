@@ -24,15 +24,15 @@ p {
 
 
 /* Table Striping */
-.dreistripes .ui.grid:nth-child(2) {
+.dreistripes .ui.grid:nth-child(even) {
   background: rgb(248, 248, 248);
 }
 
-.dreistripes .ui.grid:nth-child(2) .dreistripedlabel {
+.dreistripes .ui.grid:nth-child(even) .dreistripedlabel {
   background: white;
 }
 
-.dreistripes .ui.grid:nth-child(1) .dreistripedlabel {
+.dreistripes .ui.grid:nth-child(odd) .dreistripedlabel {
   background: rgb(248, 248, 248);
 }
 
