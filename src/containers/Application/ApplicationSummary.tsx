@@ -7,7 +7,7 @@ import { useRouter } from '../../utils/hooks/useRouter'
 import { Loading } from '../../components'
 import { SectionWrapper } from '../../components/Application'
 import strings from '../../utils/constants'
-import { Button, Header, Message, Container, Segment } from 'semantic-ui-react'
+import { Button, Header, Message, Container, Segment, Icon } from 'semantic-ui-react'
 import useQuerySectionActivation from '../../utils/hooks/useQuerySectionActivation'
 
 const ApplicationSummary: React.FC<ApplicationProps> = ({
@@ -137,6 +137,18 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Icon
+              onClick={() =>
+                getFile(
+                  `http://localhost:8080/generatedoc?templateType=${fullStructure.info.typeCode}&submissionType=applicant`,
+                  fullStructure
+                )
+              }
+              size="big"
+              style={{ margin: 5 }}
+              name="file pdf outline"
+            />
+
             <Button
               style={{ alignSelf: 'flex-end', marginRight: 30 }}
               color="blue"
@@ -150,4 +162,43 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
   )
 }
 
+const getFile = (url: any, data: any) => {
+  let headers = new Headers()
+  headers.append('Content-Type', 'application/json')
+
+  fetch(url, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(data),
+  })
+    .then(async (res) => ({
+      filename: `${data.info.serial}.pdf`,
+      blob: await res.blob(),
+    }))
+    .then((resObj) => {
+      // It is necessary to create a new blob object with mime-type explicitly set for all browsers except Chrome, but it works for Chrome too.
+      const newBlob = new Blob([resObj.blob], { type: 'application/pdf' })
+
+      // MS Edge and IE don't allow using a blob object directly as link href, instead it is necessary to use msSaveOrOpenBlob
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob)
+      } else {
+        // For other browsers: create a link pointing to the ObjectURL containing the blob.
+        const objUrl = window.URL.createObjectURL(newBlob)
+
+        let link = document.createElement('a')
+        link.href = objUrl
+        link.download = resObj.filename
+        link.click()
+
+        // For Firefox it is necessary to delay revoking the ObjectURL.
+        setTimeout(() => {
+          window.URL.revokeObjectURL(objUrl)
+        }, 250)
+      }
+    })
+    .catch((error) => {
+      console.log('DOWNLOAD ERROR', error)
+    })
+}
 export default ApplicationSummary
