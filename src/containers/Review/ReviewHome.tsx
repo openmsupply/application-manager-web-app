@@ -137,7 +137,11 @@ const AssignmentSection: React.FC<AssignmentSectionProps> = ({
 
   assignable.forEach((assignment) => {
     if (assignableTo.find(({ reviewer }) => reviewer.id === assignment?.review?.id)) return
-    if (!assignment.templateSectionRestrictions?.includes(sectionCode)) return
+    if (
+      !assignment.templateSectionRestrictions?.includes(sectionCode) &&
+      assignment.templateSectionRestrictions !== null
+    )
+      return
 
     assignableTo.push(assignment)
   })

@@ -18,6 +18,9 @@ import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import strings from '../utils/constants'
 import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
 import messages from '../utils/messages'
+import config from '../config.json'
+
+const graphQLEndpoint = config.serverGraphQL
 
 const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props) => {
   const { element, isStrictPage, isChanged, currentResponse, currentReview, allResponses } = props
@@ -47,6 +50,8 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
   })
   const [evaluatedParameters, setEvaluatedParameters] = useState({})
 
+  console.log('currentUser', currentUser)
+
   // This value prevents the plugin component from rendering until parameters have been evaluated, otherwise React throws an error when trying to pass an Object in as a prop value
   const [parametersReady, setParametersReady] = useState(false)
 
@@ -61,6 +66,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperPropsNEW> = (props)
     evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
       objects: { responses: allResponses, currentUser },
       APIfetch: fetch,
+      graphQLConnection: { fetch, endpoint: graphQLEndpoint },
     }).then((result: ElementPluginParameters) => {
       setEvaluatedParameters(result)
       setParametersReady(true)
