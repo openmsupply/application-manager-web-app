@@ -10,8 +10,9 @@ import { UserRoles, TemplatePermissions } from '../../types'
  */
 
 const userRoles: UserRoles = {
-  applicant: [PermissionPolicyType.Apply],
   reviewer1: [PermissionPolicyType.Review],
+  applicant: [PermissionPolicyType.Apply],
+
   reviewer2: [PermissionPolicyType.Review, PermissionPolicyType.Assign],
   supervisor: [PermissionPolicyType.Assign],
   consolidator: [PermissionPolicyType.Assign], //, PermissionPolicyType.Consolidate]

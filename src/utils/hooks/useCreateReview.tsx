@@ -51,7 +51,9 @@ const useCreateReview = ({
 
   const createReviewFromStructure = async (structure: FullStructure) => {
     const elements = Object.values(structure?.elementsById || {})
-    const reviewableElements = elements.filter((element) => element?.isAssigned)
+    const reviewableElements = elements.filter(
+      (element) => element?.isAssigned && element?.response?.id && element?.response?.id != 0
+    )
 
     const applicationResponses = reviewableElements.map((element) => ({
       applicationResponseId: element.response?.id || 0,

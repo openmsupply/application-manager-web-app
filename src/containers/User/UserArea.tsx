@@ -37,26 +37,28 @@ const UserArea: React.FC = () => {
             <Icon name="home" />
             Dashboard
           </Link>
-          <div style={{ marginTop: 10, display: 'flex', alignItems: 'center' }}>
-            <Image
-              style={{ height: 60, width: 60, boxShadow: '0px 0px 3px rgb(240,240,240)' }}
-              src="/images/ss.png"
-              circular
-            />
-            <div
-              style={{
-                marginLeft: 20,
-                color: 'rgb(200,200,200)',
-                fontSize: 27,
-                fontWeight: 500,
-                letterSpacing: 1.2,
-                textTransform: 'uppercase',
-              }}
-            >
-              {currentUser?.organisation?.orgName || 'ABC COMPANY'}
-              <Icon size="small" name="angle down" />
+          {currentUser?.organisation?.orgName && (
+            <div style={{ marginTop: 10, display: 'flex', alignItems: 'center' }}>
+              <Image
+                style={{ height: 60, width: 60, boxShadow: '0px 0px 3px rgb(240,240,240)' }}
+                src="/images/ss.png"
+                circular
+              />
+              <div
+                style={{
+                  marginLeft: 20,
+                  color: 'rgb(200,200,200)',
+                  fontSize: 27,
+                  fontWeight: 500,
+                  letterSpacing: 1.2,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {currentUser?.organisation?.orgName || 'ABC COMPANY'}
+                <Icon size="small" name="angle down" />
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div>
           <Button

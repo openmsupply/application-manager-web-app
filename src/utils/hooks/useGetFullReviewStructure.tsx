@@ -33,10 +33,12 @@ const useGetFullReviewStructure = ({
   } = useUserState()
 
   // filter by all sections if sections are not supplied
-  const sectionIds =
-    filteredSectionIds ||
-    Object.values(fullApplicationStructure.sections).map((section) => section.details.id) ||
-    []
+  const sectionIds = Object.values(fullApplicationStructure.sections).map(
+    (section) => section.details.id
+  )
+  // filteredSectionIds ||
+  // Object.values(fullApplicationStructure.sections).map((section) => section.details.id) ||
+  // []
 
   const { data, error } = useGetReviewResponsesQuery({
     variables: {
