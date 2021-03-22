@@ -6,6 +6,7 @@ import strings from '../constants'
 import config from '../../../config.json'
 import { useUserState } from '../../../contexts/UserState'
 import { useRouter } from '../../../utils/hooks/useRouter'
+import PreviewModal from './PreviewModal'
 
 interface FileResponseData {
   uniqueId: string
@@ -46,7 +47,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   initialValue,
 }) => {
   const { label, description, fileCountLimit, fileExtensions, fileSizeLimit } = parameters
-
+  const [toggle, setToggle] = useState(false)
   // These values required for file upload query parameters:
   const {
     userState: { currentUser },
@@ -59,6 +60,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const [uploadedFiles, setUploadedFiles] = useState<FileInfo[]>(
     generateInitialFileData(initialValue?.files)
   )
+  const [newFile, setNewFile] = useState('')
   const fileInputRef = useRef<any>(null)
 
   useEffect(() => {
@@ -225,11 +227,23 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
                         </a>
                       </Grid.Row>
                       <Grid.Row centered style={{ boxShadow: 'none' }}>
-                        <p style={{ wordBreak: 'break-word' }}>
-                          <a href={host + fileData.fileUrl} target="_blank">
+                        <Button
+                          onClick={() => {
+                            setToggle(!toggle)
+                            setNewFile(host + fileData.fileUrl)
+                          }}
+                          style={{
+                            wordBreak: 'break-word',
+                            border: 'none',
+                            background: 'none',
+                            color: 'blue',
+                          }}
+                        >
+                          {filename}
+                          {/* <a href={host + fileData.fileUrl} target="_blank">
                             {filename}
-                          </a>
-                        </p>
+                          </a> */}
+                        </Button>
                       </Grid.Row>
                     </>
                   )}
@@ -239,6 +253,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
           })}
         </List>
       </Segment.Group>
+      <PreviewModal toggle={toggle} newFile={newFile} />
     </>
   )
   async function uploadFile(file: any) {
