@@ -297,6 +297,7 @@ const ReviewButton: React.FC<{
         reviewResponse={reviewResponse}
         toggle={toggleDecisionArea}
         summaryViewProps={summaryViewProps}
+        // applicationSerial={serial}
       />
     </>
   )

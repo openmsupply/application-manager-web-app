@@ -22908,6 +22908,43 @@ export type UpdateReviewResponseMutation = (
   )> }
 );
 
+export type GetAllAssociatedResponsesQueryVariables = Exact<{
+  responseId: Scalars['Int'];
+}>;
+
+
+export type GetAllAssociatedResponsesQuery = (
+  { __typename?: 'Query' }
+  & { applicationResponse?: Maybe<(
+    { __typename?: 'ApplicationResponse' }
+    & Pick<ApplicationResponse, 'id'>
+    & { templateElement?: Maybe<(
+      { __typename?: 'TemplateElement' }
+      & { applicationResponses: (
+        { __typename?: 'ApplicationResponsesConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'ApplicationResponse' }
+          & Pick<ApplicationResponse, 'value' | 'timeUpdated'>
+          & { reviewResponses: (
+            { __typename?: 'ReviewResponsesConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'ReviewResponse' }
+              & Pick<ReviewResponse, 'comment' | 'timeUpdated' | 'decision'>
+              & { review?: Maybe<(
+                { __typename?: 'Review' }
+                & { reviewer?: Maybe<(
+                  { __typename?: 'User' }
+                  & Pick<User, 'firstName' | 'lastName'>
+                )> }
+              )> }
+            )>> }
+          ) }
+        )>> }
+      ) }
+    )> }
+  )> }
+);
+
 export type GetAllResponsesQueryVariables = Exact<{
   serial: Scalars['String'];
 }>;
@@ -24078,6 +24115,60 @@ export function useUpdateReviewResponseMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateReviewResponseMutationHookResult = ReturnType<typeof useUpdateReviewResponseMutation>;
 export type UpdateReviewResponseMutationResult = Apollo.MutationResult<UpdateReviewResponseMutation>;
 export type UpdateReviewResponseMutationOptions = Apollo.BaseMutationOptions<UpdateReviewResponseMutation, UpdateReviewResponseMutationVariables>;
+export const GetAllAssociatedResponsesDocument = gql`
+    query getAllAssociatedResponses($responseId: Int!) {
+  applicationResponse(id: $responseId) {
+    id
+    templateElement {
+      applicationResponses {
+        nodes {
+          value
+          timeUpdated
+          reviewResponses {
+            nodes {
+              comment
+              timeUpdated
+              review {
+                reviewer {
+                  firstName
+                  lastName
+                }
+              }
+              decision
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllAssociatedResponsesQuery__
+ *
+ * To run a query within a React component, call `useGetAllAssociatedResponsesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllAssociatedResponsesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllAssociatedResponsesQuery({
+ *   variables: {
+ *      responseId: // value for 'responseId'
+ *   },
+ * });
+ */
+export function useGetAllAssociatedResponsesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllAssociatedResponsesQuery, GetAllAssociatedResponsesQueryVariables>) {
+        return Apollo.useQuery<GetAllAssociatedResponsesQuery, GetAllAssociatedResponsesQueryVariables>(GetAllAssociatedResponsesDocument, baseOptions);
+      }
+export function useGetAllAssociatedResponsesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllAssociatedResponsesQuery, GetAllAssociatedResponsesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllAssociatedResponsesQuery, GetAllAssociatedResponsesQueryVariables>(GetAllAssociatedResponsesDocument, baseOptions);
+        }
+export type GetAllAssociatedResponsesQueryHookResult = ReturnType<typeof useGetAllAssociatedResponsesQuery>;
+export type GetAllAssociatedResponsesLazyQueryHookResult = ReturnType<typeof useGetAllAssociatedResponsesLazyQuery>;
+export type GetAllAssociatedResponsesQueryResult = Apollo.QueryResult<GetAllAssociatedResponsesQuery, GetAllAssociatedResponsesQueryVariables>;
 export const GetAllResponsesDocument = gql`
     query getAllResponses($serial: String!) {
   applicationBySerial(serial: $serial) {
