@@ -4,6 +4,7 @@ import { Message, Segment, Header, Dropdown, Grid, Button, Icon, Label } from 's
 import { Loading } from '../../components'
 import { useUserState } from '../../contexts/UserState'
 import strings from '../../utils/constants'
+import { ReviewAssignmentStatus } from '../../utils/generated/graphql'
 import useAssignSectionToUser from '../../utils/hooks/useAssignSectionToUser'
 import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicationStructure'
 import { AssignmentDetailsNEW, FullStructure } from '../../utils/types'
@@ -51,7 +52,9 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
     assignments,
   }
 
-  const assignerAssignments = assignments.filter((assignment) => assignment.isAssigner)
+  const assignerAssignments = assignments.filter(
+    (assignment) => assignment.isAssigner || assignment.status === ReviewAssignmentStatus.Assigned
+  )
 
   console.log(assignerAssignments)
 
@@ -137,7 +140,13 @@ const AssignmentSection: React.FC<AssignmentSectionProps> = ({
     if (assignableTo.find(({ reviewer }) => reviewer.id === assignment?.review?.id)) return
     if (
       assignment.templateSectionRestrictions &&
-      !assignment.templateSectionRestrictions?.includes(sectionCode)
+      !assignment.templateSectionRestrictions?.includes(sectionCode) &&
+      !assignment.reviewQuestionAssignments.find((reviewQuestionAssignment) => {
+        console.log(reviewQuestionAssignment.templateElement)
+        console.log(reviewQuestionAssignment.templateElement?.section?.code)
+        console.log(reviewQuestionAssignment.templateElement?.section?.code === sectionCode)
+        return reviewQuestionAssignment.templateElement?.section?.code === sectionCode
+      })
     )
       return
 

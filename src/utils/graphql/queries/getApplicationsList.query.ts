@@ -35,6 +35,7 @@ export default gql`
         reviewAvailableForSelfAssignmentCount
         reviewDraftCount
         reviewChangeRequestCount
+        reviewPendingCount
         reviewSubmittedCount
         assignReviewerAssignedCount
         assignReviewersCount

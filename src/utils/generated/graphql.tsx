@@ -23061,7 +23061,7 @@ export type GetApplicationListQuery = (
     & Pick<ApplicationListShapesConnection, 'totalCount'>
     & { nodes: Array<Maybe<(
       { __typename?: 'ApplicationListShape' }
-      & Pick<ApplicationListShape, 'id' | 'serial' | 'name' | 'templateCode' | 'templateName' | 'applicant' | 'applicantFirstName' | 'applicantLastName' | 'applicantUsername' | 'orgName' | 'stage' | 'status' | 'outcome' | 'lastActiveDate' | 'reviewAssignedCount' | 'reviewAssignedNotStartedCount' | 'reviewAvailableForSelfAssignmentCount' | 'reviewDraftCount' | 'reviewChangeRequestCount' | 'reviewSubmittedCount' | 'assignReviewerAssignedCount' | 'assignReviewersCount' | 'assignCount' | 'isFullyAssignedLevel1'>
+      & Pick<ApplicationListShape, 'id' | 'serial' | 'name' | 'templateCode' | 'templateName' | 'applicant' | 'applicantFirstName' | 'applicantLastName' | 'applicantUsername' | 'orgName' | 'stage' | 'status' | 'outcome' | 'lastActiveDate' | 'reviewAssignedCount' | 'reviewAssignedNotStartedCount' | 'reviewAvailableForSelfAssignmentCount' | 'reviewDraftCount' | 'reviewChangeRequestCount' | 'reviewPendingCount' | 'reviewSubmittedCount' | 'assignReviewerAssignedCount' | 'assignReviewersCount' | 'assignCount' | 'isFullyAssignedLevel1'>
     )>>, pageInfo: (
       { __typename?: 'PageInfo' }
       & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage'>
@@ -24312,6 +24312,7 @@ export const GetApplicationListDocument = gql`
       reviewAvailableForSelfAssignmentCount
       reviewDraftCount
       reviewChangeRequestCount
+      reviewPendingCount
       reviewSubmittedCount
       assignReviewerAssignedCount
       assignReviewersCount
