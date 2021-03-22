@@ -17,6 +17,7 @@ const ReviewComment: React.FC<ReviewCommentProps> = ({ reviewDecisionId, isEdita
   const { data, error } = useGetReviewDecisionCommentQuery({
     variables: { reviewDecisionId: reviewDecisionId as number },
     skip: !reviewDecisionId,
+    fetchPolicy: 'network-only',
   })
   const [comment, setComment] = useState('')
 
