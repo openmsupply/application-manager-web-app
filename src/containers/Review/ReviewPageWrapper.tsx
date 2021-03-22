@@ -40,6 +40,7 @@ const ReviewPageWrapper: React.FC = () => {
     allResponses,
     reviewSections,
     reviewStatus,
+    refetch,
   } = useLoadReview({
     reviewId: Number(reviewId),
     serialNumber,
@@ -99,13 +100,14 @@ const ReviewPageWrapper: React.FC = () => {
     return invalidSection === undefined
   }
 
-  const submitResponseHandler = () => {
+  const submitResponseHandler = async () => {
     if (review) {
       const { id, comment, decision } = review
       if (decision === ReviewResponseDecision.Decline && comment === '')
         setReviewProblem(messages.REVIEW_RESUBMIT_COMMENT)
       else {
-        updateReviewResponse({ variables: { ...review } })
+        await updateReviewResponse({ variables: { ...review } })
+        refetch()
         setDecisionState(decisionAreaInitialState)
         if (invalidSection) validateReviewHandler()
       }
@@ -141,6 +143,7 @@ const ReviewPageWrapper: React.FC = () => {
             const assignedToYou = section.assigned?.id === userId
             return (
               <ReviewSection
+                refetch={refetch}
                 key={`Review_${code}`}
                 allResponses={allResponses}
                 assignedToYou={assignedToYou}

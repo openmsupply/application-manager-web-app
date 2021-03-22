@@ -10,14 +10,14 @@ interface NamedDateMap {
   [key: string]: string[]
 }
 
-export default function buildQueryFilters(filters: BasicStringObject) {
+export default function buildQueryFilters(filters: BasicStringObject, userId: number) {
   const graphQLfilter = Object.entries(filters).reduce((filterObj, [key, value]) => {
     if (!mapQueryToFilterField[key]) return filterObj
     return { ...filterObj, ...mapQueryToFilterField[key](value) }
   }, {})
   // If no filters, return a dummy filter to prevent GraphQL empty object error
-  if (Object.keys(graphQLfilter).length === 0) return { templateCode: { isNull: false } }
-  return graphQLfilter
+  if (Object.keys(graphQLfilter).length === 0) return { templateCode: { isNull: true } }
+  return { reviewerId: { equalTo: userId }, assignerId: { equalTo: userId }, ...graphQLfilter }
 }
 
 const doNumber = (code: string) => (value: string) => {

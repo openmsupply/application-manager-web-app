@@ -571,6 +571,8 @@ type TemplatesDetails = {
   permissions: Array<PermissionPolicyType>
   name: string
   code: string
+  templateCategory: any
+  templateFilterJoins: any
 }[]
 
 interface ValidateFunction {
@@ -604,7 +606,7 @@ interface RevalidateResult {
 
 interface UseGetApplicationProps {
   serialNumber: string
-  currentUser: User
+  currentUser?: User
   sectionCode?: string
   page?: number
   networkFetch?: boolean

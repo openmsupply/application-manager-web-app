@@ -10,12 +10,15 @@ const useListApplications = ({ sortBy, page, perPage, ...queryFilters }: BasicSt
   const [applications, setApplications] = useState<ApplicationListShape[]>([])
   const [applicationCount, setApplicationCount] = useState<number>(0)
   const [error, setError] = useState('')
+  const {
+    userState: { currentUser },
+  } = useUserState()
   const { updateQuery } = useRouter()
   const {
     userState: { currentUser },
   } = useUserState()
 
-  const filters = buildFilter(queryFilters)
+  const filters = buildFilter(queryFilters, currentUser?.userId || 0)
   const sortFields = sortBy ? buildSortFields(sortBy) : []
   const { paginationOffset, numberToFetch } = getPaginationVariables(
     page ? Number(page) : 1,

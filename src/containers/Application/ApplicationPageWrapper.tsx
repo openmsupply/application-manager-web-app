@@ -205,9 +205,7 @@ const ApplicationPageWrapper: React.FC = () => {
   ) : application && pageElements && allResponses && serialNumber && currentSection ? (
     <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
       <ModalWarning showModal={showModal} />
-      <Header textAlign="center">
-        {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
-      </Header>
+      <Header textAlign="center">{currentUser?.organisation?.orgName || ''}</Header>
       <Grid
         stackable
         style={{

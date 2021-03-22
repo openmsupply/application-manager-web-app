@@ -6,6 +6,7 @@ export default gql`
     code
     index
     title
+    sectionId
     elementTypePluginCode
     category
     visibilityCondition

@@ -41,7 +41,7 @@ const useLoadReview = ({ reviewId, serialNumber }: UseLoadReviewProps) => {
     currentUser: currentUser as UserType,
   })
 
-  const { data, error, loading } = useGetReviewQuery({
+  const { data, error, loading, refetch } = useGetReviewQuery({
     variables: {
       reviewId,
     },
@@ -101,6 +101,7 @@ const useLoadReview = ({ reviewId, serialNumber }: UseLoadReviewProps) => {
     reviewSections,
     reviewStatus,
     allResponses,
+    refetch,
     error: error
       ? (error.message as string)
       : statusError

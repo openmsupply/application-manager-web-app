@@ -24,7 +24,7 @@ const AppMenu: React.FC<AppMenuProps> = ({ templatePermissions }) => {
           as={Link}
           to={'/'}
         />
-        {templatePermissions.map(({ name, code, permissions }) => (
+        {/*templatePermissions.map(({ name, code, permissions }) => (
           <Menu.Item
             key={`app_menu_${name}`}
             content={<Header as="h5" inverted content={name} />}
@@ -32,7 +32,7 @@ const AppMenu: React.FC<AppMenuProps> = ({ templatePermissions }) => {
             as={Link}
             to={`/applications?type=${code}`}
           />
-        ))}
+        ))*/}
       </Menu>
     )
   )
