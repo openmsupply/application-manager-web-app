@@ -21,8 +21,10 @@
   "dependencies": {
     "@apollo/client": "^3.1.4",
     "@openmsupply/expression-evaluator": "^1.5.2",
+    "@types/d3": "^6.3.0",
     "@types/deep-equal": "^1.0.1",
     "apollo3-cache-persist": "^0.8.0",
+    "d3": "^6.6.0",
     "deep-equal": "^2.0.5",
     "graphql": "^15.3.0",
     "luxon": "^1.25.0",

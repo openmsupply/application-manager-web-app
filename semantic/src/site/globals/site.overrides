@@ -1,3 +1,18 @@
-/*******************************
-         Site Overrides
-*******************************/
+
+.links line{
+  stroke: grey;
+}
+
+.flag {
+  background-color: rgb(230,230,230);
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  
+}
+
+.tooltip {
+  position: absolute;
+  background-color: lightgrey;
+  padding: 10px;
+}
