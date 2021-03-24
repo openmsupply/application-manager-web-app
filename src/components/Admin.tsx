@@ -13,7 +13,7 @@ import { ConsolidatorCell } from './List/Cells'
 
 const Admin: React.FC = () => {
   const ref = useRef(null)
-  const { data } = useGetPermissionStructureQuery()
+  const { data } = useGetPermissionStructureQuery({ fetchPolicy: 'network-only' })
 
   useEffect(() => {
     if (!data?.templates?.nodes) return
@@ -278,7 +278,7 @@ const transformData = (inData: Template[]) => {
         source: id,
         type,
         value: templatePermission,
-        distance: 1,
+        distance: 2,
       })
 
       growLevel(templatePermission, id)
@@ -341,6 +341,7 @@ const transformData = (inData: Template[]) => {
     growSectionAllRestrictions(templatePermission, id)
     growSectionRestrictions(templatePermission, id)
     growRole(templatePermission, id)
+    growCanSelfAssign(templatePermission, id)
     growPermissionName(templatePermission.permissionName, id)
 
     // growPermissionName =
@@ -389,7 +390,34 @@ const transformData = (inData: Template[]) => {
       target: id,
       type,
       value,
-      distance: 100,
+      distance: 50,
+      // distance: 10,
+    })
+  }
+
+  const growCanSelfAssign = (templatePermission: TemplatePermission, parentId: string) => {
+    const type = 'role'
+    const canSelfAssign = templatePermission?.restrictions?.canSelfAssign
+
+    if (!canSelfAssign) return
+
+    const id = parentId + type
+
+    const value = templatePermission
+
+    nodes.push({
+      id,
+      type,
+      value,
+      text: `SelfAssign`,
+    })
+
+    links.push({
+      source: parentId,
+      target: id,
+      type,
+      value,
+      distance: 50,
       // distance: 10,
     })
   }
