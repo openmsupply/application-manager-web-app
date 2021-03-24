@@ -20,6 +20,13 @@ export default gql`
                 name
                 type
               }
+              permissionJoins {
+                nodes {
+                  user {
+                    username
+                  }
+                }
+              }
             }
           }
         }
