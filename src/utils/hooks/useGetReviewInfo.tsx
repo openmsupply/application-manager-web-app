@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react'
-import { AssignmentDetailsNEW } from '../types'
+import {
+  AssignmentDetailsNEW,
+  AssignmentStructure,
+  AssignmentStructureLevel,
+  GraphQLUser,
+  AssignmentStructureLevels,
+  AssignmentStructureSections,
+  FullStructure,
+} from '../types'
 import {
   Review,
   ReviewAssignment,
+  ReviewAssignmentStatus,
   ReviewQuestionAssignment,
   ReviewStatus,
   useGetReviewInfoQuery,
@@ -13,11 +22,12 @@ import { useUserState } from '../../contexts/UserState'
 
 const MAX_REFETCH = 10
 interface UseGetReviewInfoProps {
+  structure: FullStructure
   applicationId: number
   userId: number
 }
 
-const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
+const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps, structure) => {
   const [assignments, setAssignments] = useState<AssignmentDetailsNEW[]>()
   const [isFetching, setIsFetching] = useState(true)
   const [fetchingError, setFetchingError] = useState('')
@@ -114,6 +124,9 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
         level: level || 1,
         isCurrentUserReviewer: reviewer?.id === (currentUser?.userId as number),
         isCurrentUserAssigner: reviewAssignmentAssignerJoins.nodes.length > 0,
+        assigners: reviewAssignmentAssignerJoins?.nodes?.map(
+          (node) => node?.assigner as GraphQLUser
+        ),
         assignableSectionRestrictions: templateSectionRestrictions || [],
         totalAssignedQuestions,
         reviewQuestionAssignments,
@@ -133,5 +146,124 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
     assignments,
   }
 }
+
+const constructAssignmentInfo = (
+  reviewAssignments: AssignmentDetailsNEW[],
+  structure: FullStructure
+) => {
+  const result: AssignmentStructure = {}
+  const destinctStages: { [key: string]: boolean } = {}
+  reviewAssignments.forEach(
+    (reviewAssignment) => (destinctStages[reviewAssignment.stage.id] = true)
+  )
+
+  const reviewAssignmentsForStage = (stageId: string) =>
+    reviewAssignments.filter((reviewAssignment) => Number(stageId) === reviewAssignment.stage.id)
+
+  Object.keys(destinctStages).forEach(
+    (stageId) =>
+      (result[stageId] = constructAssignmentInfoForStage(
+        reviewAssignmentsForStage(stageId),
+        structure
+      ))
+  )
+
+  return result
+}
+
+const constructAssignmentInfoForStage = (
+  reviewAssignments: AssignmentDetailsNEW[],
+  structure: FullStructure
+) => {
+  const sections: AssignmentStructureSections = {}
+  Object.values(structure.sections).forEach(
+    (section) =>
+      (sections[section.details.code] = constructAssignmentInfoForSection(
+        reviewAssignments,
+        section.details.code
+      ))
+  )
+  return { ...sections }
+}
+
+const constructAssignmentInfoForSection = (
+  reviewAssignments: AssignmentDetailsNEW[],
+  sectionCode: string
+) => {
+  const levels: AssignmentStructureLevels = {}
+
+  const distinctLevels: { [key: string]: boolean } = {}
+  reviewAssignments.forEach((reviewAssignment) => (distinctLevels[reviewAssignment.level] = true))
+
+  const reviewAssignmentsForLevel = (level: string) =>
+    reviewAssignments.filter((reviewAssignment) => Number(level) === reviewAssignment.level)
+  Object.keys(distinctLevels).forEach(
+    (level) =>
+      (levels[level] = constructAssignmentInfoForLevel(
+        reviewAssignmentsForLevel(level),
+        sectionCode
+      ))
+  )
+
+  return { ...levels }
+}
+
+const constructAssignmentInfoForLevel = (
+  reviewAssignments: AssignmentDetailsNEW[],
+  sectionCode: string
+) => {
+  const assigners: { [key: string]: GraphQLUser } = {}
+  const assignedReviewers: { [key: string]: GraphQLUser } = {}
+  const availableReviewers: { [key: string]: GraphQLUser } = {}
+  const selfAssignableReviewers: { [key: string]: GraphQLUser } = {}
+
+  reviewAssignments.forEach((reviewAssignment) => {
+    reviewAssignment.assigners.forEach((assigner) => (assigners[assigner.id] = assigner))
+
+    const reviewAssignmentsForSection = reviewAssignments.filter(
+      (reviewAssignment) =>
+        reviewAssignment.assignableSectionRestrictions.length === 0 ||
+        reviewAssignment.assignableSectionRestrictions.includes(sectionCode)
+    )
+    reviewAssignmentsForSection.forEach(
+      ({ reviewer }) => (availableReviewers[reviewer.id] = reviewer)
+    )
+
+    const reviewAssignmentsAssignedForSection = reviewAssignments.filter((reviewAssignment) =>
+      reviewAssignment.reviewQuestionAssignments.some(
+        ({ templateElement }) => templateElement?.section?.code === sectionCode
+      )
+    )
+    reviewAssignmentsAssignedForSection.forEach(
+      ({ reviewer }) => (assignedReviewers[reviewer.id] = reviewer)
+    )
+  })
+
+  return {
+    assigners: Object.values(assigners),
+
+    assignedReviewers: Object.values(assignedReviewers),
+    availableReviewers: Object.values(assignedReviewers),
+    selfAssignableReviewers: Object.values(selfAssignableReviewers),
+  }
+}
+
+//   //  return {sectionCode: }
+// }
+
+// const constructAssignmentInfoForLevel = (reviewAssignments: AssignmentDetailsNEW[], structure: FullStructure) => {
+// interface AssignmentInfo {
+//   stage_id: number
+//   sections: {
+//     [sectionCode: string]: {
+//       [levelNumber: string]: {
+//         assigners: [GraphQLUser]
+//         assignedReviewers: [GraphQLUser]
+//         availableReviewers: [GraphQLUser]
+//         selfAssignableReviewers: [GraphQLUser]
+//       }
+//     }
+//   }
+// }
 
 export default useGetReviewInfo

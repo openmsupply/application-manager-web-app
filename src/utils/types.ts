@@ -31,6 +31,10 @@ export {
   ApplicationStages, // TODO: Remove this
   AssignmentDetails,
   AssignmentDetailsNEW,
+  AssignmentStructure,
+  AssignmentStructureLevel,
+  AssignmentStructureSections,
+  AssignmentStructureLevels,
   CellProps,
   ChangeRequestsProgress,
   ColumnDetails,
@@ -51,6 +55,7 @@ export {
   ElementsActivityState,
   EvaluatorParameters,
   FullStructure,
+  GraphQLUser,
   GroupedReviewResponses,
   IGraphQLConnection,
   LooseString,
@@ -162,10 +167,27 @@ interface AssignmentDetailsNEW {
   totalAssignedQuestions: number
   stage: ApplicationStage
   reviewQuestionAssignments: ReviewQuestionAssignment[]
-  isCurrentUserAssigner: boolean
+  assigners: GraphQLUser[]
   assignableSectionRestrictions: (string | null)[]
   isCurrentUserReviewer: boolean
 }
+
+interface AssignmentStructure {
+  [stageId: string]: {
+    [sectionCode: string]: {
+      [levelNumber: string]: {
+        assigners: GraphQLUser[]
+        assignedReviewers: GraphQLUser[]
+        availableReviewers: GraphQLUser[]
+        selfAssignableReviewers: GraphQLUser[]
+      }
+    }
+  }
+}
+
+type AssignmentStructureSections = AssignmentStructure['stageId']
+type AssignmentStructureLevels = AssignmentStructureSections['sectionCode']
+type AssignmentStructureLevel = AssignmentStructureLevels['levelNumber']
 
 interface BasicStringObject {
   [key: string]: string

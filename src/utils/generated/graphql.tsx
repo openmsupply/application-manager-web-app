@@ -78,6 +78,8 @@ export type Query = Node & {
   reviewDecisions?: Maybe<ReviewDecisionsConnection>;
   /** Reads and enables pagination through a set of `ReviewQuestionAssignment`. */
   reviewQuestionAssignments?: Maybe<ReviewQuestionAssignmentsConnection>;
+  /** Reads and enables pagination through a set of `ReviewQuestionAssignmentFlattened`. */
+  reviewQuestionAssignmentFlatteneds?: Maybe<ReviewQuestionAssignmentFlattenedsConnection>;
   /** Reads and enables pagination through a set of `ReviewResponse`. */
   reviewResponses?: Maybe<ReviewResponsesConnection>;
   /** Reads and enables pagination through a set of `ReviewStatusHistory`. */
@@ -526,6 +528,19 @@ export type QueryReviewQuestionAssignmentsArgs = {
   orderBy?: Maybe<Array<ReviewQuestionAssignmentsOrderBy>>;
   condition?: Maybe<ReviewQuestionAssignmentCondition>;
   filter?: Maybe<ReviewQuestionAssignmentFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryReviewQuestionAssignmentFlattenedsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<ReviewQuestionAssignmentFlattenedsOrderBy>>;
+  condition?: Maybe<ReviewQuestionAssignmentFlattenedCondition>;
+  filter?: Maybe<ReviewQuestionAssignmentFlattenedFilter>;
 };
 
 
@@ -1687,6 +1702,7 @@ export enum Trigger {
   OnReviewAssign = 'ON_REVIEW_ASSIGN',
   OnReviewSelfAssign = 'ON_REVIEW_SELF_ASSIGN',
   OnApprovalSubmit = 'ON_APPROVAL_SUBMIT',
+  DevTest = 'DEV_TEST',
   OnScheduleTime = 'ON_SCHEDULE_TIME',
   Processing = 'PROCESSING',
   Error = 'ERROR'
@@ -2655,8 +2671,6 @@ export type ReviewAssignmentAssignerJoinFilter = {
   reviewAssignmentId?: Maybe<IntFilter>;
   /** Filter by the object’s `assigner` relation. */
   assigner?: Maybe<UserFilter>;
-  /** A related `assigner` exists. */
-  assignerExists?: Maybe<Scalars['Boolean']>;
   /** Filter by the object’s `organisation` relation. */
   organisation?: Maybe<OrganisationFilter>;
   /** A related `organisation` exists. */
@@ -4874,7 +4888,7 @@ export type ReviewAssignmentAssignerJoin = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
   id: Scalars['Int'];
-  assignerId?: Maybe<Scalars['Int']>;
+  assignerId: Scalars['Int'];
   organisationId?: Maybe<Scalars['Int']>;
   reviewAssignmentId?: Maybe<Scalars['Int']>;
   /** Reads a single `User` that is related to this `ReviewAssignmentAssignerJoin`. */
@@ -5172,6 +5186,8 @@ export type ReviewQuestionAssignment = Node & {
   reviewAssignment?: Maybe<ReviewAssignment>;
   /** Reads and enables pagination through a set of `ReviewResponse`. */
   reviewResponses: ReviewResponsesConnection;
+  /** Reads and enables pagination through a set of `User`. */
+  assignedReviewers: UsersConnection;
 };
 
 
@@ -5184,6 +5200,16 @@ export type ReviewQuestionAssignmentReviewResponsesArgs = {
   orderBy?: Maybe<Array<ReviewResponsesOrderBy>>;
   condition?: Maybe<ReviewResponseCondition>;
   filter?: Maybe<ReviewResponseFilter>;
+};
+
+
+export type ReviewQuestionAssignmentAssignedReviewersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  filter?: Maybe<UserFilter>;
 };
 
 export type TemplateElement = Node & {
@@ -5778,6 +5804,28 @@ export type ReviewQuestionAssignmentsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `ReviewQuestionAssignment` at the end of the edge. */
   node?: Maybe<ReviewQuestionAssignment>;
+};
+
+/** A connection to a list of `User` values. */
+export type UsersConnection = {
+  __typename?: 'UsersConnection';
+  /** A list of `User` objects. */
+  nodes: Array<Maybe<User>>;
+  /** A list of edges which contains the `User` and cursor to aid in pagination. */
+  edges: Array<UsersEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `User` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** A `User` edge in the connection. */
+export type UsersEdge = {
+  __typename?: 'UsersEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `User` at the end of the edge. */
+  node?: Maybe<User>;
 };
 
 /** A `ReviewResponse` edge in the connection. */
@@ -7170,6 +7218,100 @@ export type PermissionsAllsEdge = {
   node?: Maybe<PermissionsAll>;
 };
 
+/** Methods to use when ordering `ReviewQuestionAssignmentFlattened`. */
+export enum ReviewQuestionAssignmentFlattenedsOrderBy {
+  Natural = 'NATURAL',
+  ReviewerIdAsc = 'REVIEWER_ID_ASC',
+  ReviewerIdDesc = 'REVIEWER_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  ApplicationIdAsc = 'APPLICATION_ID_ASC',
+  ApplicationIdDesc = 'APPLICATION_ID_DESC',
+  StageNumberAsc = 'STAGE_NUMBER_ASC',
+  StageNumberDesc = 'STAGE_NUMBER_DESC',
+  StageIdAsc = 'STAGE_ID_ASC',
+  StageIdDesc = 'STAGE_ID_DESC',
+  LevelNumberAsc = 'LEVEL_NUMBER_ASC',
+  LevelNumberDesc = 'LEVEL_NUMBER_DESC',
+  TemplateElementIdAsc = 'TEMPLATE_ELEMENT_ID_ASC',
+  TemplateElementIdDesc = 'TEMPLATE_ELEMENT_ID_DESC'
+}
+
+/** A condition to be used against `ReviewQuestionAssignmentFlattened` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type ReviewQuestionAssignmentFlattenedCondition = {
+  /** Checks for equality with the object’s `reviewerId` field. */
+  reviewerId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: Maybe<ReviewAssignmentStatus>;
+  /** Checks for equality with the object’s `applicationId` field. */
+  applicationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `stageNumber` field. */
+  stageNumber?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `stageId` field. */
+  stageId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `levelNumber` field. */
+  levelNumber?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateElementId` field. */
+  templateElementId?: Maybe<Scalars['Int']>;
+};
+
+/** A filter to be used against `ReviewQuestionAssignmentFlattened` object types. All fields are combined with a logical ‘and.’ */
+export type ReviewQuestionAssignmentFlattenedFilter = {
+  /** Filter by the object’s `reviewerId` field. */
+  reviewerId?: Maybe<IntFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: Maybe<ReviewAssignmentStatusFilter>;
+  /** Filter by the object’s `applicationId` field. */
+  applicationId?: Maybe<IntFilter>;
+  /** Filter by the object’s `stageNumber` field. */
+  stageNumber?: Maybe<IntFilter>;
+  /** Filter by the object’s `stageId` field. */
+  stageId?: Maybe<IntFilter>;
+  /** Filter by the object’s `levelNumber` field. */
+  levelNumber?: Maybe<IntFilter>;
+  /** Filter by the object’s `templateElementId` field. */
+  templateElementId?: Maybe<IntFilter>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<ReviewQuestionAssignmentFlattenedFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<ReviewQuestionAssignmentFlattenedFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<ReviewQuestionAssignmentFlattenedFilter>;
+};
+
+/** A connection to a list of `ReviewQuestionAssignmentFlattened` values. */
+export type ReviewQuestionAssignmentFlattenedsConnection = {
+  __typename?: 'ReviewQuestionAssignmentFlattenedsConnection';
+  /** A list of `ReviewQuestionAssignmentFlattened` objects. */
+  nodes: Array<Maybe<ReviewQuestionAssignmentFlattened>>;
+  /** A list of edges which contains the `ReviewQuestionAssignmentFlattened` and cursor to aid in pagination. */
+  edges: Array<ReviewQuestionAssignmentFlattenedsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `ReviewQuestionAssignmentFlattened` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type ReviewQuestionAssignmentFlattened = {
+  __typename?: 'ReviewQuestionAssignmentFlattened';
+  reviewerId?: Maybe<Scalars['Int']>;
+  status?: Maybe<ReviewAssignmentStatus>;
+  applicationId?: Maybe<Scalars['Int']>;
+  stageNumber?: Maybe<Scalars['Int']>;
+  stageId?: Maybe<Scalars['Int']>;
+  levelNumber?: Maybe<Scalars['Int']>;
+  templateElementId?: Maybe<Scalars['Int']>;
+};
+
+/** A `ReviewQuestionAssignmentFlattened` edge in the connection. */
+export type ReviewQuestionAssignmentFlattenedsEdge = {
+  __typename?: 'ReviewQuestionAssignmentFlattenedsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `ReviewQuestionAssignmentFlattened` at the end of the edge. */
+  node?: Maybe<ReviewQuestionAssignmentFlattened>;
+};
+
 /** Methods to use when ordering `Template`. */
 export enum TemplatesOrderBy {
   Natural = 'NATURAL',
@@ -7333,28 +7475,6 @@ export type UserCondition = {
   dateOfBirth?: Maybe<Scalars['Date']>;
   /** Checks for equality with the object’s `passwordHash` field. */
   passwordHash?: Maybe<Scalars['String']>;
-};
-
-/** A connection to a list of `User` values. */
-export type UsersConnection = {
-  __typename?: 'UsersConnection';
-  /** A list of `User` objects. */
-  nodes: Array<Maybe<User>>;
-  /** A list of edges which contains the `User` and cursor to aid in pagination. */
-  edges: Array<UsersEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `User` you could get from the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** A `User` edge in the connection. */
-export type UsersEdge = {
-  __typename?: 'UsersEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']>;
-  /** The `User` at the end of the edge. */
-  node?: Maybe<User>;
 };
 
 /** Methods to use when ordering `UserOrgJoin`. */
@@ -21266,6 +21386,38 @@ export type UpdateReviewMutation = (
   )> }
 );
 
+export type UpdateReviewAssignmentMutationVariables = Exact<{
+  assignmentId: Scalars['Int'];
+  assignmentPatch: ReviewAssignmentPatch;
+}>;
+
+
+export type UpdateReviewAssignmentMutation = (
+  { __typename?: 'Mutation' }
+  & { updateReviewAssignment?: Maybe<(
+    { __typename?: 'UpdateReviewAssignmentPayload' }
+    & { reviewAssignment?: Maybe<(
+      { __typename?: 'ReviewAssignment' }
+      & Pick<ReviewAssignment, 'id' | 'status' | 'timeCreated'>
+      & { reviewQuestionAssignments: (
+        { __typename?: 'ReviewQuestionAssignmentsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'ReviewQuestionAssignment' }
+          & Pick<ReviewQuestionAssignment, 'id' | 'templateElementId'>
+          & { templateElement?: Maybe<(
+            { __typename?: 'TemplateElement' }
+            & Pick<TemplateElement, 'id'>
+            & { section?: Maybe<(
+              { __typename?: 'TemplateSection' }
+              & Pick<TemplateSection, 'id' | 'code'>
+            )> }
+          )> }
+        )>> }
+      ) }
+    )> }
+  )> }
+);
+
 export type UpdateReviewDecisionCommentMutationVariables = Exact<{
   reviewDecisionId: Scalars['Int'];
   comment: Scalars['String'];
@@ -21604,6 +21756,7 @@ export type GetReviewDecisionCommentQuery = (
 
 export type GetReviewInfoQueryVariables = Exact<{
   applicationId?: Maybe<Scalars['Int']>;
+  assignerId: Scalars['Int'];
 }>;
 
 
@@ -21613,7 +21766,7 @@ export type GetReviewInfoQuery = (
     { __typename?: 'ReviewAssignmentsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'ReviewAssignment' }
-      & Pick<ReviewAssignment, 'id' | 'level' | 'status' | 'timeCreated' | 'reviewerId' | 'isLastLevel'>
+      & Pick<ReviewAssignment, 'id' | 'level' | 'status' | 'timeCreated' | 'reviewerId' | 'isLastLevel' | 'templateSectionRestrictions'>
       & { reviewer?: Maybe<(
         { __typename?: 'User' }
         & Pick<User, 'id' | 'firstName' | 'lastName'>
@@ -21638,6 +21791,30 @@ export type GetReviewInfoQuery = (
         & { nodes: Array<Maybe<(
           { __typename?: 'ReviewQuestionAssignment' }
           & Pick<ReviewQuestionAssignment, 'id' | 'templateElementId'>
+          & { assignedReviewers: (
+            { __typename?: 'UsersConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'User' }
+              & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>
+            )>> }
+          ), templateElement?: Maybe<(
+            { __typename?: 'TemplateElement' }
+            & Pick<TemplateElement, 'id'>
+            & { section?: Maybe<(
+              { __typename?: 'TemplateSection' }
+              & Pick<TemplateSection, 'id' | 'code'>
+            )> }
+          )> }
+        )>> }
+      ), reviewAssignmentAssignerJoins: (
+        { __typename?: 'ReviewAssignmentAssignerJoinsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'ReviewAssignmentAssignerJoin' }
+          & Pick<ReviewAssignmentAssignerJoin, 'id'>
+          & { assigner?: Maybe<(
+            { __typename?: 'User' }
+            & Pick<User, 'firstName' | 'lastName' | 'username' | 'id'>
+          )> }
         )>> }
       ) }
     )>> }
@@ -22204,6 +22381,56 @@ export function useUpdateReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateReviewMutationHookResult = ReturnType<typeof useUpdateReviewMutation>;
 export type UpdateReviewMutationResult = Apollo.MutationResult<UpdateReviewMutation>;
 export type UpdateReviewMutationOptions = Apollo.BaseMutationOptions<UpdateReviewMutation, UpdateReviewMutationVariables>;
+export const UpdateReviewAssignmentDocument = gql`
+    mutation updateReviewAssignment($assignmentId: Int!, $assignmentPatch: ReviewAssignmentPatch!) {
+  updateReviewAssignment(input: {id: $assignmentId, patch: $assignmentPatch}) {
+    reviewAssignment {
+      id
+      status
+      timeCreated
+      reviewQuestionAssignments {
+        nodes {
+          id
+          templateElementId
+          templateElement {
+            id
+            section {
+              id
+              code
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type UpdateReviewAssignmentMutationFn = Apollo.MutationFunction<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>;
+
+/**
+ * __useUpdateReviewAssignmentMutation__
+ *
+ * To run a mutation, you first call `useUpdateReviewAssignmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateReviewAssignmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateReviewAssignmentMutation, { data, loading, error }] = useUpdateReviewAssignmentMutation({
+ *   variables: {
+ *      assignmentId: // value for 'assignmentId'
+ *      assignmentPatch: // value for 'assignmentPatch'
+ *   },
+ * });
+ */
+export function useUpdateReviewAssignmentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>) {
+        return Apollo.useMutation<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>(UpdateReviewAssignmentDocument, baseOptions);
+      }
+export type UpdateReviewAssignmentMutationHookResult = ReturnType<typeof useUpdateReviewAssignmentMutation>;
+export type UpdateReviewAssignmentMutationResult = Apollo.MutationResult<UpdateReviewAssignmentMutation>;
+export type UpdateReviewAssignmentMutationOptions = Apollo.BaseMutationOptions<UpdateReviewAssignmentMutation, UpdateReviewAssignmentMutationVariables>;
 export const UpdateReviewDecisionCommentDocument = gql`
     mutation updateReviewDecisionComment($reviewDecisionId: Int!, $comment: String!) {
   updateReviewDecision(input: {id: $reviewDecisionId, patch: {comment: $comment}}) {
@@ -22772,7 +22999,7 @@ export type GetReviewDecisionCommentQueryHookResult = ReturnType<typeof useGetRe
 export type GetReviewDecisionCommentLazyQueryHookResult = ReturnType<typeof useGetReviewDecisionCommentLazyQuery>;
 export type GetReviewDecisionCommentQueryResult = Apollo.QueryResult<GetReviewDecisionCommentQuery, GetReviewDecisionCommentQueryVariables>;
 export const GetReviewInfoDocument = gql`
-    query getReviewInfo($applicationId: Int) {
+    query getReviewInfo($applicationId: Int, $assignerId: Int!) {
   reviewAssignments(condition: {applicationId: $applicationId}, orderBy: TIME_CREATED_DESC) {
     nodes {
       id
@@ -22782,6 +23009,7 @@ export const GetReviewInfoDocument = gql`
       level
       reviewerId
       isLastLevel
+      templateSectionRestrictions
       reviewer {
         id
         firstName
@@ -22810,6 +23038,32 @@ export const GetReviewInfoDocument = gql`
         nodes {
           id
           templateElementId
+          assignedReviewers {
+            nodes {
+              id
+              username
+              firstName
+              lastName
+            }
+          }
+          templateElement {
+            id
+            section {
+              id
+              code
+            }
+          }
+        }
+      }
+      reviewAssignmentAssignerJoins(filter: {assignerId: {equalTo: $assignerId}}) {
+        nodes {
+          id
+          assigner {
+            firstName
+            lastName
+            username
+            id
+          }
         }
       }
     }
@@ -22830,6 +23084,7 @@ export const GetReviewInfoDocument = gql`
  * const { data, loading, error } = useGetReviewInfoQuery({
  *   variables: {
  *      applicationId: // value for 'applicationId'
+ *      assignerId: // value for 'assignerId'
  *   },
  * });
  */

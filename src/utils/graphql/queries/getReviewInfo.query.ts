@@ -41,6 +41,14 @@ export default gql`
           nodes {
             id
             templateElementId
+            assignedReviewers {
+              nodes {
+                id
+                username
+                firstName
+                lastName
+              }
+            }
             templateElement {
               id
               section {
@@ -52,9 +60,11 @@ export default gql`
         }
         reviewAssignmentAssignerJoins(filter: { assignerId: { equalTo: $assignerId } }) {
           nodes {
+            id
             assigner {
               firstName
               lastName
+              username
               id
             }
           }
