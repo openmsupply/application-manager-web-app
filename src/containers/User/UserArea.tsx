@@ -12,6 +12,11 @@ const UserArea: React.FC = () => {
     userState: { currentUser },
   } = useUserState()
 
+  const x = useUserState()
+  console.log('User State', x)
+
+  console.log('User', currentUser)
+
   return (
     <Container id="user-area">
       <div id="user-area-left">
