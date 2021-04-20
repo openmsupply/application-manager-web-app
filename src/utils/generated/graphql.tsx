@@ -22384,6 +22384,44 @@ export type GetApplicationListQuery = (
   )> }
 );
 
+export type GetPermissionStructureQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPermissionStructureQuery = (
+  { __typename?: 'Query' }
+  & { templates?: Maybe<(
+    { __typename?: 'TemplatesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'id' | 'code'>
+      & { templatePermissions: (
+        { __typename?: 'TemplatePermissionsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplatePermission' }
+          & Pick<TemplatePermission, 'id' | 'restrictions' | 'stageNumber' | 'levelNumber' | 'templateId'>
+          & { permissionName?: Maybe<(
+            { __typename?: 'PermissionName' }
+            & Pick<PermissionName, 'id' | 'name'>
+            & { permissionPolicy?: Maybe<(
+              { __typename?: 'PermissionPolicy' }
+              & Pick<PermissionPolicy, 'id' | 'name' | 'type'>
+            )>, permissionJoins: (
+              { __typename?: 'PermissionJoinsConnection' }
+              & { nodes: Array<Maybe<(
+                { __typename?: 'PermissionJoin' }
+                & { user?: Maybe<(
+                  { __typename?: 'User' }
+                  & Pick<User, 'username'>
+                )> }
+              )>> }
+            ) }
+          )> }
+        )>> }
+      ) }
+    )>> }
+  )> }
+);
+
 export type GetReviewDecisionCommentQueryVariables = Exact<{
   reviewDecisionId: Scalars['Int'];
 }>;
@@ -23265,6 +23303,66 @@ export function useGetApplicationListLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetApplicationListQueryHookResult = ReturnType<typeof useGetApplicationListQuery>;
 export type GetApplicationListLazyQueryHookResult = ReturnType<typeof useGetApplicationListLazyQuery>;
 export type GetApplicationListQueryResult = Apollo.QueryResult<GetApplicationListQuery, GetApplicationListQueryVariables>;
+export const GetPermissionStructureDocument = gql`
+    query getPermissionStructure {
+  templates {
+    nodes {
+      id
+      templatePermissions {
+        nodes {
+          id
+          restrictions
+          stageNumber
+          levelNumber
+          templateId
+          permissionName {
+            id
+            name
+            permissionPolicy {
+              id
+              name
+              type
+            }
+            permissionJoins {
+              nodes {
+                user {
+                  username
+                }
+              }
+            }
+          }
+        }
+      }
+      code
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPermissionStructureQuery__
+ *
+ * To run a query within a React component, call `useGetPermissionStructureQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPermissionStructureQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPermissionStructureQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPermissionStructureQuery(baseOptions?: Apollo.QueryHookOptions<GetPermissionStructureQuery, GetPermissionStructureQueryVariables>) {
+        return Apollo.useQuery<GetPermissionStructureQuery, GetPermissionStructureQueryVariables>(GetPermissionStructureDocument, baseOptions);
+      }
+export function useGetPermissionStructureLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPermissionStructureQuery, GetPermissionStructureQueryVariables>) {
+          return Apollo.useLazyQuery<GetPermissionStructureQuery, GetPermissionStructureQueryVariables>(GetPermissionStructureDocument, baseOptions);
+        }
+export type GetPermissionStructureQueryHookResult = ReturnType<typeof useGetPermissionStructureQuery>;
+export type GetPermissionStructureLazyQueryHookResult = ReturnType<typeof useGetPermissionStructureLazyQuery>;
+export type GetPermissionStructureQueryResult = Apollo.QueryResult<GetPermissionStructureQuery, GetPermissionStructureQueryVariables>;
 export const GetReviewDecisionCommentDocument = gql`
     query getReviewDecisionComment($reviewDecisionId: Int!) {
   reviewDecision(id: $reviewDecisionId) {

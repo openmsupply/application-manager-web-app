@@ -10,7 +10,7 @@ export default gql`
             id
             restrictions
             stageNumber
-            level
+            levelNumber
             templateId
             permissionName {
               id

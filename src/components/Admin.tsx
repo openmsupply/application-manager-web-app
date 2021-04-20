@@ -7,9 +7,6 @@ import {
   PermissionName,
   useGetPermissionStructureQuery,
 } from '../utils/generated/graphql'
-import templateStageFragment from '../utils/graphql/fragments/templateStage.fragment'
-import { count, dsvFormat, linkVertical } from 'd3'
-import { ConsolidatorCell } from './List/Cells'
 
 const Admin: React.FC = () => {
   const ref = useRef(null)
@@ -18,19 +15,19 @@ const Admin: React.FC = () => {
   useEffect(() => {
     if (!data?.templates?.nodes) return
 
-    const drag = (simulation) => {
-      function dragstarted(event) {
+    const drag = (simulation: any) => {
+      function dragstarted(event: any) {
         if (!event.active) simulation.alphaTarget(0.3).restart()
         event.subject.fx = event.subject.x
         event.subject.fy = event.subject.y
       }
 
-      function dragged(event) {
+      function dragged(event: any) {
         event.subject.fx = event.x
         event.subject.fy = event.y
       }
 
-      function dragended(event) {
+      function dragended(event: any) {
         if (!event.active) simulation.alphaTarget(0)
         event.subject.fx = null
         event.subject.fy = null
@@ -58,7 +55,7 @@ const Admin: React.FC = () => {
             if (link.distance) return link.distance
             return 100
           })
-          .id((d) => d.id)
+          .id((d: any) => d.id)
 
         // .strength((d) => {
         //   const link = transformedData.links[d.index]
@@ -120,6 +117,7 @@ const Admin: React.FC = () => {
       .join('circle')
       .attr('r', '20')
       .attr('fill', 'rgb(200,200,200)')
+      // @ts-ignore
       .call(drag(simulation))
 
     const node = svg
@@ -286,7 +284,7 @@ const transformData = (inData: Template[]) => {
   }
 
   const growLevel = (templatePermission: TemplatePermission, parentId: string) => {
-    const level = templatePermission?.level
+    const level = templatePermission?.levelNumber
     const type = 'level'
 
     if (!level) {
@@ -342,7 +340,7 @@ const transformData = (inData: Template[]) => {
     growSectionRestrictions(templatePermission, id)
     growRole(templatePermission, id)
     growCanSelfAssign(templatePermission, id)
-    growPermissionName(templatePermission.permissionName, id)
+    growPermissionName(templatePermission?.permissionName as PermissionName, id)
 
     // growPermissionName =
   }
@@ -382,7 +380,7 @@ const transformData = (inData: Template[]) => {
       id,
       type,
       value,
-      text: `${templatePermission.permissionName?.permissionPolicy?.name}-${templatePermission.permissionName?.permissionPolicy.id}`,
+      text: `${templatePermission.permissionName?.permissionPolicy?.name}-${templatePermission?.permissionName?.permissionPolicy?.id}`,
     })
 
     links.push({
