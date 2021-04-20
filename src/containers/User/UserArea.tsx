@@ -1,49 +1,79 @@
 import React from 'react'
-import { Button, Grid, Label, Message, Segment, Sticky } from 'semantic-ui-react'
-import strings from '../../utils/constants'
+import { Button, Container, Icon, Image, List } from 'semantic-ui-react'
 import { useUserState } from '../../contexts/UserState'
-import UserSelection from './UserSelection'
-import useListTemplates from '../../utils/hooks/useListTemplates'
-import { AppMenu } from '../../components'
+import { Link } from 'react-router-dom'
+import strings from '../../utils/constants'
+import { User } from '../../utils/types'
+import config from '../../config.json'
+import { getFullUrl } from '../../utils/helpers/utilityFunctions'
 
 const UserArea: React.FC = () => {
   const {
-    userState: { currentUser, isLoading, templatePermissions },
-    logout,
+    userState: { currentUser },
   } = useUserState()
-  const { error, loading, filteredTemplates } = useListTemplates(templatePermissions, isLoading)
 
   return (
-    <Sticky>
-      <Segment inverted vertical>
-        <Grid inverted>
-          <Grid.Column width={12}>
-            {error ? (
-              <Message error list={[error]} />
-            ) : (
-              <AppMenu templatePermissions={filteredTemplates} />
-            )}
+    <Container id="user-area">
+      <div id="user-area-left">
+        <MainMenuBar />
+        {currentUser?.organisation?.orgName && <OrgSelector user={currentUser} />}
+      </div>
+      <UserMenu user={currentUser as User} />
+    </Container>
+  )
+}
 
-            <Segment inverted>
-              {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            {currentUser && (
-              <Segment inverted floated="right">
-                <Label as="button" color="grey" style={{ width: '100%', padding: 10 }}>
-                  {currentUser?.firstName}
-                  <UserSelection />
-                </Label>
-                <Button basic color="blue" onClick={() => logout()}>
-                  {strings.LABEL_LOG_OUT}
-                </Button>
-              </Segment>
-            )}
-          </Grid.Column>
-        </Grid>
-      </Segment>
-    </Sticky>
+const MainMenuBar: React.FC = () => {
+  // TO-DO: Logic for deducing what should show in menu bar
+  // Probably passed in as props
+  return (
+    <div id="menu-bar">
+      <List horizontal>
+        <List.Item>
+          <Link to="/" className="selected-link">
+            {/* <Icon name="home" /> */}
+            {strings.MENU_ITEM_DASHBOARD}
+          </Link>
+        </List.Item>
+        <List.Item>
+          <Link to="/">Menu Item 1</Link>
+        </List.Item>
+        <List.Item>
+          <Link to="/">Menu Item 2</Link>
+        </List.Item>
+      </List>
+    </div>
+  )
+}
+
+const OrgSelector: React.FC<{ user: User }> = ({ user }) => {
+  // TO-DO: Make into Dropdown so Org can be selected
+  return (
+    <div id="org-selector">
+      {user?.organisation?.logoUrl && (
+        <Image src={getFullUrl(user?.organisation?.logoUrl, config.serverREST)} />
+      )}
+      <div>
+        {user?.organisation?.orgName || ''}
+        <Icon size="small" name="angle down" />
+      </div>
+    </div>
+  )
+}
+
+const UserMenu: React.FC<{ user: User }> = ({ user }) => {
+  const { logout } = useUserState()
+  return (
+    <div id="user-menu">
+      <Button animated onClick={() => logout()}>
+        <Button.Content visible>
+          {user?.firstName || ''} {user?.lastName || ''}
+        </Button.Content>
+        <Button.Content hidden>
+          <Icon name="log out" />
+        </Button.Content>
+      </Button>
+    </div>
   )
 }
 

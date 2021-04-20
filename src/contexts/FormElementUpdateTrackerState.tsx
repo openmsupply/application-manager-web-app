@@ -1,5 +1,13 @@
 import React, { createContext, useContext, useReducer } from 'react'
-import { ContextFormElementUpdateTrackerState } from '../utils/types'
+
+interface ContextFormElementUpdateTrackerState {
+  elementEnteredTimestamp: number
+  elementEnteredTextValue: string
+  elementUpdatedTimestamp: number
+  elementUpdatedTextValue: string
+  isLastElementUpdateProcessed: boolean
+  wasElementChanged: boolean
+}
 
 export type UpdateAction =
   | {

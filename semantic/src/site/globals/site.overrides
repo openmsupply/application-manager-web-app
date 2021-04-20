@@ -1,18 +1,231 @@
+/*******************************
+         Site Overrides
+*******************************/
 
-.links line{
-  stroke: grey;
+body {
+  background-color: @surfacesLight;
 }
 
-.flag {
-  background-color: rgb(230,230,230);
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  
+p {
+  font-size: 15px;
+  letter-spacing: 0;
 }
 
-.tooltip {
-  position: absolute;
-  background-color: lightgrey;
+p strong {
+  font-weight: @semiboldWeight;
+}
+
+#main-container {
+  padding: 0;
+  position: relative;
+  min-height: 100vh;
+  // Max width is 1027px, from Semantic-UI Container
+}
+
+#user-area {
+  font-family: @userAreaFont;
+  color: @userAreaText;
+  display: flex;
+  position: fixed; // TO-DO: No fixed on mobile
+  background-color: @headersInteractiveLow;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  height: @headerHeight; // TO-DO: Adjust for mobile
+  justify-content: space-between;
+}
+
+#user-area.ui.container {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+#user-area-left {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+#menu-bar {
+  font-size: inherit;
+}
+// Menu bar links
+#user-area a {
+  color: @userAreaText;
+  font-size: 14px; // REPLACE WITH VARIABLE
+}
+
+// Not currently used, but should be appplied to the Link in the menu
+// bar that reflects the current page
+.selected-link {
+  font-weight: bold;
+}
+
+#org-selector {
+  font-size: 22px; // REPLACE WITH VARIABLE
+  letter-spacing: 3.4px; // REPLACE WITH VARIABLE
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  max-height: 55px;
+  margin-top: 10px;
+}
+
+#org-selector .image {
+  margin-right: 20px;
+  height: 100%;
+}
+
+#user-menu .button {
+  margin-top: 10px;
+  border-radius: 20px;
+  background-color: @surfacesWhite;
+  color: @darkGrey;
+  min-width: 120px;
+}
+
+#content-area {
+  padding-top: @headerHeight + 25px;
+  padding-right: 25px;
+  padding-left: 25px;
+  padding-bottom: @footerHeight + 25px; // To allow for footer
+}
+
+#footer {
+  background-color: white;
+  margin-top: 20px;
   padding: 10px;
+  height: @footerHeight;
+  position: absolute;
+  bottom: 0;
+}
+
+#footer-content {
+  // border: 1px solid black;
+  display: flex;
+  flex-direction: row;
+  max-width: 220px;
+  align-items: center;
+}
+
+#footer-content .ui.image {
+  height: 100%;
+}
+
+#footer-content p {
+  font-size: 12px; // REPLACE WITH VARIABLE
+  color: @surfacesDark;
+  margin-left: 10px;
+}
+
+.sup .ui.tiny.progress {
+  margin-bottom: 4px !important;
+}
+
+.sup .ui.form .required.fields:not(.grouped) > .field > label:after {
+  color: rgb(248, 248, 248) !important;
+}
+
+/* Table Striping */
+.stripes .ui.grid:nth-child(even) {
+  background: rgb(248, 248, 248);
+}
+
+.stripes .ui.grid:nth-child(even) .stripedlabel {
+  background: white;
+}
+
+.stripes .ui.grid:nth-child(odd) .stripedlabel {
+  background: rgb(248, 248, 248);
+}
+
+/*******************************
+             Headers
+*******************************/
+
+// Note -- normally we will use the <Header/> component which already
+// contains these definitions. But this allows us to use <h1>, <h2>, etc.
+// directly if required
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: @headerFont;
+  line-height: @headerLineHeight;
+  margin: @headerMargin;
+  font-weight: @headerFontWeight;
+  padding: 0em;
+}
+
+h1 {
+  min-height: 1rem;
+  font-size: @h1;
+  font-weight: @regularWeight;
+}
+h2 {
+  font-size: @h2;
+  font-weight: @regularWeight;
+}
+h3 {
+  font-size: @h3;
+  font-weight: @regularWeight;
+  color: @darkGrey;
+}
+h4 {
+  font-size: @h4;
+  font-weight: @semiboldWeight;
+  text-transform: uppercase;
+  color: @darkGrey;
+}
+h5 {
+  font-size: @h5;
+  font-weight: @semiboldWeight;
+  color: @darkGrey;
+}
+h6 {
+  font-size: @h6;
+  font-weight: @semiboldWeight;
+  text-transform: uppercase;
+  color: @darkGrey;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child {
+  margin-top: 0em;
+}
+
+h1:last-child,
+h2:last-child,
+h3:last-child,
+h4:last-child,
+h5:last-child,
+h6:first-child {
+  margin-bottom: 0em;
+}
+
+/*-----------------------------------------------------
+      Mobile & Desktop
+      - classes for hiding on Mobile or Desktop devices
+------------------------------------------------------*/
+
+// Desktop
+@media only screen and (min-width: @tabletBreakpoint) {
+  .hide-on-desktop {
+    display: none;
+  }
+}
+// Mobile
+@media only screen and (max-width: @largestMobileScreen) {
+  .hide-on-mobile {
+    display: none;
+  }
 }

@@ -1,4 +1,4 @@
-import { FullStructure, SectionStateNEW, PageNEW } from '../../types'
+import { FullStructure, SectionState, Page } from '../../types'
 
 const generateApplicantChangesRequestedProgress = (newStructure: FullStructure) => {
   newStructure?.sortedPages?.forEach(generatePageChangeRequestProgress)
@@ -7,11 +7,11 @@ const generateApplicantChangesRequestedProgress = (newStructure: FullStructure) 
   addIsChangeRequest(newStructure)
 }
 
-const generateSectionReviewProgress = (section: SectionStateNEW) => {
+const generateSectionReviewProgress = (section: SectionState) => {
   section.changeRequestsProgress = getSums(Object.values(section.pages))
 }
 
-const generatePageChangeRequestProgress = (page: PageNEW) => {
+const generatePageChangeRequestProgress = (page: Page) => {
   const totalChangeRequests = page.state.filter(
     ({ isChangeRequest, element: { isVisible } }) => isChangeRequest && isVisible
   )
@@ -24,7 +24,7 @@ const generatePageChangeRequestProgress = (page: PageNEW) => {
 }
 
 const addIsChangeRequest = (newStructure: FullStructure) => {
-  const isPageRequest = ({ changeRequestsProgress }: PageNEW) =>
+  const isPageRequest = ({ changeRequestsProgress }: Page) =>
     changeRequestsProgress?.totalChangeRequests
 
   newStructure.info.isChangeRequest = !!newStructure?.sortedPages?.find(isPageRequest)
@@ -32,7 +32,7 @@ const addIsChangeRequest = (newStructure: FullStructure) => {
 
 // Simple helper that will iterate over elements and sum up all of the values for keys
 // returning an object of keys with sums
-const getSums = (elements: PageNEW[]) => {
+const getSums = (elements: Page[]) => {
   const initial = {
     totalChangeRequests: 0,
     doneChangeRequests: 0,

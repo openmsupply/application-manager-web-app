@@ -1,3 +1,8 @@
 /*******************************
          Site Overrides
 *******************************/
+
+// Custom class for wider buttons
+.wide {
+  min-width: 280px;
+}

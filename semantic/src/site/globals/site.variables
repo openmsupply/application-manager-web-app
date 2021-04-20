@@ -1,3 +1,92 @@
 /*******************************
      User Global Variables
 *******************************/
+@fontName: 'Open Sans';
+@userAreaFont: 'Roboto'; // TO-DO: Check with Deb what to use for this
+
+@red: @error;
+@orange: #f2711c;
+@yellow: #fbbd08;
+@olive: #b5cc18;
+@green: rgb(87, 180, 100);
+@teal: #00b5ad;
+@blue: @interactiveHigh;
+@violet: #6435c9;
+@purple: #a333c8;
+@pink: @attention;
+@brown: #a5673f;
+@grey: #767676;
+@black: #000000;
+
+/*-----------------------------------------------------
+      Custom Colours -- from designer
+      See: https://debs181572.invisionapp.com/console/Drug-reg-app----Desktop-ckmfpptbx008401xqfx1j17ha/ckmfppu8f003s01wvdt41eywt/play
+------------------------------------------------------*/
+@headerCopy: #000000;
+@headersInteractiveLow: #4a4a4a;
+@surfacesDark: #aeaeae;
+@surfacesMed: #dcdddd;
+@surfacesLight: #f8f8f8;
+@surfacesWhite: #ffffff;
+//
+@interactiveHigh: #003bfe;
+@information: #24b5df;
+@success: #1eb759;
+@attention: #f40081;
+@error: #e40000;
+//
+@otherOrange: #ef7837;
+@otherPeach: #ef78377f;
+@otherPink: #e400007f;
+@otherBlue: #24b5df7f;
+
+/*------------------------
+      Headers and Text
+-------------------------*/
+
+// Header font sizes (overrides except h6)
+@h1: 36px;
+@h2: 26px;
+@h3: 20px;
+@h4: 14px;
+@h5: 15px;
+@h6: 13px;
+//
+@h1Mob: 20px;
+@h2Mob: 16px;
+@h3Mob: 14px;
+@h4Mob: 12px;
+@h5Mob: 15px;
+@h6Mob: 11px;
+
+// New variables for font-weights
+@regularWeight: 400;
+@semiboldWeight: 600;
+
+// Text colours
+@darkGrey: @headersInteractiveLow;
+@userAreaText: white;
+
+// Custom classes for text variants
+.secondary {
+  font-size: 13px;
+}
+.small {
+  font-size: 12px;
+}
+
+.interactive {
+  color: @interactiveHigh; // blue
+}
+
+.attention {
+  font-size: 12px;
+  color: @attention; // pink
+}
+
+/*------------------------
+      Layout constants
+-------------------------*/
+
+@headerHeight: 120px;
+@footerHeight: 75px;

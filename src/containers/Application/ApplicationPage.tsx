@@ -1,21 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { CSSProperties, useEffect } from 'react'
+import { Grid, Header, Segment } from 'semantic-ui-react'
 import {
   FullStructure,
   SectionAndPage,
   MethodRevalidate,
   ApplicationProps,
 } from '../../utils/types'
-
-import { ApplicationStatus } from '../../utils/generated/graphql'
+import { Loading, Navigation, PageElements, ProgressBar } from '../../components'
 import { useUserState } from '../../contexts/UserState'
-import { useRouter } from '../../utils/hooks/useRouter'
-import { Loading } from '../../components'
-import strings from '../../utils/constants'
-import { Grid, Header, Segment } from 'semantic-ui-react'
-import ProgressBarNEW from '../../components/Application/ProgressBarNEW'
-import { PageElements } from '../../components/Application'
-import { Navigation } from '../../components'
+import { ApplicationStatus } from '../../utils/generated/graphql'
 import { checkPageIsAccessible } from '../../utils/helpers/structure'
+import { useRouter } from '../../utils/hooks/useRouter'
+import strings from '../../utils/constants'
 
 const ApplicationPage: React.FC<ApplicationProps> = ({
   structure: fullStructure,
@@ -53,27 +49,20 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
   if (!fullStructure || !fullStructure.responsesByCode) return <Loading />
 
   const {
-    info: { isLinear },
+    info: { isLinear, current },
   } = fullStructure
 
   return (
-    <Segment.Group style={{ backgroundColor: 'Gainsboro', display: 'flex' }}>
-      {/* <ModalWarning showModal={showModal} /> */}
-      <Header textAlign="center">
-        {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
-      </Header>
-      <Grid
-        stackable
-        style={{
-          backgroundColor: 'white',
-          padding: 10,
-          margin: '0px 50px',
-          minHeight: 500,
-          flex: 1,
-        }}
-      >
+    <>
+      <Header
+        as="h1"
+        textAlign="center"
+        // style={inlineStyles.title}
+        content={currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
+      />
+      <Grid stackable style={inlineStyles.grid}>
         <Grid.Column width={4}>
-          <ProgressBarNEW
+          <ProgressBar
             structure={fullStructure}
             requestRevalidation={requestRevalidation as MethodRevalidate}
             strictSectionPage={strictSectionPage as SectionAndPage}
@@ -83,13 +72,14 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
           <Segment vertical style={{ marginBottom: 20 }}>
             <Header content={fullStructure.sections[sectionCode].details.title} />
             <PageElements
+              canEdit={current?.status === ApplicationStatus.Draft}
               elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
               responsesByCode={fullStructure.responsesByCode}
+              applicationData={fullStructure.info}
               isStrictPage={
                 sectionCode === strictSectionPage?.sectionCode &&
                 pageNumber === strictSectionPage?.pageNumber
               }
-              canEdit
             />
           </Segment>
         </Grid.Column>
@@ -102,8 +92,27 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
         serialNumber={serialNumber}
         requestRevalidation={requestRevalidation as MethodRevalidate}
       />
-    </Segment.Group>
+    </>
   )
+}
+
+// Styles - TODO: Move to LESS || Global class style (semantic)
+const inlineStyles = {
+  title: {
+    color: 'rgb(150,150,150)',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    fontWeight: 400,
+    paddingTop: 25,
+    fontSize: 24,
+  } as CSSProperties,
+  grid: {
+    backgroundColor: 'white',
+    padding: 10,
+    margin: '0px 50px',
+    minHeight: 500,
+    flex: 1,
+  } as CSSProperties,
 }
 
 export default ApplicationPage

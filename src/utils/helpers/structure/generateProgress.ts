@@ -1,5 +1,5 @@
 import { TemplateElementCategory } from '../../generated/graphql'
-import { ElementStateNEW, FullStructure, PageNEW, Progress, SectionStateNEW } from '../../types'
+import { ElementState, FullStructure, Page, Progress, SectionState } from '../../types'
 
 const initialProgress = {
   doneNonRequired: 0,
@@ -17,7 +17,7 @@ const calculateCompleted = (totalSum: number, doneRequired: number, doneNonRequi
   return totalSum === totalDone
 }
 
-const getSectionProgress = (pages: PageNEW[]): Progress => {
+const getSectionProgress = (pages: Page[]): Progress => {
   const sectionProgress = pages.reduce(
     (sectionProgress: Progress, { number, progress }) => {
       if (!progress) return sectionProgress
@@ -51,7 +51,7 @@ const generateResponsesProgress = (structure: FullStructure) => {
   let firstIncompleteSectionCode = ''
   let firstIncompleteSectionIndex = Infinity
   let firstStrictInvalidPageInSection = Infinity
-  const updateFirstInvalid = (section: SectionStateNEW, page: PageNEW) => {
+  const updateFirstInvalid = (section: SectionState, page: Page) => {
     if (
       section.details.index <= firstIncompleteSectionIndex &&
       page.number < firstStrictInvalidPageInSection &&
@@ -67,12 +67,12 @@ const generateResponsesProgress = (structure: FullStructure) => {
       page.progress = { ...initialProgress }
       page.state
         .filter(({ element }) => {
-          const { category, isVisible, isEditable } = element as ElementStateNEW
+          const { category, isVisible, isEditable } = element as ElementState
           return isVisible && isEditable && category === TemplateElementCategory.Question
         })
         .forEach(({ element, response, isChangeRequest, isChanged }) => {
           const { progress } = page
-          const { isRequired } = element as ElementStateNEW
+          const { isRequired } = element as ElementState
           const isChangeRequestNotDone = isChangeRequest && !isChanged
 
           if (isRequired) progress.totalRequired++

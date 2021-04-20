@@ -2,7 +2,7 @@
   "isCore": true,
   "code": "shortText",
   "displayName": "Basic Text Input",
-  "dynamicParameters": ["label", "description"],
+  "dynamicParameters": ["label", "description", "placeholder"],
   "//": "categories types: 'Input'|'Informative'",
   "category": "Input"
 }

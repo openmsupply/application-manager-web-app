@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Container, List, Label, Segment, Button, Search, Grid } from 'semantic-ui-react'
+import React, { CSSProperties, useEffect, useState } from 'react'
+import { Container, List, Label, Segment, Button, Search, Grid, Header } from 'semantic-ui-react'
 import { FilterList } from '../../components'
 import { useRouter } from '../../utils/hooks/useRouter'
 import useListApplications from '../../utils/hooks/useListApplications'
@@ -86,18 +86,12 @@ const ListWrapper: React.FC = () => {
     }
   }
 
-  const handleExpansion = (application: ApplicationListRow) => {
-    if (!applicationsRows) return
-    application.isExpanded = !application.isExpanded // updates in place inside applicationRows
-    setApplicationsRows([...applicationsRows]) // triggers re-render
-  }
-
   return error ? (
     <Label content={strings.ERROR_APPLICATIONS_LIST} error={error} />
   ) : (
-    <Container>
-      <FilterList />
-      <Segment vertical>
+    <Container style={inlineStyles.container}>
+      {/* <FilterList /> */}
+      {/* <Segment vertical>
         {Object.keys(query).length > 0 && <h3>Query parameters:</h3>}
         <List>
           {Object.entries(query).map(([key, value]) => (
@@ -127,20 +121,57 @@ const ListWrapper: React.FC = () => {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      </Segment>
+      </Segment> */}
+      <div style={inlineStyles.top}>
+        <Header as="h2" style={inlineStyles.type}>
+          {query.type}
+        </Header>
+        <Search
+          // size="large"
+          style={inlineStyles.search}
+          placeholder={strings.PLACEHOLDER_SEARCH}
+          onSearchChange={handleSearchChange}
+          input={{ icon: 'search', iconPosition: 'left' }}
+          open={false}
+          value={searchText}
+        />
+        {query.userRole === 'applicant' ? (
+          <Button
+            style={inlineStyles.create}
+            as={Link}
+            to={`/application/new?type=${type}`}
+            content={strings.BUTTON_APPLICATION_NEW}
+          />
+        ) : null}
+      </div>
       {columns && applicationsRows && (
         <ApplicationsList
           columns={columns}
           applications={applicationsRows}
           sortQuery={sortQuery}
           handleSort={handleSort}
-          handleExpansion={handleExpansion}
           loading={loading}
         />
       )}
       <PaginationBar totalCount={applicationCount} />
     </Container>
   )
+}
+
+// Styles - TODO: Move to LESS || Global class style (semantic)
+const inlineStyles = {
+  container: { paddingTop: 40 } as CSSProperties,
+  top: { display: 'flex', alignItems: 'center' } as CSSProperties,
+  type: { letterSpacing: 1, fontWeight: 400, margin: 0 } as CSSProperties,
+  search: { flexGrow: 1, marginLeft: 30 } as CSSProperties,
+  create: {
+    background: 'none',
+    color: '#003BFE',
+    letterSpacing: 1.4,
+    border: '2px solid #003BFE',
+    borderRadius: 8,
+    textTransform: 'capitalize',
+  } as CSSProperties,
 }
 
 export default ListWrapper

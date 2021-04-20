@@ -31,11 +31,25 @@ class pluginProvider {
         folderName: 'shortText',
         category: 'Input',
       },
+      longText: {
+        code: 'longText',
+        displayName: 'Multi-line Text Input',
+        isCore: true,
+        folderName: 'longText',
+        category: 'Input',
+      },
       textInfo: {
         code: 'textInfo',
         isCore: true,
         displayName: 'Static Text',
         folderName: 'textInfo',
+        category: 'Informative',
+      },
+      imageDisplay: {
+        code: 'imageDisplay',
+        isCore: true,
+        displayName: 'Image Display',
+        folderName: 'imageDisplay',
         category: 'Informative',
       },
       dropdownChoice: {

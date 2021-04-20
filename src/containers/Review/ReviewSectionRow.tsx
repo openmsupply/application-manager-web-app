@@ -8,9 +8,9 @@ import {
   ReviewSectionRowAction,
 } from '../../components/Review'
 import strings from '../../utils/constants'
-import useGetFullReviewStructure from '../../utils/hooks/useGetFullReviewStructure'
+import useGetReviewStructureForSections from '../../utils/hooks/useGetReviewStructureForSection'
 import {
-  AssignmentDetailsNEW,
+  AssignmentDetails,
   FullStructure,
   ReviewAction,
   ReviewSectionComponentProps,
@@ -20,7 +20,7 @@ import {
 // to be used in ReviewHome and Expansions
 type ReviewSectionRowProps = {
   sectionId: number
-  assignment: AssignmentDetailsNEW
+  assignment: AssignmentDetails
   fullApplicationStructure: FullStructure
 }
 
@@ -29,7 +29,7 @@ const ReviewSectionRow: React.FC<ReviewSectionRowProps> = ({
   assignment,
   fullApplicationStructure,
 }) => {
-  const { fullReviewStructure, error } = useGetFullReviewStructure({
+  const { fullReviewStructure, error } = useGetReviewStructureForSections({
     reviewAssignment: assignment,
     fullApplicationStructure,
     filteredSectionIds: [sectionId],
@@ -54,18 +54,25 @@ const ReviewSectionRow: React.FC<ReviewSectionRowProps> = ({
     action: section?.reviewAction?.action || ReviewAction.unknown,
   }
 
+  const canRenderRow =
+    section?.reviewAction?.isReviewable ||
+    section?.reviewAction?.action === ReviewAction.canSelfAssign
+
   return (
     <>
-      {section?.reviewAction?.isReviewable && (
-        <Grid columns="equal" verticalAlign="middle">
+      {canRenderRow && (
+        <Grid columns="equal" verticalAlign="middle" style={sectionRowStyle}>
           <ReviewSectionRowAssigned {...props} />
           <ReviewSectionRowLastActionDate {...props} />
           <ReviewSectionRowProgress {...props} />
           <ReviewSectionRowAction {...props} />
         </Grid>
-      )}{' '}
+      )}
     </>
   )
 }
+
+// Styles - TODO: Move to LESS || Global class style (semantic)
+const sectionRowStyle = { borderRadius: 10 }
 
 export default ReviewSectionRow

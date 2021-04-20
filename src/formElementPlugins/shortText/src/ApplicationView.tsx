@@ -1,28 +1,32 @@
-import React, { useState, useEffect } from 'react'
-import { Form, Input } from 'semantic-ui-react'
+import React, { useEffect } from 'react'
+import { Form } from 'semantic-ui-react'
 import { ApplicationViewProps } from '../../types'
 
 const ApplicationView: React.FC<ApplicationViewProps> = ({
+  element,
   parameters,
   onUpdate,
   value,
   setValue,
   setIsActive,
-  isEditable,
-  currentResponse,
   validationState,
   onSave,
   Markdown,
 }) => {
-  const { placeholder, maskedInput, label, description } = parameters
+  const { isEditable } = element
+  const { placeholder, maskedInput, label, description, maxLength } = parameters
 
   useEffect(() => {
     onUpdate(value)
   }, [])
 
   function handleChange(e: any) {
-    onUpdate(e.target.value)
-    setValue(e.target.value)
+    let text = e.target.value
+    if (maxLength && text.length > maxLength) {
+      text = text.substring(0, maxLength)
+    }
+    onUpdate(text)
+    setValue(text)
   }
 
   function handleLoseFocus(e: any) {

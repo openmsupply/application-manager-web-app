@@ -1,3 +1,9 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+@labelFontSize: 15px;
+@labelFontWeight: @semiboldWeight;
+@labelColor: @black;
+
+@inputColor: @darkGrey;

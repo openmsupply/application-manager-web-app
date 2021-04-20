@@ -4,7 +4,7 @@ import {
   ChangeRequestsProgress,
   Progress as ProgressType,
   SectionAndPage,
-  SectionsStructureNEW,
+  SectionsStructure,
 } from '../../../utils/types'
 import strings from '../../../utils/constants'
 
@@ -12,7 +12,7 @@ interface SectionsProgressProps {
   changesRequested: boolean
   draftStatus: boolean
   firstStrictInvalidPage: SectionAndPage | null
-  sections: SectionsStructureNEW
+  sections: SectionsStructure
   restartApplication: (location: SectionAndPage) => void
   resumeApplication: (location: SectionAndPage) => void
 }

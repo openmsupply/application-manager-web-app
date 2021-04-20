@@ -1,49 +1,52 @@
-import React from 'react'
-import { Button, Header, Modal, Radio, Segment, TextArea, TextAreaProps } from 'semantic-ui-react'
-import { SummaryViewWrapper } from '../../formElementPlugins'
-import { ReviewResponseDecision } from '../../utils/generated/graphql'
-import { DecisionAreaState, ReviewQuestionDecision } from '../../utils/types'
+import React, { useEffect, useState } from 'react'
+import { Button, Header, Modal, Radio, Segment, TextArea } from 'semantic-ui-react'
+
+import { ReviewResponse, ReviewResponseDecision } from '../../utils/generated/graphql'
 import strings from '../../utils/constants'
+import messages from '../../utils/messages'
+import SummaryViewWrapper from '../../formElementPlugins/SummaryViewWrapper'
+import { SummaryViewWrapperProps } from '../../formElementPlugins/types'
+import useUpdateReviewResponse from '../../utils/hooks/useUpdateReviewResponse'
 
 interface DecisionAreaProps {
-  state: DecisionAreaState
-  setDecision: Function
-  submitHandler: (_: any) => void
-  problemMessage: string
-  setProblemMessage: Function
+  reviewResponse: ReviewResponse
+  toggle: boolean
+  summaryViewProps: SummaryViewWrapperProps
 }
 
 const DecisionArea: React.FC<DecisionAreaProps> = ({
-  state,
-  setDecision,
-  submitHandler,
-  problemMessage,
-  setProblemMessage,
+  toggle,
+  reviewResponse,
+  summaryViewProps,
 }) => {
-  const { open, review, summaryViewProps } = state
-  const handleChange = (value: ReviewResponseDecision) => {
-    const { id, comment } = review as ReviewQuestionDecision
-    setProblemMessage('')
-    setDecision({
-      ...state,
-      review: { id, comment, decision: value },
-    })
-  }
+  const [isOpen, setIsOpen] = useState(false)
+  const [previousToggle, setPreviousToggle] = useState(false)
+  const [review, setReview] = useState(reviewResponse)
+  const updateResponse = useUpdateReviewResponse(reviewResponse.id)
 
-  const handleUpdateComment = (_: any, { value }: TextAreaProps) => {
-    const { review } = state
-    setDecision({ ...state, review: { ...review, comment: value } })
+  useEffect(() => {
+    if (toggle != previousToggle) {
+      setReview(reviewResponse)
+      setPreviousToggle(toggle)
+      setIsOpen(true)
+    }
+  }, [toggle])
+
+  const submit = async () => {
+    // TODO do we need to handle update error ?
+    await updateResponse(review)
+    setIsOpen(false)
   }
 
   return (
     <Modal
       closeIcon
-      open={open}
-      onClose={() => setDecision({ open: false })}
+      open={isOpen}
+      onClose={() => setIsOpen(false)}
       size="fullscreen"
       style={{ margin: 0, background: 'transparent' }}
     >
-      {open && summaryViewProps && review && (
+      {!isOpen ? null : (
         <Segment
           floated="right"
           style={{
@@ -64,14 +67,24 @@ const DecisionArea: React.FC<DecisionAreaProps> = ({
               value={strings.LABEL_REVIEW_APPROVE}
               name="decisionGroup"
               checked={review.decision === ReviewResponseDecision.Approve}
-              onChange={() => handleChange(ReviewResponseDecision.Approve)}
+              onChange={() =>
+                setReview({
+                  ...review,
+                  decision: ReviewResponseDecision.Approve,
+                })
+              }
             />
             <Radio
               label={strings.LABEL_REVIEW_RESSUBMIT}
               value={strings.LABEL_REVIEW_RESSUBMIT}
               name="decisionGroup"
               checked={review.decision === ReviewResponseDecision.Decline}
-              onChange={() => handleChange(ReviewResponseDecision.Decline)}
+              onChange={() =>
+                setReview({
+                  ...review,
+                  decision: ReviewResponseDecision.Decline,
+                })
+              }
             />
           </Segment>
           <Segment basic>
@@ -79,19 +92,24 @@ const DecisionArea: React.FC<DecisionAreaProps> = ({
             <TextArea
               rows={6}
               style={{ width: '100%' }}
-              value={review.comment || ''}
-              onChange={handleUpdateComment}
+              defaultValue={review.comment}
+              onChange={(_, { value }) => setReview({ ...review, comment: String(value) })}
             />
           </Segment>
           <Segment basic>
             <Button
               color="blue"
               basic
-              onClick={submitHandler}
-              disabled={review.decision === undefined}
+              onClick={submit}
+              disabled={
+                !review.decision ||
+                (review.decision === ReviewResponseDecision.Decline && !review.comment)
+              }
               content={strings.BUTTON_SUBMIT}
             />
-            {problemMessage !== '' && <p style={{ color: 'red' }}>{problemMessage}</p>}
+            {review.decision === ReviewResponseDecision.Decline && !review.comment && (
+              <p style={{ color: 'red' }}>{messages.REVIEW_RESUBMIT_COMMENT}</p>
+            )}
           </Segment>
         </Segment>
       )}

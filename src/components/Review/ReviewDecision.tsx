@@ -19,7 +19,7 @@ const ReviewDecision: React.FC<ReviewDecisionProps> = ({
 }) => {
   if (isEditable)
     return (
-      <Form>
+      <Form style={inlineStyles}>
         {decisionOptions
           .filter((option) => option.isVisible)
           .map((option) => (
@@ -48,6 +48,11 @@ const ReviewDecision: React.FC<ReviewDecisionProps> = ({
       content={visibleOption.title}
     />
   )
+}
+
+// Styles - TODO: Move to LESS || Global class style (semantic)
+const inlineStyles = {
+  form: { marginRight: 30 },
 }
 
 export default ReviewDecision

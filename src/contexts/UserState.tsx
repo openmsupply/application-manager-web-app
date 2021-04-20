@@ -82,27 +82,29 @@ export function UserProvider({ children }: UserProviderProps) {
   const userState = state
   const setUserState = dispatch
 
+  const logout = () => {
+    localStorage.clear()
+    window.location.href = '/login'
+  }
+
   const onLogin = (
     JWT: string,
     user: User | undefined = undefined,
     permissions: TemplatePermissions | undefined = undefined
   ) => {
+    if (JWT == undefined) logout()
     dispatch({ type: 'setLoading', isLoading: true })
     localStorage.setItem('persistJWT', JWT)
-    if (!user || !permissions) fetchUserInfo({ dispatch: setUserState })
+    if (!user || !permissions) fetchUserInfo({ dispatch: setUserState }, logout)
     else {
       dispatch({ type: 'setCurrentUser', newUser: user, newPermissions: permissions })
       dispatch({ type: 'setLoading', isLoading: false })
     }
   }
 
-  const logout = () => {
-    localStorage.clear()
-    window.location.href = '/login'
-  }
-
   // Initial check for persisted user in local storage
   const JWT = localStorage.getItem('persistJWT')
+  if (JWT == 'undefined') logout()
   if (JWT && !userState.currentUser && !userState.isLoading) {
     onLogin(JWT)
   }

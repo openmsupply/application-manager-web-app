@@ -1,11 +1,12 @@
-import { Button, Header, Label, Message, Segment } from 'semantic-ui-react'
-import { Loading } from '../../components'
+import React, { CSSProperties } from 'react'
+import { Button, Header, Message, Segment } from 'semantic-ui-react'
+import { Loading, SectionWrapper } from '../../components'
 import {
-  AssignmentDetailsNEW,
+  AssignmentDetails,
   FullStructure,
-  PageNEW,
+  Page,
   ResponsesByCode,
-  SectionStateNEW,
+  SectionState,
 } from '../../utils/types'
 
 import {
@@ -16,27 +17,25 @@ import {
 } from '../../utils/generated/graphql'
 import strings from '../../utils/constants'
 
-import useGetFullReviewStructure from '../../utils/hooks/useGetFullReviewStructure'
-import SectionWrapper from '../../components/Application/SectionWrapper'
-import React from 'react'
+import useGetReviewStructureForSections from '../../utils/hooks/useGetReviewStructureForSection'
 import useQuerySectionActivation from '../../utils/hooks/useQuerySectionActivation'
 
 import useScrollableAttachments, {
   ScrollableAttachment,
 } from '../../utils/hooks/useScrollableAttachments'
-import { SectionProgress } from '../../components/Review'
+import { ReviewHeader, SectionProgress } from '../../components/Review'
 import ReviewSubmit from './ReviewSubmit'
 import { useUserState } from '../../contexts/UserState'
 
 const ReviewPage: React.FC<{
-  reviewAssignment: AssignmentDetailsNEW
+  reviewAssignment: AssignmentDetails
   fullApplicationStructure: FullStructure
 }> = ({ reviewAssignment, fullApplicationStructure }) => {
   const {
     userState: { currentUser },
   } = useUserState()
 
-  const { fullReviewStructure, error } = useGetFullReviewStructure({
+  const { fullReviewStructure, error } = useGetReviewStructureForSections({
     reviewAssignment,
     fullApplicationStructure,
   })
@@ -57,69 +56,67 @@ const ReviewPage: React.FC<{
   )
     return <Header>Review in Progress</Header>
 
-  const { sections, responsesByCode, info } = fullReviewStructure
-  return (
+  const {
+    sections,
+    responsesByCode,
+    info: {
+      serial,
+      current: { stage },
+      name,
+    },
+  } = fullReviewStructure
+
+  const ReviewMain: React.FC = () => (
     <>
-      <Segment.Group>
-        <Segment textAlign="center">
-          <Label color="blue">{strings.STAGE_PLACEHOLDER}</Label>
-          <Header
-            content={fullApplicationStructure.info.name}
-            subheader={strings.DATE_APPLICATION_PLACEHOLDER}
+      <Segment className="sup" style={inlineStyles.top}>
+        {Object.values(sections).map((section) => (
+          <SectionWrapper
+            key={`ApplicationSection_${section.details.id}`}
+            isActive={isSectionActive(section.details.code)}
+            toggleSection={toggleSection(section.details.code)}
+            section={section}
+            extraSectionTitleContent={(section: SectionState) => <SectionProgress {...section} />}
+            extraPageContent={(page: Page) => <ApproveAllButton page={page} />}
+            scrollableAttachment={(page: Page) => (
+              <ScrollableAttachment
+                code={`${section.details.code}P${page.number}`}
+                addScrollabe={addScrollable}
+              />
+            )}
+            responsesByCode={responsesByCode as ResponsesByCode}
+            applicationData={fullApplicationStructure.info}
+            serial={serial}
+            isReview
+            canEdit={
+              reviewAssignment?.review?.status === ReviewStatus.Draft ||
+              reviewAssignment?.review?.status === ReviewStatus.Locked
+            }
           />
-          <Header
-            as="h3"
-            color="grey"
-            content={strings.TITLE_REVIEW_SUMMARY}
-            subheader={strings.SUBTITLE_REVIEW}
-          />
-        </Segment>
-        <Segment basic style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {Object.values(sections).map((section) => (
-            <SectionWrapper
-              key={`ApplicationSection_${section.details.id}`}
-              isActive={isSectionActive(section.details.code)}
-              toggleSection={toggleSection(section.details.code)}
-              section={section}
-              extraSectionTitleContent={(section: SectionStateNEW) => (
-                <SectionProgress {...section} />
-              )}
-              extraPageContent={(page: PageNEW) => <ApproveAllButton page={page} />}
-              scrollableAttachment={(page: PageNEW) => (
-                <ScrollableAttachment
-                  code={`${section.details.code}P${page.number}`}
-                  addScrollabe={addScrollable}
-                />
-              )}
-              responsesByCode={responsesByCode as ResponsesByCode}
-              serial={info.serial}
-              isReview
-              canEdit={
-                reviewAssignment?.review?.status === ReviewStatus.Draft ||
-                reviewAssignment?.review?.status === ReviewStatus.Locked
-              }
-            />
-          ))}
-        </Segment>
-        <Segment
-          basic
-          style={{
-            marginLeft: '10%',
-            marginRight: '10%',
-          }}
-        >
-          <ReviewSubmit
-            structure={fullReviewStructure}
-            reviewAssignment={reviewAssignment}
-            scrollTo={scrollTo}
-          />
-        </Segment>
-      </Segment.Group>
+        ))}
+      </Segment>
+      <Segment basic style={inlineStyles.bot}>
+        <ReviewSubmit
+          structure={fullReviewStructure}
+          reviewAssignment={reviewAssignment}
+          scrollTo={scrollTo}
+        />
+      </Segment>
     </>
+  )
+
+  return error ? (
+    <Message error title={strings.ERROR_GENERIC} list={[error]} />
+  ) : (
+    <ReviewHeader
+      applicationStage={stage.name || ''}
+      applicationName={name}
+      currentUser={currentUser}
+      ChildComponent={ReviewMain}
+    />
   )
 }
 
-const ApproveAllButton: React.FC<{ page: PageNEW }> = ({ page }) => {
+const ApproveAllButton: React.FC<{ page: Page }> = ({ page }) => {
   const [updateReviewResponse] = useUpdateReviewResponseMutation()
 
   const reviewResponses = page.state.map((element) => element.thisReviewLatestResponse)
@@ -142,10 +139,38 @@ const ApproveAllButton: React.FC<{ page: PageNEW }> = ({ page }) => {
     return null
 
   return (
-    <Button
-      onClick={massApprove}
-    >{`${strings.BUTTON_REVIEW_APPROVE_ALL} (${responsesToReview.length})`}</Button>
+    <div style={inlineStyles.button}>
+      <Button
+        style={inlineStyles.approve}
+        onClick={massApprove}
+        content={`${strings.BUTTON_REVIEW_APPROVE_ALL} (${responsesToReview.length})`}
+      />
+    </div>
   )
+}
+
+// Styles - TODO: Move to LESS || Global class style (semantic)
+const inlineStyles = {
+  top: {
+    background: 'white',
+    border: 'none',
+    borderRadius: 0,
+    boxShadow: 'none',
+    paddingTop: 25,
+  } as CSSProperties,
+  bot: {
+    marginLeft: '10%',
+    marginRight: '10%',
+  } as CSSProperties,
+  button: { display: 'flex', justifyContent: 'flex-end', paddingRight: 20 } as CSSProperties,
+  approve: {
+    background: 'none',
+    color: '#003BFE',
+    letterSpacing: 1.4,
+    border: '2px solid #003BFE',
+    borderRadius: 8,
+    textTransform: 'capitalize',
+  } as CSSProperties,
 }
 
 export default ReviewPage

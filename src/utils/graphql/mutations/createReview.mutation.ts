@@ -18,6 +18,14 @@ export default gql`
     ) {
       review {
         id
+        reviewAssignment {
+          id
+          reviews {
+            nodes {
+              id
+            }
+          }
+        }
       }
     }
   }

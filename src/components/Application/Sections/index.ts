@@ -1,4 +1,5 @@
 import SectionsList from './SectionsList'
 import SectionsProgress from './SectionsProgress'
+import SectionWrapper from './SectionWrapper'
 
-export { SectionsList, SectionsProgress }
+export { SectionsList, SectionsProgress, SectionWrapper }

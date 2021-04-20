@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client'
 import { useState } from 'react'
 import { useCreateApplicationMutation } from '../../utils/generated/graphql'
 
-export interface createApplicationProps {
+interface CreateApplicationProps {
   serial: string
   name: string
   templateId: number
@@ -12,11 +12,11 @@ export interface createApplicationProps {
   templateResponses: { templateElementId: number }[]
 }
 
-interface useCreateApplicationProps {
+interface UseCreateApplicationProps {
   onCompleted: () => void
 }
 
-const useCreateApplication = ({ onCompleted }: useCreateApplicationProps) => {
+const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<ApolloError | undefined>()
 
@@ -39,7 +39,7 @@ const useCreateApplication = ({ onCompleted }: useCreateApplicationProps) => {
     orgId,
     templateSections,
     templateResponses,
-  }: createApplicationProps) => {
+  }: CreateApplicationProps) => {
     setProcessing(true)
     applicationMutation({
       variables: {

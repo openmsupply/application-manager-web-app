@@ -1,5 +1,8 @@
 import { ReviewResponse } from '../../generated/graphql'
-import { GroupedReviewResponses } from '../../types'
+
+type GroupedReviewResponses = {
+  [templateElementId: string]: ReviewResponse[]
+}
 
 const getGroupedReviewResponses = (reviewResponses: ReviewResponse[]): GroupedReviewResponses => {
   const result: GroupedReviewResponses = {}

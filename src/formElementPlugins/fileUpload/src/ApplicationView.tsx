@@ -3,7 +3,6 @@ import { Button, Icon, Grid, List, Image, Message, Segment, Loader } from 'seman
 import { nanoid } from 'nanoid'
 import { ApplicationViewProps } from '../../types'
 import strings from '../constants'
-import config from '../../../config.json'
 import { useUserState } from '../../../contexts/UserState'
 import { useRouter } from '../../../utils/hooks/useRouter'
 
@@ -29,23 +28,21 @@ interface FileInfo {
   fileData?: FileResponseData | null
 }
 
-const host = config.serverREST
-const { uploadEndpoint } = config
-
 const ApplicationView: React.FC<ApplicationViewProps> = ({
-  code,
+  element,
   parameters,
-  onUpdate,
-  value,
-  setValue,
-  isEditable,
-  // currentResponse,
-  validationState,
   onSave,
   Markdown,
   initialValue,
+  currentResponse,
+  applicationData,
 }) => {
+  const { isEditable } = element
   const { label, description, fileCountLimit, fileExtensions, fileSizeLimit } = parameters
+
+  const { config } = applicationData
+  const host = config.serverREST
+  const { uploadEndpoint } = config
 
   // These values required for file upload query parameters:
   const {
@@ -159,12 +156,14 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
           onChange={handleFiles}
         />
         <Segment basic textAlign="center">
-          <Button primary disabled={!isEditable} onClick={() => fileInputRef?.current?.click()}>
-            <Icon name="upload" />
-            {uploadedFiles.length === 0
-              ? strings.BUTTON_CLICK_TO_UPLOAD
-              : strings.BUTTON_UPLOAD_ANOTHER}
-          </Button>
+          {uploadedFiles.length < fileCountLimit && (
+            <Button primary disabled={!isEditable} onClick={() => fileInputRef?.current?.click()}>
+              <Icon name="upload" />
+              {uploadedFiles.length === 0
+                ? strings.BUTTON_CLICK_TO_UPLOAD
+                : strings.BUTTON_UPLOAD_ANOTHER}
+            </Button>
+          )}
         </Segment>
         <List horizontal verticalAlign="top">
           {uploadedFiles.map((file) => {

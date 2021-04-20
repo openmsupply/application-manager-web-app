@@ -1,4 +1,5 @@
 import {
+  ApplicantActionCell,
   ApplicantCell,
   ApplicationNameCell,
   ConsolidatorCell,
@@ -6,6 +7,7 @@ import {
   LastActiveDateCell,
   OrganisationCell,
   OutcomeCell,
+  ReviewerActionCell,
   SerialNumberCell,
   StageCell,
   StatusCell,
@@ -27,12 +29,12 @@ import { ColumnDetails } from '../../types'
 
 const allColumns: { [key in APPLICATION_COLUMNS]: ColumnDetails } = {
   SERIAL_NUMBER: {
-    headerName: 'Serial number',
+    headerName: '',
     sortName: 'serial',
     ColumnComponent: SerialNumberCell,
   },
   LAST_ACTIVE_DATE: {
-    headerName: 'Last active date',
+    headerName: 'Last active',
     sortName: 'last-active-date',
     ColumnComponent: LastActiveDateCell,
   },
@@ -75,6 +77,16 @@ const allColumns: { [key in APPLICATION_COLUMNS]: ColumnDetails } = {
     headerName: 'Outcome',
     sortName: 'outcome',
     ColumnComponent: OutcomeCell,
+  },
+  REVIEWER_ACTION: {
+    headerName: '',
+    sortName: 'outcome',
+    ColumnComponent: ReviewerActionCell,
+  },
+  APPLICANT_ACTION: {
+    headerName: '',
+    sortName: 'outcome',
+    ColumnComponent: ApplicantActionCell,
   },
 }
 

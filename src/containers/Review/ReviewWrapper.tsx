@@ -7,7 +7,7 @@ import useGetReviewInfo from '../../utils/hooks/useGetReviewInfo'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { FullStructure } from '../../utils/types'
 import strings from '../../utils/constants'
-import ReviewPageWrapperNEW from './ReviewPageWrapperNEW'
+import ReviewPageWrapper from './ReviewPageWrapper'
 import ReviewHome from './ReviewHome'
 
 interface ReviewWrapperProps {
@@ -41,7 +41,7 @@ const ReviewWrapper: React.FC<ReviewWrapperProps> = ({ structure }) => {
         <ReviewHome assignments={assignments} structure={structure} />
       </Route>
       <Route exact path={`${path}/:reviewId`}>
-        <ReviewPageWrapperNEW {...{ structure, reviewAssignments: assignments }} />
+        <ReviewPageWrapper {...{ structure, reviewAssignments: assignments }} />
       </Route>
       <Route>
         <NoMatch />

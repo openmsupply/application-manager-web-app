@@ -1,43 +1,70 @@
-import { useState } from 'react'
-import { ReviewResponseDecision, useSubmitReviewMutation } from '../generated/graphql'
-import { ReviewQuestionDecision } from '../types'
-interface UseSubmitReviewProps {
+import {
+  useUpdateReviewMutation,
+  Decision,
+  ReviewPatch,
+  ReviewResponseStatus,
+  Trigger,
+} from '../generated/graphql'
+import { FullStructure } from '../types'
+
+// below lines are used to get return type of the function that is returned by useUpdateReviewMutation
+type UseUpdateReviewMutationReturnType = ReturnType<typeof useUpdateReviewMutation>
+type PromiseReturnType = ReturnType<UseUpdateReviewMutationReturnType[0]>
+// hook used to submit review, , as per type definition below (returns promise that resolve with mutation result data)
+type UseSubmitReview = (
   reviewId: number
-}
+) => (structure: FullStructure, decision: Decision) => PromiseReturnType
 
-const useSubmitReview = ({ reviewId }: UseSubmitReviewProps) => {
-  const [submitted, setSubmitted] = useState(false)
-  const [processing, setProcessing] = useState(false)
-  const [error, setError] = useState('')
+type ConstructReviewPatch = (structure: FullStructure, decision: Decision) => ReviewPatch
 
-  const [submitReviewMutation] = useSubmitReviewMutation({
-    onCompleted: () => setProcessing(false),
-    onError: (submissionError) => {
-      setError(submissionError.message)
-      setProcessing(false)
-    },
-  })
+const useSubmitReview: UseSubmitReview = (reviewId) => {
+  const [updateReview] = useUpdateReviewMutation()
 
-  const submit = async (reviewerResponses: ReviewQuestionDecision[]) => {
-    setSubmitted(true)
-    setProcessing(true)
-    return await submitReviewMutation({
+  const constructReviewPatch: ConstructReviewPatch = (structure, decision) => {
+    const reviewResponses = Object.values(structure?.elementsById || []).filter(
+      (element) => element.thisReviewLatestResponse
+    )
+
+    const reviewResponsesPatches = reviewResponses.map(({ thisReviewLatestResponse }) => ({
+      patch: {
+        decision: thisReviewLatestResponse?.decision,
+        comment: thisReviewLatestResponse?.comment,
+        status: ReviewResponseStatus.Submitted,
+        recommendedApplicationVisibility: thisReviewLatestResponse?.recommendedApplicantVisibility,
+      },
+      id: Number(thisReviewLatestResponse?.id),
+    }))
+
+    const reviewDecision = structure.thisReview?.reviewDecision
+
+    const reviewDecisionPatch = {
+      id: Number(reviewDecision?.id),
+      patch: {
+        comment: reviewDecision?.comment || undefined,
+        decision: decision,
+      },
+    }
+
+    return {
+      trigger: Trigger.OnReviewSubmit,
+      reviewResponsesUsingId: {
+        updateById: reviewResponsesPatches,
+      },
+      reviewDecisionsUsingId: {
+        updateById: [reviewDecisionPatch],
+      },
+    }
+  }
+
+  const submitReview = async (structure: FullStructure, decision: Decision) =>
+    updateReview({
       variables: {
-        reviewId,
-        reviewResponses: reviewerResponses.map(({ id, decision, comment }) => ({
-          id,
-          patch: { decision: decision as ReviewResponseDecision, comment },
-        })),
+        reviewId: reviewId,
+        reviewPatch: constructReviewPatch(structure, decision),
       },
     })
-  }
 
-  return {
-    error,
-    processing,
-    submitted,
-    submit,
-  }
+  return submitReview
 }
 
 export default useSubmitReview

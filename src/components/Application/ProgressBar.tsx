@@ -1,181 +1,162 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Accordion, Container, Grid, Header, Icon, Label, List, Sticky } from 'semantic-ui-react'
-import {
-  CurrentPage,
-  Page,
-  PageElements,
-  SectionProgress,
-  SectionsStructure,
-} from '../../utils/types'
-import { useApplicationState } from '../../contexts/ApplicationState'
 import strings from '../../utils/constants'
+import { checkPageIsAccessible } from '../../utils/helpers/structure'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { validatePage } from '../../utils/helpers/validation/validatePage'
-import getPreviousPage from '../../utils/helpers/application/getPreviousPage'
+import {
+  FullStructure,
+  MethodRevalidate,
+  MethodToCallProps,
+  Page,
+  Progress,
+  SectionAndPage,
+} from '../../utils/types'
 
-// TODO: Remove this
 interface ProgressBarProps {
-  serialNumber: string
-  current: CurrentPage
-  isLinear: boolean
-  sections: SectionsStructure
-  validateElementsInPage: (props: CurrentPage) => boolean
-}
-
-interface ClickedLinkParameters {
-  canNavigate: boolean
-  sectionCode: string
-  pageNumber?: number
+  structure: FullStructure
+  requestRevalidation: MethodRevalidate
+  strictSectionPage: SectionAndPage | null
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
-  serialNumber,
-  current,
-  isLinear,
-  sections,
-  validateElementsInPage,
+  structure,
+  requestRevalidation,
+  strictSectionPage,
 }) => {
-  const { push } = useRouter()
   const {
-    applicationState: {
-      inputElementsActivity: { areTimestampsInSequence },
-    },
-  } = useApplicationState()
-  const [progressLinkClicked, setProgressLinkClicked] = useState(false)
-  const [clickedLinkParameters, setClickedLinkParameters] = useState<ClickedLinkParameters>({
-    canNavigate: false,
-    sectionCode: '',
-    pageNumber: 0,
-  })
+    info: { isLinear },
+    sections,
+  } = structure
 
-  const getSectionDetails = () =>
-    Object.values(sections as SectionsStructure).map(({ details: section }) => section)
+  const {
+    query: { sectionCode: currentSectionCode, page },
+    push,
+  } = useRouter()
 
-  const isPreviousPageIsValid = (sectionCode: string, pageNumber: number) => {
-    const sections = getSectionDetails()
-    const previousPage = getPreviousPage({ sections, sectionCode, pageNumber })
-    return previousPage ? validateElementsInPage(previousPage) : true // First page
-  }
+  const activeIndex =
+    Object.values(sections).findIndex(({ details }) => details.code === currentSectionCode) || 0
 
-  // Make sure all responses are up-to-date (areTimestampsInSequence)
-  // and only proceed when button is clicked AND responses are ready
-  useEffect(() => {
-    if (areTimestampsInSequence && progressLinkClicked) {
-      handleLinkClick()
-    }
-  }, [areTimestampsInSequence, progressLinkClicked])
-
-  const handleLinkClick = async () => {
-    const { canNavigate, sectionCode, pageNumber } = clickedLinkParameters
-    setProgressLinkClicked(false)
-    const page = pageNumber ? pageNumber : 1
-    if (canNavigate || isPreviousPageIsValid(sectionCode, page))
-      push(`/application/${serialNumber}/${sectionCode}/Page${page}`)
-  }
-
-  const changeTo = (sectionCode: string, pageNumber?: number) => {
-    setClickedLinkParameters({
-      canNavigate: !isLinear,
-      sectionCode,
-      pageNumber,
-    })
-    setProgressLinkClicked(true)
-  }
-
-  const getPageIndicator = (pageState: PageElements) => {
-    const pageStatus = validatePage(pageState)
-    const indicator = {
-      VALID: <Icon name="check circle" color="green" />,
-      NOT_VALID: <Icon name="exclamation circle" color="red" />,
-      INCOMPLETE: <Icon name="circle outline" />,
-    }
-    return pageStatus ? indicator[pageStatus] : null
-  }
-
-  const pageList = (
-    sectionCode: string,
-    pages: {
-      [pageName: string]: Page
-    }
-  ) => {
-    const isActivePage = (sectionCode: string, pageNumber: number) =>
-      current.section.code === sectionCode && current.page === pageNumber
-
-    return (
-      <List style={{ paddingLeft: '50px' }} link>
-        {Object.entries(pages).map(([pageName, { number, state }]) => {
-          return (
-            <List.Item
-              active={isActivePage(sectionCode, number)}
-              as="a"
-              key={`ProgressSection_${sectionCode}_${number}`}
-              onClick={() => changeTo(sectionCode, number)}
-            >
-              {getPageIndicator(state)}
-              {pageName}
-            </List.Item>
-          )
-        })}
-      </List>
-    )
-  }
-
-  const getSectionIndicator = (progress: SectionProgress | undefined, step: number) => {
-    if (!progress?.completed)
-      return (
-        <Label circular as="a" basic color="blue" key={`progress_${step}`}>
-          {step}
-        </Label>
-      )
-    const { completed, valid } = progress
-    if (completed && valid) return <Icon name="check circle" color="green" size="large" />
-    if (completed && !valid) return <Icon name="exclamation circle" color="red" size="large" />
-  }
-
-  const sectionList = () => {
-    const isActiveSection = (sectionCode: string) => current.section.code === sectionCode
-    const isDisabled = (code: string, index: number) => {
-      return isLinear && current.section.index < index && !isPreviousPageIsValid(code, 1)
+  const handleChangeToPage = (sectionCode: string, pageNumber: number) => {
+    if (!isLinear) {
+      push(`/application/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
+      return
     }
 
-    return Object.values(sections).map(({ details, progress, pages }) => {
-      const stepNumber = details.index + 1
-      const { code, index, title } = details
-      return {
-        key: `progress_${stepNumber}`,
-        title: {
-          children: (
-            <Grid>
-              <Grid.Column width={4} textAlign="right" verticalAlign="middle">
-                {getSectionIndicator(progress, stepNumber)}
-              </Grid.Column>
-              <Grid.Column width={12} textAlign="left" verticalAlign="middle">
-                <Header as={isActiveSection(code) ? 'h3' : 'h4'} disabled={isDisabled(code, index)}>
-                  {title}
-                </Header>
-              </Grid.Column>
-            </Grid>
-          ),
-        },
-        onTitleClick: () => changeTo(code),
-        content: {
-          content: pages ? pageList(code, pages) : null,
-        },
+    // Use validationMethod to check if can change to page (on linear application) OR
+    // display current page with strict validation
+    requestRevalidation(({ firstStrictInvalidPage, setStrictSectionPage }: MethodToCallProps) => {
+      if (!firstStrictInvalidPage) {
+        setStrictSectionPage(null)
+        push(`/application/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
+        return
+      }
+      if (
+        checkPageIsAccessible({
+          fullStructure: structure,
+          firstIncomplete: firstStrictInvalidPage,
+          current: { sectionCode, pageNumber },
+        })
+      ) {
+        setStrictSectionPage(null)
+        push(`/application/${structure.info.serial}/${sectionCode}/Page${pageNumber}`)
+      } else {
+        setStrictSectionPage(firstStrictInvalidPage)
+        push(
+          `/application/${structure.info.serial}/${firstStrictInvalidPage.sectionCode}/Page${firstStrictInvalidPage.pageNumber}`
+        )
       }
     })
   }
 
+  const getPageList = (
+    sectionCode: string,
+    pages: { [pageNumber: string]: Page },
+    isStrictSection: boolean
+  ) => {
+    const isActivePage = (sectionCode: string, pageNumber: number) =>
+      currentSectionCode === sectionCode && Number(page) === pageNumber
+
+    const checkPageIsStrict = (pageNumber: string) =>
+      isStrictSection && strictSectionPage?.pageNumber === Number(pageNumber)
+
+    return (
+      <List
+        link
+        style={inlineStyles.link}
+        items={Object.entries(pages).map(([number, { name: pageName, progress }]) => ({
+          key: `ProgressSection_${sectionCode}_${number}`,
+          active: isActivePage(sectionCode, Number(number)),
+          as: 'a',
+          icon: progress ? getIndicator(progress, checkPageIsStrict(number)) : null,
+          content: pageName,
+          onClick: () => handleChangeToPage(sectionCode, Number(number)),
+        }))}
+      />
+    )
+  }
+
+  // We want to show three states:
+  // error -> if at least one error or if not completed and strict
+  // success -> if completed and valid
+  // empty circle with number -> if none of the above and section (has step), also add key
+  // or empty circle -> if none of the above
+  const getIndicator = (progress: Progress, isStrict: boolean, step?: number) => {
+    const { completed, valid } = progress
+    const isStrictlylInvalid = !valid || (isStrict && !completed)
+    const size = step ? 'large' : 'small'
+
+    if (isStrictlylInvalid) return <Icon name={'exclamation circle'} color={'red'} size={size} />
+    if (completed && valid) return <Icon name={'check circle'} color={'green'} size={size} />
+
+    return step ? (
+      <Label circular as="a" basic color="blue" key={`progress_${step}`}>
+        {step}
+      </Label>
+    ) : (
+      <Icon name="circle outline" />
+    )
+  }
+
+  const sectionsList = Object.values(sections).map(({ details, progress, pages }, index) => {
+    const isStrictSection = !!strictSectionPage && strictSectionPage.sectionCode === details.code
+
+    const stepNumber = index + 1
+    const { code, title } = details
+    return {
+      key: `progress_${stepNumber}`,
+      title: {
+        children: (
+          <Grid>
+            <Grid.Column width={4} textAlign="right" verticalAlign="middle">
+              {progress && getIndicator(progress, isStrictSection, stepNumber)}
+            </Grid.Column>
+            <Grid.Column width={12} textAlign="left" verticalAlign="middle">
+              <Header as="h4">{title}</Header>
+            </Grid.Column>
+          </Grid>
+        ),
+      },
+      onTitleClick: () => handleChangeToPage(code, 1),
+      content: {
+        content: getPageList(code, pages, isStrictSection),
+      },
+    }
+  })
+
   return (
-    <Sticky as={Container}>
-      <Header as="h5" style={{ paddingLeft: 30 }}>
+    <Sticky as={Container} offset={135}>
+      <Header as="h5" style={inlineStyles.top}>
         {strings.TITLE_INTRODUCTION}
       </Header>
-      <Accordion
-        activeIndex={current.section.index} //TODO: Check if section index match section in list
-        panels={sectionList()}
-      />
+      <Accordion activeIndex={activeIndex} panels={sectionsList} />
     </Sticky>
   )
+}
+
+// Styles - TODO: Move to LESS || Global class style (semantic)
+const inlineStyles = {
+  top: { paddingLeft: 30 },
+  link: { paddingLeft: 50 },
 }
 
 export default ProgressBar

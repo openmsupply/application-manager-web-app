@@ -48,7 +48,7 @@ const useQuerySectionActivation = ({
       currentActiveSections = currentActiveSections.filter((code) => sectionCode !== code)
     else currentActiveSections.push(sectionCode)
 
-    replace(`${location.pathname}?activeSections=${joinOrNone(currentActiveSections)}`)
+    replace(`${location.pathname}?activeSections=${joinOrNone(currentActiveSections.sort())}`)
   }
 
   const isSectionActive: IsSectionActive = (sectionCode) =>

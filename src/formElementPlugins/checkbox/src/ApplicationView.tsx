@@ -16,18 +16,13 @@ interface CheckboxSavedState {
 }
 
 const ApplicationView: React.FC<ApplicationViewProps> = ({
-  code,
+  element,
   parameters,
-  onUpdate,
-  value,
-  setValue,
-  isEditable,
-  currentResponse,
-  validationState,
   onSave,
   Markdown,
   initialValue,
 }) => {
+  const { isEditable } = element
   const { label, description, checkboxes, type, layout } = parameters
 
   const [checkboxElements, setCheckboxElements] = useState<Checkbox[]>(

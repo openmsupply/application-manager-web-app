@@ -4,19 +4,17 @@ import { ApplicationViewProps } from '../../types'
 import config from '../../../config.json'
 
 const ApplicationView: React.FC<ApplicationViewProps> = ({
+  element,
   parameters,
-  onUpdate,
   value,
   // setValue
   setIsActive,
-  isEditable,
-  currentResponse,
   validationState,
   onSave,
   Markdown,
-  isRequired,
   validate,
 }) => {
+  const { isEditable } = element
   const {
     placeholder,
     confirmPlaceholder,

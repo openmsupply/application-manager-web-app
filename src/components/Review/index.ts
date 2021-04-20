@@ -1,17 +1,18 @@
-import DecisionArea from './DecisionArea'
 import SectionProgress from './SectionProgress'
-import ReviewSection from './ReviewSection'
+import Stage, { tempStageStyle } from './Stage'
+import ReviewHeader from './ReviewHeader'
 import ReviewSectionRowAction from './ReviewSectionRowAction'
 import ReviewSectionRowAssigned from './ReviewSectionRowAssigned'
 import ReviewSectionRowLastActionDate from './ReviewSectionRowLastActionDate'
 import ReviewSectionRowProgress from './ReviewSectionRowProgress'
 
 export {
-  DecisionArea,
   SectionProgress,
-  ReviewSection,
+  Stage,
+  ReviewHeader,
   ReviewSectionRowAction,
   ReviewSectionRowAssigned,
   ReviewSectionRowLastActionDate,
   ReviewSectionRowProgress,
+  tempStageStyle,
 }

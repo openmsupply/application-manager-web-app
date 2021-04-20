@@ -1,6 +1,6 @@
 import { useUpdateReviewMutation, ReviewPatch, Trigger, Decision } from '../generated/graphql'
-import { AssignmentDetailsNEW, FullStructure } from '../types'
-import useGetFullReviewStructure from './useGetFullReviewStructure'
+import { AssignmentDetails, FullStructure } from '../types'
+import { useGetFullReviewStructureAsync } from './useGetReviewStructureForSection'
 
 // below lines are used to get return type of the function that is returned by useRestartReviewMutation
 type UseUpdateReviewMutationReturnType = ReturnType<typeof useUpdateReviewMutation>
@@ -9,7 +9,7 @@ type PromiseReturnType = ReturnType<UseUpdateReviewMutationReturnType[0]>
 type UseRestartReview = (props: {
   reviewId: number
   structure: FullStructure
-  assignment: AssignmentDetailsNEW
+  assignment: AssignmentDetails
 }) => () => PromiseReturnType
 
 type ConstructReviewPatch = (structure: FullStructure) => ReviewPatch
@@ -18,15 +18,18 @@ type ConstructReviewPatch = (structure: FullStructure) => ReviewPatch
 const useRestartReview: UseRestartReview = ({ reviewId, structure, assignment }) => {
   const [updateReview] = useUpdateReviewMutation()
 
-  const { getFullReviewStructureAsync } = useGetFullReviewStructure({
+  const getFullReviewStructureAsync = useGetFullReviewStructureAsync({
     fullApplicationStructure: structure,
     reviewAssignment: assignment,
-    awaitMode: true,
   })
 
   const constructReviewPatch: ConstructReviewPatch = (structure) => {
     const elements = Object.values(structure?.elementsById || {})
-    const reviewableElements = elements.filter((element) => element?.isAssigned)
+
+    // Exclude not assigned, not visible and missing responses
+    const reviewableElements = elements.filter(
+      (element) => element?.isAssigned && element?.element.isVisible && element.response?.id
+    )
 
     // For re-assignment this would be slightly different, we need to consider latest review response of this level
     // not necessarily this thisReviewLatestResponse (would be just latestReviewResponse, from all reviews at this level)
@@ -56,12 +59,14 @@ const useRestartReview: UseRestartReview = ({ reviewId, structure, assignment })
   }
 
   return async () => {
-    return await updateReview({
+    const result = await updateReview({
       variables: {
         reviewId: reviewId,
         reviewPatch: constructReviewPatch(await getFullReviewStructureAsync()),
       },
     })
+    if (result.errors) throw new Error(result.errors.toString())
+    return result
   }
 }
 

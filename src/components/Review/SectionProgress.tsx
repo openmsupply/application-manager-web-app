@@ -1,25 +1,20 @@
 import React from 'react'
 import { Icon, Label, Progress } from 'semantic-ui-react'
-import { ReviewProgress, SectionProgress, SectionStateNEW } from '../../utils/types'
+import { ReviewProgress, SectionProgress, SectionState } from '../../utils/types'
 import strings from '../../utils/constants'
 
-const SectionProgress: React.FC<SectionStateNEW> = ({ reviewProgress, reviewAction }) => {
+const SectionProgress: React.FC<SectionState> = ({ reviewProgress, reviewAction }) => {
   if (reviewAction?.isAssignedToCurrentUser && reviewProgress) {
     return reviewAction.isReviewable ? (
       <SectionProgressBar reviewProgress={reviewProgress} />
     ) : (
       <Label
-        basic
         icon={<Icon name="circle" size="mini" color="blue" />}
         content={strings.LABEL_ASSIGNED_TO_YOU}
       />
     )
   }
-  return (
-    <Label style={{ backgroundColor: 'White', color: 'Black' }}>
-      {strings.LABEL_ASSIGNED_TO_OTHER}
-    </Label>
-  )
+  return <Label style={labelStyle}>{strings.LABEL_ASSIGNED_TO_OTHER}</Label>
 }
 
 const getProgressTitle = ({ doneNonConform, doneConform, totalReviewable }: ReviewProgress) => {
@@ -43,6 +38,9 @@ const SectionProgressBar: React.FC<SectionProgressBarProps> = ({ reviewProgress 
     />
   )
 }
+
+// Styles - TODO: Move to LESS || Global class style (semantic)
+const labelStyle = { background: 'none', color: 'Black' }
 
 export default SectionProgress
 export { SectionProgressBar }

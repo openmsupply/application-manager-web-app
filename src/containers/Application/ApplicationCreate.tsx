@@ -1,26 +1,28 @@
 import React, { useEffect } from 'react'
-import { ApplicationStart, Loading } from '../../components'
+import { Button, Divider, Header, Message, Segment } from 'semantic-ui-react'
+import Markdown from '../../utils/helpers/semanticReactMarkdown'
+import { ApplicationHeader, ApplicationSelectType, Loading } from '../../components'
 import { useApplicationState } from '../../contexts/ApplicationState'
-import { useRouter } from '../../utils/hooks/useRouter'
-import { Header, Message } from 'semantic-ui-react'
-import useLoadTemplate from '../../utils/hooks/useLoadTemplate'
-import useCreateApplication from '../../utils/hooks/useCreateApplication'
 import { useUserState } from '../../contexts/UserState'
+import useCreateApplication from '../../utils/hooks/useCreateApplication'
+import useLoadTemplate from '../../utils/hooks/useLoadTemplate'
+import { useRouter } from '../../utils/hooks/useRouter'
 import strings from '../../utils/constants'
-
-// TODO: Remove this
+import { SectionsList } from '../../components/Application/Sections'
 
 const ApplicationCreate: React.FC = () => {
-  const { applicationState, setApplicationState } = useApplicationState()
-  const { serialNumber } = applicationState
-  const { push, query } = useRouter()
-  const { type } = query
+  const {
+    applicationState: { serialNumber },
+    setApplicationState,
+  } = useApplicationState()
+  const {
+    push,
+    query: { type },
+  } = useRouter()
 
-  const { apolloError, error, loading, template, sectionsStructure, elementsIds } = useLoadTemplate(
-    {
-      templateCode: type as string,
-    }
-  )
+  const { error, loading, template } = useLoadTemplate({
+    templateCode: type,
+  })
 
   const {
     userState: { currentUser },
@@ -33,19 +35,19 @@ const ApplicationCreate: React.FC = () => {
 
   const { processing, error: creationError, create } = useCreateApplication({
     onCompleted: () => {
-      if (serialNumber && sectionsStructure && Object.keys(sectionsStructure).length > 0) {
+      if (serialNumber && template?.sections && template?.sections.length > 0) {
         // Call Application page on first section
-        const firstSection = Object.keys(sectionsStructure)[0]
+        const firstSection = template.sections[0].code
         // The pageNumber starts in 1 when is a new application
         push(`${serialNumber}/${firstSection}/Page1`)
       }
     },
   })
 
-  const handleCreate = () => {
+  const handleCreate = (_?: any) => {
     setApplicationState({ type: 'reset' })
 
-    if (!template || !sectionsStructure) {
+    if (!template?.sections) {
       console.log('Problem to create application - unexpected parameters')
       return
     }
@@ -53,37 +55,58 @@ const ApplicationCreate: React.FC = () => {
     const serialNumber = Math.round(Math.random() * 10000).toString()
     setApplicationState({ type: 'setSerialNumber', serialNumber })
 
+    const { name, elementsIds, sections } = template
+
     create({
-      name: `Test application of ${template.name}`,
+      name,
       serial: serialNumber,
       templateId: template.id,
       userId: currentUser?.userId,
       orgId: currentUser?.organisation?.orgId,
-      templateSections: Object.values(sectionsStructure).map(({ details: { id } }) => {
+      templateSections: sections.map(({ id }) => {
         return { templateSectionId: id }
       }),
-      templateResponses: elementsIds.map((id) => {
+      templateResponses: (elementsIds as number[]).map((id) => {
         return { templateElementId: id }
       }),
     })
   }
 
-  return error || apolloError || creationError ? (
-    <Message
-      error
-      header={strings.ERROR_APPLICATION_CREATE}
-      list={[error, apolloError?.message, creationError?.message]}
-    />
-  ) : loading || processing ? (
-    <Loading />
-  ) : template && sectionsStructure ? (
-    <ApplicationStart
+  if (error || creationError)
+    return (
+      <Message
+        error
+        title={strings.ERROR_APPLICATION_CREATE}
+        list={[error, creationError?.message]}
+      />
+    )
+
+  if (loading || !template?.startMessage) return <Loading />
+
+  const NewApplicationInfo: React.FC = () => {
+    return template?.sections ? (
+      <>
+        <Header as="h5">{strings.SUBTITLE_APPLICATION_STEPS}</Header>
+        <Header as="h5">{strings.TITLE_STEPS.toUpperCase()}</Header>
+        <SectionsList sections={template.sections} />
+        <Divider />
+        <Markdown text={template.startMessage || ''} semanticComponent="Message" info />
+        <Button color="blue" loading={processing} onClick={handleCreate}>
+          {strings.BUTTON_APPLICATION_START}
+        </Button>
+      </>
+    ) : null
+  }
+
+  return template ? (
+    <ApplicationHeader
       template={template}
-      sections={sectionsStructure}
-      startApplication={() => handleCreate()}
+      currentUser={currentUser}
+      ChildComponent={NewApplicationInfo}
     />
   ) : (
-    <Header as="h2" icon="exclamation circle" content="No template found!" />
+    // TODO
+    <ApplicationSelectType />
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ErrorBoundary, pluginProvider } from '.'
 import { ApplicationViewWrapperProps, PluginComponents, ValidationState } from './types'
-import { useApplicationState } from '../contexts/ApplicationState'
 import { useUpdateResponseMutation } from '../utils/generated/graphql'
 import {
   EvaluatorParameters,
@@ -13,33 +12,48 @@ import {
 import { useUserState } from '../contexts/UserState'
 import validate from './defaultValidate'
 import evaluateExpression from '@openmsupply/expression-evaluator'
-import { Form } from 'semantic-ui-react'
+import { Form, Icon } from 'semantic-ui-react'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
+import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
+import strings from '../utils/constants'
+import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
+import messages from '../utils/messages'
+import globalConfig from '../config.json'
+
+const graphQLEndpoint = globalConfig.serverGraphQL
 
 const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) => {
+  const {
+    element,
+    isStrictPage,
+    changesRequired,
+    currentResponse,
+    allResponses,
+    applicationData,
+  } = props
+
   const {
     code,
     pluginCode,
     parameters,
-    initialValue,
     isVisible,
     isEditable,
     isRequired,
     validationExpression,
     validationMessage,
-    currentResponse,
-    allResponses,
-    forceValidation,
-  } = props
+  } = element
+
+  const isValid = currentResponse?.isValid || true
 
   const [responseMutation] = useUpdateResponseMutation()
-  const { setApplicationState } = useApplicationState()
+  const { setState: setUpdateTrackerState } = useFormElementUpdateTracker()
 
   const {
     userState: { currentUser },
   } = useUserState()
+  const [value, setValue] = useState<any>(currentResponse?.text)
   const [validationState, setValidationState] = useState<ValidationState>({
-    isValid: null,
+    isValid,
   })
   const [evaluatedParameters, setEvaluatedParameters] = useState({})
 
@@ -51,13 +65,13 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   const dynamicParameters = config?.dynamicParameters
   const dynamicExpressions =
     dynamicParameters && extractDynamicExpressions(dynamicParameters, parameters)
-  const [value, setValue] = useState<any>(initialValue?.text)
 
   // Update dynamic parameters when responses change
   useEffect(() => {
     evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
-      objects: { responses: allResponses, currentUser },
+      objects: { responses: allResponses, currentUser, applicationData },
       APIfetch: fetch,
+      graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
     }).then((result: ElementPluginParameters) => {
       setEvaluatedParameters(result)
       setParametersReady(true)
@@ -65,33 +79,29 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   }, [allResponses])
 
   useEffect(() => {
-    if (forceValidation) onUpdate(currentResponse?.text)
-  }, [currentResponse, forceValidation])
+    onUpdate(currentResponse?.text)
+  }, [currentResponse, isStrictPage])
 
   const onUpdate = async (value: LooseString) => {
     const responses = { thisResponse: value, ...allResponses }
-
-    if (!validationExpression || value === undefined) {
-      setValidationState({ isValid: true } as ValidationState)
-      return { isValid: true }
-    }
-
-    const validationResult: ValidationState = await validate(
+    const newValidationState = await calculateValidationState({
       validationExpression,
-      validationMessage as string,
-      { objects: { responses, currentUser }, APIfetch: fetch }
-    )
-    setValidationState(validationResult)
-
-    return validationResult
+      validationMessage,
+      isRequired,
+      isStrictPage,
+      responses,
+      evaluationParameters: {
+        objects: { responses, currentUser, applicationData },
+        APIfetch: fetch,
+        graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
+      },
+      currentResponse,
+    })
+    setValidationState(newValidationState)
+    return newValidationState
   }
 
   const onSave = async (jsonValue: ResponseFull) => {
-    setApplicationState({
-      type: 'setElementTimestamp',
-      timestampType: 'elementLostFocusTimestamp',
-    })
-
     if (!jsonValue.customValidation) {
       // Validate and Save response -- generic
       const validationResult: ValidationState = await onUpdate(jsonValue.text)
@@ -103,12 +113,10 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
             isValid: validationResult.isValid,
           },
         })
-      if (jsonValue.text === allResponses[code]?.text) {
-        setApplicationState({
-          type: 'setElementTimestamp',
-          timestampType: 'elementsStateUpdatedTimestamp',
-        })
-      }
+      setUpdateTrackerState({
+        type: 'setElementUpdated',
+        textValue: jsonValue?.text || '',
+      })
     } else {
       // Save response for plugins with internal validation
       const { isValid, validationMessage } = jsonValue.customValidation
@@ -121,18 +129,18 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
           isValid,
         },
       })
-      setApplicationState({
-        type: 'setElementTimestamp',
-        timestampType: 'elementsStateUpdatedTimestamp',
+      setUpdateTrackerState({
+        type: 'setElementUpdated',
+        textValue: jsonValue?.text || '',
       })
     }
   }
 
   const setIsActive = () => {
     // Tells application state that a plugin field is in focus
-    setApplicationState({
-      type: 'setElementTimestamp',
-      timestampType: 'elementEnteredTimestamp',
+    setUpdateTrackerState({
+      type: 'setElementEntered',
+      textValue: value || '',
     })
   }
 
@@ -142,7 +150,9 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
     <ApplicationView
       onUpdate={onUpdate}
       onSave={onSave}
+      initialValue={currentResponse}
       {...props}
+      {...element}
       parameters={{ ...parameters, ...evaluatedParameters }}
       value={value}
       setValue={setValue}
@@ -150,17 +160,75 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
       Markdown={Markdown}
       validationState={validationState || { isValid: true }}
       validate={validate}
-      // TO-DO: ensure validationState gets calculated BEFORE rendering this child, so we don't need this fallback.
       getDefaultIndex={getDefaultIndex}
     />
   )
 
+  const getResponseAndBorder = () => {
+    if (!changesRequired) return null
+    const { isChangeRequest, isChanged } = changesRequired
+    const isValid = validationState ? (validationState.isValid as boolean) : true
+    const displayResponseWarning = isChangeRequest || (isChanged && isValid)
+    return (
+      <div
+        style={{
+          border: displayResponseWarning ? 'solid 1px' : 'transparent',
+          borderColor: isChangeRequest ? (isChanged ? 'black' : 'red') : 'blue',
+          borderRadius: 7,
+          padding: displayResponseWarning ? 4 : 5,
+          margin: 5,
+        }}
+      >
+        {parametersReady && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
+        <ChangesToResponseWarning {...changesRequired} isValid={isValid} />
+      </div>
+    )
+  }
+
   return (
     <ErrorBoundary pluginCode={pluginCode}>
       <React.Suspense fallback="Loading Plugin">
-        {parametersReady && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
+        {changesRequired
+          ? getResponseAndBorder()
+          : parametersReady && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
       </React.Suspense>
     </ErrorBoundary>
+  )
+}
+
+interface ChangesToResponseWarningProps {
+  isChangeRequest: boolean
+  isChanged: boolean
+  reviewerComment: string
+  isValid: boolean
+}
+
+const ChangesToResponseWarning: React.FC<ChangesToResponseWarningProps> = ({
+  isChangeRequest,
+  isChanged,
+  reviewerComment,
+  isValid,
+}) => {
+  const displayResponseWarning = isChangeRequest || (isChanged && isValid)
+  return (
+    <div
+      style={{
+        color: isChangeRequest && isChanged && isValid ? 'grey' : 'red',
+        visibility: displayResponseWarning ? 'visible' : 'hidden',
+      }}
+    >
+      <Icon
+        name={
+          isChangeRequest
+            ? isChanged
+              ? 'comment alternate outline'
+              : 'exclamation circle'
+            : 'info circle'
+        }
+        color={isChangeRequest ? (isChanged ? 'grey' : 'red') : 'blue'}
+      />
+      {isChangeRequest ? reviewerComment : messages.APPLICATION_OTHER_CHANGES_MADE}
+    </div>
   )
 }
 
@@ -178,7 +246,10 @@ const getDefaultIndex = (defaultOption: string | number, options: string[]) => {
   } else return options.indexOf(defaultOption)
 }
 
-export function extractDynamicExpressions(fields: string[], parameters: ElementPluginParameters) {
+export const extractDynamicExpressions = (
+  fields: string[],
+  parameters: ElementPluginParameters
+) => {
   const expressionObject: ElementPluginParameters = {}
   fields.forEach((field) => {
     expressionObject[field] = parameters[field]
@@ -186,10 +257,10 @@ export function extractDynamicExpressions(fields: string[], parameters: ElementP
   return expressionObject
 }
 
-export async function evaluateDynamicParameters(
+export const evaluateDynamicParameters = async (
   dynamicExpressions: ElementPluginParameters,
   evaluatorParameters: EvaluatorParameters
-) {
+) => {
   if (!dynamicExpressions) return {}
   const fields = Object.keys(dynamicExpressions)
   const expressions = Object.values(
@@ -203,4 +274,35 @@ export async function evaluateDynamicParameters(
     evaluatedParameters[fields[i]] = evaluatedExpressions[i]
   }
   return evaluatedParameters
+}
+
+const calculateValidationState = async ({
+  validationExpression,
+  validationMessage,
+  isRequired,
+  isStrictPage,
+  responses,
+  evaluationParameters,
+  currentResponse,
+}: {
+  validationExpression: IQueryNode | undefined
+  validationMessage: string | null | undefined
+  isRequired: boolean | undefined
+  isStrictPage: boolean | undefined
+  responses: any // thisResponse field makes it not "ResponsesByCode"
+  evaluationParameters: EvaluatorParameters
+  currentResponse: ResponseFull | null
+}) => {
+  const validationResult = validationExpression
+    ? await validate(validationExpression, validationMessage as string, evaluationParameters)
+    : { isValid: true }
+
+  if (!validationResult.isValid && currentResponse?.text !== undefined) return validationResult
+  // !responses.thisResponse, check for null, undefined, empty string
+  if (isRequired && isStrictPage && !responses?.thisResponse)
+    return {
+      isValid: false,
+      validationMessage: validationMessage || strings.VALIDATION_REQUIRED_ERROR,
+    }
+  return { isValid: true }
 }

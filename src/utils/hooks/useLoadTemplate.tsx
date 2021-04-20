@@ -5,98 +5,97 @@ import {
   TemplateSection,
   useGetTemplateQuery,
 } from '../generated/graphql'
-import { buildTemplateSectionsStructure } from '../helpers/structure/buildSectionsStructure'
+import evaluate from '@openmsupply/expression-evaluator'
+import { useUserState } from '../../contexts/UserState'
+import { EvaluatorParameters } from '../types'
 import { getTemplateSections } from '../helpers/application/getSectionsDetails'
-import { SectionsStructure, TemplateDetails } from '../types'
+import { TemplateDetails } from '../types'
+import config from '../../config.json'
 
-// TODO: Remove this
-interface useLoadTemplateProps {
-  templateCode: string
+const graphQLEndpoint = config.serverGraphQL
+
+interface UseLoadTemplateProps {
+  templateCode?: string
 }
 
-const useLoadTemplate = (props: useLoadTemplateProps) => {
-  const { templateCode } = props
+const useLoadTemplate = ({ templateCode }: UseLoadTemplateProps) => {
   const [template, setTemplate] = useState<TemplateDetails>()
-  const [sectionsStructure, setSectionsStructure] = useState<SectionsStructure>()
-  const [elementsIds, setElementsIds] = useState<number[]>([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const {
+    userState: { currentUser },
+  } = useUserState()
 
   const { data, loading: apolloLoading, error: apolloError } = useGetTemplateQuery({
     variables: {
-      code: templateCode,
+      code: templateCode || '',
     },
+    skip: !templateCode,
   })
 
   useEffect(() => {
-    if (apolloError) return
-    if (apolloLoading) return
-    // Check that only one tempalte matched
+    if (!data || !currentUser) return
+
+    // Check that only one template matched
     let error = checkForTemplateErrors(data)
     if (error) {
       setError(error)
-      setLoading(false)
       return
     }
 
     const template = data?.templates?.nodes[0] as Template
 
-    error = checkForTemplatSectionErrors(template)
+    error = checkForTemplateSectionErrors(template)
     if (error) {
       setError(error)
-      setLoading(false)
       return
     }
 
-    const { id, code, name, startMessage } = template
-
-    setTemplate({
-      id,
-      code,
-      name: name as string,
-      startMessage: startMessage ? startMessage : undefined,
-    })
-
+    const { id, code, name } = template
     const templateSections = template.templateSections.nodes as TemplateSection[]
     const sections = getTemplateSections(templateSections)
-    const sectionsStructure = buildTemplateSectionsStructure(sections)
-    setSectionsStructure(sectionsStructure)
-
-    const elements = [] as number[]
+    const elementsIds: number[] = []
 
     templateSections.forEach((section) => {
       const { templateElementsBySectionId } = section as TemplateSection
       templateElementsBySectionId.nodes.forEach((element) => {
-        if (element?.id && element.category === 'QUESTION') elements.push(element.id)
+        if (element?.id && element.category === 'QUESTION') elementsIds.push(element.id)
       })
     })
-    setElementsIds(elements)
 
-    setLoading(false)
-  }, [data, apolloError])
+    const evaluatorParams: EvaluatorParameters = {
+      objects: { currentUser },
+      APIfetch: fetch,
+      graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
+    }
+    evaluate(template?.startMessage || '', evaluatorParams).then((startMessage: any) => {
+      setTemplate({
+        id,
+        code,
+        name: name as string,
+        elementsIds,
+        sections,
+        startMessage,
+      })
+    })
+  }, [data, currentUser])
 
   return {
-    loading,
-    apolloError,
-    error,
+    loading: apolloLoading,
+    error: apolloError?.message || error,
     template,
-    sectionsStructure,
-    elementsIds,
   }
 }
 
 function checkForTemplateErrors(data: GetTemplateQuery | undefined) {
-  if (data?.templates?.nodes?.length === null) return 'Unexpected template result'
   const numberOfTemplates = data?.templates?.nodes.length as number
-  if (numberOfTemplates === 0) return 'Template not found'
+  if (!numberOfTemplates || numberOfTemplates === 0) return 'Template not found'
   if (numberOfTemplates > 1) return 'More then one template found'
   return null
 }
 
-function checkForTemplatSectionErrors(template: Template) {
-  if (template?.templateSections?.nodes === null) return 'Unexpected template section result'
+function checkForTemplateSectionErrors(template: Template) {
   const numberOfSections = template?.templateSections?.nodes.length as number
-  if (numberOfSections === 0) return 'No template sections'
+  if (!numberOfSections || numberOfSections === 0) return 'No template sections'
   return null
 }
 

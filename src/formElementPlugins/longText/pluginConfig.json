@@ -1,0 +1,8 @@
+{
+  "isCore": true,
+  "code": "longText",
+  "displayName": "Multi-line Text Input",
+  "dynamicParameters": ["label", "description", "placeholder"],
+  "//": "categories types: 'Input'|'Informative'",
+  "category": "Input"
+}

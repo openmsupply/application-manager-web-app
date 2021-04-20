@@ -86,7 +86,7 @@ const Login: React.FC = () => {
       <Grid container columns="1" centered verticalAlign="middle" style={{ height: '100%' }}>
         <Grid.Column width={14} style={{ padding: 10 }}>
           <Segment clearing>
-            <Header size="huge">{strings.LABEL_WELCOME}</Header>
+            <Header as="h3">{strings.LABEL_WELCOME}</Header>
             <Form>
               {!loginPayload && (
                 <>

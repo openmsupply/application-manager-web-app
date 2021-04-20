@@ -10,94 +10,61 @@ import {
   ReviewResponse,
   ReviewResponseDecision,
   ReviewStatus,
-  TemplateElement,
   TemplateElementCategory,
   User as GraphQLUser,
+  Organisation as GraphQLOrg,
 } from './generated/graphql'
 
 import { ValidationState } from '../formElementPlugins/types'
-
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
-import { SummaryViewWrapperProps } from '../formElementPlugins/types'
-import { APPLICATION_COLUMNS, USER_ROLES } from './data'
 
 export {
   ApplicationDetails,
   ApplicationElementStates,
   ApplicationListRow,
   ApplicationProps,
-  ApplicationStage,
-  ApplicationStageMap,
-  ApplicationStages, // TODO: Remove this
   AssignmentDetails,
-  AssignmentDetailsNEW,
   CellProps,
   ChangeRequestsProgress,
   ColumnDetails,
-  ColumnsPerRole,
   ContextApplicationState,
-  ContextFormElementUpdateTrackerState,
-  ContextListState,
   CurrentPage,
-  DecisionAreaState,
   DecisionOption,
   ElementBase,
-  ElementBaseNEW,
   ElementsById,
   ElementPluginParameterValue,
   ElementPluginParameters,
   ElementState,
-  ElementStateNEW,
-  ElementsActivityState,
   EvaluatorParameters,
   FullStructure,
-  GroupedReviewResponses,
-  IGraphQLConnection,
   LooseString,
   MethodRevalidate,
   MethodToCallProps,
   Page,
-  PageElements,
-  PageNEW,
   PageElement,
-  PageElementsStatuses,
   Progress,
-  ProgressStatus,
   ResponseFull,
-  ResponsePayload,
   ResponsesByCode,
-  ResumeSection,
   ReviewAction,
   ReviewDetails,
-  ReviewProgressStatus,
   ReviewProgress,
   ReviewQuestion,
-  ReviewQuestionDecision,
-  ReviewerResponsesPayload,
   ReviewSectionComponentProps,
   SectionAndPage,
-  SectionState,
   SectionDetails,
   SectionProgress,
+  SectionState,
   SectionsStructure,
-  SectionStateNEW,
-  SectionsStructureNEW,
   SetStrictSectionPage,
   SortQuery,
   StageAndStatus,
   TemplateDetails,
   TemplateElementState,
-  TemplateElementStateNEW,
   TemplatePermissions,
   TemplatesDetails,
-  ValidateFunction,
-  ValidateObject,
-  ValidatedSections,
-  ValidityFailure,
-  RevalidateResult,
   UseGetApplicationProps,
   User,
-  UserRoles,
+  UseGetReviewStructureForSectionProps,
   OrganisationSimple,
   Organisation,
   LoginPayload,
@@ -112,9 +79,12 @@ interface ApplicationDetails {
   outcome: string
   isLinear: boolean
   isChangeRequest: boolean
-  current?: StageAndStatus // TODO: Change to compulsory after re-strcture is finished
+  current: StageAndStatus
   firstStrictInvalidPage: SectionAndPage | null
   submissionMessage?: string // TODO: Change to compulsory after re-structure is finished
+  user?: GraphQLUser
+  org?: GraphQLOrg
+  config?: any
 }
 
 interface ApplicationElementStates {
@@ -136,25 +106,10 @@ interface ApplicationStage {
   name: string
 }
 
-interface ApplicationStageMap {
-  [key: string]: ApplicationStage
-}
-
-interface ApplicationStages {
-  stages: StageDetails[]
-  submissionMessage: string
-}
-
 interface AssignmentDetails {
   id: number
-  review?: ReviewDetails
-  questions: ReviewQuestion[]
-}
-
-interface AssignmentDetailsNEW {
-  id: number
   status: ReviewAssignmentStatus | null
-  timeCreated: Date
+  timeUpdated: Date
   level: number
   reviewerId?: number
   review: ReviewDetails | null
@@ -162,6 +117,9 @@ interface AssignmentDetailsNEW {
   totalAssignedQuestions: number
   stage: ApplicationStage
   reviewQuestionAssignments: ReviewQuestionAssignment[]
+  isCurrentUserAssigner: boolean
+  assignableSectionRestrictions: (string | null)[]
+  isCurrentUserReviewer: boolean
 }
 
 interface BasicStringObject {
@@ -178,27 +136,10 @@ interface ColumnDetails {
   ColumnComponent: React.FunctionComponent<any>
 }
 
-type ColumnsPerRole = {
-  [role in USER_ROLES]: Array<APPLICATION_COLUMNS>
-}
-
-interface ContextFormElementUpdateTrackerState {
-  elementEnteredTimestamp: number
-  elementEnteredTextValue: string
-  elementUpdatedTimestamp: number
-  elementUpdatedTextValue: string
-  isLastElementUpdateProcessed: boolean
-  wasElementChanged: boolean
-}
-
 interface ContextApplicationState {
   id: number | null
   serialNumber: string | null
   inputElementsActivity: ElementsActivityState
-}
-
-interface ContextListState {
-  applications: ApplicationDetails[]
 }
 
 interface CurrentPage {
@@ -211,12 +152,6 @@ type DecisionOption = {
   title: string
   isVisible: boolean
   value: boolean
-}
-
-interface DecisionAreaState {
-  open: boolean
-  review: ReviewQuestionDecision | null
-  summaryViewProps: SummaryViewWrapperProps | null
 }
 
 type ElementPluginParameterValue = string | number | string[] | IQueryNode
@@ -235,33 +170,12 @@ interface ElementBase {
   elementIndex: number
   page: number
   category: TemplateElementCategory
-  validation: IQueryNode
-  validationMessage: string | null
-  parameters: any
-}
-
-interface ElementBaseNEW {
-  id: number
-  code: string
-  title: string
-  pluginCode: string
-  sectionIndex: number
-  sectionCode: string
-  elementIndex: number
-  page: number
-  category: TemplateElementCategory
   validationExpression: IQueryNode
   validationMessage: string | null
   parameters: any
 }
 
 interface ElementState extends ElementBase {
-  isEditable: boolean
-  isRequired: boolean
-  isVisible: boolean
-}
-
-interface ElementStateNEW extends ElementBaseNEW {
   isEditable: boolean
   isRequired: boolean
   isVisible: boolean
@@ -288,17 +202,13 @@ interface FullStructure {
   elementsById?: ElementsById
   lastValidationTimestamp?: number
   info: ApplicationDetails
-  sections: SectionsStructureNEW
+  sections: SectionsStructure
   stages: StageDetails[]
   responsesByCode?: ResponsesByCode
   firstIncompleteReviewPage?: SectionAndPage
   canSubmitReviewAs?: Decision | null
-  sortedSections?: SectionStateNEW[]
-  sortedPages?: PageNEW[]
-}
-
-type GroupedReviewResponses = {
-  [templateElementId: string]: ReviewResponse[]
+  sortedSections?: SectionState[]
+  sortedPages?: Page[]
 }
 
 interface IGraphQLConnection {
@@ -319,17 +229,6 @@ interface MethodToCallProps {
 
 interface Page {
   number: number
-  state: PageElements
-}
-
-type PageElements = {
-  element: ElementState
-  response: ResponseFull | null
-  review?: ReviewQuestionDecision
-}[]
-
-interface PageNEW {
-  number: number
   sectionCode: string
   name: string
   progress: Progress
@@ -339,7 +238,7 @@ interface PageNEW {
 }
 
 type PageElement = {
-  element: ElementStateNEW
+  element: ElementState
   response: ResponseFull | null
   previousApplicationResponse: ApplicationResponse
   latestApplicationResponse: ApplicationResponse
@@ -350,10 +249,6 @@ type PageElement = {
   isAssigned?: boolean
   isChangeRequest?: boolean
   isChanged?: boolean
-}
-
-interface PageElementsStatuses {
-  [code: string]: ProgressStatus
 }
 
 interface Progress {
@@ -367,38 +262,27 @@ interface Progress {
   firstStrictInvalidPage: number | null
 }
 
-type ProgressStatus = 'VALID' | 'NOT_VALID' | 'INCOMPLETE'
-
 interface ResponseFull {
   id: number
   text: string | null | undefined
   optionIndex?: number
-  reference?: any // Not yet decided how to represent
   isValid?: boolean | null
   hash?: string // Used in Password plugin
   files?: any[] // Used in FileUpload plugin
+  other?: string // Used in RadioChoice plugin
   timeCreated?: Date
   reviewResponse?: ReviewResponse
   customValidation?: ValidationState
 }
 
-interface ResponsePayload {
-  applicationId: number
-  templateQuestions: TemplateElement[]
-}
 interface ResponsesByCode {
   [key: string]: ResponseFull
 }
 
-interface ResumeSection {
-  sectionCode: string
-  page: number
-}
-
 type ReviewSectionComponentProps = {
   fullStructure: FullStructure
-  section: SectionStateNEW
-  assignment: AssignmentDetailsNEW
+  section: SectionState
+  assignment: AssignmentDetails
   thisReview?: ReviewDetails | null
   action: ReviewAction
   isAssignedToCurrentUser: boolean
@@ -421,8 +305,6 @@ interface ReviewerDetails {
   current: boolean
 }
 
-type ReviewProgressStatus = 'NOT_COMPLETED' | 'DECLINED' | 'APPROVED'
-
 interface ReviewQuestion {
   code: string
   responseId: number
@@ -433,11 +315,6 @@ interface ReviewQuestionDecision {
   id: number
   comment?: string | null
   decision?: ReviewResponseDecision | null
-}
-
-interface ReviewerResponsesPayload {
-  userId: number
-  reviewSections: SectionsStructure
 }
 
 type SectionAndPage = {
@@ -458,18 +335,6 @@ interface SectionProgress {
   completed: boolean
   valid: boolean
   linkedPage: number
-}
-
-interface SectionState {
-  details: SectionDetails
-  progress?: SectionProgress
-  assigned?: ReviewerDetails
-  pages: {
-    [pageName: string]: Page
-  }
-}
-interface SectionsStructure {
-  [code: string]: SectionState
 }
 
 interface ReviewProgress {
@@ -495,7 +360,7 @@ interface ChangeRequestsProgress {
   doneChangeRequests: number
 }
 
-interface SectionStateNEW {
+interface SectionState {
   details: SectionDetails
   progress?: Progress
   reviewProgress?: ReviewProgress
@@ -507,12 +372,12 @@ interface SectionStateNEW {
   changeRequestsProgress?: ChangeRequestsProgress
   assigned?: ReviewerDetails
   pages: {
-    [pageNum: number]: PageNEW
+    [pageNum: number]: Page
   }
 }
 
-interface SectionsStructureNEW {
-  [code: string]: SectionStateNEW
+interface SectionsStructure {
+  [code: string]: SectionState
 }
 
 interface SetStrictSectionPage {
@@ -547,13 +412,6 @@ interface TemplateDetails {
 }
 
 interface TemplateElementState extends ElementBase {
-  isRequired: IQueryNode
-  visibilityCondition: IQueryNode
-  isEditable: IQueryNode
-  // isValid: boolean | null
-}
-
-interface TemplateElementStateNEW extends ElementBaseNEW {
   isRequiredExpression: IQueryNode
   isVisibleExpression: IQueryNode
   isEditableExpression: IQueryNode
@@ -568,35 +426,6 @@ type TemplatesDetails = {
   name: string
   code: string
 }[]
-
-interface ValidateFunction {
-  (
-    validationExpress: IQueryNode,
-    validationMessage: string,
-    evaluatorParameters: EvaluatorParameters
-  ): any
-}
-
-interface ValidateObject {
-  validate: ValidateFunction
-}
-
-interface ValidatedSections {
-  sectionsWithProgress: SectionsStructure
-  elementsToUpdate: ValidityFailure[]
-}
-interface ValidityFailure {
-  id: number
-  isValid: boolean
-  code: string
-}
-
-interface RevalidateResult {
-  allValid: boolean
-  progress: SectionProgress
-  sectionCode?: string
-  validityFailures: ValidityFailure[]
-}
 
 interface UseGetApplicationProps {
   serialNumber: string
@@ -625,8 +454,9 @@ interface OrganisationSimple {
 }
 
 interface Organisation extends OrganisationSimple {
-  licenceNumber: string
+  registration: string
   address: string
+  logoUrl: string
 }
 
 interface LoginPayload {
@@ -637,19 +467,14 @@ interface LoginPayload {
   orgList?: OrganisationSimple[]
 }
 
-type UserRoles = {
-  [role in USER_ROLES]: Array<PermissionPolicyType>
+interface UseGetReviewStructureForSectionProps {
+  fullApplicationStructure: FullStructure
+  reviewAssignment: AssignmentDetails
+  filteredSectionIds?: number[]
+  awaitMode?: boolean
 }
 
 interface SortQuery {
   sortColumn?: string
   sortDirection?: 'ascending' | 'descending'
-}
-
-interface SetStrictSectionPage {
-  (sectionAndPage: SectionAndPage | null): void
-}
-
-interface MethodToCallOnRevalidation {
-  (firstInvalidPage: SectionAndPage | null, setStrictSectionPage: SetStrictSectionPage): void
 }

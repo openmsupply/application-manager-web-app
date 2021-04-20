@@ -1,15 +1,27 @@
 import deepEqual from 'deep-equal'
 import {
+  ApplicationResponse,
   ApplicationStatus,
   ReviewResponseDecision,
   TemplateElementCategory,
 } from '../../generated/graphql'
 import { FullStructure } from '../../types'
 
+const hasReviewResponse = (applicationResponse: ApplicationResponse) =>
+  applicationResponse?.reviewResponses.nodes?.length > 0
+
 const addApplicantChangeRequestStatusToElement = (structure: FullStructure) => {
   const questionElements = Object.values(structure?.elementsById || {}).filter(
     ({ element }) => element?.category === TemplateElementCategory.Question
   )
+
+  const hasReviewResponses = questionElements.some(
+    ({ latestApplicationResponse, previousApplicationResponse }) =>
+      hasReviewResponse(latestApplicationResponse) || hasReviewResponse(previousApplicationResponse)
+  )
+
+  // No reviews, then don't set isChanged and isChangeRequested fields
+  if (!hasReviewResponses) return
 
   questionElements.forEach((element) => {
     const { latestApplicationResponse, previousApplicationResponse } = element

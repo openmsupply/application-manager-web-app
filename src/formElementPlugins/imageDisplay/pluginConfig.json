@@ -1,0 +1,8 @@
+{
+  "isCore": true,
+  "code": "imageDisplay",
+  "displayName": "Image Display",
+  "dynamicParameters": ["label", "description", "url", "size", "alignment"],
+  "//": "categories types: 'Input'|'Informative'",
+  "category": "Informative"
+}

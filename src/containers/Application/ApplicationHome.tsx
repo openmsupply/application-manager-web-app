@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Button, Divider, Header, Message, Segment, Sticky } from 'semantic-ui-react'
 import { FullStructure, SectionAndPage, StageAndStatus, TemplateDetails } from '../../utils/types'
-import useGetFullApplicationStructure from '../../utils/hooks/useGetFullApplicationStructure'
+import useGetApplicationStructure from '../../utils/hooks/useGetApplicationStructure'
 import { ApplicationHeader, Loading } from '../../components'
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
@@ -20,13 +20,14 @@ interface ApplicationProps {
 const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) => {
   const {
     query: { serialNumber },
+    replace,
     push,
   } = useRouter()
   const {
     userState: { currentUser },
   } = useUserState()
 
-  const { error, fullStructure } = useGetFullApplicationStructure({
+  const { error, fullStructure } = useGetApplicationStructure({
     structure,
   })
 
@@ -36,7 +37,7 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
     if (!fullStructure) return
     const { status } = fullStructure.info.current as StageAndStatus
     if (status !== ApplicationStatus.Draft && status !== ApplicationStatus.ChangesRequired)
-      push(`/application/${serialNumber}/summary`)
+      replace(`/application/${serialNumber}/summary`)
   }, [fullStructure])
 
   const handleResumeClick = ({ sectionCode, pageNumber }: SectionAndPage) => {
@@ -68,7 +69,7 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
             firstStrictInvalidPage={firstStrictInvalidPage}
             restartApplication={async ({ sectionCode, pageNumber }) => {
               await restartApplication(fullStructure)
-              push(`/applicationNEW/${serialNumber}/${sectionCode}/Page${pageNumber}`)
+              push(`/application/${serialNumber}/${sectionCode}/Page${pageNumber}`)
             }}
             resumeApplication={handleResumeClick}
           />

@@ -1,5 +1,10 @@
+import { USER_ROLES } from '../../data'
 import { PermissionPolicyType } from '../../generated/graphql'
-import { UserRoles, TemplatePermissions } from '../../types'
+import { TemplatePermissions } from '../../types'
+
+type UserRoles = {
+  [role in USER_ROLES]: Array<PermissionPolicyType>
+}
 
 /**
  * @function: findUserRole
@@ -10,8 +15,8 @@ import { UserRoles, TemplatePermissions } from '../../types'
  */
 
 const userRoles: UserRoles = {
-  applicant: [PermissionPolicyType.Apply],
   reviewer1: [PermissionPolicyType.Review],
+  applicant: [PermissionPolicyType.Apply],
   reviewer2: [PermissionPolicyType.Review, PermissionPolicyType.Assign],
   supervisor: [PermissionPolicyType.Assign],
   consolidator: [PermissionPolicyType.Assign], //, PermissionPolicyType.Consolidate]

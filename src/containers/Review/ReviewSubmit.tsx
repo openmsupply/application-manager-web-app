@@ -7,13 +7,13 @@ import strings from '../../utils/constants'
 import { Decision, ReviewStatus } from '../../utils/generated/graphql'
 import useGetDecisionOptions from '../../utils/hooks/useGetDecisionOptions'
 import { useRouter } from '../../utils/hooks/useRouter'
-import useSubmitReviewNEW from '../../utils/hooks/useSubmitReviewNEW'
+import useSubmitReview from '../../utils/hooks/useSubmitReview'
 import messages from '../../utils/messages'
-import { AssignmentDetailsNEW, FullStructure } from '../../utils/types'
+import { AssignmentDetails, FullStructure } from '../../utils/types'
 
 type ReviewSubmitProps = {
   structure: FullStructure
-  reviewAssignment: AssignmentDetailsNEW
+  reviewAssignment: AssignmentDetails
   scrollTo: (code: string) => void
 }
 
@@ -68,7 +68,7 @@ const ReviewSubmitButton: React.FC<ReviewSubmitProps & ReviewSubmitButtonProps> 
   } = useRouter()
 
   const [showWarningModal, setShowWarningModal] = useState<ModalProps>({ open: false })
-  const submitReview = useSubmitReviewNEW(Number(structure.thisReview?.id))
+  const submitReview = useSubmitReview(Number(structure.thisReview?.id))
 
   const showWarning = (message: {}, action: () => void) => {
     setShowWarningModal({

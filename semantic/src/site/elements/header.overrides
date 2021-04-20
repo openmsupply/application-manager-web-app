@@ -1,3 +1,77 @@
 /*******************************
          Site Overrides
 *******************************/
+
+@media only screen and (min-width: @tabletBreakpoint) {
+  .ui.header:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+    font-size: @h1;
+  }
+  h1.ui.header {
+    font-size: @h1;
+    font-weight: @regularWeight;
+  }
+  h2.ui.header {
+    font-size: @h2;
+    font-weight: @regularWeight;
+  }
+  h3.ui.header {
+    font-size: @h3;
+    font-weight: @regularWeight;
+    color: @darkGrey;
+  }
+  h4.ui.header {
+    font-size: @h4;
+    font-weight: @semiboldWeight;
+    text-transform: uppercase;
+    color: @darkGrey;
+  }
+  h5.ui.header {
+    font-size: @h5;
+    font-weight: @semiboldWeight;
+    color: @darkGrey;
+  }
+  h6.ui.header {
+    font-size: @h6;
+    font-weight: @semiboldWeight;
+    text-transform: uppercase;
+    color: @darkGrey;
+  }
+}
+
+/* Mobile */
+@media only screen and (max-width: @largestMobileScreen) {
+  .ui.header:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+    font-size: @h1Mob;
+  }
+  h1.ui.header {
+    font-size: @h1Mob;
+    font-weight: @semiboldWeight;
+  }
+  h2.ui.header {
+    font-size: @h2Mob;
+    font-weight: @semiboldWeight;
+  }
+  h3.ui.header {
+    font-size: @h3Mob;
+    font-weight: @semiboldWeight;
+    text-transform: uppercase;
+    color: @darkGrey;
+  }
+  h4.ui.header {
+    font-size: @h4Mob;
+    font-weight: @semiboldWeight;
+    text-transform: uppercase;
+    color: @darkGrey;
+  }
+  h5.ui.header {
+    font-size: @h5Mob;
+    font-weight: @semiboldWeight;
+    color: @darkGrey;
+  }
+  h6.ui.header {
+    font-size: @h6Mob;
+    font-weight: @semiboldWeight;
+    text-transform: uppercase;
+    color: @darkGrey;
+  }
+}
