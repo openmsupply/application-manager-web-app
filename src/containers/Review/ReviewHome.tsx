@@ -56,18 +56,17 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
     assignments,
   }
 
+  const {
+    info: { code, name },
+  } = structure
+
   return (
     <>
       <div style={inlineStyles.top}>
-        <Button
-          as={Link}
-          to={`/applications?type=${structure.info.type}`}
-          style={inlineStyles.link}
-          icon
-        >
+        <Button as={Link} to={`/applications?type=${code}`} style={inlineStyles.link} icon>
           <Icon size="large" name="angle left" />
         </Button>
-        <Header as="h2" style={inlineStyles.title} content={`${structure.info.name}`} />
+        <Header as="h2" style={inlineStyles.title} content={name} />
       </div>
       <ReviewerAndStageSelection {...reviewerAndStageSelectionProps} />
       {filters &&

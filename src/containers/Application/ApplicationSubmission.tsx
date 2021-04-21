@@ -18,7 +18,7 @@ const ApplicationSubmission: React.FC<ApplicationProps> = ({ structure }) => {
     push,
   } = useRouter()
   const {
-    info: { current, submissionMessage, type },
+    info: { current, submissionMessage, name },
     stages,
   } = structure
 
@@ -69,7 +69,7 @@ const ApplicationSubmission: React.FC<ApplicationProps> = ({ structure }) => {
             as={Link}
             to={`/application/${serialNumber}/summary`}
             style={{ minWidth: 200 }}
-            content={`${strings.BUTTON_BACK_TO} ${type}`}
+            content={`${strings.BUTTON_BACK_TO} ${name}`}
           />
           <Label as={Link} to={'/'} content={strings.BUTTON_BACK_DASHBOARD} />
         </Segment>
