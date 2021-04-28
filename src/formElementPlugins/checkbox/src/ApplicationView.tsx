@@ -84,6 +84,8 @@ export default ApplicationView
 const getInitialState = (initialValue: CheckboxSavedState, checkboxes: Checkbox[]) => {
   // Returns a consistent array of Checkbox objects, regardless of input structure
   const { values: initValues } = initialValue
+  // make sure object index is never a number (in onSave cb.key is used as keys of object)
+  const normaliseKey = (key: any) => (typeof key.match(/^\d+$/) ? `index_${key}` : key)
   return (
     checkboxes
       .map((cb: Checkbox, index: number) => {
@@ -102,6 +104,7 @@ const getInitialState = (initialValue: CheckboxSavedState, checkboxes: Checkbox[
         ...cb,
         selected: initValues?.[cb.key] ? initValues[cb.key].selected : cb.selected,
       }))
+      .map((cb) => ({ ...cb, key: normaliseKey(cb.key) }))
   )
 }
 
