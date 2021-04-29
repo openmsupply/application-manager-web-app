@@ -135,47 +135,43 @@ const Login: React.FC = () => {
                   onChange={(event) => setPassword(event.target.value)}
                 />
               </Form.Field>
+              <Button id="login-button" primary fluid type="submit" onClick={handleSubmit}>
+                {strings.LABEL_LOG_IN}
+              </Button>
+              <p className="center-text">
+                <strong>
+                  <Link to="/register">{strings.LINK_LOGIN_USER}</Link>
+                </strong>
+              </p>
             </>
           )}
-          {loginPayload && (
-            <p>
-              <strong>{messages.LOGIN_ORG_SELECT}</strong>
-            </p>
-          )}
           {loginPayload && loginPayload?.orgList && (
-            <List
-              celled
-              relaxed="very"
-              className="clickable no-bottom-border"
-              items={[...loginPayload?.orgList, noOrgOption].map((org: OrganisationSimple) => ({
-                key: `list-item-${org.orgId}`,
-                content: (
-                  <div
-                    className="section-single-row-box-container"
-                    onClick={() => setSelectedOrgId(org.orgId)}
-                  >
-                    <div className="centered-flex-box-row flex-grow-1">
-                      <span style={{ fontStyle: org.orgId === 0 ? 'italic' : '' }}>
-                        {org.orgName}
-                      </span>
+            <>
+              <p>
+                <strong>{messages.LOGIN_ORG_SELECT}</strong>
+              </p>
+              <List
+                celled
+                relaxed="very"
+                className="no-bottom-border"
+                items={[...loginPayload?.orgList, noOrgOption].map((org: OrganisationSimple) => ({
+                  key: `list-item-${org.orgId}`,
+                  content: (
+                    <div
+                      className="section-single-row-box-container clickable"
+                      onClick={() => setSelectedOrgId(org.orgId)}
+                    >
+                      <div className="centered-flex-box-row flex-grow-1">
+                        <span style={{ fontStyle: org.orgId === 0 ? 'italic' : '' }}>
+                          {org.orgName}
+                        </span>
+                      </div>
+                      <Icon name="chevron right" />
                     </div>
-                    <Icon name="chevron right" />
-                  </div>
-                ),
-              }))}
-            />
-          )}
-          {!loginPayload && (
-            <Button id="login-button" primary fluid type="submit" onClick={handleSubmit}>
-              {strings.LABEL_LOG_IN}
-            </Button>
-          )}
-          {!loginPayload && (
-            <p className="center-text">
-              <strong>
-                <Link to="/register">{strings.LINK_LOGIN_USER}</Link>
-              </strong>
-            </p>
+                  ),
+                }))}
+              />
+            </>
           )}
         </Form>
       </div>
