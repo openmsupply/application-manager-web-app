@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react'
-import { Dropdown, Menu } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
 import { useUserState } from '../../contexts/UserState'
 import useListTemplates from '../../utils/hooks/useListTemplates'
 import UserSelection from './UserSelection'
@@ -10,14 +10,18 @@ const DevOptions: React.FC = () => {
     userState: { isLoading, templatePermissions },
   } = useUserState()
 
-  const { filteredTemplates } = useListTemplates(templatePermissions, isLoading)
+  const {
+    templatesData: { templates, templatesByCategory },
+  } = useListTemplates(templatePermissions, isLoading)
+
+  console.log(templatesByCategory)
   return (
     <div id="dev-options" style={menuStyle}>
       <Dropdown item icon="user">
         <UserSelection />
       </Dropdown>
       <Dropdown item icon="map">
-        <AppMenu templatePermissions={filteredTemplates} />
+        <AppMenu templatePermissions={templates} />
       </Dropdown>
     </div>
   )

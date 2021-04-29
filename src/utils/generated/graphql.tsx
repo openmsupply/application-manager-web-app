@@ -13,18 +13,28 @@ export type Scalars = {
   Cursor: any;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** A point in time as described by the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone. */
+  /**
+   * A point in time as described by the [ISO
+   * 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
+   */
   Datetime: any;
   /** The day, does not include a time. */
   Date: any;
-  /** A signed eight-byte integer. The upper big integer values are greater than the max value for a JavaScript number. Therefore all big integers will be output as strings and not numbers. */
+  /**
+   * A signed eight-byte integer. The upper big integer values are greater than the
+   * max value for a JavaScript number. Therefore all big integers will be output as
+   * strings and not numbers.
+   */
   BigInt: any;
 };
 
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
-  /** Exposes the root query type nested one level down. This is helpful for Relay 1 which can only query top level fields if they are in a particular form. */
+  /**
+   * Exposes the root query type nested one level down. This is helpful for Relay 1
+   * which can only query top level fields if they are in a particular form.
+   */
   query: Query;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   nodeId: Scalars['ID'];
@@ -54,6 +64,10 @@ export type Query = Node & {
   elementTypePlugins?: Maybe<ElementTypePluginsConnection>;
   /** Reads and enables pagination through a set of `File`. */
   files?: Maybe<FilesConnection>;
+  /** Reads and enables pagination through a set of `Filter`. */
+  filters?: Maybe<FiltersConnection>;
+  /** Reads and enables pagination through a set of `LookupTable`. */
+  lookupTables?: Maybe<LookupTablesConnection>;
   /** Reads and enables pagination through a set of `Notification`. */
   notifications?: Maybe<NotificationsConnection>;
   /** Reads and enables pagination through a set of `Organisation`. */
@@ -84,8 +98,12 @@ export type Query = Node & {
   templates?: Maybe<TemplatesConnection>;
   /** Reads and enables pagination through a set of `TemplateAction`. */
   templateActions?: Maybe<TemplateActionsConnection>;
+  /** Reads and enables pagination through a set of `TemplateCategory`. */
+  templateCategories?: Maybe<TemplateCategoriesConnection>;
   /** Reads and enables pagination through a set of `TemplateElement`. */
   templateElements?: Maybe<TemplateElementsConnection>;
+  /** Reads and enables pagination through a set of `TemplateFilterJoin`. */
+  templateFilterJoins?: Maybe<TemplateFilterJoinsConnection>;
   /** Reads and enables pagination through a set of `TemplatePermission`. */
   templatePermissions?: Maybe<TemplatePermissionsConnection>;
   /** Reads and enables pagination through a set of `TemplateSection`. */
@@ -113,6 +131,8 @@ export type Query = Node & {
   elementTypePlugin?: Maybe<ElementTypePlugin>;
   file?: Maybe<File>;
   fileByUniqueId?: Maybe<File>;
+  filter?: Maybe<Filter>;
+  lookupTable?: Maybe<LookupTable>;
   notification?: Maybe<Notification>;
   organisation?: Maybe<Organisation>;
   organisationByName?: Maybe<Organisation>;
@@ -131,8 +151,10 @@ export type Query = Node & {
   reviewStatusHistory?: Maybe<ReviewStatusHistory>;
   template?: Maybe<Template>;
   templateAction?: Maybe<TemplateAction>;
+  templateCategory?: Maybe<TemplateCategory>;
   templateElement?: Maybe<TemplateElement>;
   templateElementByTemplateCodeAndCode?: Maybe<TemplateElement>;
+  templateFilterJoin?: Maybe<TemplateFilterJoin>;
   templatePermission?: Maybe<TemplatePermission>;
   templateSection?: Maybe<TemplateSection>;
   templateStage?: Maybe<TemplateStage>;
@@ -172,6 +194,10 @@ export type Query = Node & {
   elementTypePluginByNodeId?: Maybe<ElementTypePlugin>;
   /** Reads a single `File` using its globally unique `ID`. */
   fileByNodeId?: Maybe<File>;
+  /** Reads a single `Filter` using its globally unique `ID`. */
+  filterByNodeId?: Maybe<Filter>;
+  /** Reads a single `LookupTable` using its globally unique `ID`. */
+  lookupTableByNodeId?: Maybe<LookupTable>;
   /** Reads a single `Notification` using its globally unique `ID`. */
   notificationByNodeId?: Maybe<Notification>;
   /** Reads a single `Organisation` using its globally unique `ID`. */
@@ -200,8 +226,12 @@ export type Query = Node & {
   templateByNodeId?: Maybe<Template>;
   /** Reads a single `TemplateAction` using its globally unique `ID`. */
   templateActionByNodeId?: Maybe<TemplateAction>;
+  /** Reads a single `TemplateCategory` using its globally unique `ID`. */
+  templateCategoryByNodeId?: Maybe<TemplateCategory>;
   /** Reads a single `TemplateElement` using its globally unique `ID`. */
   templateElementByNodeId?: Maybe<TemplateElement>;
+  /** Reads a single `TemplateFilterJoin` using its globally unique `ID`. */
+  templateFilterJoinByNodeId?: Maybe<TemplateFilterJoin>;
   /** Reads a single `TemplatePermission` using its globally unique `ID`. */
   templatePermissionByNodeId?: Maybe<TemplatePermission>;
   /** Reads a single `TemplateSection` using its globally unique `ID`. */
@@ -378,6 +408,32 @@ export type QueryFilesArgs = {
   orderBy?: Maybe<Array<FilesOrderBy>>;
   condition?: Maybe<FileCondition>;
   filter?: Maybe<FileFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryFiltersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<FiltersOrderBy>>;
+  condition?: Maybe<FilterCondition>;
+  filter?: Maybe<FilterFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLookupTablesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<LookupTablesOrderBy>>;
+  condition?: Maybe<LookupTableCondition>;
+  filter?: Maybe<LookupTableFilter>;
 };
 
 
@@ -577,6 +633,19 @@ export type QueryTemplateActionsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryTemplateCategoriesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<TemplateCategoriesOrderBy>>;
+  condition?: Maybe<TemplateCategoryCondition>;
+  filter?: Maybe<TemplateCategoryFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryTemplateElementsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
@@ -586,6 +655,19 @@ export type QueryTemplateElementsArgs = {
   orderBy?: Maybe<Array<TemplateElementsOrderBy>>;
   condition?: Maybe<TemplateElementCondition>;
   filter?: Maybe<TemplateElementFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTemplateFilterJoinsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<TemplateFilterJoinsOrderBy>>;
+  condition?: Maybe<TemplateFilterJoinCondition>;
+  filter?: Maybe<TemplateFilterJoinFilter>;
 };
 
 
@@ -760,6 +842,18 @@ export type QueryFileByUniqueIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryFilterArgs = {
+  id: Scalars['Int'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLookupTableArgs = {
+  id: Scalars['Int'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryNotificationArgs = {
   id: Scalars['Int'];
 };
@@ -868,6 +962,12 @@ export type QueryTemplateActionArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryTemplateCategoryArgs = {
+  id: Scalars['Int'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryTemplateElementArgs = {
   id: Scalars['Int'];
 };
@@ -877,6 +977,12 @@ export type QueryTemplateElementArgs = {
 export type QueryTemplateElementByTemplateCodeAndCodeArgs = {
   templateCode: Scalars['String'];
   code: Scalars['String'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTemplateFilterJoinArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -1074,6 +1180,18 @@ export type QueryFileByNodeIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryFilterByNodeIdArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLookupTableByNodeIdArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryNotificationByNodeIdArgs = {
   nodeId: Scalars['ID'];
 };
@@ -1158,7 +1276,19 @@ export type QueryTemplateActionByNodeIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryTemplateCategoryByNodeIdArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryTemplateElementByNodeIdArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTemplateFilterJoinByNodeIdArgs = {
   nodeId: Scalars['ID'];
 };
 
@@ -1210,6 +1340,54 @@ export type Node = {
   nodeId: Scalars['ID'];
 };
 
+/** A connection to a list of `ActionPlugin` values. */
+export type ActionPluginsConnection = {
+  __typename?: 'ActionPluginsConnection';
+  /** A list of `ActionPlugin` objects. */
+  nodes: Array<Maybe<ActionPlugin>>;
+  /** A list of edges which contains the `ActionPlugin` and cursor to aid in pagination. */
+  edges: Array<ActionPluginsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `ActionPlugin` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type ActionPlugin = Node & {
+  __typename?: 'ActionPlugin';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  code: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  path?: Maybe<Scalars['String']>;
+  requiredParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
+  optionalParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
+  outputProperties?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+/** A `ActionPlugin` edge in the connection. */
+export type ActionPluginsEdge = {
+  __typename?: 'ActionPluginsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `ActionPlugin` at the end of the edge. */
+  node?: Maybe<ActionPlugin>;
+};
+
+
+/** Information about pagination in a connection. */
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** When paginating forwards, are there more items? */
+  hasNextPage: Scalars['Boolean'];
+  /** When paginating backwards, are there more items? */
+  hasPreviousPage: Scalars['Boolean'];
+  /** When paginating backwards, the cursor to continue. */
+  startCursor?: Maybe<Scalars['Cursor']>;
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['Cursor']>;
+};
 
 /** Methods to use when ordering `ActionPlugin`. */
 export enum ActionPluginsOrderBy {
@@ -1232,7 +1410,10 @@ export enum ActionPluginsOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `ActionPlugin` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `ActionPlugin` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
 export type ActionPluginCondition = {
   /** Checks for equality with the object’s `code` field. */
   code?: Maybe<Scalars['String']>;
@@ -1392,53 +1573,106 @@ export type StringListFilter = {
   anyGreaterThanOrEqualTo?: Maybe<Scalars['String']>;
 };
 
-/** A connection to a list of `ActionPlugin` values. */
-export type ActionPluginsConnection = {
-  __typename?: 'ActionPluginsConnection';
-  /** A list of `ActionPlugin` objects. */
-  nodes: Array<Maybe<ActionPlugin>>;
-  /** A list of edges which contains the `ActionPlugin` and cursor to aid in pagination. */
-  edges: Array<ActionPluginsEdge>;
+/** A connection to a list of `ActionQueue` values. */
+export type ActionQueuesConnection = {
+  __typename?: 'ActionQueuesConnection';
+  /** A list of `ActionQueue` objects. */
+  nodes: Array<Maybe<ActionQueue>>;
+  /** A list of edges which contains the `ActionQueue` and cursor to aid in pagination. */
+  edges: Array<ActionQueuesEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `ActionPlugin` you could get from the connection. */
+  /** The count of *all* `ActionQueue` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type ActionPlugin = Node & {
-  __typename?: 'ActionPlugin';
+export type ActionQueue = Node & {
+  __typename?: 'ActionQueue';
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
-  code: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  path?: Maybe<Scalars['String']>;
-  requiredParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
-  optionalParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
-  outputProperties?: Maybe<Array<Maybe<Scalars['String']>>>;
+  id: Scalars['Int'];
+  triggerEvent?: Maybe<Scalars['Int']>;
+  triggerPayload?: Maybe<Scalars['JSON']>;
+  templateId?: Maybe<Scalars['Int']>;
+  sequence?: Maybe<Scalars['Int']>;
+  actionCode?: Maybe<Scalars['String']>;
+  conditionExpression?: Maybe<Scalars['JSON']>;
+  parameterQueries?: Maybe<Scalars['JSON']>;
+  parametersEvaluated?: Maybe<Scalars['JSON']>;
+  status?: Maybe<ActionQueueStatus>;
+  output?: Maybe<Scalars['JSON']>;
+  timeQueued?: Maybe<Scalars['Datetime']>;
+  timeCompleted?: Maybe<Scalars['Datetime']>;
+  timeScheduled?: Maybe<Scalars['Datetime']>;
+  errorLog?: Maybe<Scalars['String']>;
+  /** Reads a single `TriggerQueue` that is related to this `ActionQueue`. */
+  triggerQueueByTriggerEvent?: Maybe<TriggerQueue>;
+  /** Reads a single `Template` that is related to this `ActionQueue`. */
+  template?: Maybe<Template>;
 };
 
-/** A `ActionPlugin` edge in the connection. */
-export type ActionPluginsEdge = {
-  __typename?: 'ActionPluginsEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']>;
-  /** The `ActionPlugin` at the end of the edge. */
-  node?: Maybe<ActionPlugin>;
+
+export enum ActionQueueStatus {
+  Scheduled = 'SCHEDULED',
+  Queued = 'QUEUED',
+  Processing = 'PROCESSING',
+  Success = 'SUCCESS',
+  Fail = 'FAIL',
+  ConditionNotMet = 'CONDITION_NOT_MET'
+}
+
+
+export type TriggerQueue = Node & {
+  __typename?: 'TriggerQueue';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
+  triggerType?: Maybe<Trigger>;
+  table?: Maybe<Scalars['String']>;
+  recordId?: Maybe<Scalars['Int']>;
+  timestamp?: Maybe<Scalars['Datetime']>;
+  status?: Maybe<TriggerQueueStatus>;
+  log?: Maybe<Scalars['JSON']>;
+  /** Reads and enables pagination through a set of `ActionQueue`. */
+  actionQueuesByTriggerEvent: ActionQueuesConnection;
 };
 
-/** Information about pagination in a connection. */
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  /** When paginating forwards, are there more items? */
-  hasNextPage: Scalars['Boolean'];
-  /** When paginating backwards, are there more items? */
-  hasPreviousPage: Scalars['Boolean'];
-  /** When paginating backwards, the cursor to continue. */
-  startCursor?: Maybe<Scalars['Cursor']>;
-  /** When paginating forwards, the cursor to continue. */
-  endCursor?: Maybe<Scalars['Cursor']>;
+
+export type TriggerQueueActionQueuesByTriggerEventArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<ActionQueuesOrderBy>>;
+  condition?: Maybe<ActionQueueCondition>;
+  filter?: Maybe<ActionQueueFilter>;
 };
+
+export enum Trigger {
+  OnApplicationCreate = 'ON_APPLICATION_CREATE',
+  OnApplicationRestart = 'ON_APPLICATION_RESTART',
+  OnApplicationSubmit = 'ON_APPLICATION_SUBMIT',
+  OnApplicationSave = 'ON_APPLICATION_SAVE',
+  OnApplicationWithdraw = 'ON_APPLICATION_WITHDRAW',
+  OnReviewCreate = 'ON_REVIEW_CREATE',
+  OnReviewSubmit = 'ON_REVIEW_SUBMIT',
+  OnReviewRestart = 'ON_REVIEW_RESTART',
+  OnReviewStart = 'ON_REVIEW_START',
+  OnReviewAssign = 'ON_REVIEW_ASSIGN',
+  OnReviewSelfAssign = 'ON_REVIEW_SELF_ASSIGN',
+  OnApprovalSubmit = 'ON_APPROVAL_SUBMIT',
+  DevTest = 'DEV_TEST',
+  OnScheduleTime = 'ON_SCHEDULE_TIME',
+  Processing = 'PROCESSING',
+  Error = 'ERROR'
+}
+
+export enum TriggerQueueStatus {
+  Triggered = 'TRIGGERED',
+  ActionsDispatched = 'ACTIONS_DISPATCHED',
+  Error = 'ERROR'
+}
 
 /** Methods to use when ordering `ActionQueue`. */
 export enum ActionQueuesOrderBy {
@@ -1477,7 +1711,10 @@ export enum ActionQueuesOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `ActionQueue` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `ActionQueue` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
 export type ActionQueueCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
@@ -1510,17 +1747,6 @@ export type ActionQueueCondition = {
   /** Checks for equality with the object’s `errorLog` field. */
   errorLog?: Maybe<Scalars['String']>;
 };
-
-
-export enum ActionQueueStatus {
-  Scheduled = 'SCHEDULED',
-  Queued = 'QUEUED',
-  Processing = 'PROCESSING',
-  Success = 'SUCCESS',
-  Fail = 'FAIL',
-  ConditionNotMet = 'CONDITION_NOT_MET'
-}
-
 
 /** A filter to be used against `ActionQueue` object types. All fields are combined with a logical ‘and.’ */
 export type ActionQueueFilter = {
@@ -1738,25 +1964,6 @@ export type TriggerFilter = {
   greaterThanOrEqualTo?: Maybe<Trigger>;
 };
 
-export enum Trigger {
-  OnApplicationCreate = 'ON_APPLICATION_CREATE',
-  OnApplicationRestart = 'ON_APPLICATION_RESTART',
-  OnApplicationSubmit = 'ON_APPLICATION_SUBMIT',
-  OnApplicationSave = 'ON_APPLICATION_SAVE',
-  OnApplicationWithdraw = 'ON_APPLICATION_WITHDRAW',
-  OnReviewCreate = 'ON_REVIEW_CREATE',
-  OnReviewSubmit = 'ON_REVIEW_SUBMIT',
-  OnReviewRestart = 'ON_REVIEW_RESTART',
-  OnReviewStart = 'ON_REVIEW_START',
-  OnReviewAssign = 'ON_REVIEW_ASSIGN',
-  OnReviewSelfAssign = 'ON_REVIEW_SELF_ASSIGN',
-  OnApprovalSubmit = 'ON_APPROVAL_SUBMIT',
-  DevTest = 'DEV_TEST',
-  OnScheduleTime = 'ON_SCHEDULE_TIME',
-  Processing = 'PROCESSING',
-  Error = 'ERROR'
-}
-
 /** A filter to be used against TriggerQueueStatus fields. All fields are combined with a logical ‘and.’ */
 export type TriggerQueueStatusFilter = {
   /** Is null (if `true` is specified) or is not null (if `false` is specified). */
@@ -1782,12 +1989,6 @@ export type TriggerQueueStatusFilter = {
   /** Greater than or equal to the specified value. */
   greaterThanOrEqualTo?: Maybe<TriggerQueueStatus>;
 };
-
-export enum TriggerQueueStatus {
-  Triggered = 'TRIGGERED',
-  ActionsDispatched = 'ACTIONS_DISPATCHED',
-  Error = 'ERROR'
-}
 
 /** A filter to be used against many `ActionQueue` object types. All fields are combined with a logical ‘and.’ */
 export type TriggerQueueToManyActionQueueFilter = {
@@ -1817,6 +2018,12 @@ export type TemplateFilter = {
   submissionMessage?: Maybe<JsonFilter>;
   /** Filter by the object’s `versionTimestamp` field. */
   versionTimestamp?: Maybe<DatetimeFilter>;
+  /** Filter by the object’s `templateCategoryId` field. */
+  templateCategoryId?: Maybe<IntFilter>;
+  /** Filter by the object’s `templateFilterJoins` relation. */
+  templateFilterJoins?: Maybe<TemplateToManyTemplateFilterJoinFilter>;
+  /** Some related `templateFilterJoins` exist. */
+  templateFilterJoinsExist?: Maybe<Scalars['Boolean']>;
   /** Filter by the object’s `templateStages` relation. */
   templateStages?: Maybe<TemplateToManyTemplateStageFilter>;
   /** Some related `templateStages` exist. */
@@ -1841,6 +2048,10 @@ export type TemplateFilter = {
   templateActions?: Maybe<TemplateToManyTemplateActionFilter>;
   /** Some related `templateActions` exist. */
   templateActionsExist?: Maybe<Scalars['Boolean']>;
+  /** Filter by the object’s `templateCategory` relation. */
+  templateCategory?: Maybe<TemplateCategoryFilter>;
+  /** A related `templateCategory` exists. */
+  templateCategoryExists?: Maybe<Scalars['Boolean']>;
   /** Checks for all expressions in this list. */
   and?: Maybe<Array<TemplateFilter>>;
   /** Checks for any expressions in this list. */
@@ -1906,6 +2117,110 @@ export enum TemplateStatus {
   Available = 'AVAILABLE',
   Disabled = 'DISABLED'
 }
+
+/** A filter to be used against many `TemplateFilterJoin` object types. All fields are combined with a logical ‘and.’ */
+export type TemplateToManyTemplateFilterJoinFilter = {
+  /** Every related `TemplateFilterJoin` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: Maybe<TemplateFilterJoinFilter>;
+  /** Some related `TemplateFilterJoin` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: Maybe<TemplateFilterJoinFilter>;
+  /** No related `TemplateFilterJoin` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: Maybe<TemplateFilterJoinFilter>;
+};
+
+/** A filter to be used against `TemplateFilterJoin` object types. All fields are combined with a logical ‘and.’ */
+export type TemplateFilterJoinFilter = {
+  /** Filter by the object’s `id` field. */
+  id?: Maybe<IntFilter>;
+  /** Filter by the object’s `templateId` field. */
+  templateId?: Maybe<IntFilter>;
+  /** Filter by the object’s `templateFilterId` field. */
+  templateFilterId?: Maybe<IntFilter>;
+  /** Filter by the object’s `template` relation. */
+  template?: Maybe<TemplateFilter>;
+  /** A related `template` exists. */
+  templateExists?: Maybe<Scalars['Boolean']>;
+  /** Filter by the object’s `templateFilter` relation. */
+  templateFilter?: Maybe<FilterFilter>;
+  /** A related `templateFilter` exists. */
+  templateFilterExists?: Maybe<Scalars['Boolean']>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<TemplateFilterJoinFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<TemplateFilterJoinFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<TemplateFilterJoinFilter>;
+};
+
+/** A filter to be used against `Filter` object types. All fields are combined with a logical ‘and.’ */
+export type FilterFilter = {
+  /** Filter by the object’s `id` field. */
+  id?: Maybe<IntFilter>;
+  /** Filter by the object’s `code` field. */
+  code?: Maybe<StringFilter>;
+  /** Filter by the object’s `icon` field. */
+  icon?: Maybe<StringFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: Maybe<StringFilter>;
+  /** Filter by the object’s `color` field. */
+  color?: Maybe<StringFilter>;
+  /** Filter by the object’s `query` field. */
+  query?: Maybe<JsonFilter>;
+  /** Filter by the object’s `userRole` field. */
+  userRole?: Maybe<PermissionPolicyTypeFilter>;
+  /** Filter by the object’s `templateFilterJoinsByTemplateFilterId` relation. */
+  templateFilterJoinsByTemplateFilterId?: Maybe<FilterToManyTemplateFilterJoinFilter>;
+  /** Some related `templateFilterJoinsByTemplateFilterId` exist. */
+  templateFilterJoinsByTemplateFilterIdExist?: Maybe<Scalars['Boolean']>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<FilterFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<FilterFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<FilterFilter>;
+};
+
+/** A filter to be used against PermissionPolicyType fields. All fields are combined with a logical ‘and.’ */
+export type PermissionPolicyTypeFilter = {
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: Maybe<Scalars['Boolean']>;
+  /** Equal to the specified value. */
+  equalTo?: Maybe<PermissionPolicyType>;
+  /** Not equal to the specified value. */
+  notEqualTo?: Maybe<PermissionPolicyType>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: Maybe<PermissionPolicyType>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: Maybe<PermissionPolicyType>;
+  /** Included in the specified list. */
+  in?: Maybe<Array<PermissionPolicyType>>;
+  /** Not included in the specified list. */
+  notIn?: Maybe<Array<PermissionPolicyType>>;
+  /** Less than the specified value. */
+  lessThan?: Maybe<PermissionPolicyType>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: Maybe<PermissionPolicyType>;
+  /** Greater than the specified value. */
+  greaterThan?: Maybe<PermissionPolicyType>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: Maybe<PermissionPolicyType>;
+};
+
+export enum PermissionPolicyType {
+  Review = 'REVIEW',
+  Apply = 'APPLY',
+  Assign = 'ASSIGN'
+}
+
+/** A filter to be used against many `TemplateFilterJoin` object types. All fields are combined with a logical ‘and.’ */
+export type FilterToManyTemplateFilterJoinFilter = {
+  /** Every related `TemplateFilterJoin` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: Maybe<TemplateFilterJoinFilter>;
+  /** Some related `TemplateFilterJoin` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: Maybe<TemplateFilterJoinFilter>;
+  /** No related `TemplateFilterJoin` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: Maybe<TemplateFilterJoinFilter>;
+};
 
 /** A filter to be used against many `TemplateStage` object types. All fields are combined with a logical ‘and.’ */
 export type TemplateToManyTemplateStageFilter = {
@@ -2466,38 +2781,6 @@ export type PermissionPolicyFilter = {
   /** Negates the expression. */
   not?: Maybe<PermissionPolicyFilter>;
 };
-
-/** A filter to be used against PermissionPolicyType fields. All fields are combined with a logical ‘and.’ */
-export type PermissionPolicyTypeFilter = {
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: Maybe<Scalars['Boolean']>;
-  /** Equal to the specified value. */
-  equalTo?: Maybe<PermissionPolicyType>;
-  /** Not equal to the specified value. */
-  notEqualTo?: Maybe<PermissionPolicyType>;
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: Maybe<PermissionPolicyType>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: Maybe<PermissionPolicyType>;
-  /** Included in the specified list. */
-  in?: Maybe<Array<PermissionPolicyType>>;
-  /** Not included in the specified list. */
-  notIn?: Maybe<Array<PermissionPolicyType>>;
-  /** Less than the specified value. */
-  lessThan?: Maybe<PermissionPolicyType>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: Maybe<PermissionPolicyType>;
-  /** Greater than the specified value. */
-  greaterThan?: Maybe<PermissionPolicyType>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: Maybe<PermissionPolicyType>;
-};
-
-export enum PermissionPolicyType {
-  Review = 'REVIEW',
-  Apply = 'APPLY',
-  Assign = 'ASSIGN'
-}
 
 /** A filter to be used against many `PermissionName` object types. All fields are combined with a logical ‘and.’ */
 export type PermissionPolicyToManyPermissionNameFilter = {
@@ -3812,69 +4095,34 @@ export type TemplateActionFilter = {
   not?: Maybe<TemplateActionFilter>;
 };
 
-/** A connection to a list of `ActionQueue` values. */
-export type ActionQueuesConnection = {
-  __typename?: 'ActionQueuesConnection';
-  /** A list of `ActionQueue` objects. */
-  nodes: Array<Maybe<ActionQueue>>;
-  /** A list of edges which contains the `ActionQueue` and cursor to aid in pagination. */
-  edges: Array<ActionQueuesEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `ActionQueue` you could get from the connection. */
-  totalCount: Scalars['Int'];
+/** A filter to be used against `TemplateCategory` object types. All fields are combined with a logical ‘and.’ */
+export type TemplateCategoryFilter = {
+  /** Filter by the object’s `id` field. */
+  id?: Maybe<IntFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: Maybe<StringFilter>;
+  /** Filter by the object’s `icon` field. */
+  icon?: Maybe<StringFilter>;
+  /** Filter by the object’s `templates` relation. */
+  templates?: Maybe<TemplateCategoryToManyTemplateFilter>;
+  /** Some related `templates` exist. */
+  templatesExist?: Maybe<Scalars['Boolean']>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<TemplateCategoryFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<TemplateCategoryFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<TemplateCategoryFilter>;
 };
 
-export type ActionQueue = Node & {
-  __typename?: 'ActionQueue';
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  nodeId: Scalars['ID'];
-  id: Scalars['Int'];
-  triggerEvent?: Maybe<Scalars['Int']>;
-  triggerPayload?: Maybe<Scalars['JSON']>;
-  templateId?: Maybe<Scalars['Int']>;
-  sequence?: Maybe<Scalars['Int']>;
-  actionCode?: Maybe<Scalars['String']>;
-  conditionExpression?: Maybe<Scalars['JSON']>;
-  parameterQueries?: Maybe<Scalars['JSON']>;
-  parametersEvaluated?: Maybe<Scalars['JSON']>;
-  status?: Maybe<ActionQueueStatus>;
-  output?: Maybe<Scalars['JSON']>;
-  timeQueued?: Maybe<Scalars['Datetime']>;
-  timeCompleted?: Maybe<Scalars['Datetime']>;
-  timeScheduled?: Maybe<Scalars['Datetime']>;
-  errorLog?: Maybe<Scalars['String']>;
-  /** Reads a single `TriggerQueue` that is related to this `ActionQueue`. */
-  triggerQueueByTriggerEvent?: Maybe<TriggerQueue>;
-  /** Reads a single `Template` that is related to this `ActionQueue`. */
-  template?: Maybe<Template>;
-};
-
-export type TriggerQueue = Node & {
-  __typename?: 'TriggerQueue';
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  nodeId: Scalars['ID'];
-  id: Scalars['Int'];
-  triggerType?: Maybe<Trigger>;
-  table?: Maybe<Scalars['String']>;
-  recordId?: Maybe<Scalars['Int']>;
-  timestamp?: Maybe<Scalars['Datetime']>;
-  status?: Maybe<TriggerQueueStatus>;
-  log?: Maybe<Scalars['JSON']>;
-  /** Reads and enables pagination through a set of `ActionQueue`. */
-  actionQueuesByTriggerEvent: ActionQueuesConnection;
-};
-
-
-export type TriggerQueueActionQueuesByTriggerEventArgs = {
-  first?: Maybe<Scalars['Int']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  before?: Maybe<Scalars['Cursor']>;
-  after?: Maybe<Scalars['Cursor']>;
-  orderBy?: Maybe<Array<ActionQueuesOrderBy>>;
-  condition?: Maybe<ActionQueueCondition>;
-  filter?: Maybe<ActionQueueFilter>;
+/** A filter to be used against many `Template` object types. All fields are combined with a logical ‘and.’ */
+export type TemplateCategoryToManyTemplateFilter = {
+  /** Every related `Template` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: Maybe<TemplateFilter>;
+  /** Some related `Template` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: Maybe<TemplateFilter>;
+  /** No related `Template` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: Maybe<TemplateFilter>;
 };
 
 export type Template = Node & {
@@ -3889,6 +4137,11 @@ export type Template = Node & {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  /** Reads a single `TemplateCategory` that is related to this `Template`. */
+  templateCategory?: Maybe<TemplateCategory>;
+  /** Reads and enables pagination through a set of `TemplateFilterJoin`. */
+  templateFilterJoins: TemplateFilterJoinsConnection;
   /** Reads and enables pagination through a set of `TemplateStage`. */
   templateStages: TemplateStagesConnection;
   /** Reads and enables pagination through a set of `TemplateSection`. */
@@ -3901,6 +4154,18 @@ export type Template = Node & {
   actionQueues: ActionQueuesConnection;
   /** Reads and enables pagination through a set of `TemplateAction`. */
   templateActions: TemplateActionsConnection;
+};
+
+
+export type TemplateTemplateFilterJoinsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<TemplateFilterJoinsOrderBy>>;
+  condition?: Maybe<TemplateFilterJoinCondition>;
+  filter?: Maybe<TemplateFilterJoinFilter>;
 };
 
 
@@ -3975,39 +4240,187 @@ export type TemplateTemplateActionsArgs = {
   filter?: Maybe<TemplateActionFilter>;
 };
 
-/** Methods to use when ordering `TemplateStage`. */
-export enum TemplateStagesOrderBy {
+export type TemplateCategory = Node & {
+  __typename?: 'TemplateCategory';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
+  title?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  /** Reads and enables pagination through a set of `Template`. */
+  templates: TemplatesConnection;
+};
+
+
+export type TemplateCategoryTemplatesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<TemplatesOrderBy>>;
+  condition?: Maybe<TemplateCondition>;
+  filter?: Maybe<TemplateFilter>;
+};
+
+/** A connection to a list of `Template` values. */
+export type TemplatesConnection = {
+  __typename?: 'TemplatesConnection';
+  /** A list of `Template` objects. */
+  nodes: Array<Maybe<Template>>;
+  /** A list of edges which contains the `Template` and cursor to aid in pagination. */
+  edges: Array<TemplatesEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Template` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** A `Template` edge in the connection. */
+export type TemplatesEdge = {
+  __typename?: 'TemplatesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `Template` at the end of the edge. */
+  node?: Maybe<Template>;
+};
+
+/** Methods to use when ordering `Template`. */
+export enum TemplatesOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
-  NumberAsc = 'NUMBER_ASC',
-  NumberDesc = 'NUMBER_DESC',
-  TitleAsc = 'TITLE_ASC',
-  TitleDesc = 'TITLE_DESC',
-  DescriptionAsc = 'DESCRIPTION_ASC',
-  DescriptionDesc = 'DESCRIPTION_DESC',
-  ColourAsc = 'COLOUR_ASC',
-  ColourDesc = 'COLOUR_DESC',
-  TemplateIdAsc = 'TEMPLATE_ID_ASC',
-  TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  CodeAsc = 'CODE_ASC',
+  CodeDesc = 'CODE_DESC',
+  IsLinearAsc = 'IS_LINEAR_ASC',
+  IsLinearDesc = 'IS_LINEAR_DESC',
+  StartMessageAsc = 'START_MESSAGE_ASC',
+  StartMessageDesc = 'START_MESSAGE_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  SubmissionMessageAsc = 'SUBMISSION_MESSAGE_ASC',
+  SubmissionMessageDesc = 'SUBMISSION_MESSAGE_DESC',
+  VersionTimestampAsc = 'VERSION_TIMESTAMP_ASC',
+  VersionTimestampDesc = 'VERSION_TIMESTAMP_DESC',
+  TemplateCategoryIdAsc = 'TEMPLATE_CATEGORY_ID_ASC',
+  TemplateCategoryIdDesc = 'TEMPLATE_CATEGORY_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `TemplateStage` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type TemplateStageCondition = {
+/**
+ * A condition to be used against `Template` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type TemplateCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `number` field. */
-  number?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `title` field. */
+  /** Checks for equality with the object’s `name` field. */
+  name?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `code` field. */
+  code?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `isLinear` field. */
+  isLinear?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `startMessage` field. */
+  startMessage?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: Maybe<TemplateStatus>;
+  /** Checks for equality with the object’s `submissionMessage` field. */
+  submissionMessage?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `versionTimestamp` field. */
+  versionTimestamp?: Maybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `templateCategoryId` field. */
+  templateCategoryId?: Maybe<Scalars['Int']>;
+};
+
+/** A connection to a list of `TemplateFilterJoin` values. */
+export type TemplateFilterJoinsConnection = {
+  __typename?: 'TemplateFilterJoinsConnection';
+  /** A list of `TemplateFilterJoin` objects. */
+  nodes: Array<Maybe<TemplateFilterJoin>>;
+  /** A list of edges which contains the `TemplateFilterJoin` and cursor to aid in pagination. */
+  edges: Array<TemplateFilterJoinsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `TemplateFilterJoin` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type TemplateFilterJoin = Node & {
+  __typename?: 'TemplateFilterJoin';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
+  templateId?: Maybe<Scalars['Int']>;
+  templateFilterId?: Maybe<Scalars['Int']>;
+  /** Reads a single `Template` that is related to this `TemplateFilterJoin`. */
+  template?: Maybe<Template>;
+  /** Reads a single `Filter` that is related to this `TemplateFilterJoin`. */
+  templateFilter?: Maybe<Filter>;
+};
+
+export type Filter = Node & {
+  __typename?: 'Filter';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
+  code?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `description` field. */
-  description?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `colour` field. */
-  colour?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  query?: Maybe<Scalars['JSON']>;
+  userRole?: Maybe<PermissionPolicyType>;
+  /** Reads and enables pagination through a set of `TemplateFilterJoin`. */
+  templateFilterJoinsByTemplateFilterId: TemplateFilterJoinsConnection;
+};
+
+
+export type FilterTemplateFilterJoinsByTemplateFilterIdArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<TemplateFilterJoinsOrderBy>>;
+  condition?: Maybe<TemplateFilterJoinCondition>;
+  filter?: Maybe<TemplateFilterJoinFilter>;
+};
+
+/** Methods to use when ordering `TemplateFilterJoin`. */
+export enum TemplateFilterJoinsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  TemplateIdAsc = 'TEMPLATE_ID_ASC',
+  TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  TemplateFilterIdAsc = 'TEMPLATE_FILTER_ID_ASC',
+  TemplateFilterIdDesc = 'TEMPLATE_FILTER_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `TemplateFilterJoin` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TemplateFilterJoinCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `templateId` field. */
   templateId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateFilterId` field. */
+  templateFilterId?: Maybe<Scalars['Int']>;
+};
+
+/** A `TemplateFilterJoin` edge in the connection. */
+export type TemplateFilterJoinsEdge = {
+  __typename?: 'TemplateFilterJoinsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `TemplateFilterJoin` at the end of the edge. */
+  node?: Maybe<TemplateFilterJoin>;
 };
 
 /** A connection to a list of `TemplateStage` values. */
@@ -4079,37 +4492,6 @@ export type TemplateStageReviewAssignmentsByStageIdArgs = {
   filter?: Maybe<ReviewAssignmentFilter>;
 };
 
-/** Methods to use when ordering `TemplateStageReviewLevel`. */
-export enum TemplateStageReviewLevelsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  StageIdAsc = 'STAGE_ID_ASC',
-  StageIdDesc = 'STAGE_ID_DESC',
-  NumberAsc = 'NUMBER_ASC',
-  NumberDesc = 'NUMBER_DESC',
-  NameAsc = 'NAME_ASC',
-  NameDesc = 'NAME_DESC',
-  DescriptionAsc = 'DESCRIPTION_ASC',
-  DescriptionDesc = 'DESCRIPTION_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `TemplateStageReviewLevel` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type TemplateStageReviewLevelCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `stageId` field. */
-  stageId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `number` field. */
-  number?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `name` field. */
-  name?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `description` field. */
-  description?: Maybe<Scalars['String']>;
-};
-
 /** A connection to a list of `TemplateStageReviewLevel` values. */
 export type TemplateStageReviewLevelsConnection = {
   __typename?: 'TemplateStageReviewLevelsConnection';
@@ -4148,73 +4530,6 @@ export type TemplateStageReviewLevelReviewAssignmentsByLevelIdArgs = {
   orderBy?: Maybe<Array<ReviewAssignmentsOrderBy>>;
   condition?: Maybe<ReviewAssignmentCondition>;
   filter?: Maybe<ReviewAssignmentFilter>;
-};
-
-/** Methods to use when ordering `ReviewAssignment`. */
-export enum ReviewAssignmentsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  AssignerIdAsc = 'ASSIGNER_ID_ASC',
-  AssignerIdDesc = 'ASSIGNER_ID_DESC',
-  ReviewerIdAsc = 'REVIEWER_ID_ASC',
-  ReviewerIdDesc = 'REVIEWER_ID_DESC',
-  OrganisationIdAsc = 'ORGANISATION_ID_ASC',
-  OrganisationIdDesc = 'ORGANISATION_ID_DESC',
-  StageIdAsc = 'STAGE_ID_ASC',
-  StageIdDesc = 'STAGE_ID_DESC',
-  StageNumberAsc = 'STAGE_NUMBER_ASC',
-  StageNumberDesc = 'STAGE_NUMBER_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  ApplicationIdAsc = 'APPLICATION_ID_ASC',
-  ApplicationIdDesc = 'APPLICATION_ID_DESC',
-  TemplateSectionRestrictionsAsc = 'TEMPLATE_SECTION_RESTRICTIONS_ASC',
-  TemplateSectionRestrictionsDesc = 'TEMPLATE_SECTION_RESTRICTIONS_DESC',
-  TriggerAsc = 'TRIGGER_ASC',
-  TriggerDesc = 'TRIGGER_DESC',
-  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
-  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
-  LevelNumberAsc = 'LEVEL_NUMBER_ASC',
-  LevelNumberDesc = 'LEVEL_NUMBER_DESC',
-  LevelIdAsc = 'LEVEL_ID_ASC',
-  LevelIdDesc = 'LEVEL_ID_DESC',
-  IsLastLevelAsc = 'IS_LAST_LEVEL_ASC',
-  IsLastLevelDesc = 'IS_LAST_LEVEL_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `ReviewAssignment` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ReviewAssignmentCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `assignerId` field. */
-  assignerId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `reviewerId` field. */
-  reviewerId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `organisationId` field. */
-  organisationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `stageId` field. */
-  stageId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `stageNumber` field. */
-  stageNumber?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: Maybe<ReviewAssignmentStatus>;
-  /** Checks for equality with the object’s `applicationId` field. */
-  applicationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `templateSectionRestrictions` field. */
-  templateSectionRestrictions?: Maybe<Array<Maybe<Scalars['String']>>>;
-  /** Checks for equality with the object’s `trigger` field. */
-  trigger?: Maybe<Trigger>;
-  /** Checks for equality with the object’s `timeUpdated` field. */
-  timeUpdated?: Maybe<Scalars['Datetime']>;
-  /** Checks for equality with the object’s `levelNumber` field. */
-  levelNumber?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `levelId` field. */
-  levelId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `isLastLevel` field. */
-  isLastLevel?: Maybe<Scalars['Boolean']>;
 };
 
 /** A connection to a list of `ReviewAssignment` values. */
@@ -4443,33 +4758,6 @@ export type UserNotificationsArgs = {
   filter?: Maybe<NotificationFilter>;
 };
 
-/** Methods to use when ordering `UserOrganisation`. */
-export enum UserOrganisationsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  UserIdAsc = 'USER_ID_ASC',
-  UserIdDesc = 'USER_ID_DESC',
-  OrganisationIdAsc = 'ORGANISATION_ID_ASC',
-  OrganisationIdDesc = 'ORGANISATION_ID_DESC',
-  UserRoleAsc = 'USER_ROLE_ASC',
-  UserRoleDesc = 'USER_ROLE_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `UserOrganisation` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type UserOrganisationCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `userId` field. */
-  userId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `organisationId` field. */
-  organisationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `userRole` field. */
-  userRole?: Maybe<Scalars['String']>;
-};
-
 /** A connection to a list of `UserOrganisation` values. */
 export type UserOrganisationsConnection = {
   __typename?: 'UserOrganisationsConnection';
@@ -4578,8 +4866,8 @@ export type OrganisationReviewAssignmentAssignerJoinsArgs = {
   filter?: Maybe<ReviewAssignmentAssignerJoinFilter>;
 };
 
-/** Methods to use when ordering `PermissionJoin`. */
-export enum PermissionJoinsOrderBy {
+/** Methods to use when ordering `UserOrganisation`. */
+export enum UserOrganisationsOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
@@ -4587,22 +4875,25 @@ export enum PermissionJoinsOrderBy {
   UserIdDesc = 'USER_ID_DESC',
   OrganisationIdAsc = 'ORGANISATION_ID_ASC',
   OrganisationIdDesc = 'ORGANISATION_ID_DESC',
-  PermissionNameIdAsc = 'PERMISSION_NAME_ID_ASC',
-  PermissionNameIdDesc = 'PERMISSION_NAME_ID_DESC',
+  UserRoleAsc = 'USER_ROLE_ASC',
+  UserRoleDesc = 'USER_ROLE_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `PermissionJoin` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type PermissionJoinCondition = {
+/**
+ * A condition to be used against `UserOrganisation` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type UserOrganisationCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `userId` field. */
   userId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `organisationId` field. */
   organisationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `permissionNameId` field. */
-  permissionNameId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `userRole` field. */
+  userRole?: Maybe<Scalars['String']>;
 };
 
 /** A connection to a list of `PermissionJoin` values. */
@@ -4699,29 +4990,6 @@ export type PermissionPolicyPermissionNamesArgs = {
   filter?: Maybe<PermissionNameFilter>;
 };
 
-/** Methods to use when ordering `PermissionName`. */
-export enum PermissionNamesOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  NameAsc = 'NAME_ASC',
-  NameDesc = 'NAME_DESC',
-  PermissionPolicyIdAsc = 'PERMISSION_POLICY_ID_ASC',
-  PermissionPolicyIdDesc = 'PERMISSION_POLICY_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `PermissionName` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type PermissionNameCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `name` field. */
-  name?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `permissionPolicyId` field. */
-  permissionPolicyId?: Maybe<Scalars['Int']>;
-};
-
 /** A connection to a list of `PermissionName` values. */
 export type PermissionNamesConnection = {
   __typename?: 'PermissionNamesConnection';
@@ -4744,39 +5012,60 @@ export type PermissionNamesEdge = {
   node?: Maybe<PermissionName>;
 };
 
-/** Methods to use when ordering `TemplatePermission`. */
-export enum TemplatePermissionsOrderBy {
+/** Methods to use when ordering `PermissionName`. */
+export enum PermissionNamesOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
-  PermissionNameIdAsc = 'PERMISSION_NAME_ID_ASC',
-  PermissionNameIdDesc = 'PERMISSION_NAME_ID_DESC',
-  TemplateIdAsc = 'TEMPLATE_ID_ASC',
-  TemplateIdDesc = 'TEMPLATE_ID_DESC',
-  StageNumberAsc = 'STAGE_NUMBER_ASC',
-  StageNumberDesc = 'STAGE_NUMBER_DESC',
-  LevelNumberAsc = 'LEVEL_NUMBER_ASC',
-  LevelNumberDesc = 'LEVEL_NUMBER_DESC',
-  RestrictionsAsc = 'RESTRICTIONS_ASC',
-  RestrictionsDesc = 'RESTRICTIONS_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  PermissionPolicyIdAsc = 'PERMISSION_POLICY_ID_ASC',
+  PermissionPolicyIdDesc = 'PERMISSION_POLICY_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `TemplatePermission` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type TemplatePermissionCondition = {
+/**
+ * A condition to be used against `PermissionName` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type PermissionNameCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `permissionPolicyId` field. */
+  permissionPolicyId?: Maybe<Scalars['Int']>;
+};
+
+/** Methods to use when ordering `PermissionJoin`. */
+export enum PermissionJoinsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC',
+  OrganisationIdAsc = 'ORGANISATION_ID_ASC',
+  OrganisationIdDesc = 'ORGANISATION_ID_DESC',
+  PermissionNameIdAsc = 'PERMISSION_NAME_ID_ASC',
+  PermissionNameIdDesc = 'PERMISSION_NAME_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `PermissionJoin` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type PermissionJoinCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `organisationId` field. */
+  organisationId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `permissionNameId` field. */
   permissionNameId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `templateId` field. */
-  templateId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `stageNumber` field. */
-  stageNumber?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `levelNumber` field. */
-  levelNumber?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `restrictions` field. */
-  restrictions?: Maybe<Scalars['JSON']>;
 };
 
 /** A connection to a list of `TemplatePermission` values. */
@@ -4817,6 +5106,44 @@ export type TemplatePermissionsEdge = {
   node?: Maybe<TemplatePermission>;
 };
 
+/** Methods to use when ordering `TemplatePermission`. */
+export enum TemplatePermissionsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  PermissionNameIdAsc = 'PERMISSION_NAME_ID_ASC',
+  PermissionNameIdDesc = 'PERMISSION_NAME_ID_DESC',
+  TemplateIdAsc = 'TEMPLATE_ID_ASC',
+  TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  StageNumberAsc = 'STAGE_NUMBER_ASC',
+  StageNumberDesc = 'STAGE_NUMBER_DESC',
+  LevelNumberAsc = 'LEVEL_NUMBER_ASC',
+  LevelNumberDesc = 'LEVEL_NUMBER_DESC',
+  RestrictionsAsc = 'RESTRICTIONS_ASC',
+  RestrictionsDesc = 'RESTRICTIONS_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `TemplatePermission` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TemplatePermissionCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `permissionNameId` field. */
+  permissionNameId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateId` field. */
+  templateId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `stageNumber` field. */
+  stageNumber?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `levelNumber` field. */
+  levelNumber?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `restrictions` field. */
+  restrictions?: Maybe<Scalars['JSON']>;
+};
+
 /** A `PermissionJoin` edge in the connection. */
 export type PermissionJoinsEdge = {
   __typename?: 'PermissionJoinsEdge';
@@ -4824,53 +5151,6 @@ export type PermissionJoinsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `PermissionJoin` at the end of the edge. */
   node?: Maybe<PermissionJoin>;
-};
-
-/** Methods to use when ordering `Application`. */
-export enum ApplicationsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  TemplateIdAsc = 'TEMPLATE_ID_ASC',
-  TemplateIdDesc = 'TEMPLATE_ID_DESC',
-  UserIdAsc = 'USER_ID_ASC',
-  UserIdDesc = 'USER_ID_DESC',
-  OrgIdAsc = 'ORG_ID_ASC',
-  OrgIdDesc = 'ORG_ID_DESC',
-  SerialAsc = 'SERIAL_ASC',
-  SerialDesc = 'SERIAL_DESC',
-  NameAsc = 'NAME_ASC',
-  NameDesc = 'NAME_DESC',
-  OutcomeAsc = 'OUTCOME_ASC',
-  OutcomeDesc = 'OUTCOME_DESC',
-  IsActiveAsc = 'IS_ACTIVE_ASC',
-  IsActiveDesc = 'IS_ACTIVE_DESC',
-  TriggerAsc = 'TRIGGER_ASC',
-  TriggerDesc = 'TRIGGER_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `Application` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ApplicationCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `templateId` field. */
-  templateId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `userId` field. */
-  userId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `orgId` field. */
-  orgId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `serial` field. */
-  serial?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `name` field. */
-  name?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `outcome` field. */
-  outcome?: Maybe<ApplicationOutcome>;
-  /** Checks for equality with the object’s `isActive` field. */
-  isActive?: Maybe<Scalars['Boolean']>;
-  /** Checks for equality with the object’s `trigger` field. */
-  trigger?: Maybe<Trigger>;
 };
 
 /** A connection to a list of `Application` values. */
@@ -5008,29 +5288,6 @@ export type ApplicationNotificationsArgs = {
   filter?: Maybe<NotificationFilter>;
 };
 
-/** Methods to use when ordering `ApplicationSection`. */
-export enum ApplicationSectionsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  ApplicationIdAsc = 'APPLICATION_ID_ASC',
-  ApplicationIdDesc = 'APPLICATION_ID_DESC',
-  TemplateSectionIdAsc = 'TEMPLATE_SECTION_ID_ASC',
-  TemplateSectionIdDesc = 'TEMPLATE_SECTION_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `ApplicationSection` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ApplicationSectionCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `applicationId` field. */
-  applicationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `templateSectionId` field. */
-  templateSectionId?: Maybe<Scalars['Int']>;
-};
-
 /** A connection to a list of `ApplicationSection` values. */
 export type ApplicationSectionsConnection = {
   __typename?: 'ApplicationSectionsConnection';
@@ -5096,73 +5353,6 @@ export type TemplateSectionApplicationSectionsArgs = {
   orderBy?: Maybe<Array<ApplicationSectionsOrderBy>>;
   condition?: Maybe<ApplicationSectionCondition>;
   filter?: Maybe<ApplicationSectionFilter>;
-};
-
-/** Methods to use when ordering `TemplateElement`. */
-export enum TemplateElementsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  SectionIdAsc = 'SECTION_ID_ASC',
-  SectionIdDesc = 'SECTION_ID_DESC',
-  CodeAsc = 'CODE_ASC',
-  CodeDesc = 'CODE_DESC',
-  IndexAsc = 'INDEX_ASC',
-  IndexDesc = 'INDEX_DESC',
-  TitleAsc = 'TITLE_ASC',
-  TitleDesc = 'TITLE_DESC',
-  CategoryAsc = 'CATEGORY_ASC',
-  CategoryDesc = 'CATEGORY_DESC',
-  ElementTypePluginCodeAsc = 'ELEMENT_TYPE_PLUGIN_CODE_ASC',
-  ElementTypePluginCodeDesc = 'ELEMENT_TYPE_PLUGIN_CODE_DESC',
-  VisibilityConditionAsc = 'VISIBILITY_CONDITION_ASC',
-  VisibilityConditionDesc = 'VISIBILITY_CONDITION_DESC',
-  IsRequiredAsc = 'IS_REQUIRED_ASC',
-  IsRequiredDesc = 'IS_REQUIRED_DESC',
-  IsEditableAsc = 'IS_EDITABLE_ASC',
-  IsEditableDesc = 'IS_EDITABLE_DESC',
-  ValidationAsc = 'VALIDATION_ASC',
-  ValidationDesc = 'VALIDATION_DESC',
-  ValidationMessageAsc = 'VALIDATION_MESSAGE_ASC',
-  ValidationMessageDesc = 'VALIDATION_MESSAGE_DESC',
-  ParametersAsc = 'PARAMETERS_ASC',
-  ParametersDesc = 'PARAMETERS_DESC',
-  TemplateCodeAsc = 'TEMPLATE_CODE_ASC',
-  TemplateCodeDesc = 'TEMPLATE_CODE_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `TemplateElement` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type TemplateElementCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `sectionId` field. */
-  sectionId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `code` field. */
-  code?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `index` field. */
-  index?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `title` field. */
-  title?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `category` field. */
-  category?: Maybe<TemplateElementCategory>;
-  /** Checks for equality with the object’s `elementTypePluginCode` field. */
-  elementTypePluginCode?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `visibilityCondition` field. */
-  visibilityCondition?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `isRequired` field. */
-  isRequired?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `isEditable` field. */
-  isEditable?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `validation` field. */
-  validation?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `validationMessage` field. */
-  validationMessage?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `parameters` field. */
-  parameters?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `templateCode` field. */
-  templateCode?: Maybe<Scalars['String']>;
 };
 
 /** A connection to a list of `TemplateElement` values. */
@@ -5242,45 +5432,6 @@ export type TemplateElementReviewResponsesArgs = {
   filter?: Maybe<ReviewResponseFilter>;
 };
 
-/** Methods to use when ordering `ApplicationResponse`. */
-export enum ApplicationResponsesOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  TemplateElementIdAsc = 'TEMPLATE_ELEMENT_ID_ASC',
-  TemplateElementIdDesc = 'TEMPLATE_ELEMENT_ID_DESC',
-  ApplicationIdAsc = 'APPLICATION_ID_ASC',
-  ApplicationIdDesc = 'APPLICATION_ID_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  ValueAsc = 'VALUE_ASC',
-  ValueDesc = 'VALUE_DESC',
-  IsValidAsc = 'IS_VALID_ASC',
-  IsValidDesc = 'IS_VALID_DESC',
-  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
-  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `ApplicationResponse` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ApplicationResponseCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `templateElementId` field. */
-  templateElementId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `applicationId` field. */
-  applicationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: Maybe<ApplicationResponseStatus>;
-  /** Checks for equality with the object’s `value` field. */
-  value?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `isValid` field. */
-  isValid?: Maybe<Scalars['Boolean']>;
-  /** Checks for equality with the object’s `timeUpdated` field. */
-  timeUpdated?: Maybe<Scalars['Datetime']>;
-};
-
 /** A connection to a list of `ApplicationResponse` values. */
 export type ApplicationResponsesConnection = {
   __typename?: 'ApplicationResponsesConnection';
@@ -5337,69 +5488,6 @@ export type ApplicationResponseFilesArgs = {
   orderBy?: Maybe<Array<FilesOrderBy>>;
   condition?: Maybe<FileCondition>;
   filter?: Maybe<FileFilter>;
-};
-
-/** Methods to use when ordering `ReviewResponse`. */
-export enum ReviewResponsesOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  CommentAsc = 'COMMENT_ASC',
-  CommentDesc = 'COMMENT_DESC',
-  DecisionAsc = 'DECISION_ASC',
-  DecisionDesc = 'DECISION_DESC',
-  ReviewQuestionAssignmentIdAsc = 'REVIEW_QUESTION_ASSIGNMENT_ID_ASC',
-  ReviewQuestionAssignmentIdDesc = 'REVIEW_QUESTION_ASSIGNMENT_ID_DESC',
-  ApplicationResponseIdAsc = 'APPLICATION_RESPONSE_ID_ASC',
-  ApplicationResponseIdDesc = 'APPLICATION_RESPONSE_ID_DESC',
-  ReviewResponseLinkIdAsc = 'REVIEW_RESPONSE_LINK_ID_ASC',
-  ReviewResponseLinkIdDesc = 'REVIEW_RESPONSE_LINK_ID_DESC',
-  OriginalReviewResponseIdAsc = 'ORIGINAL_REVIEW_RESPONSE_ID_ASC',
-  OriginalReviewResponseIdDesc = 'ORIGINAL_REVIEW_RESPONSE_ID_DESC',
-  ReviewIdAsc = 'REVIEW_ID_ASC',
-  ReviewIdDesc = 'REVIEW_ID_DESC',
-  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
-  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
-  IsVisibleToApplicantAsc = 'IS_VISIBLE_TO_APPLICANT_ASC',
-  IsVisibleToApplicantDesc = 'IS_VISIBLE_TO_APPLICANT_DESC',
-  TemplateElementIdAsc = 'TEMPLATE_ELEMENT_ID_ASC',
-  TemplateElementIdDesc = 'TEMPLATE_ELEMENT_ID_DESC',
-  RecommendedApplicantVisibilityAsc = 'RECOMMENDED_APPLICANT_VISIBILITY_ASC',
-  RecommendedApplicantVisibilityDesc = 'RECOMMENDED_APPLICANT_VISIBILITY_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `ReviewResponse` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ReviewResponseCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `comment` field. */
-  comment?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `decision` field. */
-  decision?: Maybe<ReviewResponseDecision>;
-  /** Checks for equality with the object’s `reviewQuestionAssignmentId` field. */
-  reviewQuestionAssignmentId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `applicationResponseId` field. */
-  applicationResponseId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `reviewResponseLinkId` field. */
-  reviewResponseLinkId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `originalReviewResponseId` field. */
-  originalReviewResponseId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `reviewId` field. */
-  reviewId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `timeUpdated` field. */
-  timeUpdated?: Maybe<Scalars['Datetime']>;
-  /** Checks for equality with the object’s `isVisibleToApplicant` field. */
-  isVisibleToApplicant?: Maybe<Scalars['Boolean']>;
-  /** Checks for equality with the object’s `templateElementId` field. */
-  templateElementId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `recommendedApplicantVisibility` field. */
-  recommendedApplicantVisibility?: Maybe<ReviewResponseRecommendedApplicantVisibility>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: Maybe<ReviewResponseStatus>;
 };
 
 /** A connection to a list of `ReviewResponse` values. */
@@ -5501,6 +5589,72 @@ export type ReviewQuestionAssignmentReviewResponsesArgs = {
   filter?: Maybe<ReviewResponseFilter>;
 };
 
+/** Methods to use when ordering `ReviewResponse`. */
+export enum ReviewResponsesOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  CommentAsc = 'COMMENT_ASC',
+  CommentDesc = 'COMMENT_DESC',
+  DecisionAsc = 'DECISION_ASC',
+  DecisionDesc = 'DECISION_DESC',
+  ReviewQuestionAssignmentIdAsc = 'REVIEW_QUESTION_ASSIGNMENT_ID_ASC',
+  ReviewQuestionAssignmentIdDesc = 'REVIEW_QUESTION_ASSIGNMENT_ID_DESC',
+  ApplicationResponseIdAsc = 'APPLICATION_RESPONSE_ID_ASC',
+  ApplicationResponseIdDesc = 'APPLICATION_RESPONSE_ID_DESC',
+  ReviewResponseLinkIdAsc = 'REVIEW_RESPONSE_LINK_ID_ASC',
+  ReviewResponseLinkIdDesc = 'REVIEW_RESPONSE_LINK_ID_DESC',
+  OriginalReviewResponseIdAsc = 'ORIGINAL_REVIEW_RESPONSE_ID_ASC',
+  OriginalReviewResponseIdDesc = 'ORIGINAL_REVIEW_RESPONSE_ID_DESC',
+  ReviewIdAsc = 'REVIEW_ID_ASC',
+  ReviewIdDesc = 'REVIEW_ID_DESC',
+  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
+  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
+  IsVisibleToApplicantAsc = 'IS_VISIBLE_TO_APPLICANT_ASC',
+  IsVisibleToApplicantDesc = 'IS_VISIBLE_TO_APPLICANT_DESC',
+  TemplateElementIdAsc = 'TEMPLATE_ELEMENT_ID_ASC',
+  TemplateElementIdDesc = 'TEMPLATE_ELEMENT_ID_DESC',
+  RecommendedApplicantVisibilityAsc = 'RECOMMENDED_APPLICANT_VISIBILITY_ASC',
+  RecommendedApplicantVisibilityDesc = 'RECOMMENDED_APPLICANT_VISIBILITY_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `ReviewResponse` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type ReviewResponseCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `comment` field. */
+  comment?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `decision` field. */
+  decision?: Maybe<ReviewResponseDecision>;
+  /** Checks for equality with the object’s `reviewQuestionAssignmentId` field. */
+  reviewQuestionAssignmentId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `applicationResponseId` field. */
+  applicationResponseId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `reviewResponseLinkId` field. */
+  reviewResponseLinkId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `originalReviewResponseId` field. */
+  originalReviewResponseId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `reviewId` field. */
+  reviewId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `timeUpdated` field. */
+  timeUpdated?: Maybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `isVisibleToApplicant` field. */
+  isVisibleToApplicant?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `templateElementId` field. */
+  templateElementId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `recommendedApplicantVisibility` field. */
+  recommendedApplicantVisibility?: Maybe<ReviewResponseRecommendedApplicantVisibility>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: Maybe<ReviewResponseStatus>;
+};
+
 export type Review = Node & {
   __typename?: 'Review';
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -5579,37 +5733,6 @@ export type ReviewNotificationsArgs = {
   filter?: Maybe<NotificationFilter>;
 };
 
-/** Methods to use when ordering `ReviewDecision`. */
-export enum ReviewDecisionsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  ReviewIdAsc = 'REVIEW_ID_ASC',
-  ReviewIdDesc = 'REVIEW_ID_DESC',
-  DecisionAsc = 'DECISION_ASC',
-  DecisionDesc = 'DECISION_DESC',
-  CommentAsc = 'COMMENT_ASC',
-  CommentDesc = 'COMMENT_DESC',
-  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
-  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `ReviewDecision` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ReviewDecisionCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `reviewId` field. */
-  reviewId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `decision` field. */
-  decision?: Maybe<Decision>;
-  /** Checks for equality with the object’s `comment` field. */
-  comment?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `timeUpdated` field. */
-  timeUpdated?: Maybe<Scalars['Datetime']>;
-};
-
 /** A connection to a list of `ReviewDecision` values. */
 export type ReviewDecisionsConnection = {
   __typename?: 'ReviewDecisionsConnection';
@@ -5645,35 +5768,38 @@ export type ReviewDecisionsEdge = {
   node?: Maybe<ReviewDecision>;
 };
 
-/** Methods to use when ordering `ReviewStatusHistory`. */
-export enum ReviewStatusHistoriesOrderBy {
+/** Methods to use when ordering `ReviewDecision`. */
+export enum ReviewDecisionsOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   ReviewIdAsc = 'REVIEW_ID_ASC',
   ReviewIdDesc = 'REVIEW_ID_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  TimeCreatedAsc = 'TIME_CREATED_ASC',
-  TimeCreatedDesc = 'TIME_CREATED_DESC',
-  IsCurrentAsc = 'IS_CURRENT_ASC',
-  IsCurrentDesc = 'IS_CURRENT_DESC',
+  DecisionAsc = 'DECISION_ASC',
+  DecisionDesc = 'DECISION_DESC',
+  CommentAsc = 'COMMENT_ASC',
+  CommentDesc = 'COMMENT_DESC',
+  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
+  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `ReviewStatusHistory` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ReviewStatusHistoryCondition = {
+/**
+ * A condition to be used against `ReviewDecision` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type ReviewDecisionCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `reviewId` field. */
   reviewId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: Maybe<ReviewStatus>;
-  /** Checks for equality with the object’s `timeCreated` field. */
-  timeCreated?: Maybe<Scalars['Datetime']>;
-  /** Checks for equality with the object’s `isCurrent` field. */
-  isCurrent?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `decision` field. */
+  decision?: Maybe<Decision>;
+  /** Checks for equality with the object’s `comment` field. */
+  comment?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `timeUpdated` field. */
+  timeUpdated?: Maybe<Scalars['Datetime']>;
 };
 
 /** A connection to a list of `ReviewStatusHistory` values. */
@@ -5711,47 +5837,38 @@ export type ReviewStatusHistoriesEdge = {
   node?: Maybe<ReviewStatusHistory>;
 };
 
-/** Methods to use when ordering `Notification`. */
-export enum NotificationsOrderBy {
+/** Methods to use when ordering `ReviewStatusHistory`. */
+export enum ReviewStatusHistoriesOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
-  UserIdAsc = 'USER_ID_ASC',
-  UserIdDesc = 'USER_ID_DESC',
-  ApplicationIdAsc = 'APPLICATION_ID_ASC',
-  ApplicationIdDesc = 'APPLICATION_ID_DESC',
   ReviewIdAsc = 'REVIEW_ID_ASC',
   ReviewIdDesc = 'REVIEW_ID_DESC',
-  SubjectAsc = 'SUBJECT_ASC',
-  SubjectDesc = 'SUBJECT_DESC',
-  MessageAsc = 'MESSAGE_ASC',
-  MessageDesc = 'MESSAGE_DESC',
-  DocumentIdAsc = 'DOCUMENT_ID_ASC',
-  DocumentIdDesc = 'DOCUMENT_ID_DESC',
-  IsReadAsc = 'IS_READ_ASC',
-  IsReadDesc = 'IS_READ_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  TimeCreatedAsc = 'TIME_CREATED_ASC',
+  TimeCreatedDesc = 'TIME_CREATED_DESC',
+  IsCurrentAsc = 'IS_CURRENT_ASC',
+  IsCurrentDesc = 'IS_CURRENT_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `Notification` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type NotificationCondition = {
+/**
+ * A condition to be used against `ReviewStatusHistory` object types. All fields
+ * are tested for equality and combined with a logical ‘and.’
+ */
+export type ReviewStatusHistoryCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `userId` field. */
-  userId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `applicationId` field. */
-  applicationId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `reviewId` field. */
   reviewId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `subject` field. */
-  subject?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `message` field. */
-  message?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `documentId` field. */
-  documentId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `isRead` field. */
-  isRead?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: Maybe<ReviewStatus>;
+  /** Checks for equality with the object’s `timeCreated` field. */
+  timeCreated?: Maybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `isCurrent` field. */
+  isCurrent?: Maybe<Scalars['Boolean']>;
 };
 
 /** A connection to a list of `Notification` values. */
@@ -5826,6 +5943,52 @@ export type FileNotificationsByDocumentIdArgs = {
   filter?: Maybe<NotificationFilter>;
 };
 
+/** Methods to use when ordering `Notification`. */
+export enum NotificationsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC',
+  ApplicationIdAsc = 'APPLICATION_ID_ASC',
+  ApplicationIdDesc = 'APPLICATION_ID_DESC',
+  ReviewIdAsc = 'REVIEW_ID_ASC',
+  ReviewIdDesc = 'REVIEW_ID_DESC',
+  SubjectAsc = 'SUBJECT_ASC',
+  SubjectDesc = 'SUBJECT_DESC',
+  MessageAsc = 'MESSAGE_ASC',
+  MessageDesc = 'MESSAGE_DESC',
+  DocumentIdAsc = 'DOCUMENT_ID_ASC',
+  DocumentIdDesc = 'DOCUMENT_ID_DESC',
+  IsReadAsc = 'IS_READ_ASC',
+  IsReadDesc = 'IS_READ_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `Notification` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type NotificationCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `applicationId` field. */
+  applicationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `reviewId` field. */
+  reviewId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `subject` field. */
+  subject?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `message` field. */
+  message?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `documentId` field. */
+  documentId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `isRead` field. */
+  isRead?: Maybe<Scalars['Boolean']>;
+};
+
 /** A `Notification` edge in the connection. */
 export type NotificationsEdge = {
   __typename?: 'NotificationsEdge';
@@ -5842,6 +6005,28 @@ export type ReviewResponsesEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `ReviewResponse` at the end of the edge. */
   node?: Maybe<ReviewResponse>;
+};
+
+/** A connection to a list of `File` values. */
+export type FilesConnection = {
+  __typename?: 'FilesConnection';
+  /** A list of `File` objects. */
+  nodes: Array<Maybe<File>>;
+  /** A list of edges which contains the `File` and cursor to aid in pagination. */
+  edges: Array<FilesEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `File` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** A `File` edge in the connection. */
+export type FilesEdge = {
+  __typename?: 'FilesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `File` at the end of the edge. */
+  node?: Maybe<File>;
 };
 
 /** Methods to use when ordering `File`. */
@@ -5899,28 +6084,6 @@ export type FileCondition = {
   timestamp?: Maybe<Scalars['Datetime']>;
 };
 
-/** A connection to a list of `File` values. */
-export type FilesConnection = {
-  __typename?: 'FilesConnection';
-  /** A list of `File` objects. */
-  nodes: Array<Maybe<File>>;
-  /** A list of edges which contains the `File` and cursor to aid in pagination. */
-  edges: Array<FilesEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `File` you could get from the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** A `File` edge in the connection. */
-export type FilesEdge = {
-  __typename?: 'FilesEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']>;
-  /** The `File` at the end of the edge. */
-  node?: Maybe<File>;
-};
-
 /** A `ApplicationResponse` edge in the connection. */
 export type ApplicationResponsesEdge = {
   __typename?: 'ApplicationResponsesEdge';
@@ -5930,27 +6093,46 @@ export type ApplicationResponsesEdge = {
   node?: Maybe<ApplicationResponse>;
 };
 
-/** Methods to use when ordering `ReviewQuestionAssignment`. */
-export enum ReviewQuestionAssignmentsOrderBy {
+/** Methods to use when ordering `ApplicationResponse`. */
+export enum ApplicationResponsesOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   TemplateElementIdAsc = 'TEMPLATE_ELEMENT_ID_ASC',
   TemplateElementIdDesc = 'TEMPLATE_ELEMENT_ID_DESC',
-  ReviewAssignmentIdAsc = 'REVIEW_ASSIGNMENT_ID_ASC',
-  ReviewAssignmentIdDesc = 'REVIEW_ASSIGNMENT_ID_DESC',
+  ApplicationIdAsc = 'APPLICATION_ID_ASC',
+  ApplicationIdDesc = 'APPLICATION_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  ValueAsc = 'VALUE_ASC',
+  ValueDesc = 'VALUE_DESC',
+  IsValidAsc = 'IS_VALID_ASC',
+  IsValidDesc = 'IS_VALID_DESC',
+  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
+  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `ReviewQuestionAssignment` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ReviewQuestionAssignmentCondition = {
+/**
+ * A condition to be used against `ApplicationResponse` object types. All fields
+ * are tested for equality and combined with a logical ‘and.’
+ */
+export type ApplicationResponseCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `templateElementId` field. */
   templateElementId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `reviewAssignmentId` field. */
-  reviewAssignmentId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `applicationId` field. */
+  applicationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: Maybe<ApplicationResponseStatus>;
+  /** Checks for equality with the object’s `value` field. */
+  value?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `isValid` field. */
+  isValid?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `timeUpdated` field. */
+  timeUpdated?: Maybe<Scalars['Datetime']>;
 };
 
 /** A connection to a list of `ReviewQuestionAssignment` values. */
@@ -5975,6 +6157,32 @@ export type ReviewQuestionAssignmentsEdge = {
   node?: Maybe<ReviewQuestionAssignment>;
 };
 
+/** Methods to use when ordering `ReviewQuestionAssignment`. */
+export enum ReviewQuestionAssignmentsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  TemplateElementIdAsc = 'TEMPLATE_ELEMENT_ID_ASC',
+  TemplateElementIdDesc = 'TEMPLATE_ELEMENT_ID_DESC',
+  ReviewAssignmentIdAsc = 'REVIEW_ASSIGNMENT_ID_ASC',
+  ReviewAssignmentIdDesc = 'REVIEW_ASSIGNMENT_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `ReviewQuestionAssignment` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
+export type ReviewQuestionAssignmentCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateElementId` field. */
+  templateElementId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `reviewAssignmentId` field. */
+  reviewAssignmentId?: Maybe<Scalars['Int']>;
+};
+
 /** A `TemplateElement` edge in the connection. */
 export type TemplateElementsEdge = {
   __typename?: 'TemplateElementsEdge';
@@ -5984,6 +6192,102 @@ export type TemplateElementsEdge = {
   node?: Maybe<TemplateElement>;
 };
 
+/** Methods to use when ordering `TemplateElement`. */
+export enum TemplateElementsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  SectionIdAsc = 'SECTION_ID_ASC',
+  SectionIdDesc = 'SECTION_ID_DESC',
+  CodeAsc = 'CODE_ASC',
+  CodeDesc = 'CODE_DESC',
+  IndexAsc = 'INDEX_ASC',
+  IndexDesc = 'INDEX_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  CategoryAsc = 'CATEGORY_ASC',
+  CategoryDesc = 'CATEGORY_DESC',
+  ElementTypePluginCodeAsc = 'ELEMENT_TYPE_PLUGIN_CODE_ASC',
+  ElementTypePluginCodeDesc = 'ELEMENT_TYPE_PLUGIN_CODE_DESC',
+  VisibilityConditionAsc = 'VISIBILITY_CONDITION_ASC',
+  VisibilityConditionDesc = 'VISIBILITY_CONDITION_DESC',
+  IsRequiredAsc = 'IS_REQUIRED_ASC',
+  IsRequiredDesc = 'IS_REQUIRED_DESC',
+  IsEditableAsc = 'IS_EDITABLE_ASC',
+  IsEditableDesc = 'IS_EDITABLE_DESC',
+  ValidationAsc = 'VALIDATION_ASC',
+  ValidationDesc = 'VALIDATION_DESC',
+  ValidationMessageAsc = 'VALIDATION_MESSAGE_ASC',
+  ValidationMessageDesc = 'VALIDATION_MESSAGE_DESC',
+  ParametersAsc = 'PARAMETERS_ASC',
+  ParametersDesc = 'PARAMETERS_DESC',
+  TemplateCodeAsc = 'TEMPLATE_CODE_ASC',
+  TemplateCodeDesc = 'TEMPLATE_CODE_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `TemplateElement` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TemplateElementCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `sectionId` field. */
+  sectionId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `code` field. */
+  code?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `index` field. */
+  index?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `category` field. */
+  category?: Maybe<TemplateElementCategory>;
+  /** Checks for equality with the object’s `elementTypePluginCode` field. */
+  elementTypePluginCode?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `visibilityCondition` field. */
+  visibilityCondition?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `isRequired` field. */
+  isRequired?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `isEditable` field. */
+  isEditable?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `validation` field. */
+  validation?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `validationMessage` field. */
+  validationMessage?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `parameters` field. */
+  parameters?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `templateCode` field. */
+  templateCode?: Maybe<Scalars['String']>;
+};
+
+/** Methods to use when ordering `ApplicationSection`. */
+export enum ApplicationSectionsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  ApplicationIdAsc = 'APPLICATION_ID_ASC',
+  ApplicationIdDesc = 'APPLICATION_ID_DESC',
+  TemplateSectionIdAsc = 'TEMPLATE_SECTION_ID_ASC',
+  TemplateSectionIdDesc = 'TEMPLATE_SECTION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `ApplicationSection` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type ApplicationSectionCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `applicationId` field. */
+  applicationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateSectionId` field. */
+  templateSectionId?: Maybe<Scalars['Int']>;
+};
+
 /** A `ApplicationSection` edge in the connection. */
 export type ApplicationSectionsEdge = {
   __typename?: 'ApplicationSectionsEdge';
@@ -5991,37 +6295,6 @@ export type ApplicationSectionsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `ApplicationSection` at the end of the edge. */
   node?: Maybe<ApplicationSection>;
-};
-
-/** Methods to use when ordering `ApplicationStageHistory`. */
-export enum ApplicationStageHistoriesOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  ApplicationIdAsc = 'APPLICATION_ID_ASC',
-  ApplicationIdDesc = 'APPLICATION_ID_DESC',
-  StageIdAsc = 'STAGE_ID_ASC',
-  StageIdDesc = 'STAGE_ID_DESC',
-  TimeCreatedAsc = 'TIME_CREATED_ASC',
-  TimeCreatedDesc = 'TIME_CREATED_DESC',
-  IsCurrentAsc = 'IS_CURRENT_ASC',
-  IsCurrentDesc = 'IS_CURRENT_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `ApplicationStageHistory` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ApplicationStageHistoryCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `applicationId` field. */
-  applicationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `stageId` field. */
-  stageId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `timeCreated` field. */
-  timeCreated?: Maybe<Scalars['Datetime']>;
-  /** Checks for equality with the object’s `isCurrent` field. */
-  isCurrent?: Maybe<Scalars['Boolean']>;
 };
 
 /** A connection to a list of `ApplicationStageHistory` values. */
@@ -6066,41 +6339,6 @@ export type ApplicationStageHistoryApplicationStatusHistoriesArgs = {
   filter?: Maybe<ApplicationStatusHistoryFilter>;
 };
 
-/** Methods to use when ordering `ApplicationStatusHistory`. */
-export enum ApplicationStatusHistoriesOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  ApplicationStageHistoryIdAsc = 'APPLICATION_STAGE_HISTORY_ID_ASC',
-  ApplicationStageHistoryIdDesc = 'APPLICATION_STAGE_HISTORY_ID_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  TimeCreatedAsc = 'TIME_CREATED_ASC',
-  TimeCreatedDesc = 'TIME_CREATED_DESC',
-  IsCurrentAsc = 'IS_CURRENT_ASC',
-  IsCurrentDesc = 'IS_CURRENT_DESC',
-  ApplicationIdAsc = 'APPLICATION_ID_ASC',
-  ApplicationIdDesc = 'APPLICATION_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `ApplicationStatusHistory` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ApplicationStatusHistoryCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `applicationStageHistoryId` field. */
-  applicationStageHistoryId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: Maybe<ApplicationStatus>;
-  /** Checks for equality with the object’s `timeCreated` field. */
-  timeCreated?: Maybe<Scalars['Datetime']>;
-  /** Checks for equality with the object’s `isCurrent` field. */
-  isCurrent?: Maybe<Scalars['Boolean']>;
-  /** Checks for equality with the object’s `applicationId` field. */
-  applicationId?: Maybe<Scalars['Int']>;
-};
-
 /** A connection to a list of `ApplicationStatusHistory` values. */
 export type ApplicationStatusHistoriesConnection = {
   __typename?: 'ApplicationStatusHistoriesConnection';
@@ -6137,6 +6375,44 @@ export type ApplicationStatusHistoriesEdge = {
   node?: Maybe<ApplicationStatusHistory>;
 };
 
+/** Methods to use when ordering `ApplicationStatusHistory`. */
+export enum ApplicationStatusHistoriesOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  ApplicationStageHistoryIdAsc = 'APPLICATION_STAGE_HISTORY_ID_ASC',
+  ApplicationStageHistoryIdDesc = 'APPLICATION_STAGE_HISTORY_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  TimeCreatedAsc = 'TIME_CREATED_ASC',
+  TimeCreatedDesc = 'TIME_CREATED_DESC',
+  IsCurrentAsc = 'IS_CURRENT_ASC',
+  IsCurrentDesc = 'IS_CURRENT_DESC',
+  ApplicationIdAsc = 'APPLICATION_ID_ASC',
+  ApplicationIdDesc = 'APPLICATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `ApplicationStatusHistory` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
+export type ApplicationStatusHistoryCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `applicationStageHistoryId` field. */
+  applicationStageHistoryId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: Maybe<ApplicationStatus>;
+  /** Checks for equality with the object’s `timeCreated` field. */
+  timeCreated?: Maybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `isCurrent` field. */
+  isCurrent?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `applicationId` field. */
+  applicationId?: Maybe<Scalars['Int']>;
+};
+
 /** A `ApplicationStageHistory` edge in the connection. */
 export type ApplicationStageHistoriesEdge = {
   __typename?: 'ApplicationStageHistoriesEdge';
@@ -6144,6 +6420,132 @@ export type ApplicationStageHistoriesEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `ApplicationStageHistory` at the end of the edge. */
   node?: Maybe<ApplicationStageHistory>;
+};
+
+/** Methods to use when ordering `ApplicationStageHistory`. */
+export enum ApplicationStageHistoriesOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  ApplicationIdAsc = 'APPLICATION_ID_ASC',
+  ApplicationIdDesc = 'APPLICATION_ID_DESC',
+  StageIdAsc = 'STAGE_ID_ASC',
+  StageIdDesc = 'STAGE_ID_DESC',
+  TimeCreatedAsc = 'TIME_CREATED_ASC',
+  TimeCreatedDesc = 'TIME_CREATED_DESC',
+  IsCurrentAsc = 'IS_CURRENT_ASC',
+  IsCurrentDesc = 'IS_CURRENT_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `ApplicationStageHistory` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
+export type ApplicationStageHistoryCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `applicationId` field. */
+  applicationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `stageId` field. */
+  stageId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `timeCreated` field. */
+  timeCreated?: Maybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `isCurrent` field. */
+  isCurrent?: Maybe<Scalars['Boolean']>;
+};
+
+/** Methods to use when ordering `ReviewAssignment`. */
+export enum ReviewAssignmentsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  AssignerIdAsc = 'ASSIGNER_ID_ASC',
+  AssignerIdDesc = 'ASSIGNER_ID_DESC',
+  ReviewerIdAsc = 'REVIEWER_ID_ASC',
+  ReviewerIdDesc = 'REVIEWER_ID_DESC',
+  OrganisationIdAsc = 'ORGANISATION_ID_ASC',
+  OrganisationIdDesc = 'ORGANISATION_ID_DESC',
+  StageIdAsc = 'STAGE_ID_ASC',
+  StageIdDesc = 'STAGE_ID_DESC',
+  StageNumberAsc = 'STAGE_NUMBER_ASC',
+  StageNumberDesc = 'STAGE_NUMBER_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  ApplicationIdAsc = 'APPLICATION_ID_ASC',
+  ApplicationIdDesc = 'APPLICATION_ID_DESC',
+  TemplateSectionRestrictionsAsc = 'TEMPLATE_SECTION_RESTRICTIONS_ASC',
+  TemplateSectionRestrictionsDesc = 'TEMPLATE_SECTION_RESTRICTIONS_DESC',
+  TriggerAsc = 'TRIGGER_ASC',
+  TriggerDesc = 'TRIGGER_DESC',
+  TimeUpdatedAsc = 'TIME_UPDATED_ASC',
+  TimeUpdatedDesc = 'TIME_UPDATED_DESC',
+  LevelNumberAsc = 'LEVEL_NUMBER_ASC',
+  LevelNumberDesc = 'LEVEL_NUMBER_DESC',
+  LevelIdAsc = 'LEVEL_ID_ASC',
+  LevelIdDesc = 'LEVEL_ID_DESC',
+  IsLastLevelAsc = 'IS_LAST_LEVEL_ASC',
+  IsLastLevelDesc = 'IS_LAST_LEVEL_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `ReviewAssignment` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type ReviewAssignmentCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `assignerId` field. */
+  assignerId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `reviewerId` field. */
+  reviewerId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `organisationId` field. */
+  organisationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `stageId` field. */
+  stageId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `stageNumber` field. */
+  stageNumber?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: Maybe<ReviewAssignmentStatus>;
+  /** Checks for equality with the object’s `applicationId` field. */
+  applicationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateSectionRestrictions` field. */
+  templateSectionRestrictions?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Checks for equality with the object’s `trigger` field. */
+  trigger?: Maybe<Trigger>;
+  /** Checks for equality with the object’s `timeUpdated` field. */
+  timeUpdated?: Maybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `levelNumber` field. */
+  levelNumber?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `levelId` field. */
+  levelId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `isLastLevel` field. */
+  isLastLevel?: Maybe<Scalars['Boolean']>;
+};
+
+/** A connection to a list of `Review` values. */
+export type ReviewsConnection = {
+  __typename?: 'ReviewsConnection';
+  /** A list of `Review` objects. */
+  nodes: Array<Maybe<Review>>;
+  /** A list of edges which contains the `Review` and cursor to aid in pagination. */
+  edges: Array<ReviewsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Review` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** A `Review` edge in the connection. */
+export type ReviewsEdge = {
+  __typename?: 'ReviewsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `Review` at the end of the edge. */
+  node?: Maybe<Review>;
 };
 
 /** Methods to use when ordering `Review`. */
@@ -6185,28 +6587,6 @@ export type ReviewCondition = {
   isLastLevel?: Maybe<Scalars['Boolean']>;
 };
 
-/** A connection to a list of `Review` values. */
-export type ReviewsConnection = {
-  __typename?: 'ReviewsConnection';
-  /** A list of `Review` objects. */
-  nodes: Array<Maybe<Review>>;
-  /** A list of edges which contains the `Review` and cursor to aid in pagination. */
-  edges: Array<ReviewsEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `Review` you could get from the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** A `Review` edge in the connection. */
-export type ReviewsEdge = {
-  __typename?: 'ReviewsEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']>;
-  /** The `Review` at the end of the edge. */
-  node?: Maybe<Review>;
-};
-
 /** A `Application` edge in the connection. */
 export type ApplicationsEdge = {
   __typename?: 'ApplicationsEdge';
@@ -6216,31 +6596,54 @@ export type ApplicationsEdge = {
   node?: Maybe<Application>;
 };
 
-/** Methods to use when ordering `ReviewAssignmentAssignerJoin`. */
-export enum ReviewAssignmentAssignerJoinsOrderBy {
+/** Methods to use when ordering `Application`. */
+export enum ApplicationsOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
-  AssignerIdAsc = 'ASSIGNER_ID_ASC',
-  AssignerIdDesc = 'ASSIGNER_ID_DESC',
-  OrganisationIdAsc = 'ORGANISATION_ID_ASC',
-  OrganisationIdDesc = 'ORGANISATION_ID_DESC',
-  ReviewAssignmentIdAsc = 'REVIEW_ASSIGNMENT_ID_ASC',
-  ReviewAssignmentIdDesc = 'REVIEW_ASSIGNMENT_ID_DESC',
+  TemplateIdAsc = 'TEMPLATE_ID_ASC',
+  TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC',
+  OrgIdAsc = 'ORG_ID_ASC',
+  OrgIdDesc = 'ORG_ID_DESC',
+  SerialAsc = 'SERIAL_ASC',
+  SerialDesc = 'SERIAL_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  OutcomeAsc = 'OUTCOME_ASC',
+  OutcomeDesc = 'OUTCOME_DESC',
+  IsActiveAsc = 'IS_ACTIVE_ASC',
+  IsActiveDesc = 'IS_ACTIVE_DESC',
+  TriggerAsc = 'TRIGGER_ASC',
+  TriggerDesc = 'TRIGGER_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `ReviewAssignmentAssignerJoin` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type ReviewAssignmentAssignerJoinCondition = {
+/**
+ * A condition to be used against `Application` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type ApplicationCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `assignerId` field. */
-  assignerId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `organisationId` field. */
-  organisationId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `reviewAssignmentId` field. */
-  reviewAssignmentId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateId` field. */
+  templateId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `orgId` field. */
+  orgId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `serial` field. */
+  serial?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `outcome` field. */
+  outcome?: Maybe<ApplicationOutcome>;
+  /** Checks for equality with the object’s `isActive` field. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `trigger` field. */
+  trigger?: Maybe<Trigger>;
 };
 
 /** A connection to a list of `ReviewAssignmentAssignerJoin` values. */
@@ -6281,6 +6684,36 @@ export type ReviewAssignmentAssignerJoinsEdge = {
   node?: Maybe<ReviewAssignmentAssignerJoin>;
 };
 
+/** Methods to use when ordering `ReviewAssignmentAssignerJoin`. */
+export enum ReviewAssignmentAssignerJoinsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  AssignerIdAsc = 'ASSIGNER_ID_ASC',
+  AssignerIdDesc = 'ASSIGNER_ID_DESC',
+  OrganisationIdAsc = 'ORGANISATION_ID_ASC',
+  OrganisationIdDesc = 'ORGANISATION_ID_DESC',
+  ReviewAssignmentIdAsc = 'REVIEW_ASSIGNMENT_ID_ASC',
+  ReviewAssignmentIdDesc = 'REVIEW_ASSIGNMENT_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `ReviewAssignmentAssignerJoin` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
+export type ReviewAssignmentAssignerJoinCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `assignerId` field. */
+  assignerId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `organisationId` field. */
+  organisationId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `reviewAssignmentId` field. */
+  reviewAssignmentId?: Maybe<Scalars['Int']>;
+};
+
 /** A `UserOrganisation` edge in the connection. */
 export type UserOrganisationsEdge = {
   __typename?: 'UserOrganisationsEdge';
@@ -6308,6 +6741,40 @@ export type TemplateStageReviewLevelsEdge = {
   node?: Maybe<TemplateStageReviewLevel>;
 };
 
+/** Methods to use when ordering `TemplateStageReviewLevel`. */
+export enum TemplateStageReviewLevelsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  StageIdAsc = 'STAGE_ID_ASC',
+  StageIdDesc = 'STAGE_ID_DESC',
+  NumberAsc = 'NUMBER_ASC',
+  NumberDesc = 'NUMBER_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `TemplateStageReviewLevel` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
+export type TemplateStageReviewLevelCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `stageId` field. */
+  stageId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `number` field. */
+  number?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: Maybe<Scalars['String']>;
+};
+
 /** A `TemplateStage` edge in the connection. */
 export type TemplateStagesEdge = {
   __typename?: 'TemplateStagesEdge';
@@ -6317,35 +6784,42 @@ export type TemplateStagesEdge = {
   node?: Maybe<TemplateStage>;
 };
 
-/** Methods to use when ordering `TemplateSection`. */
-export enum TemplateSectionsOrderBy {
+/** Methods to use when ordering `TemplateStage`. */
+export enum TemplateStagesOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
-  TemplateIdAsc = 'TEMPLATE_ID_ASC',
-  TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  NumberAsc = 'NUMBER_ASC',
+  NumberDesc = 'NUMBER_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
-  CodeAsc = 'CODE_ASC',
-  CodeDesc = 'CODE_DESC',
-  IndexAsc = 'INDEX_ASC',
-  IndexDesc = 'INDEX_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
+  ColourAsc = 'COLOUR_ASC',
+  ColourDesc = 'COLOUR_DESC',
+  TemplateIdAsc = 'TEMPLATE_ID_ASC',
+  TemplateIdDesc = 'TEMPLATE_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `TemplateSection` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type TemplateSectionCondition = {
+/**
+ * A condition to be used against `TemplateStage` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TemplateStageCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `templateId` field. */
-  templateId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `number` field. */
+  number?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `title` field. */
   title?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `code` field. */
-  code?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `index` field. */
-  index?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `colour` field. */
+  colour?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `templateId` field. */
+  templateId?: Maybe<Scalars['Int']>;
 };
 
 /** A connection to a list of `TemplateSection` values. */
@@ -6370,43 +6844,38 @@ export type TemplateSectionsEdge = {
   node?: Maybe<TemplateSection>;
 };
 
-/** Methods to use when ordering `TemplateAction`. */
-export enum TemplateActionsOrderBy {
+/** Methods to use when ordering `TemplateSection`. */
+export enum TemplateSectionsOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   TemplateIdAsc = 'TEMPLATE_ID_ASC',
   TemplateIdDesc = 'TEMPLATE_ID_DESC',
-  ActionCodeAsc = 'ACTION_CODE_ASC',
-  ActionCodeDesc = 'ACTION_CODE_DESC',
-  TriggerAsc = 'TRIGGER_ASC',
-  TriggerDesc = 'TRIGGER_DESC',
-  SequenceAsc = 'SEQUENCE_ASC',
-  SequenceDesc = 'SEQUENCE_DESC',
-  ConditionAsc = 'CONDITION_ASC',
-  ConditionDesc = 'CONDITION_DESC',
-  ParameterQueriesAsc = 'PARAMETER_QUERIES_ASC',
-  ParameterQueriesDesc = 'PARAMETER_QUERIES_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  CodeAsc = 'CODE_ASC',
+  CodeDesc = 'CODE_DESC',
+  IndexAsc = 'INDEX_ASC',
+  IndexDesc = 'INDEX_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `TemplateAction` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type TemplateActionCondition = {
+/**
+ * A condition to be used against `TemplateSection` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TemplateSectionCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `templateId` field. */
   templateId?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `actionCode` field. */
-  actionCode?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `trigger` field. */
-  trigger?: Maybe<Trigger>;
-  /** Checks for equality with the object’s `sequence` field. */
-  sequence?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `condition` field. */
-  condition?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `parameterQueries` field. */
-  parameterQueries?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `code` field. */
+  code?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `index` field. */
+  index?: Maybe<Scalars['Int']>;
 };
 
 /** A connection to a list of `TemplateAction` values. */
@@ -6446,6 +6915,48 @@ export type TemplateActionsEdge = {
   node?: Maybe<TemplateAction>;
 };
 
+/** Methods to use when ordering `TemplateAction`. */
+export enum TemplateActionsOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  TemplateIdAsc = 'TEMPLATE_ID_ASC',
+  TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  ActionCodeAsc = 'ACTION_CODE_ASC',
+  ActionCodeDesc = 'ACTION_CODE_DESC',
+  TriggerAsc = 'TRIGGER_ASC',
+  TriggerDesc = 'TRIGGER_DESC',
+  SequenceAsc = 'SEQUENCE_ASC',
+  SequenceDesc = 'SEQUENCE_DESC',
+  ConditionAsc = 'CONDITION_ASC',
+  ConditionDesc = 'CONDITION_DESC',
+  ParameterQueriesAsc = 'PARAMETER_QUERIES_ASC',
+  ParameterQueriesDesc = 'PARAMETER_QUERIES_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `TemplateAction` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TemplateActionCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateId` field. */
+  templateId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `actionCode` field. */
+  actionCode?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `trigger` field. */
+  trigger?: Maybe<Trigger>;
+  /** Checks for equality with the object’s `sequence` field. */
+  sequence?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `condition` field. */
+  condition?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `parameterQueries` field. */
+  parameterQueries?: Maybe<Scalars['JSON']>;
+};
+
 /** A `ActionQueue` edge in the connection. */
 export type ActionQueuesEdge = {
   __typename?: 'ActionQueuesEdge';
@@ -6453,6 +6964,59 @@ export type ActionQueuesEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `ActionQueue` at the end of the edge. */
   node?: Maybe<ActionQueue>;
+};
+
+/** A connection to a list of `ApplicationListShape` values. */
+export type ApplicationListShapesConnection = {
+  __typename?: 'ApplicationListShapesConnection';
+  /** A list of `ApplicationListShape` objects. */
+  nodes: Array<Maybe<ApplicationListShape>>;
+  /** A list of edges which contains the `ApplicationListShape` and cursor to aid in pagination. */
+  edges: Array<ApplicationListShapesEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `ApplicationListShape` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type ApplicationListShape = {
+  __typename?: 'ApplicationListShape';
+  id?: Maybe<Scalars['Int']>;
+  serial?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  templateCode?: Maybe<Scalars['String']>;
+  templateName?: Maybe<Scalars['String']>;
+  applicantUsername?: Maybe<Scalars['String']>;
+  applicantFirstName?: Maybe<Scalars['String']>;
+  applicantLastName?: Maybe<Scalars['String']>;
+  applicant?: Maybe<Scalars['String']>;
+  orgName?: Maybe<Scalars['String']>;
+  stage?: Maybe<Scalars['String']>;
+  stageColour?: Maybe<Scalars['String']>;
+  status?: Maybe<ApplicationStatus>;
+  outcome?: Maybe<ApplicationOutcome>;
+  lastActiveDate?: Maybe<Scalars['Datetime']>;
+  isFullyAssignedLevel1?: Maybe<Scalars['Boolean']>;
+  reviewAvailableForSelfAssignmentCount?: Maybe<Scalars['BigInt']>;
+  reviewAssignedCount?: Maybe<Scalars['BigInt']>;
+  reviewAssignedNotStartedCount?: Maybe<Scalars['BigInt']>;
+  reviewDraftCount?: Maybe<Scalars['BigInt']>;
+  reviewSubmittedCount?: Maybe<Scalars['BigInt']>;
+  reviewChangeRequestCount?: Maybe<Scalars['BigInt']>;
+  reviewPendingCount?: Maybe<Scalars['BigInt']>;
+  assignReviewerAssignedCount?: Maybe<Scalars['BigInt']>;
+  assignReviewersCount?: Maybe<Scalars['BigInt']>;
+  assignCount?: Maybe<Scalars['BigInt']>;
+};
+
+
+/** A `ApplicationListShape` edge in the connection. */
+export type ApplicationListShapesEdge = {
+  __typename?: 'ApplicationListShapesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `ApplicationListShape` at the end of the edge. */
+  node?: Maybe<ApplicationListShape>;
 };
 
 /** Methods to use when ordering `ApplicationListShape`. */
@@ -6512,7 +7076,10 @@ export enum ApplicationListShapesOrderBy {
   AssignCountDesc = 'ASSIGN_COUNT_DESC'
 }
 
-/** A condition to be used against `ApplicationListShape` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `ApplicationListShape` object types. All fields
+ * are tested for equality and combined with a logical ‘and.’
+ */
 export type ApplicationListShapeCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
@@ -6567,7 +7134,6 @@ export type ApplicationListShapeCondition = {
   /** Checks for equality with the object’s `assignCount` field. */
   assignCount?: Maybe<Scalars['BigInt']>;
 };
-
 
 /** A filter to be used against `ApplicationListShape` object types. All fields are combined with a logical ‘and.’ */
 export type ApplicationListShapeFilter = {
@@ -6657,56 +7223,48 @@ export type BigIntFilter = {
   greaterThanOrEqualTo?: Maybe<Scalars['BigInt']>;
 };
 
-/** A connection to a list of `ApplicationListShape` values. */
-export type ApplicationListShapesConnection = {
-  __typename?: 'ApplicationListShapesConnection';
-  /** A list of `ApplicationListShape` objects. */
-  nodes: Array<Maybe<ApplicationListShape>>;
-  /** A list of edges which contains the `ApplicationListShape` and cursor to aid in pagination. */
-  edges: Array<ApplicationListShapesEdge>;
+/** A connection to a list of `ApplicationStageStatusAll` values. */
+export type ApplicationStageStatusAllsConnection = {
+  __typename?: 'ApplicationStageStatusAllsConnection';
+  /** A list of `ApplicationStageStatusAll` objects. */
+  nodes: Array<Maybe<ApplicationStageStatusAll>>;
+  /** A list of edges which contains the `ApplicationStageStatusAll` and cursor to aid in pagination. */
+  edges: Array<ApplicationStageStatusAllsEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `ApplicationListShape` you could get from the connection. */
+  /** The count of *all* `ApplicationStageStatusAll` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type ApplicationListShape = {
-  __typename?: 'ApplicationListShape';
-  id?: Maybe<Scalars['Int']>;
+export type ApplicationStageStatusAll = {
+  __typename?: 'ApplicationStageStatusAll';
+  applicationId?: Maybe<Scalars['Int']>;
+  templateId?: Maybe<Scalars['Int']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  templateCode?: Maybe<Scalars['String']>;
-  templateName?: Maybe<Scalars['String']>;
-  applicantUsername?: Maybe<Scalars['String']>;
-  applicantFirstName?: Maybe<Scalars['String']>;
-  applicantLastName?: Maybe<Scalars['String']>;
-  applicant?: Maybe<Scalars['String']>;
-  orgName?: Maybe<Scalars['String']>;
+  userId?: Maybe<Scalars['Int']>;
+  orgId?: Maybe<Scalars['Int']>;
+  stageId?: Maybe<Scalars['Int']>;
+  stageNumber?: Maybe<Scalars['Int']>;
   stage?: Maybe<Scalars['String']>;
   stageColour?: Maybe<Scalars['String']>;
+  stageHistoryId?: Maybe<Scalars['Int']>;
+  stageHistoryTimeCreated?: Maybe<Scalars['Datetime']>;
+  stageIsCurrent?: Maybe<Scalars['Boolean']>;
+  statusHistoryId?: Maybe<Scalars['Int']>;
   status?: Maybe<ApplicationStatus>;
+  statusHistoryTimeCreated?: Maybe<Scalars['Datetime']>;
+  statusIsCurrent?: Maybe<Scalars['Boolean']>;
   outcome?: Maybe<ApplicationOutcome>;
-  lastActiveDate?: Maybe<Scalars['Datetime']>;
-  isFullyAssignedLevel1?: Maybe<Scalars['Boolean']>;
-  reviewAvailableForSelfAssignmentCount?: Maybe<Scalars['BigInt']>;
-  reviewAssignedCount?: Maybe<Scalars['BigInt']>;
-  reviewAssignedNotStartedCount?: Maybe<Scalars['BigInt']>;
-  reviewDraftCount?: Maybe<Scalars['BigInt']>;
-  reviewSubmittedCount?: Maybe<Scalars['BigInt']>;
-  reviewChangeRequestCount?: Maybe<Scalars['BigInt']>;
-  reviewPendingCount?: Maybe<Scalars['BigInt']>;
-  assignReviewerAssignedCount?: Maybe<Scalars['BigInt']>;
-  assignReviewersCount?: Maybe<Scalars['BigInt']>;
-  assignCount?: Maybe<Scalars['BigInt']>;
 };
 
-/** A `ApplicationListShape` edge in the connection. */
-export type ApplicationListShapesEdge = {
-  __typename?: 'ApplicationListShapesEdge';
+/** A `ApplicationStageStatusAll` edge in the connection. */
+export type ApplicationStageStatusAllsEdge = {
+  __typename?: 'ApplicationStageStatusAllsEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `ApplicationListShape` at the end of the edge. */
-  node?: Maybe<ApplicationListShape>;
+  /** The `ApplicationStageStatusAll` at the end of the edge. */
+  node?: Maybe<ApplicationStageStatusAll>;
 };
 
 /** Methods to use when ordering `ApplicationStageStatusAll`. */
@@ -6750,7 +7308,10 @@ export enum ApplicationStageStatusAllsOrderBy {
   OutcomeDesc = 'OUTCOME_DESC'
 }
 
-/** A condition to be used against `ApplicationStageStatusAll` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `ApplicationStageStatusAll` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
 export type ApplicationStageStatusAllCondition = {
   /** Checks for equality with the object’s `applicationId` field. */
   applicationId?: Maybe<Scalars['Int']>;
@@ -6836,21 +7397,21 @@ export type ApplicationStageStatusAllFilter = {
   not?: Maybe<ApplicationStageStatusAllFilter>;
 };
 
-/** A connection to a list of `ApplicationStageStatusAll` values. */
-export type ApplicationStageStatusAllsConnection = {
-  __typename?: 'ApplicationStageStatusAllsConnection';
-  /** A list of `ApplicationStageStatusAll` objects. */
-  nodes: Array<Maybe<ApplicationStageStatusAll>>;
-  /** A list of edges which contains the `ApplicationStageStatusAll` and cursor to aid in pagination. */
-  edges: Array<ApplicationStageStatusAllsEdge>;
+/** A connection to a list of `ApplicationStageStatusLatest` values. */
+export type ApplicationStageStatusLatestsConnection = {
+  __typename?: 'ApplicationStageStatusLatestsConnection';
+  /** A list of `ApplicationStageStatusLatest` objects. */
+  nodes: Array<Maybe<ApplicationStageStatusLatest>>;
+  /** A list of edges which contains the `ApplicationStageStatusLatest` and cursor to aid in pagination. */
+  edges: Array<ApplicationStageStatusLatestsEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `ApplicationStageStatusAll` you could get from the connection. */
+  /** The count of *all* `ApplicationStageStatusLatest` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type ApplicationStageStatusAll = {
-  __typename?: 'ApplicationStageStatusAll';
+export type ApplicationStageStatusLatest = {
+  __typename?: 'ApplicationStageStatusLatest';
   applicationId?: Maybe<Scalars['Int']>;
   templateId?: Maybe<Scalars['Int']>;
   serial?: Maybe<Scalars['String']>;
@@ -6871,13 +7432,13 @@ export type ApplicationStageStatusAll = {
   outcome?: Maybe<ApplicationOutcome>;
 };
 
-/** A `ApplicationStageStatusAll` edge in the connection. */
-export type ApplicationStageStatusAllsEdge = {
-  __typename?: 'ApplicationStageStatusAllsEdge';
+/** A `ApplicationStageStatusLatest` edge in the connection. */
+export type ApplicationStageStatusLatestsEdge = {
+  __typename?: 'ApplicationStageStatusLatestsEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `ApplicationStageStatusAll` at the end of the edge. */
-  node?: Maybe<ApplicationStageStatusAll>;
+  /** The `ApplicationStageStatusLatest` at the end of the edge. */
+  node?: Maybe<ApplicationStageStatusLatest>;
 };
 
 /** Methods to use when ordering `ApplicationStageStatusLatest`. */
@@ -6921,7 +7482,10 @@ export enum ApplicationStageStatusLatestsOrderBy {
   OutcomeDesc = 'OUTCOME_DESC'
 }
 
-/** A condition to be used against `ApplicationStageStatusLatest` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `ApplicationStageStatusLatest` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
 export type ApplicationStageStatusLatestCondition = {
   /** Checks for equality with the object’s `applicationId` field. */
   applicationId?: Maybe<Scalars['Int']>;
@@ -7007,48 +7571,40 @@ export type ApplicationStageStatusLatestFilter = {
   not?: Maybe<ApplicationStageStatusLatestFilter>;
 };
 
-/** A connection to a list of `ApplicationStageStatusLatest` values. */
-export type ApplicationStageStatusLatestsConnection = {
-  __typename?: 'ApplicationStageStatusLatestsConnection';
-  /** A list of `ApplicationStageStatusLatest` objects. */
-  nodes: Array<Maybe<ApplicationStageStatusLatest>>;
-  /** A list of edges which contains the `ApplicationStageStatusLatest` and cursor to aid in pagination. */
-  edges: Array<ApplicationStageStatusLatestsEdge>;
+/** A connection to a list of `ElementTypePlugin` values. */
+export type ElementTypePluginsConnection = {
+  __typename?: 'ElementTypePluginsConnection';
+  /** A list of `ElementTypePlugin` objects. */
+  nodes: Array<Maybe<ElementTypePlugin>>;
+  /** A list of edges which contains the `ElementTypePlugin` and cursor to aid in pagination. */
+  edges: Array<ElementTypePluginsEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `ApplicationStageStatusLatest` you could get from the connection. */
+  /** The count of *all* `ElementTypePlugin` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type ApplicationStageStatusLatest = {
-  __typename?: 'ApplicationStageStatusLatest';
-  applicationId?: Maybe<Scalars['Int']>;
-  templateId?: Maybe<Scalars['Int']>;
-  serial?: Maybe<Scalars['String']>;
+export type ElementTypePlugin = Node & {
+  __typename?: 'ElementTypePlugin';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  code: Scalars['String'];
   name?: Maybe<Scalars['String']>;
-  userId?: Maybe<Scalars['Int']>;
-  orgId?: Maybe<Scalars['Int']>;
-  stageId?: Maybe<Scalars['Int']>;
-  stageNumber?: Maybe<Scalars['Int']>;
-  stage?: Maybe<Scalars['String']>;
-  stageColour?: Maybe<Scalars['String']>;
-  stageHistoryId?: Maybe<Scalars['Int']>;
-  stageHistoryTimeCreated?: Maybe<Scalars['Datetime']>;
-  stageIsCurrent?: Maybe<Scalars['Boolean']>;
-  statusHistoryId?: Maybe<Scalars['Int']>;
-  status?: Maybe<ApplicationStatus>;
-  statusHistoryTimeCreated?: Maybe<Scalars['Datetime']>;
-  statusIsCurrent?: Maybe<Scalars['Boolean']>;
-  outcome?: Maybe<ApplicationOutcome>;
+  description?: Maybe<Scalars['String']>;
+  category?: Maybe<TemplateElementCategory>;
+  path?: Maybe<Scalars['String']>;
+  displayComponentName?: Maybe<Scalars['String']>;
+  configComponentName?: Maybe<Scalars['String']>;
+  requiredParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-/** A `ApplicationStageStatusLatest` edge in the connection. */
-export type ApplicationStageStatusLatestsEdge = {
-  __typename?: 'ApplicationStageStatusLatestsEdge';
+/** A `ElementTypePlugin` edge in the connection. */
+export type ElementTypePluginsEdge = {
+  __typename?: 'ElementTypePluginsEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `ApplicationStageStatusLatest` at the end of the edge. */
-  node?: Maybe<ApplicationStageStatusLatest>;
+  /** The `ElementTypePlugin` at the end of the edge. */
+  node?: Maybe<ElementTypePlugin>;
 };
 
 /** Methods to use when ordering `ElementTypePlugin`. */
@@ -7074,7 +7630,10 @@ export enum ElementTypePluginsOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `ElementTypePlugin` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `ElementTypePlugin` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
 export type ElementTypePluginCondition = {
   /** Checks for equality with the object’s `code` field. */
   code?: Maybe<Scalars['String']>;
@@ -7120,71 +7679,145 @@ export type ElementTypePluginFilter = {
   not?: Maybe<ElementTypePluginFilter>;
 };
 
-/** A connection to a list of `ElementTypePlugin` values. */
-export type ElementTypePluginsConnection = {
-  __typename?: 'ElementTypePluginsConnection';
-  /** A list of `ElementTypePlugin` objects. */
-  nodes: Array<Maybe<ElementTypePlugin>>;
-  /** A list of edges which contains the `ElementTypePlugin` and cursor to aid in pagination. */
-  edges: Array<ElementTypePluginsEdge>;
+/** A connection to a list of `Filter` values. */
+export type FiltersConnection = {
+  __typename?: 'FiltersConnection';
+  /** A list of `Filter` objects. */
+  nodes: Array<Maybe<Filter>>;
+  /** A list of edges which contains the `Filter` and cursor to aid in pagination. */
+  edges: Array<FiltersEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `ElementTypePlugin` you could get from the connection. */
+  /** The count of *all* `Filter` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type ElementTypePlugin = Node & {
-  __typename?: 'ElementTypePlugin';
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  nodeId: Scalars['ID'];
-  code: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  category?: Maybe<TemplateElementCategory>;
-  path?: Maybe<Scalars['String']>;
-  displayComponentName?: Maybe<Scalars['String']>;
-  configComponentName?: Maybe<Scalars['String']>;
-  requiredParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
-};
-
-/** A `ElementTypePlugin` edge in the connection. */
-export type ElementTypePluginsEdge = {
-  __typename?: 'ElementTypePluginsEdge';
+/** A `Filter` edge in the connection. */
+export type FiltersEdge = {
+  __typename?: 'FiltersEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `ElementTypePlugin` at the end of the edge. */
-  node?: Maybe<ElementTypePlugin>;
+  /** The `Filter` at the end of the edge. */
+  node?: Maybe<Filter>;
 };
 
-/** Methods to use when ordering `Organisation`. */
-export enum OrganisationsOrderBy {
+/** Methods to use when ordering `Filter`. */
+export enum FiltersOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  CodeAsc = 'CODE_ASC',
+  CodeDesc = 'CODE_DESC',
+  IconAsc = 'ICON_ASC',
+  IconDesc = 'ICON_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  ColorAsc = 'COLOR_ASC',
+  ColorDesc = 'COLOR_DESC',
+  QueryAsc = 'QUERY_ASC',
+  QueryDesc = 'QUERY_DESC',
+  UserRoleAsc = 'USER_ROLE_ASC',
+  UserRoleDesc = 'USER_ROLE_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/** A condition to be used against `Filter` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type FilterCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `code` field. */
+  code?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `icon` field. */
+  icon?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `color` field. */
+  color?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `query` field. */
+  query?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `userRole` field. */
+  userRole?: Maybe<PermissionPolicyType>;
+};
+
+/** A connection to a list of `LookupTable` values. */
+export type LookupTablesConnection = {
+  __typename?: 'LookupTablesConnection';
+  /** A list of `LookupTable` objects. */
+  nodes: Array<Maybe<LookupTable>>;
+  /** A list of edges which contains the `LookupTable` and cursor to aid in pagination. */
+  edges: Array<LookupTablesEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `LookupTable` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type LookupTable = Node & {
+  __typename?: 'LookupTable';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
+  name?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  fieldMap?: Maybe<Scalars['JSON']>;
+};
+
+/** A `LookupTable` edge in the connection. */
+export type LookupTablesEdge = {
+  __typename?: 'LookupTablesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `LookupTable` at the end of the edge. */
+  node?: Maybe<LookupTable>;
+};
+
+/** Methods to use when ordering `LookupTable`. */
+export enum LookupTablesOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
-  RegistrationAsc = 'REGISTRATION_ASC',
-  RegistrationDesc = 'REGISTRATION_DESC',
-  AddressAsc = 'ADDRESS_ASC',
-  AddressDesc = 'ADDRESS_DESC',
-  LogoUrlAsc = 'LOGO_URL_ASC',
-  LogoUrlDesc = 'LOGO_URL_DESC',
+  LabelAsc = 'LABEL_ASC',
+  LabelDesc = 'LABEL_DESC',
+  FieldMapAsc = 'FIELD_MAP_ASC',
+  FieldMapDesc = 'FIELD_MAP_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `Organisation` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type OrganisationCondition = {
+/**
+ * A condition to be used against `LookupTable` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type LookupTableCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `name` field. */
   name?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `registration` field. */
-  registration?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `address` field. */
-  address?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `logoUrl` field. */
-  logoUrl?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `label` field. */
+  label?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `fieldMap` field. */
+  fieldMap?: Maybe<Scalars['JSON']>;
+};
+
+/** A filter to be used against `LookupTable` object types. All fields are combined with a logical ‘and.’ */
+export type LookupTableFilter = {
+  /** Filter by the object’s `id` field. */
+  id?: Maybe<IntFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: Maybe<StringFilter>;
+  /** Filter by the object’s `label` field. */
+  label?: Maybe<StringFilter>;
+  /** Filter by the object’s `fieldMap` field. */
+  fieldMap?: Maybe<JsonFilter>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<LookupTableFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<LookupTableFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<LookupTableFilter>;
 };
 
 /** A connection to a list of `Organisation` values. */
@@ -7209,39 +7842,38 @@ export type OrganisationsEdge = {
   node?: Maybe<Organisation>;
 };
 
-/** Methods to use when ordering `PermissionPolicy`. */
-export enum PermissionPoliciesOrderBy {
+/** Methods to use when ordering `Organisation`. */
+export enum OrganisationsOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
-  DescriptionAsc = 'DESCRIPTION_ASC',
-  DescriptionDesc = 'DESCRIPTION_DESC',
-  RulesAsc = 'RULES_ASC',
-  RulesDesc = 'RULES_DESC',
-  TypeAsc = 'TYPE_ASC',
-  TypeDesc = 'TYPE_DESC',
-  DefaultRestrictionsAsc = 'DEFAULT_RESTRICTIONS_ASC',
-  DefaultRestrictionsDesc = 'DEFAULT_RESTRICTIONS_DESC',
+  RegistrationAsc = 'REGISTRATION_ASC',
+  RegistrationDesc = 'REGISTRATION_DESC',
+  AddressAsc = 'ADDRESS_ASC',
+  AddressDesc = 'ADDRESS_DESC',
+  LogoUrlAsc = 'LOGO_URL_ASC',
+  LogoUrlDesc = 'LOGO_URL_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `PermissionPolicy` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type PermissionPolicyCondition = {
+/**
+ * A condition to be used against `Organisation` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type OrganisationCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `name` field. */
   name?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `description` field. */
-  description?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `rules` field. */
-  rules?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `type` field. */
-  type?: Maybe<PermissionPolicyType>;
-  /** Checks for equality with the object’s `defaultRestrictions` field. */
-  defaultRestrictions?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `registration` field. */
+  registration?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `address` field. */
+  address?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `logoUrl` field. */
+  logoUrl?: Maybe<Scalars['String']>;
 };
 
 /** A connection to a list of `PermissionPolicy` values. */
@@ -7264,6 +7896,85 @@ export type PermissionPoliciesEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `PermissionPolicy` at the end of the edge. */
   node?: Maybe<PermissionPolicy>;
+};
+
+/** Methods to use when ordering `PermissionPolicy`. */
+export enum PermissionPoliciesOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
+  RulesAsc = 'RULES_ASC',
+  RulesDesc = 'RULES_DESC',
+  TypeAsc = 'TYPE_ASC',
+  TypeDesc = 'TYPE_DESC',
+  DefaultRestrictionsAsc = 'DEFAULT_RESTRICTIONS_ASC',
+  DefaultRestrictionsDesc = 'DEFAULT_RESTRICTIONS_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/**
+ * A condition to be used against `PermissionPolicy` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type PermissionPolicyCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `rules` field. */
+  rules?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `type` field. */
+  type?: Maybe<PermissionPolicyType>;
+  /** Checks for equality with the object’s `defaultRestrictions` field. */
+  defaultRestrictions?: Maybe<Scalars['JSON']>;
+};
+
+/** A connection to a list of `PermissionsAll` values. */
+export type PermissionsAllsConnection = {
+  __typename?: 'PermissionsAllsConnection';
+  /** A list of `PermissionsAll` objects. */
+  nodes: Array<Maybe<PermissionsAll>>;
+  /** A list of edges which contains the `PermissionsAll` and cursor to aid in pagination. */
+  edges: Array<PermissionsAllsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `PermissionsAll` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type PermissionsAll = {
+  __typename?: 'PermissionsAll';
+  permissionType?: Maybe<PermissionPolicyType>;
+  permissionPolicyId?: Maybe<Scalars['Int']>;
+  permissionPolicyRules?: Maybe<Scalars['JSON']>;
+  permissionNameId?: Maybe<Scalars['Int']>;
+  permissionName?: Maybe<Scalars['String']>;
+  templatePermissionId?: Maybe<Scalars['Int']>;
+  stageNumber?: Maybe<Scalars['Int']>;
+  reviewLevel?: Maybe<Scalars['Int']>;
+  templatePermissionRestrictions?: Maybe<Scalars['JSON']>;
+  templateId?: Maybe<Scalars['Int']>;
+  templateCode?: Maybe<Scalars['String']>;
+  userId?: Maybe<Scalars['Int']>;
+  username?: Maybe<Scalars['String']>;
+  orgId?: Maybe<Scalars['Int']>;
+  orgName?: Maybe<Scalars['String']>;
+};
+
+/** A `PermissionsAll` edge in the connection. */
+export type PermissionsAllsEdge = {
+  __typename?: 'PermissionsAllsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `PermissionsAll` at the end of the edge. */
+  node?: Maybe<PermissionsAll>;
 };
 
 /** Methods to use when ordering `PermissionsAll`. */
@@ -7301,7 +8012,10 @@ export enum PermissionsAllsOrderBy {
   OrgNameDesc = 'ORG_NAME_DESC'
 }
 
-/** A condition to be used against `PermissionsAll` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `PermissionsAll` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
 export type PermissionsAllCondition = {
   /** Checks for equality with the object’s `permissionType` field. */
   permissionType?: Maybe<PermissionPolicyType>;
@@ -7375,110 +8089,74 @@ export type PermissionsAllFilter = {
   not?: Maybe<PermissionsAllFilter>;
 };
 
-/** A connection to a list of `PermissionsAll` values. */
-export type PermissionsAllsConnection = {
-  __typename?: 'PermissionsAllsConnection';
-  /** A list of `PermissionsAll` objects. */
-  nodes: Array<Maybe<PermissionsAll>>;
-  /** A list of edges which contains the `PermissionsAll` and cursor to aid in pagination. */
-  edges: Array<PermissionsAllsEdge>;
+/** A connection to a list of `TemplateCategory` values. */
+export type TemplateCategoriesConnection = {
+  __typename?: 'TemplateCategoriesConnection';
+  /** A list of `TemplateCategory` objects. */
+  nodes: Array<Maybe<TemplateCategory>>;
+  /** A list of edges which contains the `TemplateCategory` and cursor to aid in pagination. */
+  edges: Array<TemplateCategoriesEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `PermissionsAll` you could get from the connection. */
+  /** The count of *all* `TemplateCategory` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type PermissionsAll = {
-  __typename?: 'PermissionsAll';
-  permissionType?: Maybe<PermissionPolicyType>;
-  permissionPolicyId?: Maybe<Scalars['Int']>;
-  permissionPolicyRules?: Maybe<Scalars['JSON']>;
-  permissionNameId?: Maybe<Scalars['Int']>;
-  permissionName?: Maybe<Scalars['String']>;
-  templatePermissionId?: Maybe<Scalars['Int']>;
-  stageNumber?: Maybe<Scalars['Int']>;
-  reviewLevel?: Maybe<Scalars['Int']>;
-  templatePermissionRestrictions?: Maybe<Scalars['JSON']>;
-  templateId?: Maybe<Scalars['Int']>;
-  templateCode?: Maybe<Scalars['String']>;
-  userId?: Maybe<Scalars['Int']>;
-  username?: Maybe<Scalars['String']>;
-  orgId?: Maybe<Scalars['Int']>;
-  orgName?: Maybe<Scalars['String']>;
-};
-
-/** A `PermissionsAll` edge in the connection. */
-export type PermissionsAllsEdge = {
-  __typename?: 'PermissionsAllsEdge';
+/** A `TemplateCategory` edge in the connection. */
+export type TemplateCategoriesEdge = {
+  __typename?: 'TemplateCategoriesEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `PermissionsAll` at the end of the edge. */
-  node?: Maybe<PermissionsAll>;
+  /** The `TemplateCategory` at the end of the edge. */
+  node?: Maybe<TemplateCategory>;
 };
 
-/** Methods to use when ordering `Template`. */
-export enum TemplatesOrderBy {
+/** Methods to use when ordering `TemplateCategory`. */
+export enum TemplateCategoriesOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
-  NameAsc = 'NAME_ASC',
-  NameDesc = 'NAME_DESC',
-  CodeAsc = 'CODE_ASC',
-  CodeDesc = 'CODE_DESC',
-  IsLinearAsc = 'IS_LINEAR_ASC',
-  IsLinearDesc = 'IS_LINEAR_DESC',
-  StartMessageAsc = 'START_MESSAGE_ASC',
-  StartMessageDesc = 'START_MESSAGE_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
-  SubmissionMessageAsc = 'SUBMISSION_MESSAGE_ASC',
-  SubmissionMessageDesc = 'SUBMISSION_MESSAGE_DESC',
-  VersionTimestampAsc = 'VERSION_TIMESTAMP_ASC',
-  VersionTimestampDesc = 'VERSION_TIMESTAMP_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  IconAsc = 'ICON_ASC',
+  IconDesc = 'ICON_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `Template` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type TemplateCondition = {
+/**
+ * A condition to be used against `TemplateCategory` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TemplateCategoryCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `name` field. */
-  name?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `code` field. */
-  code?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `isLinear` field. */
-  isLinear?: Maybe<Scalars['Boolean']>;
-  /** Checks for equality with the object’s `startMessage` field. */
-  startMessage?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: Maybe<TemplateStatus>;
-  /** Checks for equality with the object’s `submissionMessage` field. */
-  submissionMessage?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `versionTimestamp` field. */
-  versionTimestamp?: Maybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `icon` field. */
+  icon?: Maybe<Scalars['String']>;
 };
 
-/** A connection to a list of `Template` values. */
-export type TemplatesConnection = {
-  __typename?: 'TemplatesConnection';
-  /** A list of `Template` objects. */
-  nodes: Array<Maybe<Template>>;
-  /** A list of edges which contains the `Template` and cursor to aid in pagination. */
-  edges: Array<TemplatesEdge>;
+/** A connection to a list of `TriggerQueue` values. */
+export type TriggerQueuesConnection = {
+  __typename?: 'TriggerQueuesConnection';
+  /** A list of `TriggerQueue` objects. */
+  nodes: Array<Maybe<TriggerQueue>>;
+  /** A list of edges which contains the `TriggerQueue` and cursor to aid in pagination. */
+  edges: Array<TriggerQueuesEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `Template` you could get from the connection. */
+  /** The count of *all* `TriggerQueue` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-/** A `Template` edge in the connection. */
-export type TemplatesEdge = {
-  __typename?: 'TemplatesEdge';
+/** A `TriggerQueue` edge in the connection. */
+export type TriggerQueuesEdge = {
+  __typename?: 'TriggerQueuesEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `Template` at the end of the edge. */
-  node?: Maybe<Template>;
+  /** The `TriggerQueue` at the end of the edge. */
+  node?: Maybe<TriggerQueue>;
 };
 
 /** Methods to use when ordering `TriggerQueue`. */
@@ -7502,7 +8180,10 @@ export enum TriggerQueuesOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `TriggerQueue` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `TriggerQueue` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
 export type TriggerQueueCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
@@ -7520,26 +8201,26 @@ export type TriggerQueueCondition = {
   log?: Maybe<Scalars['JSON']>;
 };
 
-/** A connection to a list of `TriggerQueue` values. */
-export type TriggerQueuesConnection = {
-  __typename?: 'TriggerQueuesConnection';
-  /** A list of `TriggerQueue` objects. */
-  nodes: Array<Maybe<TriggerQueue>>;
-  /** A list of edges which contains the `TriggerQueue` and cursor to aid in pagination. */
-  edges: Array<TriggerQueuesEdge>;
+/** A connection to a list of `User` values. */
+export type UsersConnection = {
+  __typename?: 'UsersConnection';
+  /** A list of `User` objects. */
+  nodes: Array<Maybe<User>>;
+  /** A list of edges which contains the `User` and cursor to aid in pagination. */
+  edges: Array<UsersEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `TriggerQueue` you could get from the connection. */
+  /** The count of *all* `User` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-/** A `TriggerQueue` edge in the connection. */
-export type TriggerQueuesEdge = {
-  __typename?: 'TriggerQueuesEdge';
+/** A `User` edge in the connection. */
+export type UsersEdge = {
+  __typename?: 'UsersEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `TriggerQueue` at the end of the edge. */
-  node?: Maybe<TriggerQueue>;
+  /** The `User` at the end of the edge. */
+  node?: Maybe<User>;
 };
 
 /** Methods to use when ordering `User`. */
@@ -7581,26 +8262,43 @@ export type UserCondition = {
   passwordHash?: Maybe<Scalars['String']>;
 };
 
-/** A connection to a list of `User` values. */
-export type UsersConnection = {
-  __typename?: 'UsersConnection';
-  /** A list of `User` objects. */
-  nodes: Array<Maybe<User>>;
-  /** A list of edges which contains the `User` and cursor to aid in pagination. */
-  edges: Array<UsersEdge>;
+/** A connection to a list of `UserOrgJoin` values. */
+export type UserOrgJoinsConnection = {
+  __typename?: 'UserOrgJoinsConnection';
+  /** A list of `UserOrgJoin` objects. */
+  nodes: Array<Maybe<UserOrgJoin>>;
+  /** A list of edges which contains the `UserOrgJoin` and cursor to aid in pagination. */
+  edges: Array<UserOrgJoinsEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `User` you could get from the connection. */
+  /** The count of *all* `UserOrgJoin` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-/** A `User` edge in the connection. */
-export type UsersEdge = {
-  __typename?: 'UsersEdge';
+export type UserOrgJoin = {
+  __typename?: 'UserOrgJoin';
+  userId?: Maybe<Scalars['Int']>;
+  username?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  dateOfBirth?: Maybe<Scalars['Date']>;
+  passwordHash?: Maybe<Scalars['String']>;
+  orgId?: Maybe<Scalars['Int']>;
+  orgName?: Maybe<Scalars['String']>;
+  userRole?: Maybe<Scalars['String']>;
+  registration?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  logoUrl?: Maybe<Scalars['String']>;
+};
+
+/** A `UserOrgJoin` edge in the connection. */
+export type UserOrgJoinsEdge = {
+  __typename?: 'UserOrgJoinsEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `User` at the end of the edge. */
-  node?: Maybe<User>;
+  /** The `UserOrgJoin` at the end of the edge. */
+  node?: Maybe<UserOrgJoin>;
 };
 
 /** Methods to use when ordering `UserOrgJoin`. */
@@ -7634,7 +8332,10 @@ export enum UserOrgJoinsOrderBy {
   LogoUrlDesc = 'LOGO_URL_DESC'
 }
 
-/** A condition to be used against `UserOrgJoin` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+/**
+ * A condition to be used against `UserOrgJoin` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
 export type UserOrgJoinCondition = {
   /** Checks for equality with the object’s `userId` field. */
   userId?: Maybe<Scalars['Int']>;
@@ -7700,63 +8401,6 @@ export type UserOrgJoinFilter = {
   not?: Maybe<UserOrgJoinFilter>;
 };
 
-/** A connection to a list of `UserOrgJoin` values. */
-export type UserOrgJoinsConnection = {
-  __typename?: 'UserOrgJoinsConnection';
-  /** A list of `UserOrgJoin` objects. */
-  nodes: Array<Maybe<UserOrgJoin>>;
-  /** A list of edges which contains the `UserOrgJoin` and cursor to aid in pagination. */
-  edges: Array<UserOrgJoinsEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `UserOrgJoin` you could get from the connection. */
-  totalCount: Scalars['Int'];
-};
-
-export type UserOrgJoin = {
-  __typename?: 'UserOrgJoin';
-  userId?: Maybe<Scalars['Int']>;
-  username?: Maybe<Scalars['String']>;
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  dateOfBirth?: Maybe<Scalars['Date']>;
-  passwordHash?: Maybe<Scalars['String']>;
-  orgId?: Maybe<Scalars['Int']>;
-  orgName?: Maybe<Scalars['String']>;
-  userRole?: Maybe<Scalars['String']>;
-  registration?: Maybe<Scalars['String']>;
-  address?: Maybe<Scalars['String']>;
-  logoUrl?: Maybe<Scalars['String']>;
-};
-
-/** A `UserOrgJoin` edge in the connection. */
-export type UserOrgJoinsEdge = {
-  __typename?: 'UserOrgJoinsEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']>;
-  /** The `UserOrgJoin` at the end of the edge. */
-  node?: Maybe<UserOrgJoin>;
-};
-
-/** A filter to be used against `AssignerListRecord` object types. All fields are combined with a logical ‘and.’ */
-export type AssignerListRecordFilter = {
-  /** Filter by the object’s `applicationId` field. */
-  applicationId?: Maybe<IntFilter>;
-  /** Filter by the object’s `assignReviewerAssignedCount` field. */
-  assignReviewerAssignedCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `assignReviewersCount` field. */
-  assignReviewersCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `assignCount` field. */
-  assignCount?: Maybe<BigIntFilter>;
-  /** Checks for all expressions in this list. */
-  and?: Maybe<Array<AssignerListRecordFilter>>;
-  /** Checks for any expressions in this list. */
-  or?: Maybe<Array<AssignerListRecordFilter>>;
-  /** Negates the expression. */
-  not?: Maybe<AssignerListRecordFilter>;
-};
-
 /** A connection to a list of `AssignerListRecord` values. */
 export type AssignerListConnection = {
   __typename?: 'AssignerListConnection';
@@ -7786,30 +8430,22 @@ export type AssignerListEdge = {
   node?: Maybe<AssignerListRecord>;
 };
 
-/** A filter to be used against `ReviewListRecord` object types. All fields are combined with a logical ‘and.’ */
-export type ReviewListRecordFilter = {
+/** A filter to be used against `AssignerListRecord` object types. All fields are combined with a logical ‘and.’ */
+export type AssignerListRecordFilter = {
   /** Filter by the object’s `applicationId` field. */
   applicationId?: Maybe<IntFilter>;
-  /** Filter by the object’s `reviewAvailableForSelfAssignmentCount` field. */
-  reviewAvailableForSelfAssignmentCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `reviewAssignedCount` field. */
-  reviewAssignedCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `reviewAssignedNotStartedCount` field. */
-  reviewAssignedNotStartedCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `reviewDraftCount` field. */
-  reviewDraftCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `reviewSubmittedCount` field. */
-  reviewSubmittedCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `reviewChangeRequestCount` field. */
-  reviewChangeRequestCount?: Maybe<BigIntFilter>;
-  /** Filter by the object’s `reviewPendingCount` field. */
-  reviewPendingCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `assignReviewerAssignedCount` field. */
+  assignReviewerAssignedCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `assignReviewersCount` field. */
+  assignReviewersCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `assignCount` field. */
+  assignCount?: Maybe<BigIntFilter>;
   /** Checks for all expressions in this list. */
-  and?: Maybe<Array<ReviewListRecordFilter>>;
+  and?: Maybe<Array<AssignerListRecordFilter>>;
   /** Checks for any expressions in this list. */
-  or?: Maybe<Array<ReviewListRecordFilter>>;
+  or?: Maybe<Array<AssignerListRecordFilter>>;
   /** Negates the expression. */
-  not?: Maybe<ReviewListRecordFilter>;
+  not?: Maybe<AssignerListRecordFilter>;
 };
 
 /** A connection to a list of `ReviewListRecord` values. */
@@ -7845,6 +8481,32 @@ export type ReviewListEdge = {
   node?: Maybe<ReviewListRecord>;
 };
 
+/** A filter to be used against `ReviewListRecord` object types. All fields are combined with a logical ‘and.’ */
+export type ReviewListRecordFilter = {
+  /** Filter by the object’s `applicationId` field. */
+  applicationId?: Maybe<IntFilter>;
+  /** Filter by the object’s `reviewAvailableForSelfAssignmentCount` field. */
+  reviewAvailableForSelfAssignmentCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `reviewAssignedCount` field. */
+  reviewAssignedCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `reviewAssignedNotStartedCount` field. */
+  reviewAssignedNotStartedCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `reviewDraftCount` field. */
+  reviewDraftCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `reviewSubmittedCount` field. */
+  reviewSubmittedCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `reviewChangeRequestCount` field. */
+  reviewChangeRequestCount?: Maybe<BigIntFilter>;
+  /** Filter by the object’s `reviewPendingCount` field. */
+  reviewPendingCount?: Maybe<BigIntFilter>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<ReviewListRecordFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<ReviewListRecordFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<ReviewListRecordFilter>;
+};
+
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -7868,6 +8530,10 @@ export type Mutation = {
   createElementTypePlugin?: Maybe<CreateElementTypePluginPayload>;
   /** Creates a single `File`. */
   createFile?: Maybe<CreateFilePayload>;
+  /** Creates a single `Filter`. */
+  createFilter?: Maybe<CreateFilterPayload>;
+  /** Creates a single `LookupTable`. */
+  createLookupTable?: Maybe<CreateLookupTablePayload>;
   /** Creates a single `Notification`. */
   createNotification?: Maybe<CreateNotificationPayload>;
   /** Creates a single `Organisation`. */
@@ -7896,8 +8562,12 @@ export type Mutation = {
   createTemplate?: Maybe<CreateTemplatePayload>;
   /** Creates a single `TemplateAction`. */
   createTemplateAction?: Maybe<CreateTemplateActionPayload>;
+  /** Creates a single `TemplateCategory`. */
+  createTemplateCategory?: Maybe<CreateTemplateCategoryPayload>;
   /** Creates a single `TemplateElement`. */
   createTemplateElement?: Maybe<CreateTemplateElementPayload>;
+  /** Creates a single `TemplateFilterJoin`. */
+  createTemplateFilterJoin?: Maybe<CreateTemplateFilterJoinPayload>;
   /** Creates a single `TemplatePermission`. */
   createTemplatePermission?: Maybe<CreateTemplatePermissionPayload>;
   /** Creates a single `TemplateSection`. */
@@ -7952,6 +8622,14 @@ export type Mutation = {
   updateFile?: Maybe<UpdateFilePayload>;
   /** Updates a single `File` using a unique key and a patch. */
   updateFileByUniqueId?: Maybe<UpdateFilePayload>;
+  /** Updates a single `Filter` using its globally unique id and a patch. */
+  updateFilterByNodeId?: Maybe<UpdateFilterPayload>;
+  /** Updates a single `Filter` using a unique key and a patch. */
+  updateFilter?: Maybe<UpdateFilterPayload>;
+  /** Updates a single `LookupTable` using its globally unique id and a patch. */
+  updateLookupTableByNodeId?: Maybe<UpdateLookupTablePayload>;
+  /** Updates a single `LookupTable` using a unique key and a patch. */
+  updateLookupTable?: Maybe<UpdateLookupTablePayload>;
   /** Updates a single `Notification` using its globally unique id and a patch. */
   updateNotificationByNodeId?: Maybe<UpdateNotificationPayload>;
   /** Updates a single `Notification` using a unique key and a patch. */
@@ -8016,12 +8694,20 @@ export type Mutation = {
   updateTemplateActionByNodeId?: Maybe<UpdateTemplateActionPayload>;
   /** Updates a single `TemplateAction` using a unique key and a patch. */
   updateTemplateAction?: Maybe<UpdateTemplateActionPayload>;
+  /** Updates a single `TemplateCategory` using its globally unique id and a patch. */
+  updateTemplateCategoryByNodeId?: Maybe<UpdateTemplateCategoryPayload>;
+  /** Updates a single `TemplateCategory` using a unique key and a patch. */
+  updateTemplateCategory?: Maybe<UpdateTemplateCategoryPayload>;
   /** Updates a single `TemplateElement` using its globally unique id and a patch. */
   updateTemplateElementByNodeId?: Maybe<UpdateTemplateElementPayload>;
   /** Updates a single `TemplateElement` using a unique key and a patch. */
   updateTemplateElement?: Maybe<UpdateTemplateElementPayload>;
   /** Updates a single `TemplateElement` using a unique key and a patch. */
   updateTemplateElementByTemplateCodeAndCode?: Maybe<UpdateTemplateElementPayload>;
+  /** Updates a single `TemplateFilterJoin` using its globally unique id and a patch. */
+  updateTemplateFilterJoinByNodeId?: Maybe<UpdateTemplateFilterJoinPayload>;
+  /** Updates a single `TemplateFilterJoin` using a unique key and a patch. */
+  updateTemplateFilterJoin?: Maybe<UpdateTemplateFilterJoinPayload>;
   /** Updates a single `TemplatePermission` using its globally unique id and a patch. */
   updateTemplatePermissionByNodeId?: Maybe<UpdateTemplatePermissionPayload>;
   /** Updates a single `TemplatePermission` using a unique key and a patch. */
@@ -8092,6 +8778,14 @@ export type Mutation = {
   deleteFile?: Maybe<DeleteFilePayload>;
   /** Deletes a single `File` using a unique key. */
   deleteFileByUniqueId?: Maybe<DeleteFilePayload>;
+  /** Deletes a single `Filter` using its globally unique id. */
+  deleteFilterByNodeId?: Maybe<DeleteFilterPayload>;
+  /** Deletes a single `Filter` using a unique key. */
+  deleteFilter?: Maybe<DeleteFilterPayload>;
+  /** Deletes a single `LookupTable` using its globally unique id. */
+  deleteLookupTableByNodeId?: Maybe<DeleteLookupTablePayload>;
+  /** Deletes a single `LookupTable` using a unique key. */
+  deleteLookupTable?: Maybe<DeleteLookupTablePayload>;
   /** Deletes a single `Notification` using its globally unique id. */
   deleteNotificationByNodeId?: Maybe<DeleteNotificationPayload>;
   /** Deletes a single `Notification` using a unique key. */
@@ -8156,12 +8850,20 @@ export type Mutation = {
   deleteTemplateActionByNodeId?: Maybe<DeleteTemplateActionPayload>;
   /** Deletes a single `TemplateAction` using a unique key. */
   deleteTemplateAction?: Maybe<DeleteTemplateActionPayload>;
+  /** Deletes a single `TemplateCategory` using its globally unique id. */
+  deleteTemplateCategoryByNodeId?: Maybe<DeleteTemplateCategoryPayload>;
+  /** Deletes a single `TemplateCategory` using a unique key. */
+  deleteTemplateCategory?: Maybe<DeleteTemplateCategoryPayload>;
   /** Deletes a single `TemplateElement` using its globally unique id. */
   deleteTemplateElementByNodeId?: Maybe<DeleteTemplateElementPayload>;
   /** Deletes a single `TemplateElement` using a unique key. */
   deleteTemplateElement?: Maybe<DeleteTemplateElementPayload>;
   /** Deletes a single `TemplateElement` using a unique key. */
   deleteTemplateElementByTemplateCodeAndCode?: Maybe<DeleteTemplateElementPayload>;
+  /** Deletes a single `TemplateFilterJoin` using its globally unique id. */
+  deleteTemplateFilterJoinByNodeId?: Maybe<DeleteTemplateFilterJoinPayload>;
+  /** Deletes a single `TemplateFilterJoin` using a unique key. */
+  deleteTemplateFilterJoin?: Maybe<DeleteTemplateFilterJoinPayload>;
   /** Deletes a single `TemplatePermission` using its globally unique id. */
   deleteTemplatePermissionByNodeId?: Maybe<DeleteTemplatePermissionPayload>;
   /** Deletes a single `TemplatePermission` using a unique key. */
@@ -8256,6 +8958,18 @@ export type MutationCreateFileArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateFilterArgs = {
+  input: CreateFilterInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLookupTableArgs = {
+  input: CreateLookupTableInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateNotificationArgs = {
   input: CreateNotificationInput;
 };
@@ -8340,8 +9054,20 @@ export type MutationCreateTemplateActionArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateTemplateCategoryArgs = {
+  input: CreateTemplateCategoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTemplateElementArgs = {
   input: CreateTemplateElementInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateTemplateFilterJoinArgs = {
+  input: CreateTemplateFilterJoinInput;
 };
 
 
@@ -8504,6 +9230,30 @@ export type MutationUpdateFileArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateFileByUniqueIdArgs = {
   input: UpdateFileByUniqueIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateFilterByNodeIdArgs = {
+  input: UpdateFilterByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateFilterArgs = {
+  input: UpdateFilterInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLookupTableByNodeIdArgs = {
+  input: UpdateLookupTableByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLookupTableArgs = {
+  input: UpdateLookupTableInput;
 };
 
 
@@ -8700,6 +9450,18 @@ export type MutationUpdateTemplateActionArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTemplateCategoryByNodeIdArgs = {
+  input: UpdateTemplateCategoryByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTemplateCategoryArgs = {
+  input: UpdateTemplateCategoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTemplateElementByNodeIdArgs = {
   input: UpdateTemplateElementByNodeIdInput;
 };
@@ -8714,6 +9476,18 @@ export type MutationUpdateTemplateElementArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTemplateElementByTemplateCodeAndCodeArgs = {
   input: UpdateTemplateElementByTemplateCodeAndCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTemplateFilterJoinByNodeIdArgs = {
+  input: UpdateTemplateFilterJoinByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTemplateFilterJoinArgs = {
+  input: UpdateTemplateFilterJoinInput;
 };
 
 
@@ -8928,6 +9702,30 @@ export type MutationDeleteFileByUniqueIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFilterByNodeIdArgs = {
+  input: DeleteFilterByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFilterArgs = {
+  input: DeleteFilterInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLookupTableByNodeIdArgs = {
+  input: DeleteLookupTableByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLookupTableArgs = {
+  input: DeleteLookupTableInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteNotificationByNodeIdArgs = {
   input: DeleteNotificationByNodeIdInput;
 };
@@ -9120,6 +9918,18 @@ export type MutationDeleteTemplateActionArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTemplateCategoryByNodeIdArgs = {
+  input: DeleteTemplateCategoryByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTemplateCategoryArgs = {
+  input: DeleteTemplateCategoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTemplateElementByNodeIdArgs = {
   input: DeleteTemplateElementByNodeIdInput;
 };
@@ -9134,6 +9944,18 @@ export type MutationDeleteTemplateElementArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTemplateElementByTemplateCodeAndCodeArgs = {
   input: DeleteTemplateElementByTemplateCodeAndCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTemplateFilterJoinByNodeIdArgs = {
+  input: DeleteTemplateFilterJoinByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTemplateFilterJoinArgs = {
+  input: DeleteTemplateFilterJoinInput;
 };
 
 
@@ -9226,9 +10048,34 @@ export type MutationDeleteUserOrganisationArgs = {
   input: DeleteUserOrganisationInput;
 };
 
+/** The output of our create `ActionPlugin` mutation. */
+export type CreateActionPluginPayload = {
+  __typename?: 'CreateActionPluginPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ActionPlugin` that was created by this mutation. */
+  actionPlugin?: Maybe<ActionPlugin>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `ActionPlugin`. May be used by Relay 1. */
+  actionPluginEdge?: Maybe<ActionPluginsEdge>;
+};
+
+
+/** The output of our create `ActionPlugin` mutation. */
+export type CreateActionPluginPayloadActionPluginEdgeArgs = {
+  orderBy?: Maybe<Array<ActionPluginsOrderBy>>;
+};
+
 /** All input for the create `ActionPlugin` mutation. */
 export type CreateActionPluginInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ActionPlugin` to be created by this mutation. */
   actionPlugin: ActionPluginInput;
@@ -9245,28 +10092,38 @@ export type ActionPluginInput = {
   outputProperties?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-/** The output of our create `ActionPlugin` mutation. */
-export type CreateActionPluginPayload = {
-  __typename?: 'CreateActionPluginPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `ActionQueue` mutation. */
+export type CreateActionQueuePayload = {
+  __typename?: 'CreateActionQueuePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ActionPlugin` that was created by this mutation. */
-  actionPlugin?: Maybe<ActionPlugin>;
+  /** The `ActionQueue` that was created by this mutation. */
+  actionQueue?: Maybe<ActionQueue>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** An edge for our `ActionPlugin`. May be used by Relay 1. */
-  actionPluginEdge?: Maybe<ActionPluginsEdge>;
+  /** Reads a single `TriggerQueue` that is related to this `ActionQueue`. */
+  triggerQueueByTriggerEvent?: Maybe<TriggerQueue>;
+  /** Reads a single `Template` that is related to this `ActionQueue`. */
+  template?: Maybe<Template>;
+  /** An edge for our `ActionQueue`. May be used by Relay 1. */
+  actionQueueEdge?: Maybe<ActionQueuesEdge>;
 };
 
 
-/** The output of our create `ActionPlugin` mutation. */
-export type CreateActionPluginPayloadActionPluginEdgeArgs = {
-  orderBy?: Maybe<Array<ActionPluginsOrderBy>>;
+/** The output of our create `ActionQueue` mutation. */
+export type CreateActionQueuePayloadActionQueueEdgeArgs = {
+  orderBy?: Maybe<Array<ActionQueuesOrderBy>>;
 };
 
 /** All input for the create `ActionQueue` mutation. */
 export type CreateActionQueueInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ActionQueue` to be created by this mutation. */
   actionQueue: ActionQueueInput;
@@ -9478,6 +10335,214 @@ export type UpdateTemplateOnActionQueueForActionQueueTemplateIdFkeyPatch = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
+  templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
+  templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
+  templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
+  applicationsUsingId?: Maybe<ApplicationTemplateIdFkeyInverseInput>;
+  actionQueuesUsingId?: Maybe<ActionQueueTemplateIdFkeyInverseInput>;
+  templateActionsUsingId?: Maybe<TemplateActionTemplateIdFkeyInverseInput>;
+};
+
+/** Input for the nested mutation of `templateCategory` in the `TemplateInput` mutation. */
+export type TemplateTemplateCategoryIdFkeyInput = {
+  /** The primary key(s) for `templateCategory` for the far side of the relationship. */
+  connectById?: Maybe<TemplateCategoryTemplateCategoryPkeyConnect>;
+  /** The primary key(s) for `templateCategory` for the far side of the relationship. */
+  connectByNodeId?: Maybe<TemplateCategoryNodeIdConnect>;
+  /** The primary key(s) for `templateCategory` for the far side of the relationship. */
+  deleteById?: Maybe<TemplateCategoryTemplateCategoryPkeyDelete>;
+  /** The primary key(s) for `templateCategory` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<TemplateCategoryNodeIdDelete>;
+  /** The primary key(s) and patch data for `templateCategory` for the far side of the relationship. */
+  updateById?: Maybe<TemplateCategoryOnTemplateForTemplateTemplateCategoryIdFkeyUsingTemplateCategoryPkeyUpdate>;
+  /** The primary key(s) and patch data for `templateCategory` for the far side of the relationship. */
+  updateByNodeId?: Maybe<TemplateOnTemplateForTemplateTemplateCategoryIdFkeyNodeIdUpdate>;
+  /** A `TemplateCategoryInput` object that will be created and connected to this object. */
+  create?: Maybe<TemplateTemplateCategoryIdFkeyTemplateCategoryCreateInput>;
+};
+
+/** The fields on `templateCategory` to look up the row to connect. */
+export type TemplateCategoryTemplateCategoryPkeyConnect = {
+  id: Scalars['Int'];
+};
+
+/** The globally unique `ID` look up for the row to connect. */
+export type TemplateCategoryNodeIdConnect = {
+  /** The globally unique `ID` which identifies a single `templateCategory` to be connected. */
+  nodeId: Scalars['ID'];
+};
+
+/** The fields on `templateCategory` to look up the row to delete. */
+export type TemplateCategoryTemplateCategoryPkeyDelete = {
+  id: Scalars['Int'];
+};
+
+/** The globally unique `ID` look up for the row to delete. */
+export type TemplateCategoryNodeIdDelete = {
+  /** The globally unique `ID` which identifies a single `templateCategory` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The fields on `templateCategory` to look up the row to update. */
+export type TemplateCategoryOnTemplateForTemplateTemplateCategoryIdFkeyUsingTemplateCategoryPkeyUpdate = {
+  /** An object where the defined keys will be set on the `templateCategory` being updated. */
+  patch: UpdateTemplateCategoryOnTemplateForTemplateTemplateCategoryIdFkeyPatch;
+  id: Scalars['Int'];
+};
+
+/** An object where the defined keys will be set on the `templateCategory` being updated. */
+export type UpdateTemplateCategoryOnTemplateForTemplateTemplateCategoryIdFkeyPatch = {
+  id?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  templatesUsingId?: Maybe<TemplateTemplateCategoryIdFkeyInverseInput>;
+};
+
+/** Input for the nested mutation of `template` in the `TemplateCategoryInput` mutation. */
+export type TemplateTemplateCategoryIdFkeyInverseInput = {
+  /** Flag indicating whether all other `template` records that match this relationship should be removed. */
+  deleteOthers?: Maybe<Scalars['Boolean']>;
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  connectById?: Maybe<Array<TemplateTemplatePkeyConnect>>;
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  connectByNodeId?: Maybe<Array<TemplateNodeIdConnect>>;
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  deleteById?: Maybe<Array<TemplateTemplatePkeyDelete>>;
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<Array<TemplateNodeIdDelete>>;
+  /** The primary key(s) and patch data for `template` for the far side of the relationship. */
+  updateById?: Maybe<Array<TemplateOnTemplateForTemplateTemplateCategoryIdFkeyUsingTemplatePkeyUpdate>>;
+  /** The primary key(s) and patch data for `template` for the far side of the relationship. */
+  updateByNodeId?: Maybe<Array<TemplateCategoryOnTemplateForTemplateTemplateCategoryIdFkeyNodeIdUpdate>>;
+  /** A `TemplateInput` object that will be created and connected to this object. */
+  create?: Maybe<Array<TemplateTemplateCategoryIdFkeyTemplateCreateInput>>;
+};
+
+/** The fields on `template` to look up the row to update. */
+export type TemplateOnTemplateForTemplateTemplateCategoryIdFkeyUsingTemplatePkeyUpdate = {
+  /** An object where the defined keys will be set on the `template` being updated. */
+  patch: UpdateTemplateOnTemplateForTemplateTemplateCategoryIdFkeyPatch;
+  id: Scalars['Int'];
+};
+
+/** An object where the defined keys will be set on the `template` being updated. */
+export type UpdateTemplateOnTemplateForTemplateTemplateCategoryIdFkeyPatch = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  isLinear?: Maybe<Scalars['Boolean']>;
+  startMessage?: Maybe<Scalars['JSON']>;
+  status?: Maybe<TemplateStatus>;
+  submissionMessage?: Maybe<Scalars['JSON']>;
+  versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
+  templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
+  templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
+  templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
+  applicationsUsingId?: Maybe<ApplicationTemplateIdFkeyInverseInput>;
+  actionQueuesUsingId?: Maybe<ActionQueueTemplateIdFkeyInverseInput>;
+  templateActionsUsingId?: Maybe<TemplateActionTemplateIdFkeyInverseInput>;
+};
+
+/** Input for the nested mutation of `templateFilterJoin` in the `TemplateInput` mutation. */
+export type TemplateFilterJoinTemplateIdFkeyInverseInput = {
+  /** Flag indicating whether all other `templateFilterJoin` records that match this relationship should be removed. */
+  deleteOthers?: Maybe<Scalars['Boolean']>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  connectById?: Maybe<Array<TemplateFilterJoinTemplateFilterJoinPkeyConnect>>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  connectByNodeId?: Maybe<Array<TemplateFilterJoinNodeIdConnect>>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  deleteById?: Maybe<Array<TemplateFilterJoinTemplateFilterJoinPkeyDelete>>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<Array<TemplateFilterJoinNodeIdDelete>>;
+  /** The primary key(s) and patch data for `templateFilterJoin` for the far side of the relationship. */
+  updateById?: Maybe<Array<TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyUsingTemplateFilterJoinPkeyUpdate>>;
+  /** The primary key(s) and patch data for `templateFilterJoin` for the far side of the relationship. */
+  updateByNodeId?: Maybe<Array<TemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyNodeIdUpdate>>;
+  /** A `TemplateFilterJoinInput` object that will be created and connected to this object. */
+  create?: Maybe<Array<TemplateFilterJoinTemplateIdFkeyTemplateFilterJoinCreateInput>>;
+};
+
+/** The fields on `templateFilterJoin` to look up the row to connect. */
+export type TemplateFilterJoinTemplateFilterJoinPkeyConnect = {
+  id: Scalars['Int'];
+};
+
+/** The globally unique `ID` look up for the row to connect. */
+export type TemplateFilterJoinNodeIdConnect = {
+  /** The globally unique `ID` which identifies a single `templateFilterJoin` to be connected. */
+  nodeId: Scalars['ID'];
+};
+
+/** The fields on `templateFilterJoin` to look up the row to delete. */
+export type TemplateFilterJoinTemplateFilterJoinPkeyDelete = {
+  id: Scalars['Int'];
+};
+
+/** The globally unique `ID` look up for the row to delete. */
+export type TemplateFilterJoinNodeIdDelete = {
+  /** The globally unique `ID` which identifies a single `templateFilterJoin` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The fields on `templateFilterJoin` to look up the row to update. */
+export type TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyUsingTemplateFilterJoinPkeyUpdate = {
+  /** An object where the defined keys will be set on the `templateFilterJoin` being updated. */
+  patch: UpdateTemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyPatch;
+  id: Scalars['Int'];
+};
+
+/** An object where the defined keys will be set on the `templateFilterJoin` being updated. */
+export type UpdateTemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyPatch = {
+  id?: Maybe<Scalars['Int']>;
+  templateFilterId?: Maybe<Scalars['Int']>;
+  templateToTemplateId?: Maybe<TemplateFilterJoinTemplateIdFkeyInput>;
+  filterToTemplateFilterId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInput>;
+};
+
+/** Input for the nested mutation of `template` in the `TemplateFilterJoinInput` mutation. */
+export type TemplateFilterJoinTemplateIdFkeyInput = {
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  connectById?: Maybe<TemplateTemplatePkeyConnect>;
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  connectByNodeId?: Maybe<TemplateNodeIdConnect>;
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  deleteById?: Maybe<TemplateTemplatePkeyDelete>;
+  /** The primary key(s) for `template` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<TemplateNodeIdDelete>;
+  /** The primary key(s) and patch data for `template` for the far side of the relationship. */
+  updateById?: Maybe<TemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyUsingTemplatePkeyUpdate>;
+  /** The primary key(s) and patch data for `template` for the far side of the relationship. */
+  updateByNodeId?: Maybe<TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyNodeIdUpdate>;
+  /** A `TemplateInput` object that will be created and connected to this object. */
+  create?: Maybe<TemplateFilterJoinTemplateIdFkeyTemplateCreateInput>;
+};
+
+/** The fields on `template` to look up the row to update. */
+export type TemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyUsingTemplatePkeyUpdate = {
+  /** An object where the defined keys will be set on the `template` being updated. */
+  patch: UpdateTemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyPatch;
+  id: Scalars['Int'];
+};
+
+/** An object where the defined keys will be set on the `template` being updated. */
+export type UpdateTemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyPatch = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  isLinear?: Maybe<Scalars['Boolean']>;
+  startMessage?: Maybe<Scalars['JSON']>;
+  status?: Maybe<TemplateStatus>;
+  submissionMessage?: Maybe<Scalars['JSON']>;
+  versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -9583,6 +10648,9 @@ export type UpdateTemplateOnTemplateStageForTemplateStageTemplateIdFkeyPatch = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -9686,6 +10754,9 @@ export type UpdateTemplateOnTemplateSectionForTemplateSectionTemplateIdFkeyPatch
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -10562,6 +11633,9 @@ export type UpdateTemplateOnTemplatePermissionForTemplatePermissionTemplateIdFke
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -10692,6 +11766,9 @@ export type UpdateTemplateOnApplicationForApplicationTemplateIdFkeyPatch = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -10891,6 +11968,9 @@ export type UpdateTemplateOnTemplateActionForTemplateActionTemplateIdFkeyPatch =
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -10917,6 +11997,9 @@ export type TemplatePatch = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -10935,6 +12018,9 @@ export type TemplateActionTemplateIdFkeyTemplateCreateInput = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -10992,6 +12078,9 @@ export type ApplicationTemplateIdFkeyTemplateCreateInput = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -17518,6 +18607,9 @@ export type TemplatePermissionTemplateIdFkeyTemplateCreateInput = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -17966,6 +19058,9 @@ export type TemplateSectionTemplateIdFkeyTemplateCreateInput = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -18011,6 +19106,9 @@ export type TemplateStageTemplateIdFkeyTemplateCreateInput = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -18041,6 +19139,254 @@ export type TemplateStageTemplateIdFkeyTemplateStageCreateInput = {
 };
 
 /** The globally unique `ID` look up for the row to update. */
+export type TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `template` to be connected. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `template` being updated. */
+  patch: TemplatePatch;
+};
+
+/** The `template` to be created by this mutation. */
+export type TemplateFilterJoinTemplateIdFkeyTemplateCreateInput = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  code: Scalars['String'];
+  isLinear?: Maybe<Scalars['Boolean']>;
+  startMessage?: Maybe<Scalars['JSON']>;
+  status?: Maybe<TemplateStatus>;
+  submissionMessage?: Maybe<Scalars['JSON']>;
+  versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
+  templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
+  templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
+  templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
+  applicationsUsingId?: Maybe<ApplicationTemplateIdFkeyInverseInput>;
+  actionQueuesUsingId?: Maybe<ActionQueueTemplateIdFkeyInverseInput>;
+  templateActionsUsingId?: Maybe<TemplateActionTemplateIdFkeyInverseInput>;
+};
+
+/** Input for the nested mutation of `filter` in the `TemplateFilterJoinInput` mutation. */
+export type TemplateFilterJoinTemplateFilterIdFkeyInput = {
+  /** The primary key(s) for `filter` for the far side of the relationship. */
+  connectById?: Maybe<FilterFilterPkeyConnect>;
+  /** The primary key(s) for `filter` for the far side of the relationship. */
+  connectByNodeId?: Maybe<FilterNodeIdConnect>;
+  /** The primary key(s) for `filter` for the far side of the relationship. */
+  deleteById?: Maybe<FilterFilterPkeyDelete>;
+  /** The primary key(s) for `filter` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<FilterNodeIdDelete>;
+  /** The primary key(s) and patch data for `filter` for the far side of the relationship. */
+  updateById?: Maybe<FilterOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyUsingFilterPkeyUpdate>;
+  /** The primary key(s) and patch data for `filter` for the far side of the relationship. */
+  updateByNodeId?: Maybe<TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyNodeIdUpdate>;
+  /** A `FilterInput` object that will be created and connected to this object. */
+  create?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyFilterCreateInput>;
+};
+
+/** The fields on `filter` to look up the row to connect. */
+export type FilterFilterPkeyConnect = {
+  id: Scalars['Int'];
+};
+
+/** The globally unique `ID` look up for the row to connect. */
+export type FilterNodeIdConnect = {
+  /** The globally unique `ID` which identifies a single `filter` to be connected. */
+  nodeId: Scalars['ID'];
+};
+
+/** The fields on `filter` to look up the row to delete. */
+export type FilterFilterPkeyDelete = {
+  id: Scalars['Int'];
+};
+
+/** The globally unique `ID` look up for the row to delete. */
+export type FilterNodeIdDelete = {
+  /** The globally unique `ID` which identifies a single `filter` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The fields on `filter` to look up the row to update. */
+export type FilterOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyUsingFilterPkeyUpdate = {
+  /** An object where the defined keys will be set on the `filter` being updated. */
+  patch: UpdateFilterOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyPatch;
+  id: Scalars['Int'];
+};
+
+/** An object where the defined keys will be set on the `filter` being updated. */
+export type UpdateFilterOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyPatch = {
+  id?: Maybe<Scalars['Int']>;
+  code?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  query?: Maybe<Scalars['JSON']>;
+  userRole?: Maybe<PermissionPolicyType>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
+};
+
+/** Input for the nested mutation of `templateFilterJoin` in the `FilterInput` mutation. */
+export type TemplateFilterJoinTemplateFilterIdFkeyInverseInput = {
+  /** Flag indicating whether all other `templateFilterJoin` records that match this relationship should be removed. */
+  deleteOthers?: Maybe<Scalars['Boolean']>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  connectById?: Maybe<Array<TemplateFilterJoinTemplateFilterJoinPkeyConnect>>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  connectByNodeId?: Maybe<Array<TemplateFilterJoinNodeIdConnect>>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  deleteById?: Maybe<Array<TemplateFilterJoinTemplateFilterJoinPkeyDelete>>;
+  /** The primary key(s) for `templateFilterJoin` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<Array<TemplateFilterJoinNodeIdDelete>>;
+  /** The primary key(s) and patch data for `templateFilterJoin` for the far side of the relationship. */
+  updateById?: Maybe<Array<TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyUsingTemplateFilterJoinPkeyUpdate>>;
+  /** The primary key(s) and patch data for `templateFilterJoin` for the far side of the relationship. */
+  updateByNodeId?: Maybe<Array<FilterOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyNodeIdUpdate>>;
+  /** A `TemplateFilterJoinInput` object that will be created and connected to this object. */
+  create?: Maybe<Array<TemplateFilterJoinTemplateFilterIdFkeyTemplateFilterJoinCreateInput>>;
+};
+
+/** The fields on `templateFilterJoin` to look up the row to update. */
+export type TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyUsingTemplateFilterJoinPkeyUpdate = {
+  /** An object where the defined keys will be set on the `templateFilterJoin` being updated. */
+  patch: UpdateTemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyPatch;
+  id: Scalars['Int'];
+};
+
+/** An object where the defined keys will be set on the `templateFilterJoin` being updated. */
+export type UpdateTemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyPatch = {
+  id?: Maybe<Scalars['Int']>;
+  templateId?: Maybe<Scalars['Int']>;
+  templateToTemplateId?: Maybe<TemplateFilterJoinTemplateIdFkeyInput>;
+  filterToTemplateFilterId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInput>;
+};
+
+/** The globally unique `ID` look up for the row to update. */
+export type FilterOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `templateFilterJoin` to be connected. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `templateFilterJoin` being updated. */
+  patch: TemplateFilterJoinPatch;
+};
+
+/** Represents an update to a `TemplateFilterJoin`. Fields that are set will be updated. */
+export type TemplateFilterJoinPatch = {
+  id?: Maybe<Scalars['Int']>;
+  templateId?: Maybe<Scalars['Int']>;
+  templateFilterId?: Maybe<Scalars['Int']>;
+  templateToTemplateId?: Maybe<TemplateFilterJoinTemplateIdFkeyInput>;
+  filterToTemplateFilterId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInput>;
+};
+
+/** The `templateFilterJoin` to be created by this mutation. */
+export type TemplateFilterJoinTemplateFilterIdFkeyTemplateFilterJoinCreateInput = {
+  id?: Maybe<Scalars['Int']>;
+  templateId?: Maybe<Scalars['Int']>;
+  templateToTemplateId?: Maybe<TemplateFilterJoinTemplateIdFkeyInput>;
+  filterToTemplateFilterId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInput>;
+};
+
+/** The globally unique `ID` look up for the row to update. */
+export type TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateFilterIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `filter` to be connected. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `filter` being updated. */
+  patch: FilterPatch;
+};
+
+/** Represents an update to a `Filter`. Fields that are set will be updated. */
+export type FilterPatch = {
+  id?: Maybe<Scalars['Int']>;
+  code?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  query?: Maybe<Scalars['JSON']>;
+  userRole?: Maybe<PermissionPolicyType>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
+};
+
+/** The `filter` to be created by this mutation. */
+export type TemplateFilterJoinTemplateFilterIdFkeyFilterCreateInput = {
+  id?: Maybe<Scalars['Int']>;
+  code?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  query?: Maybe<Scalars['JSON']>;
+  userRole?: Maybe<PermissionPolicyType>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
+};
+
+/** The globally unique `ID` look up for the row to update. */
+export type TemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `templateFilterJoin` to be connected. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `templateFilterJoin` being updated. */
+  patch: TemplateFilterJoinPatch;
+};
+
+/** The `templateFilterJoin` to be created by this mutation. */
+export type TemplateFilterJoinTemplateIdFkeyTemplateFilterJoinCreateInput = {
+  id?: Maybe<Scalars['Int']>;
+  templateFilterId?: Maybe<Scalars['Int']>;
+  templateToTemplateId?: Maybe<TemplateFilterJoinTemplateIdFkeyInput>;
+  filterToTemplateFilterId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInput>;
+};
+
+/** The globally unique `ID` look up for the row to update. */
+export type TemplateCategoryOnTemplateForTemplateTemplateCategoryIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `template` to be connected. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `template` being updated. */
+  patch: TemplatePatch;
+};
+
+/** The `template` to be created by this mutation. */
+export type TemplateTemplateCategoryIdFkeyTemplateCreateInput = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  code: Scalars['String'];
+  isLinear?: Maybe<Scalars['Boolean']>;
+  startMessage?: Maybe<Scalars['JSON']>;
+  status?: Maybe<TemplateStatus>;
+  submissionMessage?: Maybe<Scalars['JSON']>;
+  versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
+  templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
+  templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
+  templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
+  applicationsUsingId?: Maybe<ApplicationTemplateIdFkeyInverseInput>;
+  actionQueuesUsingId?: Maybe<ActionQueueTemplateIdFkeyInverseInput>;
+  templateActionsUsingId?: Maybe<TemplateActionTemplateIdFkeyInverseInput>;
+};
+
+/** The globally unique `ID` look up for the row to update. */
+export type TemplateOnTemplateForTemplateTemplateCategoryIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `templateCategory` to be connected. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `templateCategory` being updated. */
+  patch: TemplateCategoryPatch;
+};
+
+/** Represents an update to a `TemplateCategory`. Fields that are set will be updated. */
+export type TemplateCategoryPatch = {
+  id?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  templatesUsingId?: Maybe<TemplateTemplateCategoryIdFkeyInverseInput>;
+};
+
+/** The `templateCategory` to be created by this mutation. */
+export type TemplateTemplateCategoryIdFkeyTemplateCategoryCreateInput = {
+  id?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  templatesUsingId?: Maybe<TemplateTemplateCategoryIdFkeyInverseInput>;
+};
+
+/** The globally unique `ID` look up for the row to update. */
 export type ActionQueueOnActionQueueForActionQueueTemplateIdFkeyNodeIdUpdate = {
   /** The globally unique `ID` which identifies a single `template` to be connected. */
   nodeId: Scalars['ID'];
@@ -18058,6 +19404,9 @@ export type ActionQueueTemplateIdFkeyTemplateCreateInput = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -18126,32 +19475,40 @@ export type ActionQueueTriggerEventFkeyTriggerQueueCreateInput = {
   actionQueuesUsingId?: Maybe<ActionQueueTriggerEventFkeyInverseInput>;
 };
 
-/** The output of our create `ActionQueue` mutation. */
-export type CreateActionQueuePayload = {
-  __typename?: 'CreateActionQueuePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `Application` mutation. */
+export type CreateApplicationPayload = {
+  __typename?: 'CreateApplicationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ActionQueue` that was created by this mutation. */
-  actionQueue?: Maybe<ActionQueue>;
+  /** The `Application` that was created by this mutation. */
+  application?: Maybe<Application>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `TriggerQueue` that is related to this `ActionQueue`. */
-  triggerQueueByTriggerEvent?: Maybe<TriggerQueue>;
-  /** Reads a single `Template` that is related to this `ActionQueue`. */
+  /** Reads a single `Template` that is related to this `Application`. */
   template?: Maybe<Template>;
-  /** An edge for our `ActionQueue`. May be used by Relay 1. */
-  actionQueueEdge?: Maybe<ActionQueuesEdge>;
+  /** Reads a single `User` that is related to this `Application`. */
+  user?: Maybe<User>;
+  /** Reads a single `Organisation` that is related to this `Application`. */
+  org?: Maybe<Organisation>;
+  /** An edge for our `Application`. May be used by Relay 1. */
+  applicationEdge?: Maybe<ApplicationsEdge>;
 };
 
 
-/** The output of our create `ActionQueue` mutation. */
-export type CreateActionQueuePayloadActionQueueEdgeArgs = {
-  orderBy?: Maybe<Array<ActionQueuesOrderBy>>;
+/** The output of our create `Application` mutation. */
+export type CreateApplicationPayloadApplicationEdgeArgs = {
+  orderBy?: Maybe<Array<ApplicationsOrderBy>>;
 };
 
 /** All input for the create `Application` mutation. */
 export type CreateApplicationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Application` to be created by this mutation. */
   application: ApplicationInput;
@@ -18180,34 +19537,34 @@ export type ApplicationInput = {
   notificationsUsingId?: Maybe<NotificationApplicationIdFkeyInverseInput>;
 };
 
-/** The output of our create `Application` mutation. */
-export type CreateApplicationPayload = {
-  __typename?: 'CreateApplicationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `ApplicationListShape` mutation. */
+export type CreateApplicationListShapePayload = {
+  __typename?: 'CreateApplicationListShapePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Application` that was created by this mutation. */
-  application?: Maybe<Application>;
+  /** The `ApplicationListShape` that was created by this mutation. */
+  applicationListShape?: Maybe<ApplicationListShape>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `Template` that is related to this `Application`. */
-  template?: Maybe<Template>;
-  /** Reads a single `User` that is related to this `Application`. */
-  user?: Maybe<User>;
-  /** Reads a single `Organisation` that is related to this `Application`. */
-  org?: Maybe<Organisation>;
-  /** An edge for our `Application`. May be used by Relay 1. */
-  applicationEdge?: Maybe<ApplicationsEdge>;
+  /** An edge for our `ApplicationListShape`. May be used by Relay 1. */
+  applicationListShapeEdge?: Maybe<ApplicationListShapesEdge>;
 };
 
 
-/** The output of our create `Application` mutation. */
-export type CreateApplicationPayloadApplicationEdgeArgs = {
-  orderBy?: Maybe<Array<ApplicationsOrderBy>>;
+/** The output of our create `ApplicationListShape` mutation. */
+export type CreateApplicationListShapePayloadApplicationListShapeEdgeArgs = {
+  orderBy?: Maybe<Array<ApplicationListShapesOrderBy>>;
 };
 
 /** All input for the create `ApplicationListShape` mutation. */
 export type CreateApplicationListShapeInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationListShape` to be created by this mutation. */
   applicationListShape: ApplicationListShapeInput;
@@ -18243,28 +19600,38 @@ export type ApplicationListShapeInput = {
   assignCount?: Maybe<Scalars['BigInt']>;
 };
 
-/** The output of our create `ApplicationListShape` mutation. */
-export type CreateApplicationListShapePayload = {
-  __typename?: 'CreateApplicationListShapePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `ApplicationResponse` mutation. */
+export type CreateApplicationResponsePayload = {
+  __typename?: 'CreateApplicationResponsePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ApplicationListShape` that was created by this mutation. */
-  applicationListShape?: Maybe<ApplicationListShape>;
+  /** The `ApplicationResponse` that was created by this mutation. */
+  applicationResponse?: Maybe<ApplicationResponse>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** An edge for our `ApplicationListShape`. May be used by Relay 1. */
-  applicationListShapeEdge?: Maybe<ApplicationListShapesEdge>;
+  /** Reads a single `TemplateElement` that is related to this `ApplicationResponse`. */
+  templateElement?: Maybe<TemplateElement>;
+  /** Reads a single `Application` that is related to this `ApplicationResponse`. */
+  application?: Maybe<Application>;
+  /** An edge for our `ApplicationResponse`. May be used by Relay 1. */
+  applicationResponseEdge?: Maybe<ApplicationResponsesEdge>;
 };
 
 
-/** The output of our create `ApplicationListShape` mutation. */
-export type CreateApplicationListShapePayloadApplicationListShapeEdgeArgs = {
-  orderBy?: Maybe<Array<ApplicationListShapesOrderBy>>;
+/** The output of our create `ApplicationResponse` mutation. */
+export type CreateApplicationResponsePayloadApplicationResponseEdgeArgs = {
+  orderBy?: Maybe<Array<ApplicationResponsesOrderBy>>;
 };
 
 /** All input for the create `ApplicationResponse` mutation. */
 export type CreateApplicationResponseInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationResponse` to be created by this mutation. */
   applicationResponse: ApplicationResponseInput;
@@ -18285,50 +19652,13 @@ export type ApplicationResponseInput = {
   filesUsingId?: Maybe<FileApplicationResponseIdFkeyInverseInput>;
 };
 
-/** The output of our create `ApplicationResponse` mutation. */
-export type CreateApplicationResponsePayload = {
-  __typename?: 'CreateApplicationResponsePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ApplicationResponse` that was created by this mutation. */
-  applicationResponse?: Maybe<ApplicationResponse>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** Reads a single `TemplateElement` that is related to this `ApplicationResponse`. */
-  templateElement?: Maybe<TemplateElement>;
-  /** Reads a single `Application` that is related to this `ApplicationResponse`. */
-  application?: Maybe<Application>;
-  /** An edge for our `ApplicationResponse`. May be used by Relay 1. */
-  applicationResponseEdge?: Maybe<ApplicationResponsesEdge>;
-};
-
-
-/** The output of our create `ApplicationResponse` mutation. */
-export type CreateApplicationResponsePayloadApplicationResponseEdgeArgs = {
-  orderBy?: Maybe<Array<ApplicationResponsesOrderBy>>;
-};
-
-/** All input for the create `ApplicationSection` mutation. */
-export type CreateApplicationSectionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ApplicationSection` to be created by this mutation. */
-  applicationSection: ApplicationSectionInput;
-};
-
-/** An input for mutations affecting `ApplicationSection` */
-export type ApplicationSectionInput = {
-  id?: Maybe<Scalars['Int']>;
-  applicationId?: Maybe<Scalars['Int']>;
-  templateSectionId?: Maybe<Scalars['Int']>;
-  applicationToApplicationId?: Maybe<ApplicationSectionApplicationIdFkeyInput>;
-  templateSectionToTemplateSectionId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInput>;
-};
-
 /** The output of our create `ApplicationSection` mutation. */
 export type CreateApplicationSectionPayload = {
   __typename?: 'CreateApplicationSectionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationSection` that was created by this mutation. */
   applicationSection?: Maybe<ApplicationSection>;
@@ -18348,30 +19678,33 @@ export type CreateApplicationSectionPayloadApplicationSectionEdgeArgs = {
   orderBy?: Maybe<Array<ApplicationSectionsOrderBy>>;
 };
 
-/** All input for the create `ApplicationStageHistory` mutation. */
-export type CreateApplicationStageHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `ApplicationSection` mutation. */
+export type CreateApplicationSectionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ApplicationStageHistory` to be created by this mutation. */
-  applicationStageHistory: ApplicationStageHistoryInput;
+  /** The `ApplicationSection` to be created by this mutation. */
+  applicationSection: ApplicationSectionInput;
 };
 
-/** An input for mutations affecting `ApplicationStageHistory` */
-export type ApplicationStageHistoryInput = {
+/** An input for mutations affecting `ApplicationSection` */
+export type ApplicationSectionInput = {
   id?: Maybe<Scalars['Int']>;
   applicationId?: Maybe<Scalars['Int']>;
-  stageId?: Maybe<Scalars['Int']>;
-  timeCreated?: Maybe<Scalars['Datetime']>;
-  isCurrent?: Maybe<Scalars['Boolean']>;
-  applicationToApplicationId?: Maybe<ApplicationStageHistoryApplicationIdFkeyInput>;
-  templateStageToStageId?: Maybe<ApplicationStageHistoryStageIdFkeyInput>;
-  applicationStatusHistoriesUsingId?: Maybe<ApplicationStatusHistoryApplicationStageHistoryIdFkeyInverseInput>;
+  templateSectionId?: Maybe<Scalars['Int']>;
+  applicationToApplicationId?: Maybe<ApplicationSectionApplicationIdFkeyInput>;
+  templateSectionToTemplateSectionId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInput>;
 };
 
 /** The output of our create `ApplicationStageHistory` mutation. */
 export type CreateApplicationStageHistoryPayload = {
   __typename?: 'CreateApplicationStageHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationStageHistory` that was created by this mutation. */
   applicationStageHistory?: Maybe<ApplicationStageHistory>;
@@ -18391,29 +19724,36 @@ export type CreateApplicationStageHistoryPayloadApplicationStageHistoryEdgeArgs 
   orderBy?: Maybe<Array<ApplicationStageHistoriesOrderBy>>;
 };
 
-/** All input for the create `ApplicationStatusHistory` mutation. */
-export type CreateApplicationStatusHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `ApplicationStageHistory` mutation. */
+export type CreateApplicationStageHistoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ApplicationStatusHistory` to be created by this mutation. */
-  applicationStatusHistory: ApplicationStatusHistoryInput;
+  /** The `ApplicationStageHistory` to be created by this mutation. */
+  applicationStageHistory: ApplicationStageHistoryInput;
 };
 
-/** An input for mutations affecting `ApplicationStatusHistory` */
-export type ApplicationStatusHistoryInput = {
+/** An input for mutations affecting `ApplicationStageHistory` */
+export type ApplicationStageHistoryInput = {
   id?: Maybe<Scalars['Int']>;
-  applicationStageHistoryId?: Maybe<Scalars['Int']>;
-  status?: Maybe<ApplicationStatus>;
+  applicationId?: Maybe<Scalars['Int']>;
+  stageId?: Maybe<Scalars['Int']>;
   timeCreated?: Maybe<Scalars['Datetime']>;
   isCurrent?: Maybe<Scalars['Boolean']>;
-  applicationId?: Maybe<Scalars['Int']>;
-  applicationStageHistoryToApplicationStageHistoryId?: Maybe<ApplicationStatusHistoryApplicationStageHistoryIdFkeyInput>;
+  applicationToApplicationId?: Maybe<ApplicationStageHistoryApplicationIdFkeyInput>;
+  templateStageToStageId?: Maybe<ApplicationStageHistoryStageIdFkeyInput>;
+  applicationStatusHistoriesUsingId?: Maybe<ApplicationStatusHistoryApplicationStageHistoryIdFkeyInverseInput>;
 };
 
 /** The output of our create `ApplicationStatusHistory` mutation. */
 export type CreateApplicationStatusHistoryPayload = {
   __typename?: 'CreateApplicationStatusHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationStatusHistory` that was created by this mutation. */
   applicationStatusHistory?: Maybe<ApplicationStatusHistory>;
@@ -18431,9 +19771,56 @@ export type CreateApplicationStatusHistoryPayloadApplicationStatusHistoryEdgeArg
   orderBy?: Maybe<Array<ApplicationStatusHistoriesOrderBy>>;
 };
 
+/** All input for the create `ApplicationStatusHistory` mutation. */
+export type CreateApplicationStatusHistoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ApplicationStatusHistory` to be created by this mutation. */
+  applicationStatusHistory: ApplicationStatusHistoryInput;
+};
+
+/** An input for mutations affecting `ApplicationStatusHistory` */
+export type ApplicationStatusHistoryInput = {
+  id?: Maybe<Scalars['Int']>;
+  applicationStageHistoryId?: Maybe<Scalars['Int']>;
+  status?: Maybe<ApplicationStatus>;
+  timeCreated?: Maybe<Scalars['Datetime']>;
+  isCurrent?: Maybe<Scalars['Boolean']>;
+  applicationId?: Maybe<Scalars['Int']>;
+  applicationStageHistoryToApplicationStageHistoryId?: Maybe<ApplicationStatusHistoryApplicationStageHistoryIdFkeyInput>;
+};
+
+/** The output of our create `ElementTypePlugin` mutation. */
+export type CreateElementTypePluginPayload = {
+  __typename?: 'CreateElementTypePluginPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ElementTypePlugin` that was created by this mutation. */
+  elementTypePlugin?: Maybe<ElementTypePlugin>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `ElementTypePlugin`. May be used by Relay 1. */
+  elementTypePluginEdge?: Maybe<ElementTypePluginsEdge>;
+};
+
+
+/** The output of our create `ElementTypePlugin` mutation. */
+export type CreateElementTypePluginPayloadElementTypePluginEdgeArgs = {
+  orderBy?: Maybe<Array<ElementTypePluginsOrderBy>>;
+};
+
 /** All input for the create `ElementTypePlugin` mutation. */
 export type CreateElementTypePluginInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ElementTypePlugin` to be created by this mutation. */
   elementTypePlugin: ElementTypePluginInput;
@@ -18451,28 +19838,40 @@ export type ElementTypePluginInput = {
   requiredParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-/** The output of our create `ElementTypePlugin` mutation. */
-export type CreateElementTypePluginPayload = {
-  __typename?: 'CreateElementTypePluginPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `File` mutation. */
+export type CreateFilePayload = {
+  __typename?: 'CreateFilePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ElementTypePlugin` that was created by this mutation. */
-  elementTypePlugin?: Maybe<ElementTypePlugin>;
+  /** The `File` that was created by this mutation. */
+  file?: Maybe<File>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** An edge for our `ElementTypePlugin`. May be used by Relay 1. */
-  elementTypePluginEdge?: Maybe<ElementTypePluginsEdge>;
+  /** Reads a single `User` that is related to this `File`. */
+  user?: Maybe<User>;
+  /** Reads a single `Application` that is related to this `File`. */
+  applicationByApplicationSerial?: Maybe<Application>;
+  /** Reads a single `ApplicationResponse` that is related to this `File`. */
+  applicationResponse?: Maybe<ApplicationResponse>;
+  /** An edge for our `File`. May be used by Relay 1. */
+  fileEdge?: Maybe<FilesEdge>;
 };
 
 
-/** The output of our create `ElementTypePlugin` mutation. */
-export type CreateElementTypePluginPayloadElementTypePluginEdgeArgs = {
-  orderBy?: Maybe<Array<ElementTypePluginsOrderBy>>;
+/** The output of our create `File` mutation. */
+export type CreateFilePayloadFileEdgeArgs = {
+  orderBy?: Maybe<Array<FilesOrderBy>>;
 };
 
 /** All input for the create `File` mutation. */
 export type CreateFileInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `File` to be created by this mutation. */
   file: FileInput;
@@ -18497,59 +19896,99 @@ export type FileInput = {
   notificationsUsingId?: Maybe<NotificationDocumentIdFkeyInverseInput>;
 };
 
-/** The output of our create `File` mutation. */
-export type CreateFilePayload = {
-  __typename?: 'CreateFilePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `Filter` mutation. */
+export type CreateFilterPayload = {
+  __typename?: 'CreateFilterPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `File` that was created by this mutation. */
-  file?: Maybe<File>;
+  /** The `Filter` that was created by this mutation. */
+  filter?: Maybe<Filter>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `User` that is related to this `File`. */
-  user?: Maybe<User>;
-  /** Reads a single `Application` that is related to this `File`. */
-  applicationByApplicationSerial?: Maybe<Application>;
-  /** Reads a single `ApplicationResponse` that is related to this `File`. */
-  applicationResponse?: Maybe<ApplicationResponse>;
-  /** An edge for our `File`. May be used by Relay 1. */
-  fileEdge?: Maybe<FilesEdge>;
+  /** An edge for our `Filter`. May be used by Relay 1. */
+  filterEdge?: Maybe<FiltersEdge>;
 };
 
 
-/** The output of our create `File` mutation. */
-export type CreateFilePayloadFileEdgeArgs = {
-  orderBy?: Maybe<Array<FilesOrderBy>>;
+/** The output of our create `Filter` mutation. */
+export type CreateFilterPayloadFilterEdgeArgs = {
+  orderBy?: Maybe<Array<FiltersOrderBy>>;
 };
 
-/** All input for the create `Notification` mutation. */
-export type CreateNotificationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `Filter` mutation. */
+export type CreateFilterInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Notification` to be created by this mutation. */
-  notification: NotificationInput;
+  /** The `Filter` to be created by this mutation. */
+  filter: FilterInput;
 };
 
-/** An input for mutations affecting `Notification` */
-export type NotificationInput = {
+/** An input for mutations affecting `Filter` */
+export type FilterInput = {
   id?: Maybe<Scalars['Int']>;
-  userId?: Maybe<Scalars['Int']>;
-  applicationId?: Maybe<Scalars['Int']>;
-  reviewId?: Maybe<Scalars['Int']>;
-  subject?: Maybe<Scalars['String']>;
-  message?: Maybe<Scalars['String']>;
-  documentId?: Maybe<Scalars['Int']>;
-  isRead?: Maybe<Scalars['Boolean']>;
-  userToUserId?: Maybe<NotificationUserIdFkeyInput>;
-  applicationToApplicationId?: Maybe<NotificationApplicationIdFkeyInput>;
-  reviewToReviewId?: Maybe<NotificationReviewIdFkeyInput>;
-  fileToDocumentId?: Maybe<NotificationDocumentIdFkeyInput>;
+  code?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  query?: Maybe<Scalars['JSON']>;
+  userRole?: Maybe<PermissionPolicyType>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInverseInput>;
+};
+
+/** The output of our create `LookupTable` mutation. */
+export type CreateLookupTablePayload = {
+  __typename?: 'CreateLookupTablePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LookupTable` that was created by this mutation. */
+  lookupTable?: Maybe<LookupTable>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `LookupTable`. May be used by Relay 1. */
+  lookupTableEdge?: Maybe<LookupTablesEdge>;
+};
+
+
+/** The output of our create `LookupTable` mutation. */
+export type CreateLookupTablePayloadLookupTableEdgeArgs = {
+  orderBy?: Maybe<Array<LookupTablesOrderBy>>;
+};
+
+/** All input for the create `LookupTable` mutation. */
+export type CreateLookupTableInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LookupTable` to be created by this mutation. */
+  lookupTable: LookupTableInput;
+};
+
+/** An input for mutations affecting `LookupTable` */
+export type LookupTableInput = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  fieldMap?: Maybe<Scalars['JSON']>;
 };
 
 /** The output of our create `Notification` mutation. */
 export type CreateNotificationPayload = {
   __typename?: 'CreateNotificationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Notification` that was created by this mutation. */
   notification?: Maybe<Notification>;
@@ -18573,9 +20012,61 @@ export type CreateNotificationPayloadNotificationEdgeArgs = {
   orderBy?: Maybe<Array<NotificationsOrderBy>>;
 };
 
+/** All input for the create `Notification` mutation. */
+export type CreateNotificationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Notification` to be created by this mutation. */
+  notification: NotificationInput;
+};
+
+/** An input for mutations affecting `Notification` */
+export type NotificationInput = {
+  id?: Maybe<Scalars['Int']>;
+  userId?: Maybe<Scalars['Int']>;
+  applicationId?: Maybe<Scalars['Int']>;
+  reviewId?: Maybe<Scalars['Int']>;
+  subject?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
+  documentId?: Maybe<Scalars['Int']>;
+  isRead?: Maybe<Scalars['Boolean']>;
+  userToUserId?: Maybe<NotificationUserIdFkeyInput>;
+  applicationToApplicationId?: Maybe<NotificationApplicationIdFkeyInput>;
+  reviewToReviewId?: Maybe<NotificationReviewIdFkeyInput>;
+  fileToDocumentId?: Maybe<NotificationDocumentIdFkeyInput>;
+};
+
+/** The output of our create `Organisation` mutation. */
+export type CreateOrganisationPayload = {
+  __typename?: 'CreateOrganisationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Organisation` that was created by this mutation. */
+  organisation?: Maybe<Organisation>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `Organisation`. May be used by Relay 1. */
+  organisationEdge?: Maybe<OrganisationsEdge>;
+};
+
+
+/** The output of our create `Organisation` mutation. */
+export type CreateOrganisationPayloadOrganisationEdgeArgs = {
+  orderBy?: Maybe<Array<OrganisationsOrderBy>>;
+};
+
 /** All input for the create `Organisation` mutation. */
 export type CreateOrganisationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Organisation` to be created by this mutation. */
   organisation: OrganisationInput;
@@ -18595,48 +20086,13 @@ export type OrganisationInput = {
   reviewAssignmentAssignerJoinsUsingId?: Maybe<ReviewAssignmentAssignerJoinOrganisationIdFkeyInverseInput>;
 };
 
-/** The output of our create `Organisation` mutation. */
-export type CreateOrganisationPayload = {
-  __typename?: 'CreateOrganisationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Organisation` that was created by this mutation. */
-  organisation?: Maybe<Organisation>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** An edge for our `Organisation`. May be used by Relay 1. */
-  organisationEdge?: Maybe<OrganisationsEdge>;
-};
-
-
-/** The output of our create `Organisation` mutation. */
-export type CreateOrganisationPayloadOrganisationEdgeArgs = {
-  orderBy?: Maybe<Array<OrganisationsOrderBy>>;
-};
-
-/** All input for the create `PermissionJoin` mutation. */
-export type CreatePermissionJoinInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `PermissionJoin` to be created by this mutation. */
-  permissionJoin: PermissionJoinInput;
-};
-
-/** An input for mutations affecting `PermissionJoin` */
-export type PermissionJoinInput = {
-  id?: Maybe<Scalars['Int']>;
-  userId?: Maybe<Scalars['Int']>;
-  organisationId?: Maybe<Scalars['Int']>;
-  permissionNameId?: Maybe<Scalars['Int']>;
-  userToUserId?: Maybe<PermissionJoinUserIdFkeyInput>;
-  organisationToOrganisationId?: Maybe<PermissionJoinOrganisationIdFkeyInput>;
-  permissionNameToPermissionNameId?: Maybe<PermissionJoinPermissionNameIdFkeyInput>;
-};
-
 /** The output of our create `PermissionJoin` mutation. */
 export type CreatePermissionJoinPayload = {
   __typename?: 'CreatePermissionJoinPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionJoin` that was created by this mutation. */
   permissionJoin?: Maybe<PermissionJoin>;
@@ -18658,28 +20114,35 @@ export type CreatePermissionJoinPayloadPermissionJoinEdgeArgs = {
   orderBy?: Maybe<Array<PermissionJoinsOrderBy>>;
 };
 
-/** All input for the create `PermissionName` mutation. */
-export type CreatePermissionNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `PermissionJoin` mutation. */
+export type CreatePermissionJoinInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `PermissionName` to be created by this mutation. */
-  permissionName: PermissionNameInput;
+  /** The `PermissionJoin` to be created by this mutation. */
+  permissionJoin: PermissionJoinInput;
 };
 
-/** An input for mutations affecting `PermissionName` */
-export type PermissionNameInput = {
+/** An input for mutations affecting `PermissionJoin` */
+export type PermissionJoinInput = {
   id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  permissionPolicyId?: Maybe<Scalars['Int']>;
-  permissionPolicyToPermissionPolicyId?: Maybe<PermissionNamePermissionPolicyIdFkeyInput>;
-  permissionJoinsUsingId?: Maybe<PermissionJoinPermissionNameIdFkeyInverseInput>;
-  templatePermissionsUsingId?: Maybe<TemplatePermissionPermissionNameIdFkeyInverseInput>;
+  userId?: Maybe<Scalars['Int']>;
+  organisationId?: Maybe<Scalars['Int']>;
+  permissionNameId?: Maybe<Scalars['Int']>;
+  userToUserId?: Maybe<PermissionJoinUserIdFkeyInput>;
+  organisationToOrganisationId?: Maybe<PermissionJoinOrganisationIdFkeyInput>;
+  permissionNameToPermissionNameId?: Maybe<PermissionJoinPermissionNameIdFkeyInput>;
 };
 
 /** The output of our create `PermissionName` mutation. */
 export type CreatePermissionNamePayload = {
   __typename?: 'CreatePermissionNamePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionName` that was created by this mutation. */
   permissionName?: Maybe<PermissionName>;
@@ -18697,9 +20160,55 @@ export type CreatePermissionNamePayloadPermissionNameEdgeArgs = {
   orderBy?: Maybe<Array<PermissionNamesOrderBy>>;
 };
 
+/** All input for the create `PermissionName` mutation. */
+export type CreatePermissionNameInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `PermissionName` to be created by this mutation. */
+  permissionName: PermissionNameInput;
+};
+
+/** An input for mutations affecting `PermissionName` */
+export type PermissionNameInput = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  permissionPolicyId?: Maybe<Scalars['Int']>;
+  permissionPolicyToPermissionPolicyId?: Maybe<PermissionNamePermissionPolicyIdFkeyInput>;
+  permissionJoinsUsingId?: Maybe<PermissionJoinPermissionNameIdFkeyInverseInput>;
+  templatePermissionsUsingId?: Maybe<TemplatePermissionPermissionNameIdFkeyInverseInput>;
+};
+
+/** The output of our create `PermissionPolicy` mutation. */
+export type CreatePermissionPolicyPayload = {
+  __typename?: 'CreatePermissionPolicyPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `PermissionPolicy` that was created by this mutation. */
+  permissionPolicy?: Maybe<PermissionPolicy>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `PermissionPolicy`. May be used by Relay 1. */
+  permissionPolicyEdge?: Maybe<PermissionPoliciesEdge>;
+};
+
+
+/** The output of our create `PermissionPolicy` mutation. */
+export type CreatePermissionPolicyPayloadPermissionPolicyEdgeArgs = {
+  orderBy?: Maybe<Array<PermissionPoliciesOrderBy>>;
+};
+
 /** All input for the create `PermissionPolicy` mutation. */
 export type CreatePermissionPolicyInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionPolicy` to be created by this mutation. */
   permissionPolicy: PermissionPolicyInput;
@@ -18716,28 +20225,40 @@ export type PermissionPolicyInput = {
   permissionNamesUsingId?: Maybe<PermissionNamePermissionPolicyIdFkeyInverseInput>;
 };
 
-/** The output of our create `PermissionPolicy` mutation. */
-export type CreatePermissionPolicyPayload = {
-  __typename?: 'CreatePermissionPolicyPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `Review` mutation. */
+export type CreateReviewPayload = {
+  __typename?: 'CreateReviewPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `PermissionPolicy` that was created by this mutation. */
-  permissionPolicy?: Maybe<PermissionPolicy>;
+  /** The `Review` that was created by this mutation. */
+  review?: Maybe<Review>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** An edge for our `PermissionPolicy`. May be used by Relay 1. */
-  permissionPolicyEdge?: Maybe<PermissionPoliciesEdge>;
+  /** Reads a single `ReviewAssignment` that is related to this `Review`. */
+  reviewAssignment?: Maybe<ReviewAssignment>;
+  /** Reads a single `Application` that is related to this `Review`. */
+  application?: Maybe<Application>;
+  /** Reads a single `User` that is related to this `Review`. */
+  reviewer?: Maybe<User>;
+  /** An edge for our `Review`. May be used by Relay 1. */
+  reviewEdge?: Maybe<ReviewsEdge>;
 };
 
 
-/** The output of our create `PermissionPolicy` mutation. */
-export type CreatePermissionPolicyPayloadPermissionPolicyEdgeArgs = {
-  orderBy?: Maybe<Array<PermissionPoliciesOrderBy>>;
+/** The output of our create `Review` mutation. */
+export type CreateReviewPayloadReviewEdgeArgs = {
+  orderBy?: Maybe<Array<ReviewsOrderBy>>;
 };
 
 /** All input for the create `Review` mutation. */
 export type CreateReviewInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Review` to be created by this mutation. */
   review: ReviewInput;
@@ -18761,34 +20282,46 @@ export type ReviewInput = {
   notificationsUsingId?: Maybe<NotificationReviewIdFkeyInverseInput>;
 };
 
-/** The output of our create `Review` mutation. */
-export type CreateReviewPayload = {
-  __typename?: 'CreateReviewPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `ReviewAssignment` mutation. */
+export type CreateReviewAssignmentPayload = {
+  __typename?: 'CreateReviewAssignmentPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Review` that was created by this mutation. */
-  review?: Maybe<Review>;
+  /** The `ReviewAssignment` that was created by this mutation. */
+  reviewAssignment?: Maybe<ReviewAssignment>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `ReviewAssignment` that is related to this `Review`. */
-  reviewAssignment?: Maybe<ReviewAssignment>;
-  /** Reads a single `Application` that is related to this `Review`. */
-  application?: Maybe<Application>;
-  /** Reads a single `User` that is related to this `Review`. */
+  /** Reads a single `User` that is related to this `ReviewAssignment`. */
+  assigner?: Maybe<User>;
+  /** Reads a single `User` that is related to this `ReviewAssignment`. */
   reviewer?: Maybe<User>;
-  /** An edge for our `Review`. May be used by Relay 1. */
-  reviewEdge?: Maybe<ReviewsEdge>;
+  /** Reads a single `Organisation` that is related to this `ReviewAssignment`. */
+  organisation?: Maybe<Organisation>;
+  /** Reads a single `TemplateStage` that is related to this `ReviewAssignment`. */
+  stage?: Maybe<TemplateStage>;
+  /** Reads a single `Application` that is related to this `ReviewAssignment`. */
+  application?: Maybe<Application>;
+  /** Reads a single `TemplateStageReviewLevel` that is related to this `ReviewAssignment`. */
+  level?: Maybe<TemplateStageReviewLevel>;
+  /** An edge for our `ReviewAssignment`. May be used by Relay 1. */
+  reviewAssignmentEdge?: Maybe<ReviewAssignmentsEdge>;
 };
 
 
-/** The output of our create `Review` mutation. */
-export type CreateReviewPayloadReviewEdgeArgs = {
-  orderBy?: Maybe<Array<ReviewsOrderBy>>;
+/** The output of our create `ReviewAssignment` mutation. */
+export type CreateReviewAssignmentPayloadReviewAssignmentEdgeArgs = {
+  orderBy?: Maybe<Array<ReviewAssignmentsOrderBy>>;
 };
 
 /** All input for the create `ReviewAssignment` mutation. */
 export type CreateReviewAssignmentInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewAssignment` to be created by this mutation. */
   reviewAssignment: ReviewAssignmentInput;
@@ -18821,60 +20354,13 @@ export type ReviewAssignmentInput = {
   reviewsUsingId?: Maybe<ReviewReviewAssignmentIdFkeyInverseInput>;
 };
 
-/** The output of our create `ReviewAssignment` mutation. */
-export type CreateReviewAssignmentPayload = {
-  __typename?: 'CreateReviewAssignmentPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ReviewAssignment` that was created by this mutation. */
-  reviewAssignment?: Maybe<ReviewAssignment>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** Reads a single `User` that is related to this `ReviewAssignment`. */
-  assigner?: Maybe<User>;
-  /** Reads a single `User` that is related to this `ReviewAssignment`. */
-  reviewer?: Maybe<User>;
-  /** Reads a single `Organisation` that is related to this `ReviewAssignment`. */
-  organisation?: Maybe<Organisation>;
-  /** Reads a single `TemplateStage` that is related to this `ReviewAssignment`. */
-  stage?: Maybe<TemplateStage>;
-  /** Reads a single `Application` that is related to this `ReviewAssignment`. */
-  application?: Maybe<Application>;
-  /** Reads a single `TemplateStageReviewLevel` that is related to this `ReviewAssignment`. */
-  level?: Maybe<TemplateStageReviewLevel>;
-  /** An edge for our `ReviewAssignment`. May be used by Relay 1. */
-  reviewAssignmentEdge?: Maybe<ReviewAssignmentsEdge>;
-};
-
-
-/** The output of our create `ReviewAssignment` mutation. */
-export type CreateReviewAssignmentPayloadReviewAssignmentEdgeArgs = {
-  orderBy?: Maybe<Array<ReviewAssignmentsOrderBy>>;
-};
-
-/** All input for the create `ReviewAssignmentAssignerJoin` mutation. */
-export type CreateReviewAssignmentAssignerJoinInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ReviewAssignmentAssignerJoin` to be created by this mutation. */
-  reviewAssignmentAssignerJoin: ReviewAssignmentAssignerJoinInput;
-};
-
-/** An input for mutations affecting `ReviewAssignmentAssignerJoin` */
-export type ReviewAssignmentAssignerJoinInput = {
-  id?: Maybe<Scalars['Int']>;
-  assignerId?: Maybe<Scalars['Int']>;
-  organisationId?: Maybe<Scalars['Int']>;
-  reviewAssignmentId?: Maybe<Scalars['Int']>;
-  userToAssignerId?: Maybe<ReviewAssignmentAssignerJoinAssignerIdFkeyInput>;
-  organisationToOrganisationId?: Maybe<ReviewAssignmentAssignerJoinOrganisationIdFkeyInput>;
-  reviewAssignmentToReviewAssignmentId?: Maybe<ReviewAssignmentAssignerJoinReviewAssignmentIdFkeyInput>;
-};
-
 /** The output of our create `ReviewAssignmentAssignerJoin` mutation. */
 export type CreateReviewAssignmentAssignerJoinPayload = {
   __typename?: 'CreateReviewAssignmentAssignerJoinPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewAssignmentAssignerJoin` that was created by this mutation. */
   reviewAssignmentAssignerJoin?: Maybe<ReviewAssignmentAssignerJoin>;
@@ -18896,28 +20382,35 @@ export type CreateReviewAssignmentAssignerJoinPayloadReviewAssignmentAssignerJoi
   orderBy?: Maybe<Array<ReviewAssignmentAssignerJoinsOrderBy>>;
 };
 
-/** All input for the create `ReviewDecision` mutation. */
-export type CreateReviewDecisionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `ReviewAssignmentAssignerJoin` mutation. */
+export type CreateReviewAssignmentAssignerJoinInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ReviewDecision` to be created by this mutation. */
-  reviewDecision: ReviewDecisionInput;
+  /** The `ReviewAssignmentAssignerJoin` to be created by this mutation. */
+  reviewAssignmentAssignerJoin: ReviewAssignmentAssignerJoinInput;
 };
 
-/** An input for mutations affecting `ReviewDecision` */
-export type ReviewDecisionInput = {
+/** An input for mutations affecting `ReviewAssignmentAssignerJoin` */
+export type ReviewAssignmentAssignerJoinInput = {
   id?: Maybe<Scalars['Int']>;
-  reviewId?: Maybe<Scalars['Int']>;
-  decision?: Maybe<Decision>;
-  comment?: Maybe<Scalars['String']>;
-  timeUpdated?: Maybe<Scalars['Datetime']>;
-  reviewToReviewId?: Maybe<ReviewDecisionReviewIdFkeyInput>;
+  assignerId?: Maybe<Scalars['Int']>;
+  organisationId?: Maybe<Scalars['Int']>;
+  reviewAssignmentId?: Maybe<Scalars['Int']>;
+  userToAssignerId?: Maybe<ReviewAssignmentAssignerJoinAssignerIdFkeyInput>;
+  organisationToOrganisationId?: Maybe<ReviewAssignmentAssignerJoinOrganisationIdFkeyInput>;
+  reviewAssignmentToReviewAssignmentId?: Maybe<ReviewAssignmentAssignerJoinReviewAssignmentIdFkeyInput>;
 };
 
 /** The output of our create `ReviewDecision` mutation. */
 export type CreateReviewDecisionPayload = {
   __typename?: 'CreateReviewDecisionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewDecision` that was created by this mutation. */
   reviewDecision?: Maybe<ReviewDecision>;
@@ -18935,28 +20428,34 @@ export type CreateReviewDecisionPayloadReviewDecisionEdgeArgs = {
   orderBy?: Maybe<Array<ReviewDecisionsOrderBy>>;
 };
 
-/** All input for the create `ReviewQuestionAssignment` mutation. */
-export type CreateReviewQuestionAssignmentInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `ReviewDecision` mutation. */
+export type CreateReviewDecisionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ReviewQuestionAssignment` to be created by this mutation. */
-  reviewQuestionAssignment: ReviewQuestionAssignmentInput;
+  /** The `ReviewDecision` to be created by this mutation. */
+  reviewDecision: ReviewDecisionInput;
 };
 
-/** An input for mutations affecting `ReviewQuestionAssignment` */
-export type ReviewQuestionAssignmentInput = {
+/** An input for mutations affecting `ReviewDecision` */
+export type ReviewDecisionInput = {
   id?: Maybe<Scalars['Int']>;
-  templateElementId?: Maybe<Scalars['Int']>;
-  reviewAssignmentId?: Maybe<Scalars['Int']>;
-  templateElementToTemplateElementId?: Maybe<ReviewQuestionAssignmentTemplateElementIdFkeyInput>;
-  reviewAssignmentToReviewAssignmentId?: Maybe<ReviewQuestionAssignmentReviewAssignmentIdFkeyInput>;
-  reviewResponsesUsingId?: Maybe<ReviewResponseReviewQuestionAssignmentIdFkeyInverseInput>;
+  reviewId?: Maybe<Scalars['Int']>;
+  decision?: Maybe<Decision>;
+  comment?: Maybe<Scalars['String']>;
+  timeUpdated?: Maybe<Scalars['Datetime']>;
+  reviewToReviewId?: Maybe<ReviewDecisionReviewIdFkeyInput>;
 };
 
 /** The output of our create `ReviewQuestionAssignment` mutation. */
 export type CreateReviewQuestionAssignmentPayload = {
   __typename?: 'CreateReviewQuestionAssignmentPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewQuestionAssignment` that was created by this mutation. */
   reviewQuestionAssignment?: Maybe<ReviewQuestionAssignment>;
@@ -18976,9 +20475,67 @@ export type CreateReviewQuestionAssignmentPayloadReviewQuestionAssignmentEdgeArg
   orderBy?: Maybe<Array<ReviewQuestionAssignmentsOrderBy>>;
 };
 
+/** All input for the create `ReviewQuestionAssignment` mutation. */
+export type CreateReviewQuestionAssignmentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ReviewQuestionAssignment` to be created by this mutation. */
+  reviewQuestionAssignment: ReviewQuestionAssignmentInput;
+};
+
+/** An input for mutations affecting `ReviewQuestionAssignment` */
+export type ReviewQuestionAssignmentInput = {
+  id?: Maybe<Scalars['Int']>;
+  templateElementId?: Maybe<Scalars['Int']>;
+  reviewAssignmentId?: Maybe<Scalars['Int']>;
+  templateElementToTemplateElementId?: Maybe<ReviewQuestionAssignmentTemplateElementIdFkeyInput>;
+  reviewAssignmentToReviewAssignmentId?: Maybe<ReviewQuestionAssignmentReviewAssignmentIdFkeyInput>;
+  reviewResponsesUsingId?: Maybe<ReviewResponseReviewQuestionAssignmentIdFkeyInverseInput>;
+};
+
+/** The output of our create `ReviewResponse` mutation. */
+export type CreateReviewResponsePayload = {
+  __typename?: 'CreateReviewResponsePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ReviewResponse` that was created by this mutation. */
+  reviewResponse?: Maybe<ReviewResponse>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `ReviewQuestionAssignment` that is related to this `ReviewResponse`. */
+  reviewQuestionAssignment?: Maybe<ReviewQuestionAssignment>;
+  /** Reads a single `ApplicationResponse` that is related to this `ReviewResponse`. */
+  applicationResponse?: Maybe<ApplicationResponse>;
+  /** Reads a single `ReviewResponse` that is related to this `ReviewResponse`. */
+  reviewResponseLink?: Maybe<ReviewResponse>;
+  /** Reads a single `ReviewResponse` that is related to this `ReviewResponse`. */
+  originalReviewResponse?: Maybe<ReviewResponse>;
+  /** Reads a single `Review` that is related to this `ReviewResponse`. */
+  review?: Maybe<Review>;
+  /** Reads a single `TemplateElement` that is related to this `ReviewResponse`. */
+  templateElement?: Maybe<TemplateElement>;
+  /** An edge for our `ReviewResponse`. May be used by Relay 1. */
+  reviewResponseEdge?: Maybe<ReviewResponsesEdge>;
+};
+
+
+/** The output of our create `ReviewResponse` mutation. */
+export type CreateReviewResponsePayloadReviewResponseEdgeArgs = {
+  orderBy?: Maybe<Array<ReviewResponsesOrderBy>>;
+};
+
 /** All input for the create `ReviewResponse` mutation. */
 export type CreateReviewResponseInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewResponse` to be created by this mutation. */
   reviewResponse: ReviewResponseInput;
@@ -19007,59 +20564,13 @@ export type ReviewResponseInput = {
   templateElementToTemplateElementId?: Maybe<ReviewResponseTemplateElementIdFkeyInput>;
 };
 
-/** The output of our create `ReviewResponse` mutation. */
-export type CreateReviewResponsePayload = {
-  __typename?: 'CreateReviewResponsePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ReviewResponse` that was created by this mutation. */
-  reviewResponse?: Maybe<ReviewResponse>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** Reads a single `ReviewQuestionAssignment` that is related to this `ReviewResponse`. */
-  reviewQuestionAssignment?: Maybe<ReviewQuestionAssignment>;
-  /** Reads a single `ApplicationResponse` that is related to this `ReviewResponse`. */
-  applicationResponse?: Maybe<ApplicationResponse>;
-  /** Reads a single `ReviewResponse` that is related to this `ReviewResponse`. */
-  reviewResponseLink?: Maybe<ReviewResponse>;
-  /** Reads a single `ReviewResponse` that is related to this `ReviewResponse`. */
-  originalReviewResponse?: Maybe<ReviewResponse>;
-  /** Reads a single `Review` that is related to this `ReviewResponse`. */
-  review?: Maybe<Review>;
-  /** Reads a single `TemplateElement` that is related to this `ReviewResponse`. */
-  templateElement?: Maybe<TemplateElement>;
-  /** An edge for our `ReviewResponse`. May be used by Relay 1. */
-  reviewResponseEdge?: Maybe<ReviewResponsesEdge>;
-};
-
-
-/** The output of our create `ReviewResponse` mutation. */
-export type CreateReviewResponsePayloadReviewResponseEdgeArgs = {
-  orderBy?: Maybe<Array<ReviewResponsesOrderBy>>;
-};
-
-/** All input for the create `ReviewStatusHistory` mutation. */
-export type CreateReviewStatusHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ReviewStatusHistory` to be created by this mutation. */
-  reviewStatusHistory: ReviewStatusHistoryInput;
-};
-
-/** An input for mutations affecting `ReviewStatusHistory` */
-export type ReviewStatusHistoryInput = {
-  id?: Maybe<Scalars['Int']>;
-  reviewId?: Maybe<Scalars['Int']>;
-  status?: Maybe<ReviewStatus>;
-  timeCreated?: Maybe<Scalars['Datetime']>;
-  isCurrent?: Maybe<Scalars['Boolean']>;
-  reviewToReviewId?: Maybe<ReviewStatusHistoryReviewIdFkeyInput>;
-};
-
 /** The output of our create `ReviewStatusHistory` mutation. */
 export type CreateReviewStatusHistoryPayload = {
   __typename?: 'CreateReviewStatusHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewStatusHistory` that was created by this mutation. */
   reviewStatusHistory?: Maybe<ReviewStatusHistory>;
@@ -19077,9 +20588,57 @@ export type CreateReviewStatusHistoryPayloadReviewStatusHistoryEdgeArgs = {
   orderBy?: Maybe<Array<ReviewStatusHistoriesOrderBy>>;
 };
 
+/** All input for the create `ReviewStatusHistory` mutation. */
+export type CreateReviewStatusHistoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ReviewStatusHistory` to be created by this mutation. */
+  reviewStatusHistory: ReviewStatusHistoryInput;
+};
+
+/** An input for mutations affecting `ReviewStatusHistory` */
+export type ReviewStatusHistoryInput = {
+  id?: Maybe<Scalars['Int']>;
+  reviewId?: Maybe<Scalars['Int']>;
+  status?: Maybe<ReviewStatus>;
+  timeCreated?: Maybe<Scalars['Datetime']>;
+  isCurrent?: Maybe<Scalars['Boolean']>;
+  reviewToReviewId?: Maybe<ReviewStatusHistoryReviewIdFkeyInput>;
+};
+
+/** The output of our create `Template` mutation. */
+export type CreateTemplatePayload = {
+  __typename?: 'CreateTemplatePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Template` that was created by this mutation. */
+  template?: Maybe<Template>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `TemplateCategory` that is related to this `Template`. */
+  templateCategory?: Maybe<TemplateCategory>;
+  /** An edge for our `Template`. May be used by Relay 1. */
+  templateEdge?: Maybe<TemplatesEdge>;
+};
+
+
+/** The output of our create `Template` mutation. */
+export type CreateTemplatePayloadTemplateEdgeArgs = {
+  orderBy?: Maybe<Array<TemplatesOrderBy>>;
+};
+
 /** All input for the create `Template` mutation. */
 export type CreateTemplateInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Template` to be created by this mutation. */
   template: TemplateInput;
@@ -19095,6 +20654,9 @@ export type TemplateInput = {
   status?: Maybe<TemplateStatus>;
   submissionMessage?: Maybe<Scalars['JSON']>;
   versionTimestamp?: Maybe<Scalars['Datetime']>;
+  templateCategoryId?: Maybe<Scalars['Int']>;
+  templateCategoryToTemplateCategoryId?: Maybe<TemplateTemplateCategoryIdFkeyInput>;
+  templateFilterJoinsUsingId?: Maybe<TemplateFilterJoinTemplateIdFkeyInverseInput>;
   templateStagesUsingId?: Maybe<TemplateStageTemplateIdFkeyInverseInput>;
   templateSectionsUsingId?: Maybe<TemplateSectionTemplateIdFkeyInverseInput>;
   templatePermissionsUsingId?: Maybe<TemplatePermissionTemplateIdFkeyInverseInput>;
@@ -19103,49 +20665,13 @@ export type TemplateInput = {
   templateActionsUsingId?: Maybe<TemplateActionTemplateIdFkeyInverseInput>;
 };
 
-/** The output of our create `Template` mutation. */
-export type CreateTemplatePayload = {
-  __typename?: 'CreateTemplatePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Template` that was created by this mutation. */
-  template?: Maybe<Template>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** An edge for our `Template`. May be used by Relay 1. */
-  templateEdge?: Maybe<TemplatesEdge>;
-};
-
-
-/** The output of our create `Template` mutation. */
-export type CreateTemplatePayloadTemplateEdgeArgs = {
-  orderBy?: Maybe<Array<TemplatesOrderBy>>;
-};
-
-/** All input for the create `TemplateAction` mutation. */
-export type CreateTemplateActionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `TemplateAction` to be created by this mutation. */
-  templateAction: TemplateActionInput;
-};
-
-/** An input for mutations affecting `TemplateAction` */
-export type TemplateActionInput = {
-  id?: Maybe<Scalars['Int']>;
-  templateId?: Maybe<Scalars['Int']>;
-  actionCode?: Maybe<Scalars['String']>;
-  trigger?: Maybe<Trigger>;
-  sequence?: Maybe<Scalars['Int']>;
-  condition?: Maybe<Scalars['JSON']>;
-  parameterQueries?: Maybe<Scalars['JSON']>;
-  templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
-};
-
 /** The output of our create `TemplateAction` mutation. */
 export type CreateTemplateActionPayload = {
   __typename?: 'CreateTemplateActionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateAction` that was created by this mutation. */
   templateAction?: Maybe<TemplateAction>;
@@ -19163,9 +20689,100 @@ export type CreateTemplateActionPayloadTemplateActionEdgeArgs = {
   orderBy?: Maybe<Array<TemplateActionsOrderBy>>;
 };
 
+/** All input for the create `TemplateAction` mutation. */
+export type CreateTemplateActionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TemplateAction` to be created by this mutation. */
+  templateAction: TemplateActionInput;
+};
+
+/** An input for mutations affecting `TemplateAction` */
+export type TemplateActionInput = {
+  id?: Maybe<Scalars['Int']>;
+  templateId?: Maybe<Scalars['Int']>;
+  actionCode?: Maybe<Scalars['String']>;
+  trigger?: Maybe<Trigger>;
+  sequence?: Maybe<Scalars['Int']>;
+  condition?: Maybe<Scalars['JSON']>;
+  parameterQueries?: Maybe<Scalars['JSON']>;
+  templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
+};
+
+/** The output of our create `TemplateCategory` mutation. */
+export type CreateTemplateCategoryPayload = {
+  __typename?: 'CreateTemplateCategoryPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TemplateCategory` that was created by this mutation. */
+  templateCategory?: Maybe<TemplateCategory>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `TemplateCategory`. May be used by Relay 1. */
+  templateCategoryEdge?: Maybe<TemplateCategoriesEdge>;
+};
+
+
+/** The output of our create `TemplateCategory` mutation. */
+export type CreateTemplateCategoryPayloadTemplateCategoryEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateCategoriesOrderBy>>;
+};
+
+/** All input for the create `TemplateCategory` mutation. */
+export type CreateTemplateCategoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TemplateCategory` to be created by this mutation. */
+  templateCategory: TemplateCategoryInput;
+};
+
+/** An input for mutations affecting `TemplateCategory` */
+export type TemplateCategoryInput = {
+  id?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  templatesUsingId?: Maybe<TemplateTemplateCategoryIdFkeyInverseInput>;
+};
+
+/** The output of our create `TemplateElement` mutation. */
+export type CreateTemplateElementPayload = {
+  __typename?: 'CreateTemplateElementPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TemplateElement` that was created by this mutation. */
+  templateElement?: Maybe<TemplateElement>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `TemplateSection` that is related to this `TemplateElement`. */
+  section?: Maybe<TemplateSection>;
+  /** An edge for our `TemplateElement`. May be used by Relay 1. */
+  templateElementEdge?: Maybe<TemplateElementsEdge>;
+};
+
+
+/** The output of our create `TemplateElement` mutation. */
+export type CreateTemplateElementPayloadTemplateElementEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateElementsOrderBy>>;
+};
+
 /** All input for the create `TemplateElement` mutation. */
 export type CreateTemplateElementInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateElement` to be created by this mutation. */
   templateElement: TemplateElementInput;
@@ -19193,51 +20810,59 @@ export type TemplateElementInput = {
   reviewResponsesUsingId?: Maybe<ReviewResponseTemplateElementIdFkeyInverseInput>;
 };
 
-/** The output of our create `TemplateElement` mutation. */
-export type CreateTemplateElementPayload = {
-  __typename?: 'CreateTemplateElementPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `TemplateFilterJoin` mutation. */
+export type CreateTemplateFilterJoinPayload = {
+  __typename?: 'CreateTemplateFilterJoinPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `TemplateElement` that was created by this mutation. */
-  templateElement?: Maybe<TemplateElement>;
+  /** The `TemplateFilterJoin` that was created by this mutation. */
+  templateFilterJoin?: Maybe<TemplateFilterJoin>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `TemplateSection` that is related to this `TemplateElement`. */
-  section?: Maybe<TemplateSection>;
-  /** An edge for our `TemplateElement`. May be used by Relay 1. */
-  templateElementEdge?: Maybe<TemplateElementsEdge>;
+  /** Reads a single `Template` that is related to this `TemplateFilterJoin`. */
+  template?: Maybe<Template>;
+  /** Reads a single `Filter` that is related to this `TemplateFilterJoin`. */
+  templateFilter?: Maybe<Filter>;
+  /** An edge for our `TemplateFilterJoin`. May be used by Relay 1. */
+  templateFilterJoinEdge?: Maybe<TemplateFilterJoinsEdge>;
 };
 
 
-/** The output of our create `TemplateElement` mutation. */
-export type CreateTemplateElementPayloadTemplateElementEdgeArgs = {
-  orderBy?: Maybe<Array<TemplateElementsOrderBy>>;
+/** The output of our create `TemplateFilterJoin` mutation. */
+export type CreateTemplateFilterJoinPayloadTemplateFilterJoinEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateFilterJoinsOrderBy>>;
 };
 
-/** All input for the create `TemplatePermission` mutation. */
-export type CreateTemplatePermissionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `TemplateFilterJoin` mutation. */
+export type CreateTemplateFilterJoinInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `TemplatePermission` to be created by this mutation. */
-  templatePermission: TemplatePermissionInput;
+  /** The `TemplateFilterJoin` to be created by this mutation. */
+  templateFilterJoin: TemplateFilterJoinInput;
 };
 
-/** An input for mutations affecting `TemplatePermission` */
-export type TemplatePermissionInput = {
+/** An input for mutations affecting `TemplateFilterJoin` */
+export type TemplateFilterJoinInput = {
   id?: Maybe<Scalars['Int']>;
-  permissionNameId?: Maybe<Scalars['Int']>;
   templateId?: Maybe<Scalars['Int']>;
-  stageNumber?: Maybe<Scalars['Int']>;
-  levelNumber?: Maybe<Scalars['Int']>;
-  restrictions?: Maybe<Scalars['JSON']>;
-  permissionNameToPermissionNameId?: Maybe<TemplatePermissionPermissionNameIdFkeyInput>;
-  templateToTemplateId?: Maybe<TemplatePermissionTemplateIdFkeyInput>;
+  templateFilterId?: Maybe<Scalars['Int']>;
+  templateToTemplateId?: Maybe<TemplateFilterJoinTemplateIdFkeyInput>;
+  filterToTemplateFilterId?: Maybe<TemplateFilterJoinTemplateFilterIdFkeyInput>;
 };
 
 /** The output of our create `TemplatePermission` mutation. */
 export type CreateTemplatePermissionPayload = {
   __typename?: 'CreateTemplatePermissionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplatePermission` that was created by this mutation. */
   templatePermission?: Maybe<TemplatePermission>;
@@ -19257,30 +20882,36 @@ export type CreateTemplatePermissionPayloadTemplatePermissionEdgeArgs = {
   orderBy?: Maybe<Array<TemplatePermissionsOrderBy>>;
 };
 
-/** All input for the create `TemplateSection` mutation. */
-export type CreateTemplateSectionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the create `TemplatePermission` mutation. */
+export type CreateTemplatePermissionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `TemplateSection` to be created by this mutation. */
-  templateSection: TemplateSectionInput;
+  /** The `TemplatePermission` to be created by this mutation. */
+  templatePermission: TemplatePermissionInput;
 };
 
-/** An input for mutations affecting `TemplateSection` */
-export type TemplateSectionInput = {
+/** An input for mutations affecting `TemplatePermission` */
+export type TemplatePermissionInput = {
   id?: Maybe<Scalars['Int']>;
+  permissionNameId?: Maybe<Scalars['Int']>;
   templateId?: Maybe<Scalars['Int']>;
-  title?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['String']>;
-  index?: Maybe<Scalars['Int']>;
-  templateToTemplateId?: Maybe<TemplateSectionTemplateIdFkeyInput>;
-  templateElementsUsingId?: Maybe<TemplateElementSectionIdFkeyInverseInput>;
-  applicationSectionsUsingId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInverseInput>;
+  stageNumber?: Maybe<Scalars['Int']>;
+  levelNumber?: Maybe<Scalars['Int']>;
+  restrictions?: Maybe<Scalars['JSON']>;
+  permissionNameToPermissionNameId?: Maybe<TemplatePermissionPermissionNameIdFkeyInput>;
+  templateToTemplateId?: Maybe<TemplatePermissionTemplateIdFkeyInput>;
 };
 
 /** The output of our create `TemplateSection` mutation. */
 export type CreateTemplateSectionPayload = {
   __typename?: 'CreateTemplateSectionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateSection` that was created by this mutation. */
   templateSection?: Maybe<TemplateSection>;
@@ -19298,9 +20929,59 @@ export type CreateTemplateSectionPayloadTemplateSectionEdgeArgs = {
   orderBy?: Maybe<Array<TemplateSectionsOrderBy>>;
 };
 
+/** All input for the create `TemplateSection` mutation. */
+export type CreateTemplateSectionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TemplateSection` to be created by this mutation. */
+  templateSection: TemplateSectionInput;
+};
+
+/** An input for mutations affecting `TemplateSection` */
+export type TemplateSectionInput = {
+  id?: Maybe<Scalars['Int']>;
+  templateId?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  index?: Maybe<Scalars['Int']>;
+  templateToTemplateId?: Maybe<TemplateSectionTemplateIdFkeyInput>;
+  templateElementsUsingId?: Maybe<TemplateElementSectionIdFkeyInverseInput>;
+  applicationSectionsUsingId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInverseInput>;
+};
+
+/** The output of our create `TemplateStage` mutation. */
+export type CreateTemplateStagePayload = {
+  __typename?: 'CreateTemplateStagePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TemplateStage` that was created by this mutation. */
+  templateStage?: Maybe<TemplateStage>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `Template` that is related to this `TemplateStage`. */
+  template?: Maybe<Template>;
+  /** An edge for our `TemplateStage`. May be used by Relay 1. */
+  templateStageEdge?: Maybe<TemplateStagesEdge>;
+};
+
+
+/** The output of our create `TemplateStage` mutation. */
+export type CreateTemplateStagePayloadTemplateStageEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateStagesOrderBy>>;
+};
+
 /** All input for the create `TemplateStage` mutation. */
 export type CreateTemplateStageInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateStage` to be created by this mutation. */
   templateStage: TemplateStageInput;
@@ -19320,50 +21001,13 @@ export type TemplateStageInput = {
   reviewAssignmentsUsingId?: Maybe<ReviewAssignmentStageIdFkeyInverseInput>;
 };
 
-/** The output of our create `TemplateStage` mutation. */
-export type CreateTemplateStagePayload = {
-  __typename?: 'CreateTemplateStagePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `TemplateStage` that was created by this mutation. */
-  templateStage?: Maybe<TemplateStage>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** Reads a single `Template` that is related to this `TemplateStage`. */
-  template?: Maybe<Template>;
-  /** An edge for our `TemplateStage`. May be used by Relay 1. */
-  templateStageEdge?: Maybe<TemplateStagesEdge>;
-};
-
-
-/** The output of our create `TemplateStage` mutation. */
-export type CreateTemplateStagePayloadTemplateStageEdgeArgs = {
-  orderBy?: Maybe<Array<TemplateStagesOrderBy>>;
-};
-
-/** All input for the create `TemplateStageReviewLevel` mutation. */
-export type CreateTemplateStageReviewLevelInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `TemplateStageReviewLevel` to be created by this mutation. */
-  templateStageReviewLevel: TemplateStageReviewLevelInput;
-};
-
-/** An input for mutations affecting `TemplateStageReviewLevel` */
-export type TemplateStageReviewLevelInput = {
-  id?: Maybe<Scalars['Int']>;
-  stageId?: Maybe<Scalars['Int']>;
-  number: Scalars['Int'];
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  templateStageToStageId?: Maybe<TemplateStageReviewLevelStageIdFkeyInput>;
-  reviewAssignmentsUsingId?: Maybe<ReviewAssignmentLevelIdFkeyInverseInput>;
-};
-
 /** The output of our create `TemplateStageReviewLevel` mutation. */
 export type CreateTemplateStageReviewLevelPayload = {
   __typename?: 'CreateTemplateStageReviewLevelPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateStageReviewLevel` that was created by this mutation. */
   templateStageReviewLevel?: Maybe<TemplateStageReviewLevel>;
@@ -19381,9 +21025,56 @@ export type CreateTemplateStageReviewLevelPayloadTemplateStageReviewLevelEdgeArg
   orderBy?: Maybe<Array<TemplateStageReviewLevelsOrderBy>>;
 };
 
+/** All input for the create `TemplateStageReviewLevel` mutation. */
+export type CreateTemplateStageReviewLevelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TemplateStageReviewLevel` to be created by this mutation. */
+  templateStageReviewLevel: TemplateStageReviewLevelInput;
+};
+
+/** An input for mutations affecting `TemplateStageReviewLevel` */
+export type TemplateStageReviewLevelInput = {
+  id?: Maybe<Scalars['Int']>;
+  stageId?: Maybe<Scalars['Int']>;
+  number: Scalars['Int'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  templateStageToStageId?: Maybe<TemplateStageReviewLevelStageIdFkeyInput>;
+  reviewAssignmentsUsingId?: Maybe<ReviewAssignmentLevelIdFkeyInverseInput>;
+};
+
+/** The output of our create `TriggerQueue` mutation. */
+export type CreateTriggerQueuePayload = {
+  __typename?: 'CreateTriggerQueuePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `TriggerQueue` that was created by this mutation. */
+  triggerQueue?: Maybe<TriggerQueue>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `TriggerQueue`. May be used by Relay 1. */
+  triggerQueueEdge?: Maybe<TriggerQueuesEdge>;
+};
+
+
+/** The output of our create `TriggerQueue` mutation. */
+export type CreateTriggerQueuePayloadTriggerQueueEdgeArgs = {
+  orderBy?: Maybe<Array<TriggerQueuesOrderBy>>;
+};
+
 /** All input for the create `TriggerQueue` mutation. */
 export type CreateTriggerQueueInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TriggerQueue` to be created by this mutation. */
   triggerQueue: TriggerQueueInput;
@@ -19401,28 +21092,34 @@ export type TriggerQueueInput = {
   actionQueuesUsingId?: Maybe<ActionQueueTriggerEventFkeyInverseInput>;
 };
 
-/** The output of our create `TriggerQueue` mutation. */
-export type CreateTriggerQueuePayload = {
-  __typename?: 'CreateTriggerQueuePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+/** The output of our create `User` mutation. */
+export type CreateUserPayload = {
+  __typename?: 'CreateUserPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `TriggerQueue` that was created by this mutation. */
-  triggerQueue?: Maybe<TriggerQueue>;
+  /** The `User` that was created by this mutation. */
+  user?: Maybe<User>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** An edge for our `TriggerQueue`. May be used by Relay 1. */
-  triggerQueueEdge?: Maybe<TriggerQueuesEdge>;
+  /** An edge for our `User`. May be used by Relay 1. */
+  userEdge?: Maybe<UsersEdge>;
 };
 
 
-/** The output of our create `TriggerQueue` mutation. */
-export type CreateTriggerQueuePayloadTriggerQueueEdgeArgs = {
-  orderBy?: Maybe<Array<TriggerQueuesOrderBy>>;
+/** The output of our create `User` mutation. */
+export type CreateUserPayloadUserEdgeArgs = {
+  orderBy?: Maybe<Array<UsersOrderBy>>;
 };
 
 /** All input for the create `User` mutation. */
 export type CreateUserInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `User` to be created by this mutation. */
   user: UserInput;
@@ -19448,47 +21145,13 @@ export type UserInput = {
   notificationsUsingId?: Maybe<NotificationUserIdFkeyInverseInput>;
 };
 
-/** The output of our create `User` mutation. */
-export type CreateUserPayload = {
-  __typename?: 'CreateUserPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `User` that was created by this mutation. */
-  user?: Maybe<User>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** An edge for our `User`. May be used by Relay 1. */
-  userEdge?: Maybe<UsersEdge>;
-};
-
-
-/** The output of our create `User` mutation. */
-export type CreateUserPayloadUserEdgeArgs = {
-  orderBy?: Maybe<Array<UsersOrderBy>>;
-};
-
-/** All input for the create `UserOrganisation` mutation. */
-export type CreateUserOrganisationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `UserOrganisation` to be created by this mutation. */
-  userOrganisation: UserOrganisationInput;
-};
-
-/** An input for mutations affecting `UserOrganisation` */
-export type UserOrganisationInput = {
-  id?: Maybe<Scalars['Int']>;
-  userId?: Maybe<Scalars['Int']>;
-  organisationId?: Maybe<Scalars['Int']>;
-  userRole?: Maybe<Scalars['String']>;
-  userToUserId?: Maybe<UserOrganisationUserIdFkeyInput>;
-  organisationToOrganisationId?: Maybe<UserOrganisationOrganisationIdFkeyInput>;
-};
-
 /** The output of our create `UserOrganisation` mutation. */
 export type CreateUserOrganisationPayload = {
   __typename?: 'CreateUserOrganisationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `UserOrganisation` that was created by this mutation. */
   userOrganisation?: Maybe<UserOrganisation>;
@@ -19508,9 +21171,55 @@ export type CreateUserOrganisationPayloadUserOrganisationEdgeArgs = {
   orderBy?: Maybe<Array<UserOrganisationsOrderBy>>;
 };
 
+/** All input for the create `UserOrganisation` mutation. */
+export type CreateUserOrganisationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `UserOrganisation` to be created by this mutation. */
+  userOrganisation: UserOrganisationInput;
+};
+
+/** An input for mutations affecting `UserOrganisation` */
+export type UserOrganisationInput = {
+  id?: Maybe<Scalars['Int']>;
+  userId?: Maybe<Scalars['Int']>;
+  organisationId?: Maybe<Scalars['Int']>;
+  userRole?: Maybe<Scalars['String']>;
+  userToUserId?: Maybe<UserOrganisationUserIdFkeyInput>;
+  organisationToOrganisationId?: Maybe<UserOrganisationOrganisationIdFkeyInput>;
+};
+
+/** The output of our update `ActionPlugin` mutation. */
+export type UpdateActionPluginPayload = {
+  __typename?: 'UpdateActionPluginPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ActionPlugin` that was updated by this mutation. */
+  actionPlugin?: Maybe<ActionPlugin>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `ActionPlugin`. May be used by Relay 1. */
+  actionPluginEdge?: Maybe<ActionPluginsEdge>;
+};
+
+
+/** The output of our update `ActionPlugin` mutation. */
+export type UpdateActionPluginPayloadActionPluginEdgeArgs = {
+  orderBy?: Maybe<Array<ActionPluginsOrderBy>>;
+};
+
 /** All input for the `updateActionPluginByNodeId` mutation. */
 export type UpdateActionPluginByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The globally unique `ID` which will identify a single `ActionPlugin` to be updated. */
   nodeId: Scalars['ID'];
@@ -19529,48 +21238,25 @@ export type ActionPluginPatch = {
   outputProperties?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-/** The output of our update `ActionPlugin` mutation. */
-export type UpdateActionPluginPayload = {
-  __typename?: 'UpdateActionPluginPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ActionPlugin` that was updated by this mutation. */
-  actionPlugin?: Maybe<ActionPlugin>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** An edge for our `ActionPlugin`. May be used by Relay 1. */
-  actionPluginEdge?: Maybe<ActionPluginsEdge>;
-};
-
-
-/** The output of our update `ActionPlugin` mutation. */
-export type UpdateActionPluginPayloadActionPluginEdgeArgs = {
-  orderBy?: Maybe<Array<ActionPluginsOrderBy>>;
-};
-
 /** All input for the `updateActionPlugin` mutation. */
 export type UpdateActionPluginInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ActionPlugin` being updated. */
   patch: ActionPluginPatch;
   code: Scalars['String'];
 };
 
-/** All input for the `updateActionQueueByNodeId` mutation. */
-export type UpdateActionQueueByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ActionQueue` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ActionQueue` being updated. */
-  patch: ActionQueuePatch;
-};
-
 /** The output of our update `ActionQueue` mutation. */
 export type UpdateActionQueuePayload = {
   __typename?: 'UpdateActionQueuePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ActionQueue` that was updated by this mutation. */
   actionQueue?: Maybe<ActionQueue>;
@@ -19590,29 +21276,38 @@ export type UpdateActionQueuePayloadActionQueueEdgeArgs = {
   orderBy?: Maybe<Array<ActionQueuesOrderBy>>;
 };
 
+/** All input for the `updateActionQueueByNodeId` mutation. */
+export type UpdateActionQueueByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ActionQueue` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ActionQueue` being updated. */
+  patch: ActionQueuePatch;
+};
+
 /** All input for the `updateActionQueue` mutation. */
 export type UpdateActionQueueInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ActionQueue` being updated. */
   patch: ActionQueuePatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateApplicationByNodeId` mutation. */
-export type UpdateApplicationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Application` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `Application` being updated. */
-  patch: ApplicationPatch;
-};
-
 /** The output of our update `Application` mutation. */
 export type UpdateApplicationPayload = {
   __typename?: 'UpdateApplicationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Application` that was updated by this mutation. */
   application?: Maybe<Application>;
@@ -19634,9 +21329,25 @@ export type UpdateApplicationPayloadApplicationEdgeArgs = {
   orderBy?: Maybe<Array<ApplicationsOrderBy>>;
 };
 
+/** All input for the `updateApplicationByNodeId` mutation. */
+export type UpdateApplicationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Application` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `Application` being updated. */
+  patch: ApplicationPatch;
+};
+
 /** All input for the `updateApplication` mutation. */
 export type UpdateApplicationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Application` being updated. */
   patch: ApplicationPatch;
@@ -19645,27 +21356,23 @@ export type UpdateApplicationInput = {
 
 /** All input for the `updateApplicationBySerial` mutation. */
 export type UpdateApplicationBySerialInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Application` being updated. */
   patch: ApplicationPatch;
   serial: Scalars['String'];
 };
 
-/** All input for the `updateApplicationResponseByNodeId` mutation. */
-export type UpdateApplicationResponseByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationResponse` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ApplicationResponse` being updated. */
-  patch: ApplicationResponsePatch;
-};
-
 /** The output of our update `ApplicationResponse` mutation. */
 export type UpdateApplicationResponsePayload = {
   __typename?: 'UpdateApplicationResponsePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationResponse` that was updated by this mutation. */
   applicationResponse?: Maybe<ApplicationResponse>;
@@ -19685,29 +21392,38 @@ export type UpdateApplicationResponsePayloadApplicationResponseEdgeArgs = {
   orderBy?: Maybe<Array<ApplicationResponsesOrderBy>>;
 };
 
+/** All input for the `updateApplicationResponseByNodeId` mutation. */
+export type UpdateApplicationResponseByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ApplicationResponse` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ApplicationResponse` being updated. */
+  patch: ApplicationResponsePatch;
+};
+
 /** All input for the `updateApplicationResponse` mutation. */
 export type UpdateApplicationResponseInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ApplicationResponse` being updated. */
   patch: ApplicationResponsePatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateApplicationSectionByNodeId` mutation. */
-export type UpdateApplicationSectionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationSection` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ApplicationSection` being updated. */
-  patch: ApplicationSectionPatch;
-};
-
 /** The output of our update `ApplicationSection` mutation. */
 export type UpdateApplicationSectionPayload = {
   __typename?: 'UpdateApplicationSectionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationSection` that was updated by this mutation. */
   applicationSection?: Maybe<ApplicationSection>;
@@ -19727,29 +21443,38 @@ export type UpdateApplicationSectionPayloadApplicationSectionEdgeArgs = {
   orderBy?: Maybe<Array<ApplicationSectionsOrderBy>>;
 };
 
+/** All input for the `updateApplicationSectionByNodeId` mutation. */
+export type UpdateApplicationSectionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ApplicationSection` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ApplicationSection` being updated. */
+  patch: ApplicationSectionPatch;
+};
+
 /** All input for the `updateApplicationSection` mutation. */
 export type UpdateApplicationSectionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ApplicationSection` being updated. */
   patch: ApplicationSectionPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateApplicationStageHistoryByNodeId` mutation. */
-export type UpdateApplicationStageHistoryByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationStageHistory` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ApplicationStageHistory` being updated. */
-  patch: ApplicationStageHistoryPatch;
-};
-
 /** The output of our update `ApplicationStageHistory` mutation. */
 export type UpdateApplicationStageHistoryPayload = {
   __typename?: 'UpdateApplicationStageHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationStageHistory` that was updated by this mutation. */
   applicationStageHistory?: Maybe<ApplicationStageHistory>;
@@ -19769,29 +21494,38 @@ export type UpdateApplicationStageHistoryPayloadApplicationStageHistoryEdgeArgs 
   orderBy?: Maybe<Array<ApplicationStageHistoriesOrderBy>>;
 };
 
+/** All input for the `updateApplicationStageHistoryByNodeId` mutation. */
+export type UpdateApplicationStageHistoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ApplicationStageHistory` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ApplicationStageHistory` being updated. */
+  patch: ApplicationStageHistoryPatch;
+};
+
 /** All input for the `updateApplicationStageHistory` mutation. */
 export type UpdateApplicationStageHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ApplicationStageHistory` being updated. */
   patch: ApplicationStageHistoryPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateApplicationStatusHistoryByNodeId` mutation. */
-export type UpdateApplicationStatusHistoryByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationStatusHistory` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ApplicationStatusHistory` being updated. */
-  patch: ApplicationStatusHistoryPatch;
-};
-
 /** The output of our update `ApplicationStatusHistory` mutation. */
 export type UpdateApplicationStatusHistoryPayload = {
   __typename?: 'UpdateApplicationStatusHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationStatusHistory` that was updated by this mutation. */
   applicationStatusHistory?: Maybe<ApplicationStatusHistory>;
@@ -19809,18 +21543,59 @@ export type UpdateApplicationStatusHistoryPayloadApplicationStatusHistoryEdgeArg
   orderBy?: Maybe<Array<ApplicationStatusHistoriesOrderBy>>;
 };
 
+/** All input for the `updateApplicationStatusHistoryByNodeId` mutation. */
+export type UpdateApplicationStatusHistoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ApplicationStatusHistory` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ApplicationStatusHistory` being updated. */
+  patch: ApplicationStatusHistoryPatch;
+};
+
 /** All input for the `updateApplicationStatusHistory` mutation. */
 export type UpdateApplicationStatusHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ApplicationStatusHistory` being updated. */
   patch: ApplicationStatusHistoryPatch;
   id: Scalars['Int'];
 };
 
+/** The output of our update `ElementTypePlugin` mutation. */
+export type UpdateElementTypePluginPayload = {
+  __typename?: 'UpdateElementTypePluginPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ElementTypePlugin` that was updated by this mutation. */
+  elementTypePlugin?: Maybe<ElementTypePlugin>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `ElementTypePlugin`. May be used by Relay 1. */
+  elementTypePluginEdge?: Maybe<ElementTypePluginsEdge>;
+};
+
+
+/** The output of our update `ElementTypePlugin` mutation. */
+export type UpdateElementTypePluginPayloadElementTypePluginEdgeArgs = {
+  orderBy?: Maybe<Array<ElementTypePluginsOrderBy>>;
+};
+
 /** All input for the `updateElementTypePluginByNodeId` mutation. */
 export type UpdateElementTypePluginByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The globally unique `ID` which will identify a single `ElementTypePlugin` to be updated. */
   nodeId: Scalars['ID'];
@@ -19840,48 +21615,25 @@ export type ElementTypePluginPatch = {
   requiredParameters?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-/** The output of our update `ElementTypePlugin` mutation. */
-export type UpdateElementTypePluginPayload = {
-  __typename?: 'UpdateElementTypePluginPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `ElementTypePlugin` that was updated by this mutation. */
-  elementTypePlugin?: Maybe<ElementTypePlugin>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** An edge for our `ElementTypePlugin`. May be used by Relay 1. */
-  elementTypePluginEdge?: Maybe<ElementTypePluginsEdge>;
-};
-
-
-/** The output of our update `ElementTypePlugin` mutation. */
-export type UpdateElementTypePluginPayloadElementTypePluginEdgeArgs = {
-  orderBy?: Maybe<Array<ElementTypePluginsOrderBy>>;
-};
-
 /** All input for the `updateElementTypePlugin` mutation. */
 export type UpdateElementTypePluginInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ElementTypePlugin` being updated. */
   patch: ElementTypePluginPatch;
   code: Scalars['String'];
 };
 
-/** All input for the `updateFileByNodeId` mutation. */
-export type UpdateFileByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `File` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `File` being updated. */
-  patch: FilePatch;
-};
-
 /** The output of our update `File` mutation. */
 export type UpdateFilePayload = {
   __typename?: 'UpdateFilePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `File` that was updated by this mutation. */
   file?: Maybe<File>;
@@ -19903,9 +21655,25 @@ export type UpdateFilePayloadFileEdgeArgs = {
   orderBy?: Maybe<Array<FilesOrderBy>>;
 };
 
+/** All input for the `updateFileByNodeId` mutation. */
+export type UpdateFileByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `File` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `File` being updated. */
+  patch: FilePatch;
+};
+
 /** All input for the `updateFile` mutation. */
 export type UpdateFileInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `File` being updated. */
   patch: FilePatch;
@@ -19914,27 +21682,125 @@ export type UpdateFileInput = {
 
 /** All input for the `updateFileByUniqueId` mutation. */
 export type UpdateFileByUniqueIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `File` being updated. */
   patch: FilePatch;
   uniqueId: Scalars['String'];
 };
 
-/** All input for the `updateNotificationByNodeId` mutation. */
-export type UpdateNotificationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** The output of our update `Filter` mutation. */
+export type UpdateFilterPayload = {
+  __typename?: 'UpdateFilterPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Notification` to be updated. */
+  /** The `Filter` that was updated by this mutation. */
+  filter?: Maybe<Filter>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `Filter`. May be used by Relay 1. */
+  filterEdge?: Maybe<FiltersEdge>;
+};
+
+
+/** The output of our update `Filter` mutation. */
+export type UpdateFilterPayloadFilterEdgeArgs = {
+  orderBy?: Maybe<Array<FiltersOrderBy>>;
+};
+
+/** All input for the `updateFilterByNodeId` mutation. */
+export type UpdateFilterByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Filter` to be updated. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `Notification` being updated. */
-  patch: NotificationPatch;
+  /** An object where the defined keys will be set on the `Filter` being updated. */
+  patch: FilterPatch;
+};
+
+/** All input for the `updateFilter` mutation. */
+export type UpdateFilterInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `Filter` being updated. */
+  patch: FilterPatch;
+  id: Scalars['Int'];
+};
+
+/** The output of our update `LookupTable` mutation. */
+export type UpdateLookupTablePayload = {
+  __typename?: 'UpdateLookupTablePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LookupTable` that was updated by this mutation. */
+  lookupTable?: Maybe<LookupTable>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `LookupTable`. May be used by Relay 1. */
+  lookupTableEdge?: Maybe<LookupTablesEdge>;
+};
+
+
+/** The output of our update `LookupTable` mutation. */
+export type UpdateLookupTablePayloadLookupTableEdgeArgs = {
+  orderBy?: Maybe<Array<LookupTablesOrderBy>>;
+};
+
+/** All input for the `updateLookupTableByNodeId` mutation. */
+export type UpdateLookupTableByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `LookupTable` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `LookupTable` being updated. */
+  patch: LookupTablePatch;
+};
+
+/** Represents an update to a `LookupTable`. Fields that are set will be updated. */
+export type LookupTablePatch = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  fieldMap?: Maybe<Scalars['JSON']>;
+};
+
+/** All input for the `updateLookupTable` mutation. */
+export type UpdateLookupTableInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `LookupTable` being updated. */
+  patch: LookupTablePatch;
+  id: Scalars['Int'];
 };
 
 /** The output of our update `Notification` mutation. */
 export type UpdateNotificationPayload = {
   __typename?: 'UpdateNotificationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Notification` that was updated by this mutation. */
   notification?: Maybe<Notification>;
@@ -19958,29 +21824,38 @@ export type UpdateNotificationPayloadNotificationEdgeArgs = {
   orderBy?: Maybe<Array<NotificationsOrderBy>>;
 };
 
+/** All input for the `updateNotificationByNodeId` mutation. */
+export type UpdateNotificationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Notification` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `Notification` being updated. */
+  patch: NotificationPatch;
+};
+
 /** All input for the `updateNotification` mutation. */
 export type UpdateNotificationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Notification` being updated. */
   patch: NotificationPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateOrganisationByNodeId` mutation. */
-export type UpdateOrganisationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Organisation` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `Organisation` being updated. */
-  patch: OrganisationPatch;
-};
-
 /** The output of our update `Organisation` mutation. */
 export type UpdateOrganisationPayload = {
   __typename?: 'UpdateOrganisationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Organisation` that was updated by this mutation. */
   organisation?: Maybe<Organisation>;
@@ -19996,9 +21871,25 @@ export type UpdateOrganisationPayloadOrganisationEdgeArgs = {
   orderBy?: Maybe<Array<OrganisationsOrderBy>>;
 };
 
+/** All input for the `updateOrganisationByNodeId` mutation. */
+export type UpdateOrganisationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Organisation` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `Organisation` being updated. */
+  patch: OrganisationPatch;
+};
+
 /** All input for the `updateOrganisation` mutation. */
 export type UpdateOrganisationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Organisation` being updated. */
   patch: OrganisationPatch;
@@ -20007,7 +21898,10 @@ export type UpdateOrganisationInput = {
 
 /** All input for the `updateOrganisationByName` mutation. */
 export type UpdateOrganisationByNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Organisation` being updated. */
   patch: OrganisationPatch;
@@ -20016,27 +21910,23 @@ export type UpdateOrganisationByNameInput = {
 
 /** All input for the `updateOrganisationByRegistration` mutation. */
 export type UpdateOrganisationByRegistrationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Organisation` being updated. */
   patch: OrganisationPatch;
   registration: Scalars['String'];
 };
 
-/** All input for the `updatePermissionJoinByNodeId` mutation. */
-export type UpdatePermissionJoinByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `PermissionJoin` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `PermissionJoin` being updated. */
-  patch: PermissionJoinPatch;
-};
-
 /** The output of our update `PermissionJoin` mutation. */
 export type UpdatePermissionJoinPayload = {
   __typename?: 'UpdatePermissionJoinPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionJoin` that was updated by this mutation. */
   permissionJoin?: Maybe<PermissionJoin>;
@@ -20058,29 +21948,38 @@ export type UpdatePermissionJoinPayloadPermissionJoinEdgeArgs = {
   orderBy?: Maybe<Array<PermissionJoinsOrderBy>>;
 };
 
+/** All input for the `updatePermissionJoinByNodeId` mutation. */
+export type UpdatePermissionJoinByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `PermissionJoin` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `PermissionJoin` being updated. */
+  patch: PermissionJoinPatch;
+};
+
 /** All input for the `updatePermissionJoin` mutation. */
 export type UpdatePermissionJoinInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `PermissionJoin` being updated. */
   patch: PermissionJoinPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updatePermissionNameByNodeId` mutation. */
-export type UpdatePermissionNameByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `PermissionName` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `PermissionName` being updated. */
-  patch: PermissionNamePatch;
-};
-
 /** The output of our update `PermissionName` mutation. */
 export type UpdatePermissionNamePayload = {
   __typename?: 'UpdatePermissionNamePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionName` that was updated by this mutation. */
   permissionName?: Maybe<PermissionName>;
@@ -20098,9 +21997,25 @@ export type UpdatePermissionNamePayloadPermissionNameEdgeArgs = {
   orderBy?: Maybe<Array<PermissionNamesOrderBy>>;
 };
 
+/** All input for the `updatePermissionNameByNodeId` mutation. */
+export type UpdatePermissionNameByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `PermissionName` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `PermissionName` being updated. */
+  patch: PermissionNamePatch;
+};
+
 /** All input for the `updatePermissionName` mutation. */
 export type UpdatePermissionNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `PermissionName` being updated. */
   patch: PermissionNamePatch;
@@ -20109,27 +22024,23 @@ export type UpdatePermissionNameInput = {
 
 /** All input for the `updatePermissionNameByName` mutation. */
 export type UpdatePermissionNameByNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `PermissionName` being updated. */
   patch: PermissionNamePatch;
   name: Scalars['String'];
 };
 
-/** All input for the `updatePermissionPolicyByNodeId` mutation. */
-export type UpdatePermissionPolicyByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `PermissionPolicy` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `PermissionPolicy` being updated. */
-  patch: PermissionPolicyPatch;
-};
-
 /** The output of our update `PermissionPolicy` mutation. */
 export type UpdatePermissionPolicyPayload = {
   __typename?: 'UpdatePermissionPolicyPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionPolicy` that was updated by this mutation. */
   permissionPolicy?: Maybe<PermissionPolicy>;
@@ -20145,9 +22056,25 @@ export type UpdatePermissionPolicyPayloadPermissionPolicyEdgeArgs = {
   orderBy?: Maybe<Array<PermissionPoliciesOrderBy>>;
 };
 
+/** All input for the `updatePermissionPolicyByNodeId` mutation. */
+export type UpdatePermissionPolicyByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `PermissionPolicy` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `PermissionPolicy` being updated. */
+  patch: PermissionPolicyPatch;
+};
+
 /** All input for the `updatePermissionPolicy` mutation. */
 export type UpdatePermissionPolicyInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `PermissionPolicy` being updated. */
   patch: PermissionPolicyPatch;
@@ -20156,27 +22083,23 @@ export type UpdatePermissionPolicyInput = {
 
 /** All input for the `updatePermissionPolicyByName` mutation. */
 export type UpdatePermissionPolicyByNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `PermissionPolicy` being updated. */
   patch: PermissionPolicyPatch;
   name: Scalars['String'];
 };
 
-/** All input for the `updateReviewByNodeId` mutation. */
-export type UpdateReviewByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Review` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `Review` being updated. */
-  patch: ReviewPatch;
-};
-
 /** The output of our update `Review` mutation. */
 export type UpdateReviewPayload = {
   __typename?: 'UpdateReviewPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Review` that was updated by this mutation. */
   review?: Maybe<Review>;
@@ -20198,29 +22121,38 @@ export type UpdateReviewPayloadReviewEdgeArgs = {
   orderBy?: Maybe<Array<ReviewsOrderBy>>;
 };
 
+/** All input for the `updateReviewByNodeId` mutation. */
+export type UpdateReviewByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Review` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `Review` being updated. */
+  patch: ReviewPatch;
+};
+
 /** All input for the `updateReview` mutation. */
 export type UpdateReviewInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Review` being updated. */
   patch: ReviewPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateReviewAssignmentByNodeId` mutation. */
-export type UpdateReviewAssignmentByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewAssignment` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ReviewAssignment` being updated. */
-  patch: ReviewAssignmentPatch;
-};
-
 /** The output of our update `ReviewAssignment` mutation. */
 export type UpdateReviewAssignmentPayload = {
   __typename?: 'UpdateReviewAssignmentPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewAssignment` that was updated by this mutation. */
   reviewAssignment?: Maybe<ReviewAssignment>;
@@ -20248,29 +22180,38 @@ export type UpdateReviewAssignmentPayloadReviewAssignmentEdgeArgs = {
   orderBy?: Maybe<Array<ReviewAssignmentsOrderBy>>;
 };
 
+/** All input for the `updateReviewAssignmentByNodeId` mutation. */
+export type UpdateReviewAssignmentByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ReviewAssignment` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ReviewAssignment` being updated. */
+  patch: ReviewAssignmentPatch;
+};
+
 /** All input for the `updateReviewAssignment` mutation. */
 export type UpdateReviewAssignmentInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ReviewAssignment` being updated. */
   patch: ReviewAssignmentPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateReviewAssignmentAssignerJoinByNodeId` mutation. */
-export type UpdateReviewAssignmentAssignerJoinByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewAssignmentAssignerJoin` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ReviewAssignmentAssignerJoin` being updated. */
-  patch: ReviewAssignmentAssignerJoinPatch;
-};
-
 /** The output of our update `ReviewAssignmentAssignerJoin` mutation. */
 export type UpdateReviewAssignmentAssignerJoinPayload = {
   __typename?: 'UpdateReviewAssignmentAssignerJoinPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewAssignmentAssignerJoin` that was updated by this mutation. */
   reviewAssignmentAssignerJoin?: Maybe<ReviewAssignmentAssignerJoin>;
@@ -20292,29 +22233,38 @@ export type UpdateReviewAssignmentAssignerJoinPayloadReviewAssignmentAssignerJoi
   orderBy?: Maybe<Array<ReviewAssignmentAssignerJoinsOrderBy>>;
 };
 
+/** All input for the `updateReviewAssignmentAssignerJoinByNodeId` mutation. */
+export type UpdateReviewAssignmentAssignerJoinByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ReviewAssignmentAssignerJoin` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ReviewAssignmentAssignerJoin` being updated. */
+  patch: ReviewAssignmentAssignerJoinPatch;
+};
+
 /** All input for the `updateReviewAssignmentAssignerJoin` mutation. */
 export type UpdateReviewAssignmentAssignerJoinInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ReviewAssignmentAssignerJoin` being updated. */
   patch: ReviewAssignmentAssignerJoinPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateReviewDecisionByNodeId` mutation. */
-export type UpdateReviewDecisionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewDecision` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ReviewDecision` being updated. */
-  patch: ReviewDecisionPatch;
-};
-
 /** The output of our update `ReviewDecision` mutation. */
 export type UpdateReviewDecisionPayload = {
   __typename?: 'UpdateReviewDecisionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewDecision` that was updated by this mutation. */
   reviewDecision?: Maybe<ReviewDecision>;
@@ -20332,29 +22282,38 @@ export type UpdateReviewDecisionPayloadReviewDecisionEdgeArgs = {
   orderBy?: Maybe<Array<ReviewDecisionsOrderBy>>;
 };
 
+/** All input for the `updateReviewDecisionByNodeId` mutation. */
+export type UpdateReviewDecisionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ReviewDecision` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ReviewDecision` being updated. */
+  patch: ReviewDecisionPatch;
+};
+
 /** All input for the `updateReviewDecision` mutation. */
 export type UpdateReviewDecisionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ReviewDecision` being updated. */
   patch: ReviewDecisionPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateReviewQuestionAssignmentByNodeId` mutation. */
-export type UpdateReviewQuestionAssignmentByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewQuestionAssignment` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ReviewQuestionAssignment` being updated. */
-  patch: ReviewQuestionAssignmentPatch;
-};
-
 /** The output of our update `ReviewQuestionAssignment` mutation. */
 export type UpdateReviewQuestionAssignmentPayload = {
   __typename?: 'UpdateReviewQuestionAssignmentPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewQuestionAssignment` that was updated by this mutation. */
   reviewQuestionAssignment?: Maybe<ReviewQuestionAssignment>;
@@ -20374,29 +22333,38 @@ export type UpdateReviewQuestionAssignmentPayloadReviewQuestionAssignmentEdgeArg
   orderBy?: Maybe<Array<ReviewQuestionAssignmentsOrderBy>>;
 };
 
+/** All input for the `updateReviewQuestionAssignmentByNodeId` mutation. */
+export type UpdateReviewQuestionAssignmentByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ReviewQuestionAssignment` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ReviewQuestionAssignment` being updated. */
+  patch: ReviewQuestionAssignmentPatch;
+};
+
 /** All input for the `updateReviewQuestionAssignment` mutation. */
 export type UpdateReviewQuestionAssignmentInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ReviewQuestionAssignment` being updated. */
   patch: ReviewQuestionAssignmentPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateReviewResponseByNodeId` mutation. */
-export type UpdateReviewResponseByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewResponse` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ReviewResponse` being updated. */
-  patch: ReviewResponsePatch;
-};
-
 /** The output of our update `ReviewResponse` mutation. */
 export type UpdateReviewResponsePayload = {
   __typename?: 'UpdateReviewResponsePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewResponse` that was updated by this mutation. */
   reviewResponse?: Maybe<ReviewResponse>;
@@ -20424,29 +22392,38 @@ export type UpdateReviewResponsePayloadReviewResponseEdgeArgs = {
   orderBy?: Maybe<Array<ReviewResponsesOrderBy>>;
 };
 
+/** All input for the `updateReviewResponseByNodeId` mutation. */
+export type UpdateReviewResponseByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ReviewResponse` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ReviewResponse` being updated. */
+  patch: ReviewResponsePatch;
+};
+
 /** All input for the `updateReviewResponse` mutation. */
 export type UpdateReviewResponseInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ReviewResponse` being updated. */
   patch: ReviewResponsePatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateReviewStatusHistoryByNodeId` mutation. */
-export type UpdateReviewStatusHistoryByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewStatusHistory` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `ReviewStatusHistory` being updated. */
-  patch: ReviewStatusHistoryPatch;
-};
-
 /** The output of our update `ReviewStatusHistory` mutation. */
 export type UpdateReviewStatusHistoryPayload = {
   __typename?: 'UpdateReviewStatusHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewStatusHistory` that was updated by this mutation. */
   reviewStatusHistory?: Maybe<ReviewStatusHistory>;
@@ -20464,34 +22441,45 @@ export type UpdateReviewStatusHistoryPayloadReviewStatusHistoryEdgeArgs = {
   orderBy?: Maybe<Array<ReviewStatusHistoriesOrderBy>>;
 };
 
+/** All input for the `updateReviewStatusHistoryByNodeId` mutation. */
+export type UpdateReviewStatusHistoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ReviewStatusHistory` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `ReviewStatusHistory` being updated. */
+  patch: ReviewStatusHistoryPatch;
+};
+
 /** All input for the `updateReviewStatusHistory` mutation. */
 export type UpdateReviewStatusHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `ReviewStatusHistory` being updated. */
   patch: ReviewStatusHistoryPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateTemplateByNodeId` mutation. */
-export type UpdateTemplateByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Template` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `Template` being updated. */
-  patch: TemplatePatch;
-};
-
 /** The output of our update `Template` mutation. */
 export type UpdateTemplatePayload = {
   __typename?: 'UpdateTemplatePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Template` that was updated by this mutation. */
   template?: Maybe<Template>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
+  /** Reads a single `TemplateCategory` that is related to this `Template`. */
+  templateCategory?: Maybe<TemplateCategory>;
   /** An edge for our `Template`. May be used by Relay 1. */
   templateEdge?: Maybe<TemplatesEdge>;
 };
@@ -20502,29 +22490,38 @@ export type UpdateTemplatePayloadTemplateEdgeArgs = {
   orderBy?: Maybe<Array<TemplatesOrderBy>>;
 };
 
+/** All input for the `updateTemplateByNodeId` mutation. */
+export type UpdateTemplateByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Template` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `Template` being updated. */
+  patch: TemplatePatch;
+};
+
 /** All input for the `updateTemplate` mutation. */
 export type UpdateTemplateInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `Template` being updated. */
   patch: TemplatePatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateTemplateActionByNodeId` mutation. */
-export type UpdateTemplateActionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateAction` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `TemplateAction` being updated. */
-  patch: TemplateActionPatch;
-};
-
 /** The output of our update `TemplateAction` mutation. */
 export type UpdateTemplateActionPayload = {
   __typename?: 'UpdateTemplateActionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateAction` that was updated by this mutation. */
   templateAction?: Maybe<TemplateAction>;
@@ -20542,29 +22539,85 @@ export type UpdateTemplateActionPayloadTemplateActionEdgeArgs = {
   orderBy?: Maybe<Array<TemplateActionsOrderBy>>;
 };
 
+/** All input for the `updateTemplateActionByNodeId` mutation. */
+export type UpdateTemplateActionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateAction` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `TemplateAction` being updated. */
+  patch: TemplateActionPatch;
+};
+
 /** All input for the `updateTemplateAction` mutation. */
 export type UpdateTemplateActionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TemplateAction` being updated. */
   patch: TemplateActionPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateTemplateElementByNodeId` mutation. */
-export type UpdateTemplateElementByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** The output of our update `TemplateCategory` mutation. */
+export type UpdateTemplateCategoryPayload = {
+  __typename?: 'UpdateTemplateCategoryPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateElement` to be updated. */
+  /** The `TemplateCategory` that was updated by this mutation. */
+  templateCategory?: Maybe<TemplateCategory>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `TemplateCategory`. May be used by Relay 1. */
+  templateCategoryEdge?: Maybe<TemplateCategoriesEdge>;
+};
+
+
+/** The output of our update `TemplateCategory` mutation. */
+export type UpdateTemplateCategoryPayloadTemplateCategoryEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateCategoriesOrderBy>>;
+};
+
+/** All input for the `updateTemplateCategoryByNodeId` mutation. */
+export type UpdateTemplateCategoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateCategory` to be updated. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `TemplateElement` being updated. */
-  patch: TemplateElementPatch;
+  /** An object where the defined keys will be set on the `TemplateCategory` being updated. */
+  patch: TemplateCategoryPatch;
+};
+
+/** All input for the `updateTemplateCategory` mutation. */
+export type UpdateTemplateCategoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `TemplateCategory` being updated. */
+  patch: TemplateCategoryPatch;
+  id: Scalars['Int'];
 };
 
 /** The output of our update `TemplateElement` mutation. */
 export type UpdateTemplateElementPayload = {
   __typename?: 'UpdateTemplateElementPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateElement` that was updated by this mutation. */
   templateElement?: Maybe<TemplateElement>;
@@ -20582,9 +22635,25 @@ export type UpdateTemplateElementPayloadTemplateElementEdgeArgs = {
   orderBy?: Maybe<Array<TemplateElementsOrderBy>>;
 };
 
+/** All input for the `updateTemplateElementByNodeId` mutation. */
+export type UpdateTemplateElementByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateElement` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `TemplateElement` being updated. */
+  patch: TemplateElementPatch;
+};
+
 /** All input for the `updateTemplateElement` mutation. */
 export type UpdateTemplateElementInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TemplateElement` being updated. */
   patch: TemplateElementPatch;
@@ -20593,7 +22662,10 @@ export type UpdateTemplateElementInput = {
 
 /** All input for the `updateTemplateElementByTemplateCodeAndCode` mutation. */
 export type UpdateTemplateElementByTemplateCodeAndCodeInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TemplateElement` being updated. */
   patch: TemplateElementPatch;
@@ -20601,20 +22673,64 @@ export type UpdateTemplateElementByTemplateCodeAndCodeInput = {
   code: Scalars['String'];
 };
 
-/** All input for the `updateTemplatePermissionByNodeId` mutation. */
-export type UpdateTemplatePermissionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** The output of our update `TemplateFilterJoin` mutation. */
+export type UpdateTemplateFilterJoinPayload = {
+  __typename?: 'UpdateTemplateFilterJoinPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplatePermission` to be updated. */
+  /** The `TemplateFilterJoin` that was updated by this mutation. */
+  templateFilterJoin?: Maybe<TemplateFilterJoin>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `Template` that is related to this `TemplateFilterJoin`. */
+  template?: Maybe<Template>;
+  /** Reads a single `Filter` that is related to this `TemplateFilterJoin`. */
+  templateFilter?: Maybe<Filter>;
+  /** An edge for our `TemplateFilterJoin`. May be used by Relay 1. */
+  templateFilterJoinEdge?: Maybe<TemplateFilterJoinsEdge>;
+};
+
+
+/** The output of our update `TemplateFilterJoin` mutation. */
+export type UpdateTemplateFilterJoinPayloadTemplateFilterJoinEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateFilterJoinsOrderBy>>;
+};
+
+/** All input for the `updateTemplateFilterJoinByNodeId` mutation. */
+export type UpdateTemplateFilterJoinByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateFilterJoin` to be updated. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `TemplatePermission` being updated. */
-  patch: TemplatePermissionPatch;
+  /** An object where the defined keys will be set on the `TemplateFilterJoin` being updated. */
+  patch: TemplateFilterJoinPatch;
+};
+
+/** All input for the `updateTemplateFilterJoin` mutation. */
+export type UpdateTemplateFilterJoinInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `TemplateFilterJoin` being updated. */
+  patch: TemplateFilterJoinPatch;
+  id: Scalars['Int'];
 };
 
 /** The output of our update `TemplatePermission` mutation. */
 export type UpdateTemplatePermissionPayload = {
   __typename?: 'UpdateTemplatePermissionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplatePermission` that was updated by this mutation. */
   templatePermission?: Maybe<TemplatePermission>;
@@ -20634,29 +22750,38 @@ export type UpdateTemplatePermissionPayloadTemplatePermissionEdgeArgs = {
   orderBy?: Maybe<Array<TemplatePermissionsOrderBy>>;
 };
 
+/** All input for the `updateTemplatePermissionByNodeId` mutation. */
+export type UpdateTemplatePermissionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplatePermission` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `TemplatePermission` being updated. */
+  patch: TemplatePermissionPatch;
+};
+
 /** All input for the `updateTemplatePermission` mutation. */
 export type UpdateTemplatePermissionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TemplatePermission` being updated. */
   patch: TemplatePermissionPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateTemplateSectionByNodeId` mutation. */
-export type UpdateTemplateSectionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateSection` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `TemplateSection` being updated. */
-  patch: TemplateSectionPatch;
-};
-
 /** The output of our update `TemplateSection` mutation. */
 export type UpdateTemplateSectionPayload = {
   __typename?: 'UpdateTemplateSectionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateSection` that was updated by this mutation. */
   templateSection?: Maybe<TemplateSection>;
@@ -20674,29 +22799,38 @@ export type UpdateTemplateSectionPayloadTemplateSectionEdgeArgs = {
   orderBy?: Maybe<Array<TemplateSectionsOrderBy>>;
 };
 
+/** All input for the `updateTemplateSectionByNodeId` mutation. */
+export type UpdateTemplateSectionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateSection` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `TemplateSection` being updated. */
+  patch: TemplateSectionPatch;
+};
+
 /** All input for the `updateTemplateSection` mutation. */
 export type UpdateTemplateSectionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TemplateSection` being updated. */
   patch: TemplateSectionPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateTemplateStageByNodeId` mutation. */
-export type UpdateTemplateStageByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateStage` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `TemplateStage` being updated. */
-  patch: TemplateStagePatch;
-};
-
 /** The output of our update `TemplateStage` mutation. */
 export type UpdateTemplateStagePayload = {
   __typename?: 'UpdateTemplateStagePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateStage` that was updated by this mutation. */
   templateStage?: Maybe<TemplateStage>;
@@ -20714,29 +22848,38 @@ export type UpdateTemplateStagePayloadTemplateStageEdgeArgs = {
   orderBy?: Maybe<Array<TemplateStagesOrderBy>>;
 };
 
+/** All input for the `updateTemplateStageByNodeId` mutation. */
+export type UpdateTemplateStageByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateStage` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `TemplateStage` being updated. */
+  patch: TemplateStagePatch;
+};
+
 /** All input for the `updateTemplateStage` mutation. */
 export type UpdateTemplateStageInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TemplateStage` being updated. */
   patch: TemplateStagePatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateTemplateStageReviewLevelByNodeId` mutation. */
-export type UpdateTemplateStageReviewLevelByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateStageReviewLevel` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `TemplateStageReviewLevel` being updated. */
-  patch: TemplateStageReviewLevelPatch;
-};
-
 /** The output of our update `TemplateStageReviewLevel` mutation. */
 export type UpdateTemplateStageReviewLevelPayload = {
   __typename?: 'UpdateTemplateStageReviewLevelPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateStageReviewLevel` that was updated by this mutation. */
   templateStageReviewLevel?: Maybe<TemplateStageReviewLevel>;
@@ -20754,29 +22897,38 @@ export type UpdateTemplateStageReviewLevelPayloadTemplateStageReviewLevelEdgeArg
   orderBy?: Maybe<Array<TemplateStageReviewLevelsOrderBy>>;
 };
 
+/** All input for the `updateTemplateStageReviewLevelByNodeId` mutation. */
+export type UpdateTemplateStageReviewLevelByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateStageReviewLevel` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `TemplateStageReviewLevel` being updated. */
+  patch: TemplateStageReviewLevelPatch;
+};
+
 /** All input for the `updateTemplateStageReviewLevel` mutation. */
 export type UpdateTemplateStageReviewLevelInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TemplateStageReviewLevel` being updated. */
   patch: TemplateStageReviewLevelPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateTriggerQueueByNodeId` mutation. */
-export type UpdateTriggerQueueByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TriggerQueue` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `TriggerQueue` being updated. */
-  patch: TriggerQueuePatch;
-};
-
 /** The output of our update `TriggerQueue` mutation. */
 export type UpdateTriggerQueuePayload = {
   __typename?: 'UpdateTriggerQueuePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TriggerQueue` that was updated by this mutation. */
   triggerQueue?: Maybe<TriggerQueue>;
@@ -20792,29 +22944,38 @@ export type UpdateTriggerQueuePayloadTriggerQueueEdgeArgs = {
   orderBy?: Maybe<Array<TriggerQueuesOrderBy>>;
 };
 
+/** All input for the `updateTriggerQueueByNodeId` mutation. */
+export type UpdateTriggerQueueByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TriggerQueue` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `TriggerQueue` being updated. */
+  patch: TriggerQueuePatch;
+};
+
 /** All input for the `updateTriggerQueue` mutation. */
 export type UpdateTriggerQueueInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `TriggerQueue` being updated. */
   patch: TriggerQueuePatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateUserByNodeId` mutation. */
-export type UpdateUserByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `User` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `User` being updated. */
-  patch: UserPatch;
-};
-
 /** The output of our update `User` mutation. */
 export type UpdateUserPayload = {
   __typename?: 'UpdateUserPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `User` that was updated by this mutation. */
   user?: Maybe<User>;
@@ -20830,9 +22991,25 @@ export type UpdateUserPayloadUserEdgeArgs = {
   orderBy?: Maybe<Array<UsersOrderBy>>;
 };
 
+/** All input for the `updateUserByNodeId` mutation. */
+export type UpdateUserByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `User` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `User` being updated. */
+  patch: UserPatch;
+};
+
 /** All input for the `updateUser` mutation. */
 export type UpdateUserInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `User` being updated. */
   patch: UserPatch;
@@ -20841,27 +23018,23 @@ export type UpdateUserInput = {
 
 /** All input for the `updateUserByUsername` mutation. */
 export type UpdateUserByUsernameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `User` being updated. */
   patch: UserPatch;
   username: Scalars['String'];
 };
 
-/** All input for the `updateUserOrganisationByNodeId` mutation. */
-export type UpdateUserOrganisationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `UserOrganisation` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `UserOrganisation` being updated. */
-  patch: UserOrganisationPatch;
-};
-
 /** The output of our update `UserOrganisation` mutation. */
 export type UpdateUserOrganisationPayload = {
   __typename?: 'UpdateUserOrganisationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `UserOrganisation` that was updated by this mutation. */
   userOrganisation?: Maybe<UserOrganisation>;
@@ -20881,27 +23054,38 @@ export type UpdateUserOrganisationPayloadUserOrganisationEdgeArgs = {
   orderBy?: Maybe<Array<UserOrganisationsOrderBy>>;
 };
 
+/** All input for the `updateUserOrganisationByNodeId` mutation. */
+export type UpdateUserOrganisationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `UserOrganisation` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `UserOrganisation` being updated. */
+  patch: UserOrganisationPatch;
+};
+
 /** All input for the `updateUserOrganisation` mutation. */
 export type UpdateUserOrganisationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** An object where the defined keys will be set on the `UserOrganisation` being updated. */
   patch: UserOrganisationPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `deleteActionPluginByNodeId` mutation. */
-export type DeleteActionPluginByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ActionPlugin` to be deleted. */
-  nodeId: Scalars['ID'];
-};
-
 /** The output of our delete `ActionPlugin` mutation. */
 export type DeleteActionPluginPayload = {
   __typename?: 'DeleteActionPluginPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ActionPlugin` that was deleted by this mutation. */
   actionPlugin?: Maybe<ActionPlugin>;
@@ -20918,25 +23102,34 @@ export type DeleteActionPluginPayloadActionPluginEdgeArgs = {
   orderBy?: Maybe<Array<ActionPluginsOrderBy>>;
 };
 
-/** All input for the `deleteActionPlugin` mutation. */
-export type DeleteActionPluginInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteActionPluginByNodeId` mutation. */
+export type DeleteActionPluginByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  code: Scalars['String'];
+  /** The globally unique `ID` which will identify a single `ActionPlugin` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteActionQueueByNodeId` mutation. */
-export type DeleteActionQueueByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteActionPlugin` mutation. */
+export type DeleteActionPluginInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ActionQueue` to be deleted. */
-  nodeId: Scalars['ID'];
+  code: Scalars['String'];
 };
 
 /** The output of our delete `ActionQueue` mutation. */
 export type DeleteActionQueuePayload = {
   __typename?: 'DeleteActionQueuePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ActionQueue` that was deleted by this mutation. */
   actionQueue?: Maybe<ActionQueue>;
@@ -20957,25 +23150,34 @@ export type DeleteActionQueuePayloadActionQueueEdgeArgs = {
   orderBy?: Maybe<Array<ActionQueuesOrderBy>>;
 };
 
-/** All input for the `deleteActionQueue` mutation. */
-export type DeleteActionQueueInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteActionQueueByNodeId` mutation. */
+export type DeleteActionQueueByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ActionQueue` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteApplicationByNodeId` mutation. */
-export type DeleteApplicationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteActionQueue` mutation. */
+export type DeleteActionQueueInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Application` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `Application` mutation. */
 export type DeleteApplicationPayload = {
   __typename?: 'DeleteApplicationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Application` that was deleted by this mutation. */
   application?: Maybe<Application>;
@@ -20998,32 +23200,44 @@ export type DeleteApplicationPayloadApplicationEdgeArgs = {
   orderBy?: Maybe<Array<ApplicationsOrderBy>>;
 };
 
+/** All input for the `deleteApplicationByNodeId` mutation. */
+export type DeleteApplicationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Application` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deleteApplication` mutation. */
 export type DeleteApplicationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
 /** All input for the `deleteApplicationBySerial` mutation. */
 export type DeleteApplicationBySerialInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   serial: Scalars['String'];
-};
-
-/** All input for the `deleteApplicationResponseByNodeId` mutation. */
-export type DeleteApplicationResponseByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationResponse` to be deleted. */
-  nodeId: Scalars['ID'];
 };
 
 /** The output of our delete `ApplicationResponse` mutation. */
 export type DeleteApplicationResponsePayload = {
   __typename?: 'DeleteApplicationResponsePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationResponse` that was deleted by this mutation. */
   applicationResponse?: Maybe<ApplicationResponse>;
@@ -21044,25 +23258,34 @@ export type DeleteApplicationResponsePayloadApplicationResponseEdgeArgs = {
   orderBy?: Maybe<Array<ApplicationResponsesOrderBy>>;
 };
 
-/** All input for the `deleteApplicationResponse` mutation. */
-export type DeleteApplicationResponseInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationResponseByNodeId` mutation. */
+export type DeleteApplicationResponseByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ApplicationResponse` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteApplicationSectionByNodeId` mutation. */
-export type DeleteApplicationSectionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationResponse` mutation. */
+export type DeleteApplicationResponseInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationSection` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ApplicationSection` mutation. */
 export type DeleteApplicationSectionPayload = {
   __typename?: 'DeleteApplicationSectionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationSection` that was deleted by this mutation. */
   applicationSection?: Maybe<ApplicationSection>;
@@ -21083,25 +23306,34 @@ export type DeleteApplicationSectionPayloadApplicationSectionEdgeArgs = {
   orderBy?: Maybe<Array<ApplicationSectionsOrderBy>>;
 };
 
-/** All input for the `deleteApplicationSection` mutation. */
-export type DeleteApplicationSectionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationSectionByNodeId` mutation. */
+export type DeleteApplicationSectionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ApplicationSection` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteApplicationStageHistoryByNodeId` mutation. */
-export type DeleteApplicationStageHistoryByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationSection` mutation. */
+export type DeleteApplicationSectionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationStageHistory` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ApplicationStageHistory` mutation. */
 export type DeleteApplicationStageHistoryPayload = {
   __typename?: 'DeleteApplicationStageHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationStageHistory` that was deleted by this mutation. */
   applicationStageHistory?: Maybe<ApplicationStageHistory>;
@@ -21122,25 +23354,34 @@ export type DeleteApplicationStageHistoryPayloadApplicationStageHistoryEdgeArgs 
   orderBy?: Maybe<Array<ApplicationStageHistoriesOrderBy>>;
 };
 
-/** All input for the `deleteApplicationStageHistory` mutation. */
-export type DeleteApplicationStageHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationStageHistoryByNodeId` mutation. */
+export type DeleteApplicationStageHistoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ApplicationStageHistory` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteApplicationStatusHistoryByNodeId` mutation. */
-export type DeleteApplicationStatusHistoryByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationStageHistory` mutation. */
+export type DeleteApplicationStageHistoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ApplicationStatusHistory` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ApplicationStatusHistory` mutation. */
 export type DeleteApplicationStatusHistoryPayload = {
   __typename?: 'DeleteApplicationStatusHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ApplicationStatusHistory` that was deleted by this mutation. */
   applicationStatusHistory?: Maybe<ApplicationStatusHistory>;
@@ -21159,25 +23400,34 @@ export type DeleteApplicationStatusHistoryPayloadApplicationStatusHistoryEdgeArg
   orderBy?: Maybe<Array<ApplicationStatusHistoriesOrderBy>>;
 };
 
-/** All input for the `deleteApplicationStatusHistory` mutation. */
-export type DeleteApplicationStatusHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationStatusHistoryByNodeId` mutation. */
+export type DeleteApplicationStatusHistoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ApplicationStatusHistory` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteElementTypePluginByNodeId` mutation. */
-export type DeleteElementTypePluginByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteApplicationStatusHistory` mutation. */
+export type DeleteApplicationStatusHistoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ElementTypePlugin` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ElementTypePlugin` mutation. */
 export type DeleteElementTypePluginPayload = {
   __typename?: 'DeleteElementTypePluginPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ElementTypePlugin` that was deleted by this mutation. */
   elementTypePlugin?: Maybe<ElementTypePlugin>;
@@ -21194,25 +23444,34 @@ export type DeleteElementTypePluginPayloadElementTypePluginEdgeArgs = {
   orderBy?: Maybe<Array<ElementTypePluginsOrderBy>>;
 };
 
-/** All input for the `deleteElementTypePlugin` mutation. */
-export type DeleteElementTypePluginInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteElementTypePluginByNodeId` mutation. */
+export type DeleteElementTypePluginByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  code: Scalars['String'];
+  /** The globally unique `ID` which will identify a single `ElementTypePlugin` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteFileByNodeId` mutation. */
-export type DeleteFileByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteElementTypePlugin` mutation. */
+export type DeleteElementTypePluginInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `File` to be deleted. */
-  nodeId: Scalars['ID'];
+  code: Scalars['String'];
 };
 
 /** The output of our delete `File` mutation. */
 export type DeleteFilePayload = {
   __typename?: 'DeleteFilePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `File` that was deleted by this mutation. */
   file?: Maybe<File>;
@@ -21235,32 +23494,132 @@ export type DeleteFilePayloadFileEdgeArgs = {
   orderBy?: Maybe<Array<FilesOrderBy>>;
 };
 
+/** All input for the `deleteFileByNodeId` mutation. */
+export type DeleteFileByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `File` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deleteFile` mutation. */
 export type DeleteFileInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
 /** All input for the `deleteFileByUniqueId` mutation. */
 export type DeleteFileByUniqueIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   uniqueId: Scalars['String'];
 };
 
-/** All input for the `deleteNotificationByNodeId` mutation. */
-export type DeleteNotificationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** The output of our delete `Filter` mutation. */
+export type DeleteFilterPayload = {
+  __typename?: 'DeleteFilterPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Notification` to be deleted. */
+  /** The `Filter` that was deleted by this mutation. */
+  filter?: Maybe<Filter>;
+  deletedFilterNodeId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `Filter`. May be used by Relay 1. */
+  filterEdge?: Maybe<FiltersEdge>;
+};
+
+
+/** The output of our delete `Filter` mutation. */
+export type DeleteFilterPayloadFilterEdgeArgs = {
+  orderBy?: Maybe<Array<FiltersOrderBy>>;
+};
+
+/** All input for the `deleteFilterByNodeId` mutation. */
+export type DeleteFilterByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Filter` to be deleted. */
   nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteFilter` mutation. */
+export type DeleteFilterInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+};
+
+/** The output of our delete `LookupTable` mutation. */
+export type DeleteLookupTablePayload = {
+  __typename?: 'DeleteLookupTablePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LookupTable` that was deleted by this mutation. */
+  lookupTable?: Maybe<LookupTable>;
+  deletedLookupTableNodeId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `LookupTable`. May be used by Relay 1. */
+  lookupTableEdge?: Maybe<LookupTablesEdge>;
+};
+
+
+/** The output of our delete `LookupTable` mutation. */
+export type DeleteLookupTablePayloadLookupTableEdgeArgs = {
+  orderBy?: Maybe<Array<LookupTablesOrderBy>>;
+};
+
+/** All input for the `deleteLookupTableByNodeId` mutation. */
+export type DeleteLookupTableByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `LookupTable` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteLookupTable` mutation. */
+export type DeleteLookupTableInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `Notification` mutation. */
 export type DeleteNotificationPayload = {
   __typename?: 'DeleteNotificationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Notification` that was deleted by this mutation. */
   notification?: Maybe<Notification>;
@@ -21285,25 +23644,34 @@ export type DeleteNotificationPayloadNotificationEdgeArgs = {
   orderBy?: Maybe<Array<NotificationsOrderBy>>;
 };
 
-/** All input for the `deleteNotification` mutation. */
-export type DeleteNotificationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteNotificationByNodeId` mutation. */
+export type DeleteNotificationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `Notification` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteOrganisationByNodeId` mutation. */
-export type DeleteOrganisationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteNotification` mutation. */
+export type DeleteNotificationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Organisation` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `Organisation` mutation. */
 export type DeleteOrganisationPayload = {
   __typename?: 'DeleteOrganisationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Organisation` that was deleted by this mutation. */
   organisation?: Maybe<Organisation>;
@@ -21320,39 +23688,54 @@ export type DeleteOrganisationPayloadOrganisationEdgeArgs = {
   orderBy?: Maybe<Array<OrganisationsOrderBy>>;
 };
 
+/** All input for the `deleteOrganisationByNodeId` mutation. */
+export type DeleteOrganisationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Organisation` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deleteOrganisation` mutation. */
 export type DeleteOrganisationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
 /** All input for the `deleteOrganisationByName` mutation. */
 export type DeleteOrganisationByNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
 /** All input for the `deleteOrganisationByRegistration` mutation. */
 export type DeleteOrganisationByRegistrationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   registration: Scalars['String'];
-};
-
-/** All input for the `deletePermissionJoinByNodeId` mutation. */
-export type DeletePermissionJoinByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `PermissionJoin` to be deleted. */
-  nodeId: Scalars['ID'];
 };
 
 /** The output of our delete `PermissionJoin` mutation. */
 export type DeletePermissionJoinPayload = {
   __typename?: 'DeletePermissionJoinPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionJoin` that was deleted by this mutation. */
   permissionJoin?: Maybe<PermissionJoin>;
@@ -21375,25 +23758,34 @@ export type DeletePermissionJoinPayloadPermissionJoinEdgeArgs = {
   orderBy?: Maybe<Array<PermissionJoinsOrderBy>>;
 };
 
-/** All input for the `deletePermissionJoin` mutation. */
-export type DeletePermissionJoinInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deletePermissionJoinByNodeId` mutation. */
+export type DeletePermissionJoinByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `PermissionJoin` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deletePermissionNameByNodeId` mutation. */
-export type DeletePermissionNameByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deletePermissionJoin` mutation. */
+export type DeletePermissionJoinInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `PermissionName` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `PermissionName` mutation. */
 export type DeletePermissionNamePayload = {
   __typename?: 'DeletePermissionNamePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionName` that was deleted by this mutation. */
   permissionName?: Maybe<PermissionName>;
@@ -21412,32 +23804,44 @@ export type DeletePermissionNamePayloadPermissionNameEdgeArgs = {
   orderBy?: Maybe<Array<PermissionNamesOrderBy>>;
 };
 
+/** All input for the `deletePermissionNameByNodeId` mutation. */
+export type DeletePermissionNameByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `PermissionName` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deletePermissionName` mutation. */
 export type DeletePermissionNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
 /** All input for the `deletePermissionNameByName` mutation. */
 export type DeletePermissionNameByNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-};
-
-/** All input for the `deletePermissionPolicyByNodeId` mutation. */
-export type DeletePermissionPolicyByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `PermissionPolicy` to be deleted. */
-  nodeId: Scalars['ID'];
 };
 
 /** The output of our delete `PermissionPolicy` mutation. */
 export type DeletePermissionPolicyPayload = {
   __typename?: 'DeletePermissionPolicyPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `PermissionPolicy` that was deleted by this mutation. */
   permissionPolicy?: Maybe<PermissionPolicy>;
@@ -21454,32 +23858,44 @@ export type DeletePermissionPolicyPayloadPermissionPolicyEdgeArgs = {
   orderBy?: Maybe<Array<PermissionPoliciesOrderBy>>;
 };
 
+/** All input for the `deletePermissionPolicyByNodeId` mutation. */
+export type DeletePermissionPolicyByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `PermissionPolicy` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deletePermissionPolicy` mutation. */
 export type DeletePermissionPolicyInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
 /** All input for the `deletePermissionPolicyByName` mutation. */
 export type DeletePermissionPolicyByNameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-};
-
-/** All input for the `deleteReviewByNodeId` mutation. */
-export type DeleteReviewByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Review` to be deleted. */
-  nodeId: Scalars['ID'];
 };
 
 /** The output of our delete `Review` mutation. */
 export type DeleteReviewPayload = {
   __typename?: 'DeleteReviewPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Review` that was deleted by this mutation. */
   review?: Maybe<Review>;
@@ -21502,25 +23918,34 @@ export type DeleteReviewPayloadReviewEdgeArgs = {
   orderBy?: Maybe<Array<ReviewsOrderBy>>;
 };
 
-/** All input for the `deleteReview` mutation. */
-export type DeleteReviewInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewByNodeId` mutation. */
+export type DeleteReviewByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `Review` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteReviewAssignmentByNodeId` mutation. */
-export type DeleteReviewAssignmentByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReview` mutation. */
+export type DeleteReviewInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewAssignment` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ReviewAssignment` mutation. */
 export type DeleteReviewAssignmentPayload = {
   __typename?: 'DeleteReviewAssignmentPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewAssignment` that was deleted by this mutation. */
   reviewAssignment?: Maybe<ReviewAssignment>;
@@ -21549,25 +23974,34 @@ export type DeleteReviewAssignmentPayloadReviewAssignmentEdgeArgs = {
   orderBy?: Maybe<Array<ReviewAssignmentsOrderBy>>;
 };
 
-/** All input for the `deleteReviewAssignment` mutation. */
-export type DeleteReviewAssignmentInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewAssignmentByNodeId` mutation. */
+export type DeleteReviewAssignmentByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ReviewAssignment` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteReviewAssignmentAssignerJoinByNodeId` mutation. */
-export type DeleteReviewAssignmentAssignerJoinByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewAssignment` mutation. */
+export type DeleteReviewAssignmentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewAssignmentAssignerJoin` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ReviewAssignmentAssignerJoin` mutation. */
 export type DeleteReviewAssignmentAssignerJoinPayload = {
   __typename?: 'DeleteReviewAssignmentAssignerJoinPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewAssignmentAssignerJoin` that was deleted by this mutation. */
   reviewAssignmentAssignerJoin?: Maybe<ReviewAssignmentAssignerJoin>;
@@ -21590,25 +24024,34 @@ export type DeleteReviewAssignmentAssignerJoinPayloadReviewAssignmentAssignerJoi
   orderBy?: Maybe<Array<ReviewAssignmentAssignerJoinsOrderBy>>;
 };
 
-/** All input for the `deleteReviewAssignmentAssignerJoin` mutation. */
-export type DeleteReviewAssignmentAssignerJoinInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewAssignmentAssignerJoinByNodeId` mutation. */
+export type DeleteReviewAssignmentAssignerJoinByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ReviewAssignmentAssignerJoin` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteReviewDecisionByNodeId` mutation. */
-export type DeleteReviewDecisionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewAssignmentAssignerJoin` mutation. */
+export type DeleteReviewAssignmentAssignerJoinInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewDecision` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ReviewDecision` mutation. */
 export type DeleteReviewDecisionPayload = {
   __typename?: 'DeleteReviewDecisionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewDecision` that was deleted by this mutation. */
   reviewDecision?: Maybe<ReviewDecision>;
@@ -21627,25 +24070,34 @@ export type DeleteReviewDecisionPayloadReviewDecisionEdgeArgs = {
   orderBy?: Maybe<Array<ReviewDecisionsOrderBy>>;
 };
 
-/** All input for the `deleteReviewDecision` mutation. */
-export type DeleteReviewDecisionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewDecisionByNodeId` mutation. */
+export type DeleteReviewDecisionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ReviewDecision` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteReviewQuestionAssignmentByNodeId` mutation. */
-export type DeleteReviewQuestionAssignmentByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewDecision` mutation. */
+export type DeleteReviewDecisionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewQuestionAssignment` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ReviewQuestionAssignment` mutation. */
 export type DeleteReviewQuestionAssignmentPayload = {
   __typename?: 'DeleteReviewQuestionAssignmentPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewQuestionAssignment` that was deleted by this mutation. */
   reviewQuestionAssignment?: Maybe<ReviewQuestionAssignment>;
@@ -21666,25 +24118,34 @@ export type DeleteReviewQuestionAssignmentPayloadReviewQuestionAssignmentEdgeArg
   orderBy?: Maybe<Array<ReviewQuestionAssignmentsOrderBy>>;
 };
 
-/** All input for the `deleteReviewQuestionAssignment` mutation. */
-export type DeleteReviewQuestionAssignmentInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewQuestionAssignmentByNodeId` mutation. */
+export type DeleteReviewQuestionAssignmentByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ReviewQuestionAssignment` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteReviewResponseByNodeId` mutation. */
-export type DeleteReviewResponseByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewQuestionAssignment` mutation. */
+export type DeleteReviewQuestionAssignmentInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewResponse` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ReviewResponse` mutation. */
 export type DeleteReviewResponsePayload = {
   __typename?: 'DeleteReviewResponsePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewResponse` that was deleted by this mutation. */
   reviewResponse?: Maybe<ReviewResponse>;
@@ -21713,25 +24174,34 @@ export type DeleteReviewResponsePayloadReviewResponseEdgeArgs = {
   orderBy?: Maybe<Array<ReviewResponsesOrderBy>>;
 };
 
-/** All input for the `deleteReviewResponse` mutation. */
-export type DeleteReviewResponseInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewResponseByNodeId` mutation. */
+export type DeleteReviewResponseByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ReviewResponse` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteReviewStatusHistoryByNodeId` mutation. */
-export type DeleteReviewStatusHistoryByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewResponse` mutation. */
+export type DeleteReviewResponseInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `ReviewStatusHistory` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `ReviewStatusHistory` mutation. */
 export type DeleteReviewStatusHistoryPayload = {
   __typename?: 'DeleteReviewStatusHistoryPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `ReviewStatusHistory` that was deleted by this mutation. */
   reviewStatusHistory?: Maybe<ReviewStatusHistory>;
@@ -21750,31 +24220,42 @@ export type DeleteReviewStatusHistoryPayloadReviewStatusHistoryEdgeArgs = {
   orderBy?: Maybe<Array<ReviewStatusHistoriesOrderBy>>;
 };
 
-/** All input for the `deleteReviewStatusHistory` mutation. */
-export type DeleteReviewStatusHistoryInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewStatusHistoryByNodeId` mutation. */
+export type DeleteReviewStatusHistoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `ReviewStatusHistory` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteTemplateByNodeId` mutation. */
-export type DeleteTemplateByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteReviewStatusHistory` mutation. */
+export type DeleteReviewStatusHistoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Template` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `Template` mutation. */
 export type DeleteTemplatePayload = {
   __typename?: 'DeleteTemplatePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `Template` that was deleted by this mutation. */
   template?: Maybe<Template>;
   deletedTemplateNodeId?: Maybe<Scalars['ID']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
+  /** Reads a single `TemplateCategory` that is related to this `Template`. */
+  templateCategory?: Maybe<TemplateCategory>;
   /** An edge for our `Template`. May be used by Relay 1. */
   templateEdge?: Maybe<TemplatesEdge>;
 };
@@ -21785,25 +24266,34 @@ export type DeleteTemplatePayloadTemplateEdgeArgs = {
   orderBy?: Maybe<Array<TemplatesOrderBy>>;
 };
 
-/** All input for the `deleteTemplate` mutation. */
-export type DeleteTemplateInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplateByNodeId` mutation. */
+export type DeleteTemplateByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `Template` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteTemplateActionByNodeId` mutation. */
-export type DeleteTemplateActionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplate` mutation. */
+export type DeleteTemplateInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateAction` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `TemplateAction` mutation. */
 export type DeleteTemplateActionPayload = {
   __typename?: 'DeleteTemplateActionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateAction` that was deleted by this mutation. */
   templateAction?: Maybe<TemplateAction>;
@@ -21822,25 +24312,78 @@ export type DeleteTemplateActionPayloadTemplateActionEdgeArgs = {
   orderBy?: Maybe<Array<TemplateActionsOrderBy>>;
 };
 
+/** All input for the `deleteTemplateActionByNodeId` mutation. */
+export type DeleteTemplateActionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateAction` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deleteTemplateAction` mutation. */
 export type DeleteTemplateActionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
-/** All input for the `deleteTemplateElementByNodeId` mutation. */
-export type DeleteTemplateElementByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** The output of our delete `TemplateCategory` mutation. */
+export type DeleteTemplateCategoryPayload = {
+  __typename?: 'DeleteTemplateCategoryPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateElement` to be deleted. */
+  /** The `TemplateCategory` that was deleted by this mutation. */
+  templateCategory?: Maybe<TemplateCategory>;
+  deletedTemplateCategoryNodeId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `TemplateCategory`. May be used by Relay 1. */
+  templateCategoryEdge?: Maybe<TemplateCategoriesEdge>;
+};
+
+
+/** The output of our delete `TemplateCategory` mutation. */
+export type DeleteTemplateCategoryPayloadTemplateCategoryEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateCategoriesOrderBy>>;
+};
+
+/** All input for the `deleteTemplateCategoryByNodeId` mutation. */
+export type DeleteTemplateCategoryByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateCategory` to be deleted. */
   nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteTemplateCategory` mutation. */
+export type DeleteTemplateCategoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `TemplateElement` mutation. */
 export type DeleteTemplateElementPayload = {
   __typename?: 'DeleteTemplateElementPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateElement` that was deleted by this mutation. */
   templateElement?: Maybe<TemplateElement>;
@@ -21859,33 +24402,93 @@ export type DeleteTemplateElementPayloadTemplateElementEdgeArgs = {
   orderBy?: Maybe<Array<TemplateElementsOrderBy>>;
 };
 
+/** All input for the `deleteTemplateElementByNodeId` mutation. */
+export type DeleteTemplateElementByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateElement` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deleteTemplateElement` mutation. */
 export type DeleteTemplateElementInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
 /** All input for the `deleteTemplateElementByTemplateCodeAndCode` mutation. */
 export type DeleteTemplateElementByTemplateCodeAndCodeInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   templateCode: Scalars['String'];
   code: Scalars['String'];
 };
 
-/** All input for the `deleteTemplatePermissionByNodeId` mutation. */
-export type DeleteTemplatePermissionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** The output of our delete `TemplateFilterJoin` mutation. */
+export type DeleteTemplateFilterJoinPayload = {
+  __typename?: 'DeleteTemplateFilterJoinPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplatePermission` to be deleted. */
+  /** The `TemplateFilterJoin` that was deleted by this mutation. */
+  templateFilterJoin?: Maybe<TemplateFilterJoin>;
+  deletedTemplateFilterJoinNodeId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `Template` that is related to this `TemplateFilterJoin`. */
+  template?: Maybe<Template>;
+  /** Reads a single `Filter` that is related to this `TemplateFilterJoin`. */
+  templateFilter?: Maybe<Filter>;
+  /** An edge for our `TemplateFilterJoin`. May be used by Relay 1. */
+  templateFilterJoinEdge?: Maybe<TemplateFilterJoinsEdge>;
+};
+
+
+/** The output of our delete `TemplateFilterJoin` mutation. */
+export type DeleteTemplateFilterJoinPayloadTemplateFilterJoinEdgeArgs = {
+  orderBy?: Maybe<Array<TemplateFilterJoinsOrderBy>>;
+};
+
+/** All input for the `deleteTemplateFilterJoinByNodeId` mutation. */
+export type DeleteTemplateFilterJoinByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `TemplateFilterJoin` to be deleted. */
   nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteTemplateFilterJoin` mutation. */
+export type DeleteTemplateFilterJoinInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `TemplatePermission` mutation. */
 export type DeleteTemplatePermissionPayload = {
   __typename?: 'DeleteTemplatePermissionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplatePermission` that was deleted by this mutation. */
   templatePermission?: Maybe<TemplatePermission>;
@@ -21906,25 +24509,34 @@ export type DeleteTemplatePermissionPayloadTemplatePermissionEdgeArgs = {
   orderBy?: Maybe<Array<TemplatePermissionsOrderBy>>;
 };
 
-/** All input for the `deleteTemplatePermission` mutation. */
-export type DeleteTemplatePermissionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplatePermissionByNodeId` mutation. */
+export type DeleteTemplatePermissionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `TemplatePermission` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteTemplateSectionByNodeId` mutation. */
-export type DeleteTemplateSectionByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplatePermission` mutation. */
+export type DeleteTemplatePermissionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateSection` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `TemplateSection` mutation. */
 export type DeleteTemplateSectionPayload = {
   __typename?: 'DeleteTemplateSectionPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateSection` that was deleted by this mutation. */
   templateSection?: Maybe<TemplateSection>;
@@ -21943,25 +24555,34 @@ export type DeleteTemplateSectionPayloadTemplateSectionEdgeArgs = {
   orderBy?: Maybe<Array<TemplateSectionsOrderBy>>;
 };
 
-/** All input for the `deleteTemplateSection` mutation. */
-export type DeleteTemplateSectionInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplateSectionByNodeId` mutation. */
+export type DeleteTemplateSectionByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `TemplateSection` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteTemplateStageByNodeId` mutation. */
-export type DeleteTemplateStageByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplateSection` mutation. */
+export type DeleteTemplateSectionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateStage` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `TemplateStage` mutation. */
 export type DeleteTemplateStagePayload = {
   __typename?: 'DeleteTemplateStagePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateStage` that was deleted by this mutation. */
   templateStage?: Maybe<TemplateStage>;
@@ -21980,25 +24601,34 @@ export type DeleteTemplateStagePayloadTemplateStageEdgeArgs = {
   orderBy?: Maybe<Array<TemplateStagesOrderBy>>;
 };
 
-/** All input for the `deleteTemplateStage` mutation. */
-export type DeleteTemplateStageInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplateStageByNodeId` mutation. */
+export type DeleteTemplateStageByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `TemplateStage` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteTemplateStageReviewLevelByNodeId` mutation. */
-export type DeleteTemplateStageReviewLevelByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplateStage` mutation. */
+export type DeleteTemplateStageInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TemplateStageReviewLevel` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `TemplateStageReviewLevel` mutation. */
 export type DeleteTemplateStageReviewLevelPayload = {
   __typename?: 'DeleteTemplateStageReviewLevelPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TemplateStageReviewLevel` that was deleted by this mutation. */
   templateStageReviewLevel?: Maybe<TemplateStageReviewLevel>;
@@ -22017,25 +24647,34 @@ export type DeleteTemplateStageReviewLevelPayloadTemplateStageReviewLevelEdgeArg
   orderBy?: Maybe<Array<TemplateStageReviewLevelsOrderBy>>;
 };
 
-/** All input for the `deleteTemplateStageReviewLevel` mutation. */
-export type DeleteTemplateStageReviewLevelInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplateStageReviewLevelByNodeId` mutation. */
+export type DeleteTemplateStageReviewLevelByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `TemplateStageReviewLevel` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteTriggerQueueByNodeId` mutation. */
-export type DeleteTriggerQueueByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTemplateStageReviewLevel` mutation. */
+export type DeleteTemplateStageReviewLevelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `TriggerQueue` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `TriggerQueue` mutation. */
 export type DeleteTriggerQueuePayload = {
   __typename?: 'DeleteTriggerQueuePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `TriggerQueue` that was deleted by this mutation. */
   triggerQueue?: Maybe<TriggerQueue>;
@@ -22052,25 +24691,34 @@ export type DeleteTriggerQueuePayloadTriggerQueueEdgeArgs = {
   orderBy?: Maybe<Array<TriggerQueuesOrderBy>>;
 };
 
-/** All input for the `deleteTriggerQueue` mutation. */
-export type DeleteTriggerQueueInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTriggerQueueByNodeId` mutation. */
+export type DeleteTriggerQueueByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  /** The globally unique `ID` which will identify a single `TriggerQueue` to be deleted. */
+  nodeId: Scalars['ID'];
 };
 
-/** All input for the `deleteUserByNodeId` mutation. */
-export type DeleteUserByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+/** All input for the `deleteTriggerQueue` mutation. */
+export type DeleteTriggerQueueInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `User` to be deleted. */
-  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 /** The output of our delete `User` mutation. */
 export type DeleteUserPayload = {
   __typename?: 'DeleteUserPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `User` that was deleted by this mutation. */
   user?: Maybe<User>;
@@ -22087,32 +24735,44 @@ export type DeleteUserPayloadUserEdgeArgs = {
   orderBy?: Maybe<Array<UsersOrderBy>>;
 };
 
+/** All input for the `deleteUserByNodeId` mutation. */
+export type DeleteUserByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `User` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deleteUser` mutation. */
 export type DeleteUserInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
 /** All input for the `deleteUserByUsername` mutation. */
 export type DeleteUserByUsernameInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   username: Scalars['String'];
-};
-
-/** All input for the `deleteUserOrganisationByNodeId` mutation. */
-export type DeleteUserOrganisationByNodeIdInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `UserOrganisation` to be deleted. */
-  nodeId: Scalars['ID'];
 };
 
 /** The output of our delete `UserOrganisation` mutation. */
 export type DeleteUserOrganisationPayload = {
   __typename?: 'DeleteUserOrganisationPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   /** The `UserOrganisation` that was deleted by this mutation. */
   userOrganisation?: Maybe<UserOrganisation>;
@@ -22133,9 +24793,23 @@ export type DeleteUserOrganisationPayloadUserOrganisationEdgeArgs = {
   orderBy?: Maybe<Array<UserOrganisationsOrderBy>>;
 };
 
+/** All input for the `deleteUserOrganisationByNodeId` mutation. */
+export type DeleteUserOrganisationByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `UserOrganisation` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
 /** All input for the `deleteUserOrganisation` mutation. */
 export type DeleteUserOrganisationInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
@@ -22182,6 +24856,19 @@ export type StageFragment = (
 export type TemplateFragment = (
   { __typename?: 'Template' }
   & Pick<Template, 'code' | 'id' | 'name' | 'isLinear' | 'startMessage' | 'submissionMessage'>
+  & { templateCategory?: Maybe<(
+    { __typename?: 'TemplateCategory' }
+    & Pick<TemplateCategory, 'title' | 'icon'>
+  )>, templateFilterJoins: (
+    { __typename?: 'TemplateFilterJoinsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateFilterJoin' }
+      & { templateFilter?: Maybe<(
+        { __typename?: 'Filter' }
+        & Pick<Filter, 'color' | 'icon' | 'query' | 'title' | 'userRole'>
+      )> }
+    )>> }
+  ) }
 );
 
 export type TemplateStageFragment = (
@@ -22799,6 +25486,21 @@ export const TemplateFragmentDoc = gql`
   isLinear
   startMessage
   submissionMessage
+  templateCategory {
+    title
+    icon
+  }
+  templateFilterJoins {
+    nodes {
+      templateFilter {
+        color
+        icon
+        query
+        title
+        userRole
+      }
+    }
+  }
 }
     `;
 export const TemplateStageFragmentDoc = gql`

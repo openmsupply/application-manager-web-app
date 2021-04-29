@@ -116,4 +116,5 @@ export default {
   DATE_YEARS_AGO: 'years ago',
   FOOTER_TEXT: 'Powered by mSupply Application Manager',
   FOOTER_COPYRIGHT: '© 2020',
+  DEFAULT_TEMPLATE_CATEGORY: 'General',
 }

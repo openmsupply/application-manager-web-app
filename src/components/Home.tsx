@@ -5,8 +5,10 @@ import { useUserState } from '../contexts/UserState'
 
 const Home: React.FC = () => {
   const {
-    userState: { currentUser },
+    userState: { currentUser,templatePermissions  },
   } = useUserState()
+
+  console.log(templatePermissions)
   return (
     <div>
       <Label>Hello, {currentUser?.firstName}. Welcome to the Dashboard!</Label>

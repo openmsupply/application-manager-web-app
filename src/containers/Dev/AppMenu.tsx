@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Button, Grid, Icon, Popup } from 'semantic-ui-react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { TemplatesDetails } from '../../utils/types'
+import { TemplateDetails } from '../../utils/types'
 import Loading from '../../components/Loading'
 
 interface AppMenuProps extends RouteComponentProps {
-  templatePermissions: TemplatesDetails
+  templatePermissions: TemplateDetails[]
 }
 
 const AppMenu: React.FC<AppMenuProps> = ({ templatePermissions }) => {
@@ -16,6 +16,7 @@ const AppMenu: React.FC<AppMenuProps> = ({ templatePermissions }) => {
     query: { type },
   } = useRouter()
 
+  console.log(templatePermissions)
   return (
     <Popup
       position="bottom right"
@@ -28,7 +29,7 @@ const AppMenu: React.FC<AppMenuProps> = ({ templatePermissions }) => {
       {templatePermissions ? (
         <Grid divided columns="equal">
           <Grid.Column>
-            {templatePermissions.map(({ name, code, permissions }) => (
+            {templatePermissions.map(({ name, code }) => (
               <Grid.Row key={`app_menu_${name}`}>
                 <Button
                   // basic

@@ -8,5 +8,20 @@ export default gql`
     isLinear
     startMessage
     submissionMessage
+    templateCategory {
+      title
+      icon
+    }
+    templateFilterJoins {
+      nodes {
+        templateFilter {
+          color
+          icon
+          query
+          title
+          userRole
+        }
+      }
+    }
   }
 `

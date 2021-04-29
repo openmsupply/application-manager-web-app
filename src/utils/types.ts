@@ -13,6 +13,7 @@ import {
   TemplateElementCategory,
   User as GraphQLUser,
   Organisation as GraphQLOrg,
+  TemplateFilter,
 } from './generated/graphql'
 
 import { ValidationState } from '../formElementPlugins/types'
@@ -60,7 +61,6 @@ export {
   TemplateDetails,
   TemplateElementState,
   TemplatePermissions,
-  TemplatesDetails,
   UseGetApplicationProps,
   User,
   UseGetReviewStructureForSectionProps,
@@ -400,9 +400,12 @@ interface TemplateDetails {
   id: number
   name: string
   code: string
+  filters?: TemplateFilter[]
+  categoryTitle?: string
   elementsIds?: number[] // TODO: Change to not optional after re-structure
   sections?: SectionDetails[] // TODO: Change to not optional after re-structure
   startMessage?: string
+  permissions?: PermissionPolicyType[]
 }
 
 interface TemplateElementState extends ElementBase {
@@ -414,12 +417,6 @@ interface TemplateElementState extends ElementBase {
 interface TemplatePermissions {
   [index: string]: Array<PermissionPolicyType>
 }
-
-type TemplatesDetails = {
-  permissions: Array<PermissionPolicyType>
-  name: string
-  code: string
-}[]
 
 interface UseGetApplicationProps {
   serialNumber: string
