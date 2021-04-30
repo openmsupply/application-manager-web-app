@@ -10,7 +10,7 @@ import {
   User,
   ApplicationDetails,
 } from '../../types'
-import config from '../../../config.json'
+import config from '../../../config'
 const graphQLEndpoint = config.serverGraphQL
 
 type EvaluationOptions = {

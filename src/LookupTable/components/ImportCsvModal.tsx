@@ -11,7 +11,7 @@ import {
   Message,
 } from 'semantic-ui-react'
 import { LookUpTableImportCsvContext } from '../contexts'
-import config from '../../config.json'
+import config from '../../config'
 import axios from 'axios'
 
 const ImportCsvModal: React.FC<any> = ({

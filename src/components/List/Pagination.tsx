@@ -2,7 +2,7 @@ import React from 'react'
 import { Pagination, Dropdown, Grid } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
 import strings from '../../utils/constants'
-import config from '../../config.json'
+import config from '../../config'
 
 interface PaginationProps {
   totalCount: number

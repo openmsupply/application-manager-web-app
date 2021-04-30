@@ -18,7 +18,7 @@ import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import strings from '../utils/constants'
 import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
 import messages from '../utils/messages'
-import globalConfig from '../config.json'
+import globalConfig from '../config'
 
 const graphQLEndpoint = globalConfig.serverGraphQL
 

@@ -1,4 +1,4 @@
-import * as config from './src/config.json'
+import config from './src/config'
 
 module.exports = {
   client: {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Checkbox } from 'semantic-ui-react'
 import { ApplicationViewProps } from '../../types'
-import config from '../../../config.json'
+import config from '../../../config'
 
 const ApplicationView: React.FC<ApplicationViewProps> = ({
   element,

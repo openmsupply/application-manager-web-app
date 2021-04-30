@@ -1,5 +1,5 @@
 import { Dispatch } from 'react'
-import config from '../../config.json'
+import config from '../../config'
 import { UserActions } from '../../contexts/UserState'
 
 const userInfoUrl = `${config.serverREST}/user-info`

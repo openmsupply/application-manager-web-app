@@ -112,7 +112,7 @@ Our **custom hooks** - exaplained in more detail in the Development sections bel
 - `cache.tsx` - Start the Apollo Cache.
   Also can define some local state to be used within the cache on the root level or as part of any table (@client). Read more [here](https://www.apollographql.com/docs/react/local-state/managing-state-with-field-policies/#storing-local-state-in-the-cache).
 
-- `config.json` - Some global varibles to be used during the configuration of the App. i.e: GraphQL server host.
+- `config.ts` - Some global varibles to be used during the configuration of the App. i.e: GraphQL server host.
 
 `index.tsx` - App start - Just connects the Apollo Cache (from `cache.tsx`), adds semantic-ui for UI and calls the main component: `App.tsx`.
 
