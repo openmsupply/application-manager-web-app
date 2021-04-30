@@ -1,7 +1,7 @@
-import React, { CSSProperties, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Message, Segment, Header, Dropdown, Grid, Button, Icon } from 'semantic-ui-react'
+import React, { useEffect, useState } from 'react'
+import { Message, Segment, Header, Dropdown, Label } from 'semantic-ui-react'
 import { Loading } from '../../components'
+import { Stage } from '../../components/Review'
 import { useUserState } from '../../contexts/UserState'
 import strings from '../../utils/constants'
 import useGetApplicationStructure from '../../utils/hooks/useGetApplicationStructure'
@@ -55,23 +55,13 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
     assignments,
   }
 
-  const {
-    info: { code, name },
-  } = structure
-
   return (
     <>
-      <div style={inlineStyles.top}>
-        <Button as={Link} to={`/applications?type=${code}`} style={inlineStyles.link} icon>
-          <Icon size="large" name="angle left" />
-        </Button>
-        <Header as="h2" style={inlineStyles.title} content={name} />
-      </div>
       <ReviewerAndStageSelection {...reviewerAndStageSelectionProps} />
       {filters &&
         Object.values(fullApplicationStructure.sections).map(({ details: { id, title, code } }) => (
-          <Segment className="stripes" key={id} style={inlineStyles.body}>
-            <Header style={inlineStyles.section} content={title} />
+          <Segment className="stripes" key={id}>
+            <Header as="h5" content={title} />
             <AssignmentSectionRow
               {...{
                 assignments: getFilteredByStage(assignments),
@@ -126,43 +116,38 @@ const ReviewerAndStageSelection: React.FC<ReviewerAndStageSelectionProps> = ({
   if (!filters) return null
 
   const stageOptions = getStageOptions(structure, assignments)
-  const selectedStageText =
-    stageOptions.find((options) => options.key == filters?.selectedStage)?.text || ''
 
   return (
-    <Grid columns="equal">
-      <Grid.Column floated="left">
-        <div style={inlineStyles.assignedFilterContainer}>
-          {`${strings.REVIEW_FILTER_SHOW_TASKS_FOR} `}
-          <Dropdown
-            options={getReviewerOptions(assignments, currentUser?.userId as number)}
-            value={filters?.selectedReviewer}
-            onChange={changeFilters('selectedReviewer')}
-            style={inlineStyles.assignedFilterDropdown}
-          />
-        </div>
-      </Grid.Column>
-      <Grid.Column floated="right" textAlign="right">
-        <div style={inlineStyles.stageFilterContainer}>
-          {`${strings.REVIEW_FILTER_STAGE} `}
-          <Dropdown
-            options={stageOptions}
-            value={filters?.selectedStage}
-            onChange={changeFilters('selectedStage')}
-          />
-        </div>
-      </Grid.Column>
-    </Grid>
+    <div className="section-single-row-box-container" id="review-filters-container">
+      <div className="centered-flex-box-row">
+        <Label className="simple-label" content={strings.REVIEW_FILTER_SHOW_TASKS_FOR} />
+        <Dropdown
+          className="reviewer-dropdown"
+          options={getReviewerOptions(assignments, currentUser?.userId as number)}
+          value={filters?.selectedReviewer}
+          onChange={changeFilters('selectedReviewer')}
+        />
+      </div>
+      <div className="centered-flex-box-row">
+        <Label className="uppercase-label" content={strings.REVIEW_FILTER_STAGE} />
+        <Dropdown
+          options={stageOptions}
+          value={filters?.selectedStage}
+          onChange={changeFilters('selectedStage')}
+        />
+      </div>
+    </div>
   )
 }
 
 const getStageOptions = (structure: FullStructure, assignments: AssignmentDetails[]) =>
   structure.stages
     .filter(({ id }) => assignments.some(({ stage }) => id === stage.id))
-    .map(({ id, title }) => ({
+    .map(({ id, title, colour }) => ({
+      className: 'padding-zero',
       key: id,
       value: id,
-      text: title,
+      text: <Stage name={title} colour={colour || ''} />,
     }))
 
 const getReviewerOptions = (assignments: AssignmentDetails[], currentUserId: number) => {
@@ -170,7 +155,7 @@ const getReviewerOptions = (assignments: AssignmentDetails[], currentUserId: num
     {
       value: ALL_REVIEWERS,
       key: ALL_REVIEWERS,
-      text: strings.REVIEW_FILTER_ALL,
+      text: strings.REVIEW_FILTER_EVERYONE,
     },
     {
       value: currentUserId,
@@ -189,53 +174,6 @@ const getReviewerOptions = (assignments: AssignmentDetails[], currentUserId: num
   })
 
   return reviewerOptions
-}
-
-// Styles - TODO: Move to LESS || Global class style (semantic)
-const inlineStyles = {
-  top: { display: 'flex', alignItems: 'center' } as CSSProperties,
-  link: { background: 'none' } as CSSProperties,
-  title: { padding: 0, margin: 10 } as CSSProperties,
-  body: {
-    borderRadius: 7,
-    boxShadow: 'none',
-    borderWidth: 2,
-    paddingBottom: 30,
-    paddingLeft: 30,
-    paddingRight: 30,
-  } as CSSProperties,
-  section: {
-    fontWeight: 800,
-    paddingBottom: 20,
-  } as CSSProperties,
-  assignedFilterContainer: {
-    marginLeft: 30,
-    display: 'flex',
-    alignItems: 'center',
-    color: 'rgb(120,120, 120)',
-    fontSize: 14,
-    fontWeight: 800,
-  } as CSSProperties,
-  assignedFilterDropdown: {
-    border: '2px solid rgb(150,150, 150)',
-    marginLeft: 10,
-    fontSize: 14,
-    padding: 10,
-    fontWeight: 800,
-    paddingTop: 2,
-    paddingBottom: 2,
-    borderRadius: 4,
-  } as CSSProperties,
-  stageFilterContainer: {
-    marginRight: 30,
-    display: 'flex',
-    alignItems: 'center',
-    color: 'rgb(120,120, 120)',
-    fontSize: 14,
-    fontWeight: 800,
-    textTransform: 'uppercase',
-    justifyContent: 'flex-end',
-  } as CSSProperties,
 }
 
 export default ReviewHome

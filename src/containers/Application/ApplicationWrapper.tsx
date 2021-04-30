@@ -25,7 +25,6 @@ const ApplicationWrapper: React.FC = () => {
     currentUser: currentUser as User,
     networkFetch: true,
   })
-  console.log('template', template)
 
   return error ? (
     <Message error header={strings.ERROR_APPLICATION_PAGE} list={[error]} />

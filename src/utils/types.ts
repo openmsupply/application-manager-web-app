@@ -72,7 +72,7 @@ export {
 
 interface ApplicationDetails {
   id: number
-  code: string
+  template: TemplateDetails
   serial: string
   name: string
   outcome: string
@@ -393,6 +393,7 @@ interface StageDetails {
   number: number
   id: number
   title: string
+  colour?: string
   description?: string
 }
 

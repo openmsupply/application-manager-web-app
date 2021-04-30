@@ -9,6 +9,7 @@ import { FullStructure } from '../../utils/types'
 import strings from '../../utils/constants'
 import ReviewPageWrapper from './ReviewPageWrapper'
 import ReviewHome from './ReviewHome'
+import { ReviewContainer } from '../../components/Review'
 
 interface ReviewWrapperProps {
   structure: FullStructure
@@ -36,17 +37,19 @@ const ReviewWrapper: React.FC<ReviewWrapperProps> = ({ structure }) => {
   if (!assignments || assignments.length === 0) return <NoMatch />
 
   return (
-    <Switch>
-      <Route exact path={path}>
-        <ReviewHome assignments={assignments} structure={structure} />
-      </Route>
-      <Route exact path={`${path}/:reviewId`}>
-        <ReviewPageWrapper {...{ structure, reviewAssignments: assignments }} />
-      </Route>
-      <Route>
-        <NoMatch />
-      </Route>
-    </Switch>
+    <ReviewContainer application={structure.info}>
+      <Switch>
+        <Route exact path={path}>
+          <ReviewHome assignments={assignments} structure={structure} />
+        </Route>
+        <Route exact path={`${path}/:reviewId`}>
+          <ReviewPageWrapper {...{ structure, reviewAssignments: assignments }} />
+        </Route>
+        <Route>
+          <NoMatch />
+        </Route>
+      </Switch>
+    </ReviewContainer>
   )
 }
 

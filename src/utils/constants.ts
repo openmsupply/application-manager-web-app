@@ -90,7 +90,7 @@ export default {
   STATUS_NOT_STARTED: 'Not started',
   REVIEW_STARTED: 'Review started',
   REVIEW_SUBMITTED: 'Review submitted',
-  REVIEW_FILTER_ALL: 'All',
+  REVIEW_FILTER_EVERYONE: 'Everyone',
   REVIEW_FILTER_YOURSELF: 'Yourself',
   REVIEW_FILTER_SHOW_TASKS_FOR: 'Show tasks for',
   REVIEW_FILTER_STAGE: 'Stage',

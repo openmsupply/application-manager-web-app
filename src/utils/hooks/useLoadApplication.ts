@@ -104,7 +104,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
 
     const applicationDetails: ApplicationDetails = {
       id: application.id,
-      code: application.template?.code as string,
+      template: application.template as TemplateDetails,
       isLinear: application.template?.isLinear as boolean,
       serial: application.serial as string,
       name: application.name as string,
@@ -169,6 +169,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
             id: stage.id,
             title: stage.title as string,
             description: stage.description ? stage.description : undefined,
+            colour: stage.colour as string,
           })),
           sections: buildSectionsStructure({ sections, baseElements }),
         }

@@ -1,26 +1,29 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Container, Header, Icon, Label } from 'semantic-ui-react'
-import strings from '../../utils/constants'
+import { useRouter } from '../../utils/hooks/useRouter'
 import { TemplateDetails, User } from '../../utils/types'
-
-export interface AppHeaderProps {
+import strings from '../../utils/constants'
+export interface ApplicationContainerProps {
   template: TemplateDetails
   currentUser: User | null
 }
 
-const ApplicationContainer: React.FC<AppHeaderProps> = ({ template, currentUser, children }) => {
+const ApplicationContainer: React.FC<ApplicationContainerProps> = ({
+  template,
+  currentUser,
+  children,
+}) => {
+  const { replace } = useRouter()
   const { code, name } = template
   return (
-    <Container id="application-area">
+    <Container>
       <div className="top-container">
         <Label
-          className="back-label"
-          as={Link}
-          to={`/applications?type=${code}`}
+          className="back-label clickable"
+          onClick={() => replace(`/applications?type=${code}`)}
           content={
             <>
-              <Icon name="angle left" />
+              <Icon name="angle left" size="large" />
               {`${name} ${strings.LABEL_APPLICATIONS}`}
             </>
           }

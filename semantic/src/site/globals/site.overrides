@@ -204,7 +204,7 @@ a:hover {
 }
 
 /*-----------------------------------
-   Application Wrapper
+   Application/Review Wrappers
 ------------------------------------*/
 
 #content-area .top-container {
@@ -282,6 +282,25 @@ a:hover {
 // Message area segment - bottom of application home/create
 .padding-zero {
   padding: 0;
+}
+
+/*---------------------------------------
+   Review Home page
+----------------------------------------*/
+
+#review-filters-container {
+  color: @headersInteractiveMed;
+  font-size: @fontSmall;
+  font-weight: @semiboldWeight;
+}
+
+.reviewer-dropdown {
+  border: 1px solid @headersInteractiveMed;
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 10px;
+  max-width: 150px;
 }
 
 /*--------------------------------
@@ -373,27 +392,6 @@ a:hover {
 // bar that reflects the current page
 .selected-link {
   font-weight: bold;
-}
-
-.sup .ui.tiny.progress {
-  margin-bottom: 4px !important;
-}
-
-.sup .ui.form .required.fields:not(.grouped) > .field > label:after {
-  color: rgb(248, 248, 248) !important;
-}
-
-/* Table Striping */
-.stripes .ui.grid:nth-child(even) {
-  background: rgb(248, 248, 248);
-}
-
-.stripes .ui.grid:nth-child(even) .stripedlabel {
-  background: white;
-}
-
-.stripes .ui.grid:nth-child(odd) .stripedlabel {
-  background: rgb(248, 248, 248);
 }
 
 /*******************************

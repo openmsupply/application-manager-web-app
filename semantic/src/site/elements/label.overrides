@@ -6,11 +6,16 @@
   font-weight: @semiboldWeight;
 }
 
+// Uppercase label title
+.uppercase-label {
+  background-color: transparent !important;
+  text-transform: uppercase !important;
+}
+
 // Class for coloured "Stage" labels
 .ui.label.stage-label {
   color: white;
   // bg colour defined inline from template setting
-  font-size: @fontXXsmall;
   letter-spacing: 0.81px;
   padding: 4px 10px;
   text-transform: uppercase;
@@ -22,7 +27,10 @@
   background-color: transparent;
   color: @darkGrey;
   font-weight: @regularWeight;
-  font-size: @fontXXsmall;
   height: 20px;
   padding-left: 0;
+}
+
+.ui.label.simple-label > .text-blue {
+  color: blue;
 }
