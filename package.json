@@ -24,7 +24,6 @@
     "@types/deep-equal": "^1.0.1",
     "apollo3-cache-persist": "^0.8.0",
     "deep-equal": "^2.0.5",
-    "axios": "^0.21.1",
     "graphql": "^15.3.0",
     "luxon": "^1.25.0",
     "nanoid": "^3.1.22",
