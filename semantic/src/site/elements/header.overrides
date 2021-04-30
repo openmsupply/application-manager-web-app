@@ -23,6 +23,7 @@
     font-size: @h4;
     font-weight: @semiboldWeight;
     text-transform: uppercase;
+    letter-spacing: @letterSpacingRegular;
     color: @darkGrey;
   }
   h5.ui.header {
@@ -81,6 +82,15 @@
   margin-top: 11px;
   margin-bottom: 16px;
   letter-spacing: @letterSpacingSmall;
+}
+
+// In use for company title in application header (home/create pages)
+.ui.header.heading-alt {
+  letter-spacing: @letterSpacingRegular;
+  font-family: @alternativeFont;
+  font-weight: @regularWeight;
+  text-transform: uppercase;
+  color: @headersInteractiveLow;
 }
 
 // Remove top margin on Steps header on application home/create

@@ -12,7 +12,7 @@ import {
 import { useUserState } from '../contexts/UserState'
 import validate from './defaultValidate'
 import evaluateExpression from '@openmsupply/expression-evaluator'
-import { Form, Icon } from 'semantic-ui-react'
+import { Form, Icon, Loader } from 'semantic-ui-react'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import strings from '../utils/constants'
@@ -179,7 +179,11 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
           margin: 5,
         }}
       >
-        {parametersReady && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
+        {parametersReady ? (
+          <Form.Field required={isRequired}>{PluginComponent}</Form.Field>
+        ) : (
+          <Loader active inline />
+        )}
         <ChangesToResponseWarning {...changesRequired} isValid={isValid} />
       </div>
     )
@@ -188,9 +192,13 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   return (
     <ErrorBoundary pluginCode={pluginCode}>
       <React.Suspense fallback="Loading Plugin">
-        {changesRequired
-          ? getResponseAndBorder()
-          : parametersReady && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
+        {changesRequired ? (
+          getResponseAndBorder()
+        ) : parametersReady ? (
+          <Form.Field required={isRequired}>{PluginComponent}</Form.Field>
+        ) : (
+          <Loader active inline />
+        )}
       </React.Suspense>
     </ErrorBoundary>
   )

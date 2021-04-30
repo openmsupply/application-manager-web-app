@@ -1,5 +1,5 @@
 import {
-  ApplicationHeader,
+  ApplicationContainer,
   ApplicationSections,
   ApplicationSelectType,
   Navigation,
@@ -27,7 +27,7 @@ export {
   Account,
   AdminPermissions,
   AdminUsers,
-  ApplicationHeader,
+  ApplicationContainer,
   ApplicationSections,
   ApplicationSelectType,
   Approval,

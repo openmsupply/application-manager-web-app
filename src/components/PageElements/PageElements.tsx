@@ -45,7 +45,7 @@ const PageElements: React.FC<PageElementProps> = ({
   // Editable Application page
   if (canEdit && !isReview && !isSummary)
     return (
-      <Form>
+      <Form className="form-area">
         {visibleElements.map(
           ({ element, isChangeRequest, isChanged, previousApplicationResponse }) => {
             const currentReview = previousApplicationResponse?.reviewResponses.nodes[0]

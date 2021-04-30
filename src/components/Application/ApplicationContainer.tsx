@@ -9,7 +9,7 @@ export interface AppHeaderProps {
   currentUser: User | null
 }
 
-const ApplicationHeader: React.FC<AppHeaderProps> = ({ template, currentUser, children }) => {
+const ApplicationContainer: React.FC<AppHeaderProps> = ({ template, currentUser, children }) => {
   const { code, name } = template
   return (
     <Container id="application-area">
@@ -29,15 +29,9 @@ const ApplicationHeader: React.FC<AppHeaderProps> = ({ template, currentUser, ch
           {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
         </Header>
       </div>
-      <Container id="application-content">
-        <Header as="h2" textAlign="center">
-          {`${name} ${strings.TITLE_APPLICATION_FORM}`}
-          <Header.Subheader content={<Header as="h3" content={strings.TITLE_INTRODUCTION} />} />
-        </Header>
-        {children}
-      </Container>
+      {children}
     </Container>
   )
 }
 
-export default ApplicationHeader
+export default ApplicationContainer

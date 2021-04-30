@@ -24,6 +24,7 @@ const AppMenu: React.FC<AppMenuProps> = ({ templatePermissions }) => {
       onOpen={() => setIsOpen(true)}
       onClose={() => setIsOpen(false)}
       open={isOpen}
+      style={{ zIndex: 20 }}
     >
       {templatePermissions ? (
         <Grid divided columns="equal">

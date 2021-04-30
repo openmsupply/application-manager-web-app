@@ -112,6 +112,7 @@ a:hover {
   padding-right: 20px;
   height: @headerHeight; // TO-DO: Adjust for mobile
   justify-content: space-between;
+  z-index: 10;
 }
 
 #user-area.ui.container {
@@ -164,6 +165,7 @@ a:hover {
   min-width: 120px;
 }
 
+// Whole content container except Header and Footer
 #content-area {
   padding-top: @headerHeight + 12px;
   padding-right: 12px;
@@ -201,34 +203,43 @@ a:hover {
   margin-left: 10px;
 }
 
-/*--------------------------------
-   Application home & create
----------------------------------*/
-#application-area {
-  display: flex;
-  flex-direction: column;
-  padding-left: 0;
-  padding-right: 0;
-}
+/*-----------------------------------
+   Application Wrapper
+------------------------------------*/
 
-#application-area .top-container {
+#content-area .top-container {
   flex-wrap: wrap;
   justify-content: space-between;
   padding-bottom: 20px;
 }
 
 // Back to application list label
-#application-area .back-label {
+#content-area .back-label {
   min-width: 132px;
   max-width: 350px;
   background-color: transparent;
+  font-size: @fontSmall;
+  color: @black;
+  font-weight: @regularWeight;
 }
 
-// Fix for company header on mobile to not clash wit back to applications
+// Fix for company header on mobile to not clash with 'back to applications'
 @media only screen and (min-width: @tabletBreakpoint) {
-  #application-area .heading-alt {
+  #content-area .heading-alt {
     margin-top: -25px;
   }
+}
+
+/*---------------------------------------
+   Application Home -- Start/Create page
+----------------------------------------*/
+
+#application-home-content {
+  display: flex;
+  flex-direction: column;
+  background-color: @surfacesWhite;
+  width: 800px;
+  padding: 30px 50px 32px;
 }
 
 // Steps line (vertical box - layout)
@@ -306,23 +317,56 @@ a:hover {
 }
 
 /*--------------------------------
+      Application Form area
+---------------------------------*/
+
+.dev-border {
+  // border: 1px solid black;
+  display: inherit;
+}
+
+#application-form {
+  display: flex;
+  flex-direction: column;
+  background-color: @surfacesWhite;
+  width: 800px;
+  padding: 30px 1rem 32px;
+}
+
+#progress-column {
+  max-width: 205px;
+}
+
+#form-column {
+  padding: 0;
+}
+
+// Seperation between Section title and form elements
+.form-area {
+  margin-top: 30px;
+}
+
+#help-column {
+  max-width: 200px;
+}
+
+/*--------------------------------
+      Application Navigation area
+---------------------------------*/
+
+#app-navigation {
+  height: @footerHeight;
+  width: 100%;
+}
+
+/*--------------------------------
       General used classes
 ---------------------------------*/
 
 // In use for ApplicationHeader around all Application pages
-#application-content {
-  width: 800px;
-  display: flex;
-  flex-direction: column;
-  background-color: @surfacesWhite;
-  padding: 30px 50px 32px;
-}
 
-// In use for company title in application header (home/create pages)
-.heading-alt {
-  letter-spacing: @letterSpacingRegular;
-  font-family: @alternativeFont;
-  font-weight: @regularWeight;
+.application-form-width {
+  width: 900px !important;
 }
 
 // Not currently used, but should be appplied to the Link in the menu

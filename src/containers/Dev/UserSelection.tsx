@@ -67,6 +67,7 @@ const UserSelection: React.FC = () => {
       onOpen={() => setIsOpen(true)}
       onClose={() => setIsOpen(false)}
       open={isOpen}
+      style={{ zIndex: 20 }}
     >
       {data ? (
         users ? (

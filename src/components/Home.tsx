@@ -60,7 +60,7 @@ const Home: React.FC = () => {
           <label>Form Label Open Sans, 15px, Semi-bold, #000000</label>
           <input placeholder="Input Open Sans, 15px, #4A4A4A" />
         </Form.Field>
-        <Button primary type="submit" className="wide">
+        <Button primary type="submit" className="button-wide">
           Primary Button
         </Button>
         <Button secondary type="submit">

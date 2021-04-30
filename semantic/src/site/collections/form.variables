@@ -20,3 +20,6 @@
 @inputErrorFocusColor: @black;
 @inputErrorFocusBorder: lighten(@attention, 35);
 @inputErrorFocusBoxShadow: none;
+
+// Form input border
+@inputBorder: 1px solid #777777;

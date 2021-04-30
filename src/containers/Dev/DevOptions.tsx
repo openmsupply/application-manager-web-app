@@ -24,9 +24,9 @@ const DevOptions: React.FC = () => {
 }
 
 const menuStyle = {
-  zIndex: 0,
+  zIndex: 20,
   position: 'fixed',
-  right: 0,
+  right: 15,
   top: 0,
   display: 'flex',
   flexDirection: 'column',

@@ -3,7 +3,7 @@
 *******************************/
 
 // Custom class for wider buttons
-.wide {
+.button-wide {
   min-width: 280px;
 }
 
