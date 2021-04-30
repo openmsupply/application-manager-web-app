@@ -21,6 +21,7 @@ import messages from '../utils/messages'
 import globalConfig from '../config'
 
 const graphQLEndpoint = globalConfig.serverGraphQL
+const restEndpoint = globalConfig.serverREST
 
 const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) => {
   const {
@@ -69,7 +70,12 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   // Update dynamic parameters when responses change
   useEffect(() => {
     evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
-      objects: { responses: allResponses, currentUser, applicationData },
+      objects: {
+        responses: allResponses,
+        currentUser,
+        applicationData,
+        endpoints: { restEndpoint, graphQLEndpoint },
+      },
       APIfetch: fetch,
       graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
     }).then((result: ElementPluginParameters) => {

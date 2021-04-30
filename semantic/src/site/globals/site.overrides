@@ -238,7 +238,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   background-color: @surfacesWhite;
-  width: 800px;
+  width: 100%;
   padding: 30px 50px 32px;
 }
 
@@ -348,7 +348,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   background-color: @surfacesWhite;
-  width: 800px;
+  width: 100%;
   padding: 30px 1rem 32px;
 }
 
