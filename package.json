@@ -14,6 +14,7 @@
     "dev": "webpack-dev-server --env.env=dev",
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production webpack -p --env.env=prod",
+    "postbuild": "copyfiles images/**/* dist",
     "serve": "serve dist",
     "generate": "graphql-codegen --config codegen.yml",
     "push_docs": "exec ./utils/push_docs_to_wiki.sh"
@@ -24,6 +25,7 @@
     "@types/deep-equal": "^1.0.1",
     "apollo3-cache-persist": "^0.8.0",
     "axios": "^0.21.1",
+    "copyfiles": "^2.4.1",
     "css-minimizer-webpack-plugin": "^1.0.0",
     "deep-equal": "^2.0.5",
     "graphql": "^15.3.0",
