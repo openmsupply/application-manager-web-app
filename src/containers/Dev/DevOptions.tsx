@@ -3,6 +3,7 @@ import {
   Button,
   Dropdown,
   Grid,
+  GridColumn,
   Icon,
   Input,
   Label,
@@ -75,6 +76,7 @@ const Snapshots: React.FC = () => {
     name.replace(/[^\w\d]/g, '_')
 
   const takeSnapshot = async (name: string) => {
+    if (!name) return
     setIsOpen(false)
     setIsPortalOpen(true)
     try {
@@ -111,10 +113,10 @@ const Snapshots: React.FC = () => {
     }
   }, [isOpen])
 
-  const renderInner = () => {
-    if (!data) return <NewSnapshot takeSnapshot={takeSnapshot} />
+  const renderSnapshotList = () => {
+    if (!data) return
     return (
-      <Grid.Column>
+      <>
         {data.map((snapshotName) => (
           <Grid.Row key={`app_menu_${snapshotName}`}>
             <div>
@@ -135,16 +137,18 @@ const Snapshots: React.FC = () => {
             </div>
           </Grid.Row>
         ))}
-        <Grid.Row key={`app_menu_record_new_snapshot`}>
-          <NewSnapshot takeSnapshot={takeSnapshot} />
-        </Grid.Row>
-      </Grid.Column>
+      </>
     )
   }
 
-  return (
-    <>
-      <Portal open={isPortalOpen}>
+  const renderLoadingAndError = () => (
+    <Portal open={isPortalOpen}>
+      {isSnapshotError ? (
+        <Button color="red" onClick={() => setIsPortalOpen(false)}>
+          Error
+          <Icon name="close" />
+        </Button>
+      ) : (
         <Segment
           style={{
             left: '40%',
@@ -155,17 +159,22 @@ const Snapshots: React.FC = () => {
             height: 100,
           }}
         >
-          {isSnapshotError ? (
-            <Button icon="close" content="Error" color="red" onClick={() => setIsPortalOpen(false)}>
-              Error
-            </Button>
-          ) : (
-            <Loader active size="small">
-              Loading
-            </Loader>
-          )}
+          <Loader active size="small">
+            Loading
+          </Loader>
         </Segment>
-      </Portal>
+      )}
+    </Portal>
+  )
+
+  const renderNewSnapshot = () => (
+    <Grid.Row key={`app_menu_record_new_snapshot`}>
+      <NewSnapshot takeSnapshot={takeSnapshot} />
+    </Grid.Row>
+  )
+
+  return (
+    <>
       <Popup
         position="bottom right"
         trigger={<Icon name="angle down" style={{ paddingLeft: 10 }} />}
@@ -176,9 +185,13 @@ const Snapshots: React.FC = () => {
         style={{ zIndex: 20 }}
       >
         <Grid textAlign="center" divided columns="equal">
-          <Grid.Column>{renderInner()}</Grid.Column>
+          <GridColumn>
+            {renderSnapshotList()}
+            {renderNewSnapshot()}
+          </GridColumn>
         </Grid>
       </Popup>
+      {renderLoadingAndError()}
     </>
   )
 }
