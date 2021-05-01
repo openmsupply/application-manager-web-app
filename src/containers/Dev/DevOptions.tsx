@@ -70,11 +70,15 @@ const Snapshots: React.FC = () => {
     } catch (e) {}
   }
 
+  const normaliseSnapshotName = (name: string) =>
+    // not word, not digit
+    name.replace(/[^\w\d]/g, '_')
+
   const takeSnapshot = async (name: string) => {
     setIsOpen(false)
     setIsPortalOpen(true)
     try {
-      const resultRaw = await fetch(`${takeSnapshotUrl}?name=${name.replace(/[^a-zA-Z:]/g, '_')}`, {
+      const resultRaw = await fetch(`${takeSnapshotUrl}?name=${normaliseSnapshotName(name)}`, {
         method: 'GET',
       })
       const resultJson = await resultRaw.json()
