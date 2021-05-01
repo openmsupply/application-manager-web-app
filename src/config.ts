@@ -1,7 +1,7 @@
 // for production we get URL relative to web app
 const { port, hostname, protocol } = window.location
 const getUrl = (path: string) => `${protocol}//${hostname}:${port}/${path}`
-const isProductionBuild = process.env.NODE_ENV !== 'production'
+const isProductionBuild = process.env.NODE_ENV === 'production'
 
 const config = {
   serverGraphQL: isProductionBuild
