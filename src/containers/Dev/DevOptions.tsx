@@ -42,7 +42,7 @@ const DevOptions: React.FC = () => {
 const snapshotsBaseUrl = `${config.serverREST}/snapshots`
 const snapshotListUrl = `${snapshotsBaseUrl}/list`
 const takeSnapshotUrl = `${snapshotsBaseUrl}/take`
-const useSnapshotUrl = `${snapshotsBaseUrl}/use/`
+const useSnapshotUrl = `${snapshotsBaseUrl}/use`
 
 const NewSnapshot: React.FC<{ takeSnapshot: (name: string) => void }> = ({ takeSnapshot }) => {
   const [value, setValue] = useState('')
@@ -131,7 +131,7 @@ const Snapshots: React.FC = () => {
                 name="record"
                 onClick={() => takeSnapshot(snapshotName)}
               />
-              <a href={`${config.serverREST}/snapshotZips/${snapshotName}.zip`} target="_blank">
+              <a href={`${config.serverREST}/snapshots/${snapshotName}.zip`} target="_blank">
                 <Icon name="download" onClick={() => console.log('yow')} />
               </a>
             </div>
