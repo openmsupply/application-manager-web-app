@@ -43,10 +43,12 @@ const snapshotsBaseUrl = `${config.serverREST}/snapshots`
 const snapshotListUrl = `${snapshotsBaseUrl}/list`
 const takeSnapshotUrl = `${snapshotsBaseUrl}/take`
 const useSnapshotUrl = `${snapshotsBaseUrl}/use`
-const useUploadSnapshotUrl = `${snapshotsBaseUrl}/upload`
+const uploadSnapshotUrl = `${snapshotsBaseUrl}/upload`
+const diffSnapshotUrl = `${snapshotsBaseUrl}/diff`
 
 const Snapshots: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [compareFrom, setCompareFrom] = useState('')
   const [isPortalOpen, setIsPortalOpen] = useState(false)
   const [isSnapshotError, setIsSnapshotError] = useState(false)
 
@@ -55,6 +57,7 @@ const Snapshots: React.FC = () => {
   useEffect(() => {
     if (isOpen) {
       setData(null)
+      setCompareFrom('')
       getList()
     }
   }, [isOpen])
@@ -85,7 +88,9 @@ const Snapshots: React.FC = () => {
       if (resultJson.success) return setIsPortalOpen(false)
 
       setIsSnapshotError(true)
-    } catch (e) {}
+    } catch (e) {
+      setIsSnapshotError(true)
+    }
   }
 
   const useSnapshot = async (name: string) => {
@@ -100,7 +105,9 @@ const Snapshots: React.FC = () => {
       if (resultJson.success) return setIsPortalOpen(false)
 
       setIsSnapshotError(true)
-    } catch (e) {}
+    } catch (e) {
+      setIsSnapshotError(true)
+    }
   }
 
   const uploadSnapshot = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,7 +122,7 @@ const Snapshots: React.FC = () => {
       const data = new FormData()
       data.append('file', file)
 
-      const resultRaw = await fetch(`${useUploadSnapshotUrl}?name=${snapshotName}`, {
+      const resultRaw = await fetch(`${uploadSnapshotUrl}?name=${snapshotName}`, {
         method: 'POST',
         body: data,
       })
@@ -128,6 +135,7 @@ const Snapshots: React.FC = () => {
   }
 
   const reanderSnapshotList = () => {
+    const compareLinkRef = useRef<HTMLAnchorElement>(null)
     if (!data) return null
     return (
       <>
@@ -135,19 +143,47 @@ const Snapshots: React.FC = () => {
           <Grid.Row key={`app_menu_${snapshotName}`}>
             <div>
               <Label>{snapshotName}</Label>
-              <Icon
-                className="clickable"
-                name="play circle"
-                onClick={() => useSnapshot(snapshotName)}
-              />
-              <Icon
-                className="clickable"
-                name="record"
-                onClick={() => takeSnapshot(snapshotName)}
-              />
-              <a href={`${config.serverREST}/snapshots/${snapshotName}.zip`} target="_blank">
-                <Icon name="download" />
-              </a>
+
+              {compareFrom === '' && (
+                <>
+                  <Icon
+                    className="clickable"
+                    name="play circle"
+                    onClick={() => useSnapshot(snapshotName)}
+                  />
+                  <Icon
+                    className="clickable"
+                    name="record"
+                    onClick={() => takeSnapshot(snapshotName)}
+                  />
+                  <a href={`${config.serverREST}/snapshots/${snapshotName}.zip`} target="_blank">
+                    <Icon name="download" />
+                  </a>
+                  <Icon
+                    className="clickable"
+                    name="random"
+                    onClick={() => setCompareFrom(snapshotName)}
+                  />
+                </>
+              )}
+              {compareFrom !== snapshotName && compareFrom !== '' ? (
+                <>
+                  <a
+                    ref={compareLinkRef}
+                    href={`${diffSnapshotUrl}?from=${compareFrom}&to=${snapshotName}`}
+                    target="_blank"
+                    hidden
+                  ></a>
+                  <Icon
+                    className="clickable"
+                    name="random"
+                    onClick={() => {
+                      setIsOpen(false)
+                      compareLinkRef?.current?.click()
+                    }}
+                  />
+                </>
+              ) : null}
             </div>
           </Grid.Row>
         ))}
@@ -189,7 +225,7 @@ const Snapshots: React.FC = () => {
 
   const newSnapshot = () => {
     const [value, setValue] = useState('')
-
+    if (compareFrom !== '') return null
     return (
       <Grid.Row key={`app_menu_new-snapshot`}>
         <div>
@@ -206,7 +242,7 @@ const Snapshots: React.FC = () => {
 
   const randerUploadSnapshot = () => {
     const fileInputRef = useRef<HTMLInputElement>(null)
-
+    if (compareFrom !== '') return null
     // />
     return (
       <Grid.Row key={`app_menu_upload-snapshot`}>
