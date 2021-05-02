@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useRef, useState } from 'react'
 import {
   Button,
   Dropdown,
@@ -43,17 +43,7 @@ const snapshotsBaseUrl = `${config.serverREST}/snapshots`
 const snapshotListUrl = `${snapshotsBaseUrl}/list`
 const takeSnapshotUrl = `${snapshotsBaseUrl}/take`
 const useSnapshotUrl = `${snapshotsBaseUrl}/use`
-
-const NewSnapshot: React.FC<{ takeSnapshot: (name: string) => void }> = ({ takeSnapshot }) => {
-  const [value, setValue] = useState('')
-
-  return (
-    <div>
-      <Input size="mini" onChange={(_, { value }) => setValue(value)} placeholder="New Snapshot" />
-      <Icon className="clickable" name="record" onClick={() => takeSnapshot(value)} />
-    </div>
-  )
-}
+const useUploadSnapshotUrl = `${snapshotsBaseUrl}/upload`
 
 const Snapshots: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -61,6 +51,13 @@ const Snapshots: React.FC = () => {
   const [isSnapshotError, setIsSnapshotError] = useState(false)
 
   const [data, setData] = useState<string[] | null>(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      setData(null)
+      getList()
+    }
+  }, [isOpen])
 
   const getList = async () => {
     try {
@@ -73,7 +70,7 @@ const Snapshots: React.FC = () => {
 
   const normaliseSnapshotName = (name: string) =>
     // not word, not digit
-    name.replace(/[^\w\d]/g, '_')
+    name.replace(/[^\w\d]/g, '')
 
   const takeSnapshot = async (name: string) => {
     if (!name) return
@@ -106,15 +103,32 @@ const Snapshots: React.FC = () => {
     } catch (e) {}
   }
 
-  useEffect(() => {
-    if (isOpen) {
-      setData(null)
-      getList()
-    }
-  }, [isOpen])
+  const uploadSnapshot = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target?.files) return
 
-  const renderSnapshotList = () => {
-    if (!data) return
+    const file = event.target.files[0]
+    const snapshotName = normaliseSnapshotName(file.name.replace('.zip', ''))
+
+    setIsOpen(false)
+    setIsPortalOpen(true)
+    try {
+      const data = new FormData()
+      data.append('file', file)
+
+      const resultRaw = await fetch(`${useUploadSnapshotUrl}?name=${snapshotName}`, {
+        method: 'POST',
+        body: data,
+      })
+      const resultJson = await resultRaw.json()
+
+      if (resultJson.success) return setIsPortalOpen(false)
+      console.log('setting erro')
+      setIsSnapshotError(true)
+    } catch (e) {}
+  }
+
+  const reanderSnapshotList = () => {
+    if (!data) return null
     return (
       <>
         {data.map((snapshotName) => (
@@ -132,7 +146,7 @@ const Snapshots: React.FC = () => {
                 onClick={() => takeSnapshot(snapshotName)}
               />
               <a href={`${config.serverREST}/snapshots/${snapshotName}.zip`} target="_blank">
-                <Icon name="download" onClick={() => console.log('yow')} />
+                <Icon name="download" />
               </a>
             </div>
           </Grid.Row>
@@ -143,35 +157,75 @@ const Snapshots: React.FC = () => {
 
   const renderLoadingAndError = () => (
     <Portal open={isPortalOpen}>
-      {isSnapshotError ? (
-        <Button color="red" onClick={() => setIsPortalOpen(false)}>
-          Error
-          <Icon name="close" />
-        </Button>
-      ) : (
-        <Segment
-          style={{
-            left: '40%',
-            position: 'fixed',
-            top: '50%',
-            zIndex: 1000,
-            width: 200,
-            height: 100,
-          }}
-        >
+      <Segment
+        style={{
+          left: '40%',
+          position: 'fixed',
+          top: '50%',
+          minWidth: 100,
+          minHeight: 100,
+          zIndex: 1000,
+        }}
+      >
+        {isSnapshotError ? (
+          <Label size="large" color="red">
+            Error{' '}
+            <Icon
+              name="close"
+              onClick={() => {
+                setIsSnapshotError(false)
+                setIsPortalOpen(false)
+              }}
+            />
+          </Label>
+        ) : (
           <Loader active size="small">
             Loading
           </Loader>
-        </Segment>
-      )}
+        )}
+      </Segment>
     </Portal>
   )
 
-  const renderNewSnapshot = () => (
-    <Grid.Row key={`app_menu_record_new_snapshot`}>
-      <NewSnapshot takeSnapshot={takeSnapshot} />
-    </Grid.Row>
-  )
+  const newSnapshot = () => {
+    const [value, setValue] = useState('')
+
+    return (
+      <Grid.Row key={`app_menu_new-snapshot`}>
+        <div>
+          <Input
+            size="mini"
+            onChange={(_, { value }) => setValue(value)}
+            placeholder="New Snapshot"
+          />
+          <Icon className="clickable" name="record" onClick={() => takeSnapshot(value)} />
+        </div>
+      </Grid.Row>
+    )
+  }
+
+  const randerUploadSnapshot = () => {
+    const fileInputRef = useRef<HTMLInputElement>(null)
+
+    // />
+    return (
+      <Grid.Row key={`app_menu_upload-snapshot`}>
+        <Button size="mini" onClick={() => fileInputRef?.current?.click()}>
+          Upload Snapshot {''}
+          <Icon name="upload" />
+        </Button>
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept=".zip"
+          hidden
+          name="file"
+          multiple={false}
+          onChange={(e) => uploadSnapshot(e)}
+        />
+      </Grid.Row>
+    )
+  }
 
   return (
     <>
@@ -186,8 +240,9 @@ const Snapshots: React.FC = () => {
       >
         <Grid textAlign="center" divided columns="equal">
           <GridColumn>
-            {renderSnapshotList()}
-            {renderNewSnapshot()}
+            {newSnapshot()}
+            {reanderSnapshotList()}
+            {randerUploadSnapshot()}
           </GridColumn>
         </Grid>
       </Popup>
