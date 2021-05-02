@@ -58,6 +58,7 @@ const Snapshots: React.FC = () => {
     if (isOpen) {
       setData(null)
       setCompareFrom('')
+      setIsSnapshotError(false)
       getList()
     }
   }, [isOpen])
