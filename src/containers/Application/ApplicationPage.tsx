@@ -6,18 +6,11 @@ import {
   MethodRevalidate,
   ApplicationProps,
 } from '../../utils/types'
-import {
-  ApplicationContainer,
-  Loading,
-  Navigation,
-  PageElements,
-  ProgressBar,
-} from '../../components'
+import { Loading, Navigation, PageElements, ProgressBar } from '../../components'
 import { useUserState } from '../../contexts/UserState'
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { checkPageIsAccessible } from '../../utils/helpers/structure'
 import { useRouter } from '../../utils/hooks/useRouter'
-import strings from '../../utils/constants'
 
 const ApplicationPage: React.FC<ApplicationProps> = ({
   structure: fullStructure,

@@ -119,12 +119,7 @@ const Navigation: React.FC<NavigationProps> = ({
             </Button>
           )}
           {isLastPage ? null : (
-            <Button
-              style={inlineStyles.navButton}
-              icon
-              onClick={nextPageButtonHandler}
-              content={strings.BUTTON_NEXT}
-            >
+            <Button style={inlineStyles.navButton} icon onClick={nextPageButtonHandler}>
               {strings.BUTTON_NEXT} <Icon name="angle right" />
             </Button>
           )}
