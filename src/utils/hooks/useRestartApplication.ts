@@ -19,7 +19,7 @@ const useRestartApplication: UseRestartApplication = (serial) => {
   // During re-submission, we still allow for changed to questions that are not in LOQ, thus re-submitting the whole application
   const constructRestartApplicationPatch: ConstructRestartApplicationPatch = (structure) => {
     const reviewableElements = Object.values(structure.elementsById || {}).filter(
-      (element) => (element.element.category = TemplateElementCategory.Question)
+      (element) => element.element.category === TemplateElementCategory.Question
     )
 
     const applicationResponsesCreate = reviewableElements.map((element) => ({
