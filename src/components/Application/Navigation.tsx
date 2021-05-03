@@ -105,68 +105,26 @@ const Navigation: React.FC<NavigationProps> = ({
   }
 
   return (
-    <Container id="app-navigation" style={inlineStyles.container}>
-      <div style={inlineStyles.layout}>
-        <div style={inlineStyles.left(isFirstPage)}>
-          {isFirstPage ? null : (
-            <Button
-              style={inlineStyles.navButton}
-              icon
-              onClick={previousButtonHandler}
-              content={strings.BUTTON_PREVIOUS}
-            >
-              <Icon name="angle left" /> {strings.BUTTON_PREVIOUS}
-            </Button>
-          )}
-          {isLastPage ? null : (
-            <Button style={inlineStyles.navButton} icon onClick={nextPageButtonHandler}>
-              {strings.BUTTON_NEXT} <Icon name="angle right" />
-            </Button>
-          )}
+    <Container id="app-navigation">
+      <div id="app-navigation-content">
+        <div id="prev-next-links">
+          <p className={`clickable nav-button ${isFirstPage ? 'invisible' : ''}`}>
+            <a onClick={previousButtonHandler}>
+              <Icon name="angle left" />
+              <strong>{strings.BUTTON_PREVIOUS}</strong>
+            </a>
+          </p>
+          <p className={`clickable nav-button ${isLastPage ? 'invisible' : ''}`}>
+            <a onClick={nextPageButtonHandler}>
+              <strong>{strings.BUTTON_NEXT}</strong>
+              <Icon name="angle right" />
+            </a>
+          </p>
         </div>
-        <Button
-          style={inlineStyles.submitButton}
-          color="blue"
-          onClick={summaryButtonHandler}
-          content={strings.BUTTON_SUMMARY}
-        />
+        <Button primary onClick={summaryButtonHandler} content={strings.BUTTON_SUMMARY} />
       </div>
     </Container>
   )
-}
-
-// Styles - TODO: Move to LESS || Global class style (semantic)
-const inlineStyles = {
-  container: {
-    background: 'white',
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    boxShadow: 'rgb(204, 201, 201) 0px -6px 5px -3px',
-    paddingTop: 10,
-    paddingBottom: 10,
-    zIndex: 1000,
-  } as CSSProperties,
-  layout: { display: 'flex', maxWidth: 1127 },
-  left: (isFirstPage: boolean) =>
-    ({
-      flexGrow: 1,
-      display: 'flex',
-      justifyContent: isFirstPage ? 'flex-end' : 'space-between',
-      paddingLeft: 20,
-      paddingRight: 20,
-    } as CSSProperties),
-  navButton: {
-    background: 'none',
-    letterSpacing: 1.4,
-    minWidth: 120,
-    color: '#003BFE',
-    border: 'none',
-    borderRadius: 8,
-    textTransform: 'capitalize',
-  } as CSSProperties,
-  submitButton: { alignSelf: 'flex-end' } as CSSProperties,
 }
 
 export default Navigation

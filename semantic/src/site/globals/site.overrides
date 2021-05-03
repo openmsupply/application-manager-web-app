@@ -41,6 +41,14 @@ a:hover {
   opacity: @hoverOpacity;
 }
 
+.hidden {
+  display: none;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
 /*--------------------------------
    Login page
 ---------------------------------*/
@@ -348,7 +356,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   background-color: @surfacesWhite;
-  width: 100%;
+  width: @applicationFormWidth;
   padding: 30px 1rem 32px;
 }
 
@@ -374,8 +382,41 @@ a:hover {
 ---------------------------------*/
 
 #app-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: @footerHeight;
-  width: 100%;
+  box-shadow: @basicBoxShadow;
+  background: @surfacesWhite;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: @basicBoxShadow;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  z-index: 1000;
+}
+
+#app-navigation-content {
+  display: flex;
+  width: @applicationFormWidth;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+#prev-next-links {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#prev-next-links p {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 10px;
+  padding-right: 20px;
 }
 
 /*--------------------------------

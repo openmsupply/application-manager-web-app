@@ -150,5 +150,8 @@
 @footerHeight: 75px;
 @borderRadius: 8px;
 
+// Widths for various key containers
+@applicationFormWidth: 900px;
+
 // Box shadow -- used in Login form
-@basicBoxShadow: 0 2px 14px 0 rgba(129, 129, 129, 0.25);
+@basicBoxShadow: rgb(204, 201, 201) 0px -3px 10px 0px;
