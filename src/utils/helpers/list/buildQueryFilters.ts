@@ -20,7 +20,36 @@ export default function buildQueryFilters(filters: BasicStringObject) {
   return graphQLfilter
 }
 
+const numberTypes = [
+  'reviewAssignedNotStartedCount',
+  'reviewAssignedCount',
+  'reviewAvailableForSelfAssignmentCount',
+  'reviewDraftCount',
+  'reviewChangeRequestCount',
+  'reviewSubmittedCount',
+  'assignReviewerAssignedCount',
+  'assignReviewersCount',
+  'assignCount',
+]
+
+const getNumberTypes = () => {
+  const numberTypesObject: FilterMap = {}
+  numberTypes.forEach((field) => (numberTypesObject[field] = doNumber(field)))
+  return numberTypesObject
+}
+
+const doNumber = (code: string) => (value: string) => {
+  const [fromNumber, toNumber] = value.split(':')
+  const greaterThanOrEqualTo = fromNumber ? fromNumber : undefined
+  const lessThanOrEqualTo = toNumber ? toNumber : undefined
+  const firstFilter = { [code]: { greaterThanOrEqualTo, lessThanOrEqualTo } }
+
+  return { ...firstFilter }
+}
+
 const mapQueryToFilterField: FilterMap = {
+  ...getNumberTypes(),
+
   type: (value: string) => ({ templateCode: { equalToInsensitive: value } }),
 
   // category -- not yet implemented in schema
@@ -47,7 +76,7 @@ const mapQueryToFilterField: FilterMap = {
   lastActiveDate: (value: string) => {
     const [startDate, endDate] = parseDateString(value)
     console.log('Dates:', startDate, endDate)
-    return { lastActiveDate: { greaterThanOrEqualTo: startDate, lessThan: endDate } }
+    return getDateFilter([startDate, endDate])
   },
 
   // deadlineDate (TBD)
@@ -76,15 +105,30 @@ const inEnumList = (values: string, enumList: any) => ({
     .filter((value) => Object.values(enumList).includes(value)),
 })
 
+const convertRelativeDates = (dateStrings: string[]) =>
+  dateStrings.map((dateString) => {
+    if (!dateString.trim().match(/^[-+\d]+$/g)) return dateString
+    return datePlusDays(Number(dateString))
+  })
+
 const parseDateString = (dateString: string) => {
   if (dateString in mapNamedDates) return mapNamedDates[dateString]
-  const [startDate, endDate] = dateString.split(':')
+  const [startDate, endDate] = convertRelativeDates(dateString.split(':'))
+  console.log(dateString, startDate, endDate)
   if (endDate === undefined)
     // Exact date -- add 1 to cover until start of the next day
     return [startDate, datePlusDays(1, startDate)]
   if (endDate === '') return [startDate, undefined] // No end date boundary
   if (startDate === '') return [undefined, endDate] // No start date boundary
   return [startDate, endDate]
+}
+
+const getDateFilter = (startAndEndDate: (string | undefined)[]) => {
+  const [startDate, endDate] = startAndEndDate
+  const greaterThanOrEqualTo = startDate ? startDate : undefined
+  const lessThan = endDate ? endDate : undefined
+
+  return { lastActiveDate: { greaterThanOrEqualTo, lessThan } }
 }
 
 const datePlusDays = (offset = 0, dateString: string | undefined = undefined) =>

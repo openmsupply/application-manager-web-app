@@ -13,10 +13,13 @@ import {
   TemplateElementCategory,
   User as GraphQLUser,
   Organisation as GraphQLOrg,
+  TemplateFilter,
+  Filter,
 } from './generated/graphql'
 
 import { ValidationState } from '../formElementPlugins/types'
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
+import { SemanticICONS } from 'semantic-ui-react'
 
 export {
   ApplicationDetails,
@@ -60,7 +63,6 @@ export {
   TemplateDetails,
   TemplateElementState,
   TemplatePermissions,
-  TemplatesDetails,
   UseGetApplicationProps,
   User,
   UseGetReviewStructureForSectionProps,
@@ -401,9 +403,13 @@ interface TemplateDetails {
   id: number
   name: string
   code: string
+  filters?: Filter[]
+  categoryTitle?: string
+  categoryIcon?: SemanticICONS
   elementsIds?: number[] // TODO: Change to not optional after re-structure
   sections?: SectionDetails[] // TODO: Change to not optional after re-structure
   startMessage?: string
+  permissions?: PermissionPolicyType[]
 }
 
 interface TemplateElementState extends ElementBase {
@@ -415,12 +421,6 @@ interface TemplateElementState extends ElementBase {
 interface TemplatePermissions {
   [index: string]: Array<PermissionPolicyType>
 }
-
-type TemplatesDetails = {
-  permissions: Array<PermissionPolicyType>
-  name: string
-  code: string
-}[]
 
 interface UseGetApplicationProps {
   serialNumber: string

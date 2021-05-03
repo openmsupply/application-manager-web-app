@@ -12,26 +12,16 @@ import {
   Portal,
   Segment,
 } from 'semantic-ui-react'
-import { useUserState } from '../../contexts/UserState'
-import useListTemplates from '../../utils/hooks/useListTemplates'
 import UserSelection from './UserSelection'
-import AppMenu from './AppMenu'
 import config from '../../config'
 
 const DevOptions: React.FC = () => {
-  const {
-    userState: { isLoading, templatePermissions },
-  } = useUserState()
-
-  const { filteredTemplates } = useListTemplates(templatePermissions, isLoading)
   return (
     <div id="dev-options" style={menuStyle}>
       <Dropdown item icon="user">
         <UserSelection />
       </Dropdown>
-      <Dropdown item icon="map">
-        <AppMenu templatePermissions={filteredTemplates} />
-      </Dropdown>
+
       <Dropdown item icon="file video outline">
         <Snapshots />
       </Dropdown>

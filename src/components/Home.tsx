@@ -1,74 +1,224 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Label, Header, List, Divider, Form, Button } from 'semantic-ui-react'
+
+import { Button, Header, Icon, SemanticCOLORS, SemanticICONS } from 'semantic-ui-react'
 import { useUserState } from '../contexts/UserState'
+import { Filter, PermissionPolicyType } from '../utils/generated/graphql'
+import useListApplications from '../utils/hooks/useListApplications'
+import useListTemplates from '../utils/hooks/useListTemplates'
+import { TemplateDetails } from '../utils/types'
+import Loading from './Loading'
 
 const Home: React.FC = () => {
   const {
-    userState: { currentUser },
+    userState: { currentUser, templatePermissions },
   } = useUserState()
+
+  const { templatesData, loading } = useListTemplates(templatePermissions, false)
+
+  if (loading) return <Loading />
+  console.log(templatePermissions)
+
+  if (!templatesData) return null
+
   return (
-    <div>
-      <Label>Hello, {currentUser?.firstName}. Welcome to the Dashboard!</Label>
-      <Header as="h2">Quick Links (for Dev)</Header>
-      <List>
-        <List.Item>
-          <Link to="/applications">Applications list</Link>
-        </List.Item>
-        <List.Item>
-          <Link to="/application/new?type=Demo">Feature showcase application</Link>
-        </List.Item>
-        <List.Item>
-          <Link to="/application/new?type=UserRegistration">User registration application</Link>
-        </List.Item>
-      </List>
-      <Header as="h1" textAlign="center">
-        Font Styles Reference:
-      </Header>
-      <div className="hide-on-mobile">
-        <Header as="h2">Desktop Headings</Header>
-        <p>Adjust the viewport width to see mobile fonts</p>
-        <Divider />
-        <Header as="h1">H1 Open Sans 36px, Regular, #00000</Header>
-        <Header as="h2">H2 Open Sans 26px, Regular, #00000</Header>
-        <Header as="h3">H3 Open Sans 20px, Regular, #4A4A4A</Header>
-        <Header as="h4">H4 Open Sans 14px, Semibold, #4A4A4A, UPPERCASE</Header>
-        <Header as="h5">H5 Open Sans 15px, Semibold, #4A4A4A</Header>
-        <Header as="h6">H6 Open Sans 13px, Semibold, #4A4A4A</Header>
-      </div>
-      <div className="hide-on-desktop">
-        <Header as="h2">Mobile Headings</Header>
-        <Divider />
-        <Header as="h1">H1 Open Sans 20px, Semibold, #000000</Header>
-        <Header as="h2">H2 Open Sans 16px, Semibold, #000000</Header>
-        <Header as="h3">H3 Open Sans 14px, Medium, #4A4A4A</Header>
-        <Header as="h4">H4 Open Sans 12PX, Semibold, #4A4A4A, UPPERCASE</Header>
-        <Header as="h5">H5 Open Sans 15PX, Semibold, #4A4A4A</Header>
-      </div>
-      <Divider />
-      <p>Paragraph Open Sans, 15px, Regular, #000000</p>
-      <p>
-        <strong>Paragraph-strong Open Sans, 15px, Semi-bold, #000000</strong>
-      </p>
-      <p className="secondary">Secondary Open Sans, 13px, Regular, #000000</p>
-      <p className="small">Small Open Sans 12px, Regular, #000000</p>
-      <p className="small interactive">Small Blue Open Sans, 12px, Regular, #003BFE</p>
-      <p className="attention">Error/Attention Open Sans, 12px, Regular, #FF0082</p>
-      <Divider />
-      <Form>
-        <Form.Field>
-          <label>Form Label Open Sans, 15px, Semi-bold, #000000</label>
-          <input placeholder="Input Open Sans, 15px, #4A4A4A" />
-        </Form.Field>
-        <Button primary type="submit" className="button-wide">
-          Primary Button
-        </Button>
-        <Button secondary type="submit">
-          Secondary Button -- not used
-        </Button>
-      </Form>
+    <div
+      style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}
+    >
+      {Object.entries(templatesData.templatesByCategory).map(
+        ([templateCategoryName, templates]) => (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              alignItems: 'center',
+              margin: 10,
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              {templates[0].categoryIcon && (
+                <Icon size="big" color="grey" name={templates[0].categoryIcon} />
+              )}
+              <Header style={{ margin: 2 }} as="h4">
+                {templateCategoryName}
+              </Header>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {templates.map((template) => (
+                <TemplateComponent template={template} />
+              ))}
+            </div>
+          </div>
+        )
+      )}
     </div>
   )
 }
+
+const matchTemplatePermission = (fromPermission: PermissionPolicyType, toPermission: string) =>
+  String(fromPermission).toLowerCase() === String(toPermission).toLowerCase()
+
+const TemplateComponent: React.FC<{ template: TemplateDetails }> = ({ template }) => {
+  return (
+    <div
+      style={{
+        maxWidth: 300,
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: 10,
+        margin: 15,
+        background: 'white',
+        boxShadow: '0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5',
+      }}
+    >
+      {/* <Roles permissions={template.permissions || []} /> */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyItems: 'center',
+          alignItems: 'start',
+          padding: 10,
+          paddingBottom: 3,
+        }}
+      >
+        <p className="clickable">
+          <strong>{`${template.name}`}</strong>
+        </p>
+        {template?.permissions?.find((permissionType) =>
+          matchTemplatePermission(permissionType, 'apply')
+        ) && (
+          <Button style={{ marginLeft: 10 }} inverted size="small" primary>
+            New
+          </Button>
+        )}
+      </div>
+      {(template.filters?.length || 0 > 0) && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+
+            padding: 3,
+            borderRadius: 5,
+          }}
+        >
+          {template.filters?.map((filter) => (
+            <FilterComponent template={template} filter={filter} />
+          ))}
+        </div>
+      )}
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          textAlign: 'center',
+          maxWidth: '100%',
+          borderTop: '1px solid rgba(0,0,0,.08)',
+          padding: 4,
+        }}
+      >
+        <Link
+          className="view_all_link"
+          style={{ color: 'rgba(0,0,0,.6)', fontWeight: 600 }}
+          to={`/applications?type=${template.code}`}
+        >
+          View All
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+const FilterComponent: React.FC<{ template: TemplateDetails; filter: Filter }> = ({
+  template,
+  filter,
+}) => {
+  const templateType = template.code
+  const { loading, applications } = useListApplications({
+    type: templateType,
+    ...filter.query,
+  })
+
+  const constructLink = () =>
+    `/applications?type=${templateType}&${Object.entries(filter.query)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')}`
+
+  if (loading) return null
+  if (applications.length === 0) return null
+
+  console.log(filter.iconColor)
+  return (
+    <div style={{ display: 'flex', margin: 2 }}>
+      {filter.icon && (
+        <Icon color={filter.iconColor as SemanticCOLORS} name={filter.icon as SemanticICONS} />
+      )}
+
+      <Link to={constructLink()}>{`${applications.length} ${filter.title}`}</Link>
+    </div>
+  )
+}
+
+// const roleList: { tooltip: string; icon: SemanticICONS; role: PermissionPolicyType }[] = [
+//   {
+//     tooltip: 'Can Apply',
+//     icon: 'edit',
+//     role: PermissionPolicyType.Apply,
+//   },
+//   {
+//     tooltip: 'Can Review',
+//     icon: 'gavel',
+//     role: PermissionPolicyType.Review,
+//   },
+//   {
+//     tooltip: 'Can Assign',
+//     icon: 'user plus',
+//     role: PermissionPolicyType.Assign,
+//   },
+// ]
+
+// const Roles: React.FC<{ permissions: PermissionPolicyType[] }> = ({ permissions }) => (
+//   <Label
+//     floating
+//     style={{
+//       left: 'auto',
+//       right: 0,
+//       background: 'none',
+//       top: '-1em',
+//       margin: 0,
+//       padding: 0,
+//     }}
+//   >
+//     {roleList.map((roleInfo) => {
+//       if (!permissions.find((permission) => matchTemplatePermission(permission, roleInfo.role)))
+//         return null
+//       return (
+//         <Popup
+//           content={roleInfo.tooltip}
+//           trigger={
+//             <Icon
+//               name={roleInfo.icon}
+//               circular
+//               style={{ background: 'white', padding: 2, margin: 2, color: 'rgb(120, 120, 120)' }}
+//             />
+//           }
+//         />
+//       )
+//     })}
+//   </Label>
+// )
 
 export default Home
