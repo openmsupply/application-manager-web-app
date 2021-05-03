@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Button, Header, Message, Segment } from 'semantic-ui-react'
 import { FullStructure, StageAndStatus, TemplateDetails } from '../../utils/types'
 import useGetApplicationStructure from '../../utils/hooks/useGetApplicationStructure'
-import { ApplicationContainer, ApplicationSections, Loading } from '../../components'
+import { ApplicationSections, Loading } from '../../components'
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
 import { useRouter } from '../../utils/hooks/useRouter'
@@ -55,7 +55,7 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
     <>
       <ChangesRequestedTitle status={current?.status} isChangeRequest={isChangeRequest} />
       <ApplicationHomeWrapper startMessage={template.startMessage} name={template.name}>
-        <ApplicationSections fullStructure={structure} />
+        <ApplicationSections fullStructure={fullStructure} />
         {current?.status === ApplicationStatus.Draft && !firstStrictInvalidPage && (
           <Segment basic className="padding-zero" textAlign="right">
             <Button as={Link} color="blue" onClick={handleSummaryClicked}>
