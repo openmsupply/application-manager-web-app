@@ -151,7 +151,7 @@
 @borderRadius: 8px;
 
 // Widths for various key containers
-@applicationFormWidth: 900px;
+@applicationFormWidth: 98%;
 
 // Box shadow -- used in Login form
 @basicBoxShadow: rgb(204, 201, 201) 0px -3px 10px 0px;
