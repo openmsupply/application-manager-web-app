@@ -377,5 +377,9 @@ h6:first-child {
 }
 
 .view_all_link:hover {
+    border-top: 1px solid rgba(0,0,255,0.8) !important;
+    color: rgba(0,0,255,0.8) !important;
+}
+.view_all_link:hover i {
     color: rgba(0,0,255,0.8) !important;
 }

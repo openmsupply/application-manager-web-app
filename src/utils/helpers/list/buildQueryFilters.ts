@@ -75,7 +75,6 @@ const mapQueryToFilterField: FilterMap = {
 
   lastActiveDate: (value: string) => {
     const [startDate, endDate] = parseDateString(value)
-    console.log('Dates:', startDate, endDate)
     return getDateFilter([startDate, endDate])
   },
 
@@ -114,7 +113,6 @@ const convertRelativeDates = (dateStrings: string[]) =>
 const parseDateString = (dateString: string) => {
   if (dateString in mapNamedDates) return mapNamedDates[dateString]
   const [startDate, endDate] = convertRelativeDates(dateString.split(':'))
-  console.log(dateString, startDate, endDate)
   if (endDate === undefined)
     // Exact date -- add 1 to cover until start of the next day
     return [startDate, datePlusDays(1, startDate)]

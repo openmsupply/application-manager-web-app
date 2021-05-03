@@ -14,7 +14,6 @@ const DevOptions: React.FC = () => {
     templatesData: { templates, templatesByCategory },
   } = useListTemplates(templatePermissions, isLoading)
 
-  console.log(templatesByCategory)
   return (
     <div id="dev-options" style={menuStyle}>
       <Dropdown item icon="user">

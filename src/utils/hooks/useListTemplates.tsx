@@ -39,7 +39,7 @@ const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: b
       const filteredTemplates = (data?.templates?.nodes || []).filter(
         (template) => templatePermissions[String(template?.code)]
       ) as Template[]
-      if (filteredTemplates.length === 0) return
+      if (filteredTemplates.length === 0) return setLoading(false)
 
       const templates = filteredTemplates.map((template) =>
         convertFromTemplateToTemplateDetails(template, templatePermissions)
@@ -52,7 +52,7 @@ const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: b
 
       setLoading(false)
     }
-  }, [data, apolloError])
+  }, [data, apolloError, templatePermissions])
 
   return {
     error,
