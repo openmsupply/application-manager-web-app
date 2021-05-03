@@ -119,4 +119,9 @@ export default {
   FOOTER_COPYRIGHT: '© 2020',
   DEFAULT_TEMPLATE_CATEGORY_TITLE: 'General',
   DEFAULT_TEMPLATE_CATEGORY_ICON: 'globe',
+  PAGE_TITLE_HOME: 'Dashboard | Application Manager',
+  PAGE_TITLE_LIST: 'Applications List |  Application Manager',
+  PAGE_TITLE_NEW: 'New Application | Application Manager',
+  PAGE_TITLE_APPLICATION: 'Application %1 | Application Manager',
+  PAGE_TITLE_REVIEW: 'Review %1 | Application Manager',
 }

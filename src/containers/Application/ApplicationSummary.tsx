@@ -8,6 +8,7 @@ import { useRouter } from '../../utils/hooks/useRouter'
 import { Loading, SectionWrapper } from '../../components'
 import strings from '../../utils/constants'
 import useQuerySectionActivation from '../../utils/hooks/useQuerySectionActivation'
+import usePageTitle from '../../utils/hooks/usePageTitle'
 
 const ApplicationSummary: React.FC<ApplicationProps> = ({
   structure: fullStructure,
@@ -19,6 +20,8 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
   const {
     userState: { currentUser },
   } = useUserState()
+
+  usePageTitle(strings.PAGE_TITLE_APPLICATION.replace('%1', fullStructure.info.serial))
 
   const { submit } = useSubmitApplication({
     serialNumber: fullStructure?.info.serial as string,

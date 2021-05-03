@@ -6,6 +6,7 @@ import { useUserState } from '../../contexts/UserState'
 import useCreateApplication from '../../utils/hooks/useCreateApplication'
 import useLoadTemplate from '../../utils/hooks/useLoadTemplate'
 import { useRouter } from '../../utils/hooks/useRouter'
+import usePageTitle from '../../utils/hooks/usePageTitle'
 import strings from '../../utils/constants'
 import { SectionsList } from '../../components/Sections'
 import ApplicationHomeWrapper from '../../components/Application/ApplicationHomeWrapper'
@@ -23,6 +24,8 @@ const ApplicationCreate: React.FC = () => {
   const { error, loading, template } = useLoadTemplate({
     templateCode: type,
   })
+
+  usePageTitle(strings.PAGE_TITLE_NEW)
 
   const {
     userState: { currentUser },

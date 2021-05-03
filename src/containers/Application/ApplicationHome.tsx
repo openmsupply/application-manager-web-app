@@ -6,6 +6,7 @@ import { ApplicationContainer, ApplicationSections, Loading } from '../../compon
 import strings from '../../utils/constants'
 import { useUserState } from '../../contexts/UserState'
 import { useRouter } from '../../utils/hooks/useRouter'
+import usePageTitle from '../../utils/hooks/usePageTitle'
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { Link } from 'react-router-dom'
 import messages from '../../utils/messages'
@@ -29,6 +30,8 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
   const { error, fullStructure } = useGetApplicationStructure({
     structure,
   })
+
+  usePageTitle(strings.PAGE_TITLE_APPLICATION.replace('%1', serialNumber))
 
   useEffect(() => {
     if (!fullStructure) return

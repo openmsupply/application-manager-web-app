@@ -57,16 +57,21 @@ export function useRouter(): RouterResult {
     const queryFilters = replaceKebabCaseKeys(queryString.parse(location.search, { sort: false }))
 
     // Add new key-value pairs to existing query string and update URL
-    const updateQuery = (newQueries: { [key: string]: string }) => {
+    const updateQuery = (newQueries: { [key: string]: string }, replace = false) => {
       const newQueryObject = { ...queryFilters }
       Object.entries(newQueries).forEach(([key, value]) => {
         if (!value) {
           delete newQueryObject[key]
         } else newQueryObject[key] = value
       })
-      history.push({
-        search: queryString.stringify(restoreKebabCaseKeys(newQueryObject), { sort: false }),
-      })
+      if (replace)
+        history.replace({
+          search: queryString.stringify(restoreKebabCaseKeys(newQueryObject), { sort: false }),
+        })
+      else
+        history.push({
+          search: queryString.stringify(restoreKebabCaseKeys(newQueryObject), { sort: false }),
+        })
     }
 
     return {

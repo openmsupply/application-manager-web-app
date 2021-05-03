@@ -11,6 +11,8 @@ import { useUserState } from '../../contexts/UserState'
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { checkPageIsAccessible } from '../../utils/helpers/structure'
 import { useRouter } from '../../utils/hooks/useRouter'
+import usePageTitle from '../../utils/hooks/usePageTitle'
+import strings from '../../utils/constants'
 
 const ApplicationPage: React.FC<ApplicationProps> = ({
   structure: fullStructure,
@@ -25,6 +27,8 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
     push,
     replace,
   } = useRouter()
+
+  usePageTitle(strings.PAGE_TITLE_APPLICATION.replace('%1', serialNumber))
 
   const pageNumber = Number(page)
 

@@ -5,6 +5,7 @@ import { Loading, NoMatch } from '../../components'
 import { useUserState } from '../../contexts/UserState'
 import useGetReviewInfo from '../../utils/hooks/useGetReviewInfo'
 import { useRouter } from '../../utils/hooks/useRouter'
+import usePageTitle from '../../utils/hooks/usePageTitle'
 import { FullStructure } from '../../utils/types'
 import strings from '../../utils/constants'
 import ReviewPageWrapper from './ReviewPageWrapper'
@@ -22,6 +23,8 @@ const ReviewWrapper: React.FC<ReviewWrapperProps> = ({ structure }) => {
   const {
     userState: { currentUser },
   } = useUserState()
+
+  usePageTitle(strings.PAGE_TITLE_REVIEW.replace('%1', structure.info.serial))
 
   // I think we need an option to selecte review assgnments where
   // userId is reviewerId or assignerId or both or not match it at all (just by row level permission restrictions)
