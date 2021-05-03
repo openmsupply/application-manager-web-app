@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom'
 import { Header } from 'semantic-ui-react'
 import { CellProps } from '../../../utils/types'
 
-const ApplicationNameCellReviewer: React.FC<CellProps> = ({ application }) => (
+const ApplicationNameCell: React.FC<CellProps> = ({ application }) => (
   <Link
     // size="small"
     // as={Link}
-    to={`/application/${application.serial || 0}/review`}
+    to={`/application/${application.serial || 0}`}
     // content=
   >
     {application.name as string}
   </Link>
 )
 
-export default ApplicationNameCellReviewer
+export default ApplicationNameCell

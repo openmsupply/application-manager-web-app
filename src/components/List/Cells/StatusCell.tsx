@@ -21,13 +21,7 @@ const StatusCell: React.FC<CellProps> = ({ application }) => {
         </Link>
       )
     case ApplicationStatus.Draft:
-      return (
-        <Segment basic textAlign="center">
-          <Progress size="tiny" />
-          <Link to={`/application/${serial}`}>{ACTIONS.EDIT_DRAFT}</Link>
-          <Icon name="trash alternate outline" style={{ marginLeft: 10 }} />
-        </Segment>
-      )
+      return <p>{status}</p>
     case ApplicationStatus.Expired:
       return <Link to={`/application/${serial}/renew`}>{ACTIONS.RENEW}</Link> // TODO: Add Renew page (and logic)
     case ApplicationStatus.ChangesRequired:

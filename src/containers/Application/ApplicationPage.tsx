@@ -54,7 +54,7 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
   const {
     info: { isLinear, current },
   } = fullStructure
-
+  console.log(currentUser)
   return (
     <>
       <Container id="application-form">

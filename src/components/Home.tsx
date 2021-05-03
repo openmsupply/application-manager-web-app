@@ -1,15 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import {
-  Button,
-  Header,
-  Icon,
-  Label,
-  Popup,
-  SemanticCOLORS,
-  SemanticICONS,
-} from 'semantic-ui-react'
+import { Button, Header, Icon, SemanticCOLORS, SemanticICONS } from 'semantic-ui-react'
 import { useUserState } from '../contexts/UserState'
 import { Filter, PermissionPolicyType } from '../utils/generated/graphql'
 import useListApplications from '../utils/hooks/useListApplications'
@@ -215,6 +207,7 @@ const ViewAll: React.FC<{ template: TemplateDetails }> = ({ template }) => {
     if (userRoles.length === 0) return null
     return (
       <Link
+        key={applicationListRole}
         className="view_all_link"
         style={{
           color: 'rgba(0,0,0,.6)',

@@ -11,14 +11,18 @@ const UserArea: React.FC = () => {
   const {
     userState: { currentUser },
   } = useUserState()
-
+  const isRegistered = currentUser?.username !== 'nonRegistered'
   return (
     <Container id="user-area">
-      <div id="user-area-left">
-        <MainMenuBar />
-        {currentUser?.organisation?.orgName && <OrgSelector user={currentUser} />}
-      </div>
-      <UserMenu user={currentUser as User} />
+      {isRegistered && (
+        <>
+          <div id="user-area-left">
+            <MainMenuBar />
+            {currentUser?.organisation?.orgName && <OrgSelector user={currentUser} />}
+          </div>
+          <UserMenu user={currentUser as User} />
+        </>
+      )}
     </Container>
   )
 }
@@ -37,9 +41,6 @@ const MainMenuBar: React.FC = () => {
         </List.Item>
         <List.Item>
           <Link to="/layoutHelpers">Layout Helpers</Link>
-        </List.Item>
-        <List.Item>
-          <Link to="/">Menu Item 2</Link>
         </List.Item>
       </List>
     </div>
@@ -65,13 +66,9 @@ const UserMenu: React.FC<{ user: User }> = ({ user }) => {
   const { logout } = useUserState()
   return (
     <div id="user-menu">
-      <Button animated onClick={() => logout()}>
-        <Button.Content visible>
-          {user?.firstName || ''} {user?.lastName || ''}
-        </Button.Content>
-        <Button.Content hidden>
-          <Icon name="log out" />
-        </Button.Content>
+      <Button onClick={() => logout()}>
+        {user?.firstName || ''} {user?.lastName || ''}
+        <Icon style={{ marginLeft: 4, marginRight: 2 }} size="large" name="log out" />
       </Button>
     </div>
   )

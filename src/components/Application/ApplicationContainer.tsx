@@ -15,23 +15,26 @@ const ApplicationContainer: React.FC<ApplicationContainerProps> = ({
 }) => {
   const { replace } = useRouter()
   const { code, name } = template
+  const isRegistered = currentUser?.username !== 'nonRegistered'
   return (
     <Container>
-      <div className="top-container">
-        <Label
-          className="back-label clickable"
-          onClick={() => replace(`/applications?type=${code}`)}
-          content={
-            <>
-              <Icon name="angle left" size="large" />
-              {`${name} ${strings.LABEL_APPLICATIONS}`}
-            </>
-          }
-        />
-        <Header as="h2" className="heading-alt" textAlign="center">
-          {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
-        </Header>
-      </div>
+      {isRegistered && (
+        <div className="top-container">
+          <Label
+            className="back-label clickable"
+            onClick={() => replace(`/applications?type=${code}`)}
+            content={
+              <>
+                <Icon name="angle left" size="large" />
+                {`${name} ${strings.LABEL_APPLICATIONS}`}
+              </>
+            }
+          />
+          <Header as="h2" className="heading-alt" textAlign="center">
+            {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
+          </Header>
+        </div>
+      )}
       {children}
     </Container>
   )

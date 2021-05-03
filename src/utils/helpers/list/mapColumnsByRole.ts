@@ -2,6 +2,7 @@ import {
   ApplicantActionCell,
   ApplicantCell,
   ApplicationNameCell,
+  ApplicationNameCellReviewer,
   ConsolidatorCell,
   DeadlineCell,
   LastActiveDateCell,
@@ -47,6 +48,11 @@ const allColumns: { [key in APPLICATION_COLUMNS]: ColumnDetails } = {
     headerName: 'Name',
     sortName: 'name',
     ColumnComponent: ApplicationNameCell,
+  },
+  APPLICATION_NAME_REVIEWER: {
+    headerName: 'Name',
+    sortName: 'name',
+    ColumnComponent: ApplicationNameCellReviewer,
   },
   APPLICANT: {
     headerName: 'Applicant',

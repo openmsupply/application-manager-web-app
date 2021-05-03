@@ -1187,7 +1187,6 @@ i.icon.food:before { content: "\f2e7"; }
 i.icon.hourglass.zero:before { content: "\f253"; }
 i.icon.level.down:before { content: "\f3be"; }
 i.icon.level.up:before { content: "\f3bf"; }
-i.icon.logout:before { content: "\f2f5"; }
 i.icon.meanpath:before { content: "\f0c8"; }
 i.icon.money:before { content: "\f3d1"; }
 i.icon.move:before { content: "\f0b2"; }

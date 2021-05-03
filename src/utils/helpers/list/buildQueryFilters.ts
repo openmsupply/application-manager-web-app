@@ -25,6 +25,7 @@ const numberTypes = [
   'reviewAssignedCount',
   'reviewAvailableForSelfAssignmentCount',
   'reviewDraftCount',
+  'reviewPendingCount',
   'reviewChangeRequestCount',
   'reviewSubmittedCount',
   'assignReviewerAssignedCount',
@@ -100,8 +101,8 @@ const inList = (values: string) => ({ inInsensitive: splitCommaList(values) })
 // Use this if the values must conform to an Enum type (e.g. status, outcome)
 const inEnumList = (values: string, enumList: any) => ({
   in: splitCommaList(values)
-    .map((value) => value.toUpperCase())
-    .filter((value) => Object.values(enumList).includes(value)),
+    .map((value) => value.toUpperCase().replace(' ', '_'))
+    .filter((value) => [...Object.values(enumList)].includes(value)),
 })
 
 const convertRelativeDates = (dateStrings: string[]) =>

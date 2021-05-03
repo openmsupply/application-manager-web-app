@@ -10,6 +10,7 @@ import StatusCell from './StatusCell'
 import SerialNumberCell from './SerialNumberCell'
 import OrganisationCell from './OrganisationCell'
 import OutcomeCell from './OutcomeCell'
+import ApplicationNameCellReviewer from './ApplicationNameCell'
 
 export {
   ApplicationNameCell,
@@ -24,4 +25,5 @@ export {
   SerialNumberCell,
   StageCell,
   StatusCell,
+  ApplicationNameCellReviewer,
 }

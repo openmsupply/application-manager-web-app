@@ -70,11 +70,14 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
   if (error) return <Message error header={strings.ERROR_APPLICATION_SUBMIT} list={[error]} />
   if (!fullStructure) return <Loading />
   const { sections, responsesByCode, info } = fullStructure
+  const isRegistered = currentUser?.username !== 'nonRegistered'
   return (
     <Container style={inlineStyles.container}>
-      <Header textAlign="center" style={inlineStyles.header}>
-        {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
-      </Header>
+      {isRegistered && (
+        <Header textAlign="center" style={inlineStyles.header}>
+          {currentUser?.organisation?.orgName || strings.TITLE_NO_ORGANISATION}
+        </Header>
+      )}
       <Segment className="sup" style={inlineStyles.top}>
         <Header
           as="h1"
@@ -143,9 +146,11 @@ const inlineStyles = {
     background: 'white',
     position: 'fixed',
     bottom: 0,
-    left: 0,
-    right: 0,
-    boxShadow: '0px -6px 3px -3px #AAAAAA',
+    left: 'auto',
+    right: 'auto',
+    height: 75,
+    width: 1130,
+    boxShadow: '#ccc9c9 0px -3px 10px 0px',
     paddingTop: 10,
     paddingBottom: 10,
     zIndex: 1000,
