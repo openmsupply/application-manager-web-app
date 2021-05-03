@@ -19,6 +19,7 @@ export type Scalars = {
   Date: any;
   /** A signed eight-byte integer. The upper big integer values are greater than the max value for a JavaScript number. Therefore all big integers will be output as strings and not numbers. */
   BigInt: any;
+  SqlIdentifier: any;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -56,6 +57,8 @@ export type Query = Node & {
   files?: Maybe<FilesConnection>;
   /** Reads and enables pagination through a set of `Filter`. */
   filters?: Maybe<FiltersConnection>;
+  /** Reads and enables pagination through a set of `GeneratedColumn`. */
+  generatedColumns?: Maybe<GeneratedColumnsConnection>;
   /** Reads and enables pagination through a set of `LookupTable`. */
   lookupTables?: Maybe<LookupTablesConnection>;
   /** Reads and enables pagination through a set of `Notification`. */
@@ -411,6 +414,19 @@ export type QueryFiltersArgs = {
   orderBy?: Maybe<Array<FiltersOrderBy>>;
   condition?: Maybe<FilterCondition>;
   filter?: Maybe<FilterFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGeneratedColumnsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<GeneratedColumnsOrderBy>>;
+  condition?: Maybe<GeneratedColumnCondition>;
+  filter?: Maybe<GeneratedColumnFilter>;
 };
 
 
@@ -7641,6 +7657,144 @@ export type FiltersEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `Filter` at the end of the edge. */
   node?: Maybe<Filter>;
+};
+
+/** Methods to use when ordering `GeneratedColumn`. */
+export enum GeneratedColumnsOrderBy {
+  Natural = 'NATURAL',
+  TableNameAsc = 'TABLE_NAME_ASC',
+  TableNameDesc = 'TABLE_NAME_DESC',
+  ColumnNameAsc = 'COLUMN_NAME_ASC',
+  ColumnNameDesc = 'COLUMN_NAME_DESC'
+}
+
+/** A condition to be used against `GeneratedColumn` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type GeneratedColumnCondition = {
+  /** Checks for equality with the object’s `tableName` field. */
+  tableName?: Maybe<Scalars['SqlIdentifier']>;
+  /** Checks for equality with the object’s `columnName` field. */
+  columnName?: Maybe<Scalars['SqlIdentifier']>;
+};
+
+
+/** A filter to be used against `GeneratedColumn` object types. All fields are combined with a logical ‘and.’ */
+export type GeneratedColumnFilter = {
+  /** Filter by the object’s `tableName` field. */
+  tableName?: Maybe<SqlIdentifierFilter>;
+  /** Filter by the object’s `columnName` field. */
+  columnName?: Maybe<SqlIdentifierFilter>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<GeneratedColumnFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<GeneratedColumnFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<GeneratedColumnFilter>;
+};
+
+/** A filter to be used against SqlIdentifier fields. All fields are combined with a logical ‘and.’ */
+export type SqlIdentifierFilter = {
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: Maybe<Scalars['Boolean']>;
+  /** Equal to the specified value. */
+  equalTo?: Maybe<Scalars['SqlIdentifier']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: Maybe<Scalars['SqlIdentifier']>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: Maybe<Scalars['SqlIdentifier']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: Maybe<Scalars['SqlIdentifier']>;
+  /** Included in the specified list. */
+  in?: Maybe<Array<Scalars['SqlIdentifier']>>;
+  /** Not included in the specified list. */
+  notIn?: Maybe<Array<Scalars['SqlIdentifier']>>;
+  /** Less than the specified value. */
+  lessThan?: Maybe<Scalars['SqlIdentifier']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: Maybe<Scalars['SqlIdentifier']>;
+  /** Greater than the specified value. */
+  greaterThan?: Maybe<Scalars['SqlIdentifier']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: Maybe<Scalars['SqlIdentifier']>;
+  /** Contains the specified string (case-sensitive). */
+  includes?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not contain the specified string (case-sensitive). */
+  notIncludes?: Maybe<Scalars['SqlIdentifier']>;
+  /** Contains the specified string (case-insensitive). */
+  includesInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not contain the specified string (case-insensitive). */
+  notIncludesInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Starts with the specified string (case-sensitive). */
+  startsWith?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not start with the specified string (case-sensitive). */
+  notStartsWith?: Maybe<Scalars['SqlIdentifier']>;
+  /** Starts with the specified string (case-insensitive). */
+  startsWithInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not start with the specified string (case-insensitive). */
+  notStartsWithInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Ends with the specified string (case-sensitive). */
+  endsWith?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not end with the specified string (case-sensitive). */
+  notEndsWith?: Maybe<Scalars['SqlIdentifier']>;
+  /** Ends with the specified string (case-insensitive). */
+  endsWithInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not end with the specified string (case-insensitive). */
+  notEndsWithInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Matches the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  like?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not match the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  notLike?: Maybe<Scalars['SqlIdentifier']>;
+  /** Matches the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  likeInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Does not match the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  notLikeInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Equal to the specified value (case-insensitive). */
+  equalToInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Not equal to the specified value (case-insensitive). */
+  notEqualToInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Not equal to the specified value, treating null like an ordinary value (case-insensitive). */
+  distinctFromInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Equal to the specified value, treating null like an ordinary value (case-insensitive). */
+  notDistinctFromInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Included in the specified list (case-insensitive). */
+  inInsensitive?: Maybe<Array<Scalars['SqlIdentifier']>>;
+  /** Not included in the specified list (case-insensitive). */
+  notInInsensitive?: Maybe<Array<Scalars['SqlIdentifier']>>;
+  /** Less than the specified value (case-insensitive). */
+  lessThanInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Less than or equal to the specified value (case-insensitive). */
+  lessThanOrEqualToInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Greater than the specified value (case-insensitive). */
+  greaterThanInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+  /** Greater than or equal to the specified value (case-insensitive). */
+  greaterThanOrEqualToInsensitive?: Maybe<Scalars['SqlIdentifier']>;
+};
+
+/** A connection to a list of `GeneratedColumn` values. */
+export type GeneratedColumnsConnection = {
+  __typename?: 'GeneratedColumnsConnection';
+  /** A list of `GeneratedColumn` objects. */
+  nodes: Array<Maybe<GeneratedColumn>>;
+  /** A list of edges which contains the `GeneratedColumn` and cursor to aid in pagination. */
+  edges: Array<GeneratedColumnsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `GeneratedColumn` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type GeneratedColumn = {
+  __typename?: 'GeneratedColumn';
+  tableName?: Maybe<Scalars['SqlIdentifier']>;
+  columnName?: Maybe<Scalars['SqlIdentifier']>;
+};
+
+/** A `GeneratedColumn` edge in the connection. */
+export type GeneratedColumnsEdge = {
+  __typename?: 'GeneratedColumnsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `GeneratedColumn` at the end of the edge. */
+  node?: Maybe<GeneratedColumn>;
 };
 
 /** Methods to use when ordering `LookupTable`. */
@@ -23853,7 +24007,7 @@ export type TemplateFragment = (
       { __typename?: 'TemplateFilterJoin' }
       & { templateFilter?: Maybe<(
         { __typename?: 'Filter' }
-        & Pick<Filter, 'iconColor' | 'icon' | 'query' | 'title' | 'userRole'>
+        & Pick<Filter, 'id' | 'iconColor' | 'icon' | 'query' | 'title' | 'userRole'>
       )> }
     )>> }
   ) }
@@ -24508,6 +24662,7 @@ export const TemplateFragmentDoc = gql`
   templateFilterJoins {
     nodes {
       templateFilter {
+        id
         iconColor
         icon
         query
