@@ -29,6 +29,7 @@ import { FormElementUpdateTrackerProvider } from '../../contexts/FormElementUpda
 import { LookupTableWrapper } from '../../LookupTable'
 import { Container } from 'semantic-ui-react'
 import DevOptions from '../Dev/DevOptions'
+import LayoutHelpers from '../../components/LayoutHelpers'
 
 const SiteLayout: React.FC = () => {
   return (
@@ -40,6 +41,9 @@ const SiteLayout: React.FC = () => {
           <Switch>
             <Route exact path="/">
               <Home />
+            </Route>
+            <Route exact path="/layoutHelpers">
+              <LayoutHelpers />
             </Route>
             <Route exact path="/login">
               <Login />

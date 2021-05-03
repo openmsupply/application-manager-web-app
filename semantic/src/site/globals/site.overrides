@@ -375,3 +375,7 @@ h6:first-child {
     display: none;
   }
 }
+
+.view_all_link:hover {
+    color: rgba(0,0,255,0.8) !important;
+}

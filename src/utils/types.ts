@@ -14,10 +14,12 @@ import {
   User as GraphQLUser,
   Organisation as GraphQLOrg,
   TemplateFilter,
+  Filter,
 } from './generated/graphql'
 
 import { ValidationState } from '../formElementPlugins/types'
 import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
+import { SemanticICONS } from 'semantic-ui-react'
 
 export {
   ApplicationDetails,
@@ -400,8 +402,9 @@ interface TemplateDetails {
   id: number
   name: string
   code: string
-  filters?: TemplateFilter[]
+  filters?: Filter[]
   categoryTitle?: string
+  categoryIcon?: SemanticICONS
   elementsIds?: number[] // TODO: Change to not optional after re-structure
   sections?: SectionDetails[] // TODO: Change to not optional after re-structure
   startMessage?: string
