@@ -150,8 +150,13 @@ const FilterComponent: React.FC<{ template: TemplateDetails; filter: Filter }> =
     ...filter.query,
   })
 
+  const applicationListUserRole =
+    filter.userRole === PermissionPolicyType.Apply ? 'applicant' : 'reviewer'
+
   const constructLink = () =>
-    `/applications?type=${templateType}&${Object.entries(filter.query)
+    `/applications?type=${templateType}&user-role=${applicationListUserRole}&${Object.entries(
+      filter.query
+    )
       .map(([key, value]) => `${key}=${value}`)
       .join('&')}`
 
