@@ -15,6 +15,7 @@ export default gql`
     templateFilterJoins {
       nodes {
         templateFilter {
+          id
           iconColor
           icon
           query

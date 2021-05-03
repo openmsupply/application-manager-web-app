@@ -16,7 +16,6 @@ const AppMenu: React.FC<AppMenuProps> = ({ templatePermissions }) => {
     query: { type },
   } = useRouter()
 
-  console.log(templatePermissions)
   return (
     <Popup
       position="bottom right"

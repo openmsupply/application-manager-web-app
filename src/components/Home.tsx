@@ -1,7 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button, Header, Icon, SemanticCOLORS, SemanticICONS } from 'semantic-ui-react'
+import {
+  Button,
+  Header,
+  Icon,
+  Label,
+  Popup,
+  SemanticCOLORS,
+  SemanticICONS,
+} from 'semantic-ui-react'
 import { useUserState } from '../contexts/UserState'
 import { Filter, PermissionPolicyType } from '../utils/generated/graphql'
 import useListApplications from '../utils/hooks/useListApplications'
@@ -11,13 +19,12 @@ import Loading from './Loading'
 
 const Home: React.FC = () => {
   const {
-    userState: { currentUser, templatePermissions },
+    userState: { templatePermissions },
   } = useUserState()
 
   const { templatesData, loading } = useListTemplates(templatePermissions, false)
 
   if (loading) return <Loading />
-  console.log(templatePermissions)
 
   if (!templatesData) return null
 
@@ -28,6 +35,7 @@ const Home: React.FC = () => {
       {Object.entries(templatesData.templatesByCategory).map(
         ([templateCategoryName, templates]) => (
           <div
+            key={templateCategoryName}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -55,7 +63,7 @@ const Home: React.FC = () => {
               }}
             >
               {templates.map((template) => (
-                <TemplateComponent template={template} />
+                <TemplateComponent key={template.code} template={template} />
               ))}
             </div>
           </div>
@@ -98,7 +106,14 @@ const TemplateComponent: React.FC<{ template: TemplateDetails }> = ({ template }
         {template?.permissions?.find((permissionType) =>
           matchTemplatePermission(permissionType, 'apply')
         ) && (
-          <Button style={{ marginLeft: 10 }} inverted size="small" primary>
+          <Button
+            style={{ marginLeft: 10 }}
+            inverted
+            size="small"
+            as={Link}
+            to={`/application/new?type=${template.code}`}
+            primary
+          >
             New
           </Button>
         )}
@@ -109,35 +124,17 @@ const TemplateComponent: React.FC<{ template: TemplateDetails }> = ({ template }
             display: 'flex',
             flexDirection: 'column',
             flexGrow: 1,
-
+            margin: 5,
             padding: 3,
             borderRadius: 5,
           }}
         >
           {template.filters?.map((filter) => (
-            <FilterComponent template={template} filter={filter} />
+            <FilterComponent key={filter.id} template={template} filter={filter} />
           ))}
         </div>
       )}
-
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          textAlign: 'center',
-          maxWidth: '100%',
-          borderTop: '1px solid rgba(0,0,0,.08)',
-          padding: 4,
-        }}
-      >
-        <Link
-          className="view_all_link"
-          style={{ color: 'rgba(0,0,0,.6)', fontWeight: 600 }}
-          to={`/applications?type=${template.code}`}
-        >
-          View All
-        </Link>
-      </div>
+      <ViewAll template={template} />
     </div>
   )
 }
@@ -147,8 +144,9 @@ const FilterComponent: React.FC<{ template: TemplateDetails; filter: Filter }> =
   filter,
 }) => {
   const templateType = template.code
-  const { loading, applications } = useListApplications({
+  const { loading, applicationCount } = useListApplications({
     type: templateType,
+    perPage: 1,
     ...filter.query,
   })
 
@@ -158,67 +156,98 @@ const FilterComponent: React.FC<{ template: TemplateDetails; filter: Filter }> =
       .join('&')}`
 
   if (loading) return null
-  if (applications.length === 0) return null
+  if (applicationCount === 0) return null
 
-  console.log(filter.iconColor)
   return (
     <div style={{ display: 'flex', margin: 2 }}>
       {filter.icon && (
         <Icon color={filter.iconColor as SemanticCOLORS} name={filter.icon as SemanticICONS} />
       )}
 
-      <Link to={constructLink()}>{`${applications.length} ${filter.title}`}</Link>
+      <Link to={constructLink()}>{`${applicationCount} ${filter.title}`}</Link>
     </div>
   )
 }
 
-// const roleList: { tooltip: string; icon: SemanticICONS; role: PermissionPolicyType }[] = [
-//   {
-//     tooltip: 'Can Apply',
-//     icon: 'edit',
-//     role: PermissionPolicyType.Apply,
-//   },
-//   {
-//     tooltip: 'Can Review',
-//     icon: 'gavel',
-//     role: PermissionPolicyType.Review,
-//   },
-//   {
-//     tooltip: 'Can Assign',
-//     icon: 'user plus',
-//     role: PermissionPolicyType.Assign,
-//   },
-// ]
+const rolesDisplay: {
+  [key: string]: {
+    tooltip: string
+    icon: SemanticICONS
+  }
+} = {
+  [PermissionPolicyType.Apply]: {
+    tooltip: 'Can Apply',
+    icon: 'edit',
+  },
+  [PermissionPolicyType.Review]: {
+    tooltip: 'Can Review',
+    icon: 'gavel',
+  },
+  [PermissionPolicyType.Assign]: {
+    tooltip: 'Can Assign',
+    icon: 'user plus',
+  },
+}
 
-// const Roles: React.FC<{ permissions: PermissionPolicyType[] }> = ({ permissions }) => (
-//   <Label
-//     floating
-//     style={{
-//       left: 'auto',
-//       right: 0,
-//       background: 'none',
-//       top: '-1em',
-//       margin: 0,
-//       padding: 0,
-//     }}
-//   >
-//     {roleList.map((roleInfo) => {
-//       if (!permissions.find((permission) => matchTemplatePermission(permission, roleInfo.role)))
-//         return null
-//       return (
-//         <Popup
-//           content={roleInfo.tooltip}
-//           trigger={
-//             <Icon
-//               name={roleInfo.icon}
-//               circular
-//               style={{ background: 'white', padding: 2, margin: 2, color: 'rgb(120, 120, 120)' }}
-//             />
-//           }
-//         />
-//       )
-//     })}
-//   </Label>
-// )
+const ViewAll: React.FC<{ template: TemplateDetails }> = ({ template }) => {
+  const permissions = template?.permissions
+
+  const applicantRoles: string[] = []
+  const reviewerRoles: string[] = []
+  const allRoles = [
+    PermissionPolicyType.Apply,
+    PermissionPolicyType.Review,
+    PermissionPolicyType.Assign,
+  ]
+  permissions?.forEach((permission) => {
+    const role = allRoles.find((role) => matchTemplatePermission(permission, role))
+    if (!role) return
+    if (role === PermissionPolicyType.Apply) applicantRoles.push(role)
+    else reviewerRoles.push(role)
+  })
+
+  const renderLink = (userRoles: string[], applicationListRole: string) => {
+    if (userRoles.length === 0) return null
+    return (
+      <Link
+        className="view_all_link"
+        style={{
+          color: 'rgba(0,0,0,.6)',
+          fontWeight: 600,
+          display: 'flex',
+          justifyContent: 'center',
+          textAlign: 'center',
+          flexGrow: 1,
+          borderTop: '1px solid rgba(0,0,0,.08)',
+          padding: 5,
+        }}
+        to={`/applications?type=${template.code}&user-role=${applicationListRole}`}
+      >
+        <div>
+          {userRoles.map((role) => {
+            const roleDisplay = rolesDisplay[role]
+            return (
+              <Icon
+                name={roleDisplay.icon}
+                style={{
+                  paddingRight: 6,
+                  color: 'rgba(0,0,0,.6)',
+                }}
+              />
+            )
+          })}
+          View All
+        </div>
+      </Link>
+    )
+  }
+
+  return (
+    <div style={{ maxWidth: '100%', display: 'flex' }}>
+      {renderLink(applicantRoles, 'applicant')}
+      {renderLink(reviewerRoles, 'reviewer')}
+    </div>
+  )
+}
 
 export default Home
