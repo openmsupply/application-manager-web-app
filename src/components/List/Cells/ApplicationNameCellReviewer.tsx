@@ -7,7 +7,7 @@ const ApplicationNameCell: React.FC<CellProps> = ({ application }) => (
   <Link
     // size="small"
     // as={Link}
-    to={`/application/${application.serial || 0}`}
+    to={`/application/${application.serial || 0}/reviewer`}
     // content=
   >
     {application.name as string}
