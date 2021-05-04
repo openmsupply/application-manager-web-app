@@ -531,3 +531,7 @@ h6:first-child {
 .view_all_link:hover i {
     color: rgba(0,0,255,0.8) !important;
 }
+
+.hide-sticky-at-bottom.bottom {
+  visibility: 'hidden';
+}

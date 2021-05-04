@@ -81,6 +81,10 @@ const mapQueryToFilterField: FilterMap = {
 
   // deadlineDate (TBD)
 
+  isFullyAssignedLevel1: (value: string) => ({
+    isFullyAssignedLevel1: { equalTo: String(value).toLowerCase() === 'true' },
+  }),
+
   search: (value: string) => ({
     or: [
       { name: { includesInsensitive: value } },
