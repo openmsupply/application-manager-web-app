@@ -147,7 +147,6 @@ const ListWrapper: React.FC = () => {
       <div id="list-top">
         <Header as="h2">{query.type}</Header>
         <Search
-          className="flex-grow-1"
           // size="large"
           placeholder={strings.PLACEHOLDER_SEARCH}
           onSearchChange={handleSearchChange}
@@ -155,12 +154,30 @@ const ListWrapper: React.FC = () => {
           open={false}
           value={searchText}
         />
+        <div>I am between search and new application</div>
+        <div style={{ flexGrow: 1 }}></div>
         {query.userRole === 'applicant' ? (
-          <Button as={Link} to={`/application/new?type=${type}`} inverted color="blue">
+          <Button
+            style={{ allignSelf: 'flex-end' }}
+            as={Link}
+            to={`/application/new?type=${type}`}
+            inverted
+            color="blue"
+          >
             <Icon name="plus" size="tiny" color="blue" />
             {strings.BUTTON_APPLICATION_NEW}
           </Button>
         ) : null}
+      </div>
+      <div
+        style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'flex-end' }}
+      >
+        {' '}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {' '}
+          <div> maybe i am a filter</div>
+          <div> maybe i am a filter too</div>
+        </div>
       </div>
       {columns && applicationsRows && (
         <ApplicationsList
