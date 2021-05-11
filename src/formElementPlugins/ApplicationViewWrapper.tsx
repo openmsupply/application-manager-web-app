@@ -66,16 +66,31 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   const dynamicExpressions =
     dynamicParameters && extractDynamicExpressions(dynamicParameters, parameters)
 
+  const placeholderParameters: any = {}
+  dynamicParameters?.map((field: any) => {
+    if (field === 'options') placeholderParameters[field] = ['Loading']
+    else placeholderParameters[field] = 'Loading'
+  })
+
+  useEffect(() => {
+    setEvaluatedParameters(placeholderParameters)
+  }, [])
+
   // Update dynamic parameters when responses change
   useEffect(() => {
-    evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
-      objects: { responses: allResponses, currentUser, applicationData },
-      APIfetch: fetch,
-      graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
-    }).then((result: ElementPluginParameters) => {
-      setEvaluatedParameters(result)
-      setParametersReady(true)
-    })
+    evaluateDynamicParameters(
+      dynamicExpressions as ElementPluginParameters,
+      {
+        objects: { responses: allResponses, currentUser, applicationData },
+        APIfetch: fetch,
+        graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
+      },
+      setEvaluatedParameters
+    )
+    // .then((result: ElementPluginParameters) => {
+    //   setEvaluatedParameters(result)
+    //   setParametersReady(true)
+    // })
   }, [allResponses])
 
   useEffect(() => {
@@ -155,6 +170,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
 
   if (!pluginCode || !isVisible) return null
 
+  console.log('parameters', parameters)
   const PluginComponent = (
     <ApplicationView
       onUpdate={onUpdate}
@@ -202,12 +218,10 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
       <React.Suspense fallback="Loading Plugin">
         {changesRequired ? (
           getResponseAndBorder()
-        ) : parametersReady ? (
+        ) : (
           <Form.Field className="element-application-view" required={isRequired}>
             {PluginComponent}
           </Form.Field>
-        ) : (
-          <Loader active inline />
         )}
       </React.Suspense>
     </ErrorBoundary>
@@ -269,21 +283,24 @@ export const extractDynamicExpressions = (
 
 export const evaluateDynamicParameters = async (
   dynamicExpressions: ElementPluginParameters,
-  evaluatorParameters: EvaluatorParameters
+  evaluatorParameters: EvaluatorParameters,
+  setParameters: Function
 ) => {
   if (!dynamicExpressions) return {}
   const fields = Object.keys(dynamicExpressions)
   const expressions = Object.values(
     dynamicExpressions
   ).map((expression: ElementPluginParameterValue) =>
-    evaluateExpression(expression, evaluatorParameters)
+    evaluateExpression(expression, evaluatorParameters).then((evaluated: any) =>
+      setParameters(evaluated)
+    )
   )
-  const evaluatedExpressions: any = await Promise.all(expressions)
-  const evaluatedParameters: ElementPluginParameters = {}
-  for (let i = 0; i < fields.length; i++) {
-    evaluatedParameters[fields[i]] = evaluatedExpressions[i]
-  }
-  return evaluatedParameters
+  // const evaluatedExpressions: any = await Promise.all(expressions)
+  // const evaluatedParameters: ElementPluginParameters = {}
+  // for (let i = 0; i < fields.length; i++) {
+  //   evaluatedParameters[fields[i]] = evaluatedExpressions[i]
+  // }
+  // return evaluatedParameters
 }
 
 const calculateValidationState = async ({

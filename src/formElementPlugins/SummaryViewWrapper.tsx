@@ -30,17 +30,17 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
   const dynamicExpressions =
     dynamicParameters && extractDynamicExpressions(dynamicParameters, parameters)
 
-  useEffect(() => {
-    // Runs once on component mount
-    evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
-      objects: { responses: allResponses, currentUser, applicationData },
-      APIfetch: fetch,
-      graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
-    }).then((result: ElementPluginParameters) => {
-      setEvaluatedParameters(result)
-      setParametersLoaded(true)
-    })
-  }, [])
+  // useEffect(() => {
+  //   // Runs once on component mount
+  //   evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
+  //     objects: { responses: allResponses, currentUser, applicationData },
+  //     APIfetch: fetch,
+  //     graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
+  //   }).then((result: ElementPluginParameters) => {
+  //     setEvaluatedParameters(result)
+  //     setParametersLoaded(true)
+  //   })
+  // }, [])
   if (!pluginCode || !isVisible) return null
 
   const DefaultSummaryView: React.FC = () => {
