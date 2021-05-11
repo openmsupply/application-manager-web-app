@@ -8,7 +8,11 @@ import {
   Search,
   Grid,
   Header,
+  Image,
   Icon,
+  Dropdown,
+  Input,
+  Checkbox,
 } from 'semantic-ui-react'
 import { FilterList } from '../../components'
 import { useRouter } from '../../utils/hooks/useRouter'
@@ -23,6 +27,7 @@ import { USER_ROLES } from '../../utils/data'
 import { Link } from 'react-router-dom'
 import ApplicationsList from '../../components/List/ApplicationsList'
 import PaginationBar from '../../components/List/Pagination'
+import { ReviewerActionCell } from '../../components/List/Cells'
 
 const ListWrapper: React.FC = () => {
   const { query, updateQuery } = useRouter()
@@ -162,6 +167,7 @@ const ListWrapper: React.FC = () => {
           </Button>
         ) : null}
       </div>
+      <FilterArea />
       {columns && applicationsRows && (
         <ApplicationsList
           columns={columns}
@@ -172,6 +178,460 @@ const ListWrapper: React.FC = () => {
         />
       )}
       <PaginationBar totalCount={applicationCount} />
+    </div>
+  )
+}
+
+type StaticEnumFilterType = {
+  options: { value: string; render?: (removeIcon?: React.ReactNode) => React.ReactNode }[]
+}
+
+type SearchableEnumFilterType = {
+  search: (value: string) => string[]
+}
+
+type FilterType = {
+  type: 'strictEnum' | 'searchableEnum' | 'date' | 'boolean'
+  title: string
+  asStaticEnumFilter: StaticEnumFilterType
+  asSearchableEnumFilter: SearchableEnumFilterType
+}
+
+const options = [
+  {
+    value: 'ASSESMENT',
+    render: (renderIcon: React.ReactNode) => (
+      <Label className="stage-label" style={{ backgroundColor: 'rgb(225, 126, 72)' }}>
+        ASSESMENT
+        {renderIcon && renderIcon}
+      </Label>
+    ),
+  },
+  {
+    value: 'SCREENING',
+    render: (renderIcon: React.ReactNode) => (
+      <Label className="stage-label" style={{ backgroundColor: 'rgb(36, 181, 223)' }}>
+        SCREENING
+        {renderIcon && renderIcon}
+      </Label>
+    ),
+  },
+]
+
+const filters: FilterType[] = [
+  {
+    type: 'strictEnum',
+    title: 'Stage',
+    asStaticEnumFilter: {
+      options,
+    },
+    asSearchableEnumFilter: { search: () => [] },
+  },
+  {
+    type: 'strictEnum',
+    title: 'Status',
+    asStaticEnumFilter: {
+      options: [{ value: 'Submitted' }, { value: 'Draft' }, { value: 'Changes Requested' }],
+    },
+    asSearchableEnumFilter: { search: () => [] },
+  },
+  {
+    type: 'strictEnum',
+    title: 'Actions',
+    asStaticEnumFilter: {
+      options: [{ value: 'Continue' }, { value: 'Self-Assign' }, { value: 'Start' }],
+    },
+    asSearchableEnumFilter: { search: () => [] },
+  },
+  {
+    type: 'searchableEnum',
+    title: 'Reviewer',
+    asStaticEnumFilter: {
+      options: [],
+    },
+    asSearchableEnumFilter: {
+      search: (value) =>
+        [
+          'reviewer1',
+          'reviewer2',
+          'reviewer3',
+          'andrei',
+          'carl',
+          'nicole',
+          'chris',
+          'craig',
+        ].filter((reviewer) => reviewer.match(new RegExp(value, 'g'))),
+    },
+  },
+  {
+    type: 'searchableEnum',
+    title: 'Assigner',
+    asStaticEnumFilter: {
+      options: [],
+    },
+    asSearchableEnumFilter: {
+      search: (value) =>
+        [
+          'reviewer1',
+          'reviewer2',
+          'reviewer3',
+          'andrei',
+          'carl',
+          'nicole',
+          'chris',
+          'craig',
+        ].filter((reviewer) => reviewer.match(new RegExp(value, 'g'))),
+    },
+  },
+  {
+    type: 'date',
+    title: 'Last Active',
+    asStaticEnumFilter: {
+      options: [],
+    },
+    asSearchableEnumFilter: {
+      search: (value) => [],
+    },
+  },
+  {
+    type: 'date',
+    title: 'First Submission',
+    asStaticEnumFilter: {
+      options: [],
+    },
+    asSearchableEnumFilter: {
+      search: (value) => [],
+    },
+  },
+  {
+    type: 'boolean',
+    title: 'Is Fully Assigned',
+    asStaticEnumFilter: {
+      options: [],
+    },
+    asSearchableEnumFilter: {
+      search: (value) => [],
+    },
+  },
+]
+
+const FilterArea: React.FC = () => {
+  const [selectedFilters, setSelectedFilter] = useState<string[]>([])
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+      <Dropdown
+        className="user-action clickable"
+        as="a"
+        color="blue"
+        icon="filter"
+        text="Add Filter"
+      >
+        <Dropdown.Menu>
+          {filters
+            .filter(
+              ({ title }) => !selectedFilters.find((selectedFilter) => selectedFilter === title)
+            )
+            .map(({ title }) => (
+              <Dropdown.Item
+                key={title}
+                onClick={() => {
+                  setSelectedFilter([...selectedFilters, title])
+                }}
+              >
+                {title}
+              </Dropdown.Item>
+            ))}
+        </Dropdown.Menu>
+      </Dropdown>
+
+      {filters
+        .filter(({ title }) => selectedFilters.find((selectedFilter) => selectedFilter === title))
+        .map((filter) => {
+          if (filter.type === 'strictEnum') {
+            return (
+              <EnumFilter
+                key={filter.title}
+                title={filter.title}
+                enumFilter={filter.asStaticEnumFilter}
+                onRemove={() => {
+                  setSelectedFilter(
+                    selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                  )
+                }}
+              />
+            )
+          }
+
+          if (filter.type === 'searchableEnum') {
+            return (
+              <SearchableEnumFilter
+                key={filter.title}
+                title={filter.title}
+                searchableFilter={filter.asSearchableEnumFilter}
+                onRemove={() => {
+                  setSelectedFilter(
+                    selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                  )
+                }}
+              />
+            )
+          }
+          if (filter.type === 'boolean') {
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: 10,
+                  marginRight: 10,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginRight: 3,
+                  }}
+                  className="clickable"
+                  onClick={() => {
+                    setSelectedFilter(
+                      selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                    )
+                  }}
+                >
+                  <div>Is Fully Assigned</div>{' '}
+                  <Icon style={{ marginTop: 0, marginBottom: 0 }} name="delete" />
+                </div>
+                <Checkbox toggle />
+              </div>
+            )
+          }
+          if (filter.type === 'date') {
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: 10,
+                  marginRight: 10,
+                }}
+              >
+                <Dropdown text={filter.title} style={{ fontWeight: 'none' }} inline>
+                  <Dropdown.Menu>
+                    <Dropdown.Header
+                      className="clickable"
+                      onClick={() => {
+                        setSelectedFilter(
+                          selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                        )
+                      }}
+                    >
+                      REMOVE FILTER
+                      <Icon name="delete" />{' '}
+                    </Dropdown.Header>
+                    <Dropdown.Divider />
+                    <Dropdown.Item>
+                      <Dropdown text="Select from Calendar" icon="calendar outline">
+                        <Dropdown.Menu>
+                          <Dropdown.Header>
+                            <Image src="/images/datepicker.png" />
+                          </Dropdown.Header>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item>Last Week</Dropdown.Item>
+                    <Dropdown.Item>Older Then Last Week</Dropdown.Item>
+                    <Dropdown.Item>More Then Two Weeks Old</Dropdown.Item>
+                    <Dropdown.Item>More Then Three Weeks Old</Dropdown.Item>
+                    <Dropdown.Item>More Then a Month Ago</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            )
+          }
+
+          return null
+        })}
+    </div>
+  )
+}
+
+const EnumFilter: React.FC<{
+  title: string
+  onRemove: () => void
+  enumFilter: StaticEnumFilterType
+}> = ({ enumFilter, title, onRemove }) => {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+  const options = enumFilter.options
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 10,
+        marginRight: 10,
+      }}
+    >
+      <Dropdown text={title} style={{ fontWeight: 'none' }} inline>
+        <Dropdown.Menu>
+          <Dropdown.Header className="clickable" onClick={onRemove}>
+            REMOVE FILTER
+            <Icon name="delete" />{' '}
+          </Dropdown.Header>
+          <Dropdown.Divider />
+          {options
+            .filter((option) => !selectedOptions.find((_option) => _option === option.value))
+            .map((option) => (
+              <Dropdown.Item
+                key={option.value}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedOptions([...selectedOptions, option.value])
+                }}
+              >
+                {option.render && option.render()}
+                {!option.render && option.value}
+              </Dropdown.Item>
+            ))}
+        </Dropdown.Menu>
+      </Dropdown>
+      {selectedOptions.length > 0 && (
+        <div
+          style={{
+            marginLeft: 3,
+            marginRight: 3,
+            padding: 5,
+            paddingLeft: 3,
+            paddingRight: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            background: 'white',
+            flexWrap: 'wrap',
+            border: '1px solid rgba(34, 36, 38, 0.15)',
+            borderRadius: 6,
+            color: 'rgba(0, 0, 0, 0.87',
+          }}
+        >
+          {options
+            .filter((option) => selectedOptions.find((_option) => _option === option.value))
+            .map((option) => (
+              <div
+                key={option.value}
+                className="clickable"
+                style={{ marginLeft: 5, marginRight: 5 }}
+                onClick={() => {
+                  setSelectedOptions(selectedOptions.filter((_option) => _option !== option.value))
+                }}
+              >
+                {option.render && option.render(<Icon name="delete" />)}
+                {!option.render && (
+                  <>
+                    {option.value}
+                    <Icon name="delete" />
+                  </>
+                )}
+              </div>
+            ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const SearchableEnumFilter: React.FC<{
+  title: string
+  onRemove: () => void
+  searchableFilter: SearchableEnumFilterType
+}> = ({ searchableFilter, title, onRemove }) => {
+  const [options, setOptions] = useState<string[]>([])
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 10,
+        marginRight: 10,
+      }}
+    >
+      <Dropdown direction="left" text={title} style={{ fontWeight: 'none' }} inline>
+        <Dropdown.Menu>
+          <Dropdown.Header className="clickable" onClick={onRemove}>
+            REMOVE FILTER
+            <Icon name="delete" />{' '}
+          </Dropdown.Header>
+          <Dropdown.Divider />
+          <Input
+            icon="search"
+            iconPosition="left"
+            className="search"
+            onClick={(e: any) => e.stopPropagation()}
+            onChange={(_, { value }) => {
+              setOptions(
+                searchableFilter
+                  .search(value)
+                  .filter((_value) => !selectedOptions.find((selected) => selected === value))
+              )
+            }}
+          />
+          <Dropdown.Divider />
+          {options
+            .filter((option) => !selectedOptions.find((_option) => _option === option))
+            .map((option) => (
+              <Dropdown.Item
+                key={option}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedOptions([...selectedOptions, option])
+                }}
+              >
+                {option}
+              </Dropdown.Item>
+            ))}
+        </Dropdown.Menu>
+      </Dropdown>
+      {selectedOptions.length > 0 && (
+        <div
+          style={{
+            padding: 5,
+            marginLeft: 3,
+            paddingRight: 3,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            background: 'white',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            border: '1px solid rgba(34, 36, 38, 0.15)',
+            borderRadius: 6,
+            maxWidth: 300,
+            color: 'rgba(0, 0, 0, 0.87',
+          }}
+        >
+          {selectedOptions.map((option) => (
+            <div
+              key={option}
+              style={{ marginLeft: 5, marginRight: 5 }}
+              className="clickable"
+              onClick={() => {
+                setSelectedOptions(selectedOptions.filter((_option) => _option !== option))
+              }}
+            >
+              {option}
+              <Icon name="delete" />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
