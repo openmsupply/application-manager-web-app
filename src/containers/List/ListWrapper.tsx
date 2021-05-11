@@ -336,7 +336,7 @@ const FilterArea: React.FC = () => {
               <Dropdown.Item
                 key={title}
                 onClick={() => {
-                  setSelectedFilter([...selectedFilters, title])
+                  setSelectedFilter([title, ...selectedFilters])
                 }}
               >
                 {title}
@@ -345,118 +345,118 @@ const FilterArea: React.FC = () => {
         </Dropdown.Menu>
       </Dropdown>
 
-      {filters
-        .filter(({ title }) => selectedFilters.find((selectedFilter) => selectedFilter === title))
-        .map((filter) => {
-          if (filter.type === 'strictEnum') {
-            return (
-              <EnumFilter
-                key={filter.title}
-                title={filter.title}
-                enumFilter={filter.asStaticEnumFilter}
-                onRemove={() => {
-                  setSelectedFilter(
-                    selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
-                  )
-                }}
-              />
-            )
-          }
+      {selectedFilters.map((filterName) => {
+        const filter = filters.find(({ title }) => filterName === title)
+        if (!filter) return null
+        if (filter.type === 'strictEnum') {
+          return (
+            <EnumFilter
+              key={filter.title}
+              title={filter.title}
+              enumFilter={filter.asStaticEnumFilter}
+              onRemove={() => {
+                setSelectedFilter(
+                  selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                )
+              }}
+            />
+          )
+        }
 
-          if (filter.type === 'searchableEnum') {
-            return (
-              <SearchableEnumFilter
-                key={filter.title}
-                title={filter.title}
-                searchableFilter={filter.asSearchableEnumFilter}
-                onRemove={() => {
-                  setSelectedFilter(
-                    selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
-                  )
-                }}
-              />
-            )
-          }
-          if (filter.type === 'boolean') {
-            return (
+        if (filter.type === 'searchableEnum') {
+          return (
+            <SearchableEnumFilter
+              key={filter.title}
+              title={filter.title}
+              searchableFilter={filter.asSearchableEnumFilter}
+              onRemove={() => {
+                setSelectedFilter(
+                  selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                )
+              }}
+            />
+          )
+        }
+        if (filter.type === 'boolean') {
+          return (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: 10,
+                marginRight: 10,
+              }}
+            >
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginLeft: 10,
-                  marginRight: 10,
+                  marginRight: 3,
+                }}
+                className="clickable"
+                onClick={() => {
+                  setSelectedFilter(
+                    selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                  )
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginRight: 3,
-                  }}
-                  className="clickable"
-                  onClick={() => {
-                    setSelectedFilter(
-                      selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
-                    )
-                  }}
-                >
-                  <div>Is Fully Assigned</div>{' '}
-                  <Icon style={{ marginTop: 0, marginBottom: 0 }} name="delete" />
-                </div>
-                <Checkbox toggle />
+                <div>Is Fully Assigned</div>{' '}
+                <Icon style={{ marginTop: 0, marginBottom: 0 }} name="delete" />
               </div>
-            )
-          }
-          if (filter.type === 'date') {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 10,
-                  marginRight: 10,
-                }}
-              >
-                <Dropdown text={filter.title} style={{ fontWeight: 'none' }} inline>
-                  <Dropdown.Menu>
-                    <Dropdown.Header
-                      className="clickable"
-                      onClick={() => {
-                        setSelectedFilter(
-                          selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
-                        )
-                      }}
-                    >
-                      REMOVE FILTER
-                      <Icon name="delete" />{' '}
-                    </Dropdown.Header>
-                    <Dropdown.Divider />
-                    <Dropdown.Item>
-                      <Dropdown text="Select from Calendar" icon="calendar outline">
-                        <Dropdown.Menu>
-                          <Dropdown.Header>
-                            <Image src="/images/datepicker.png" />
-                          </Dropdown.Header>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item>Last Week</Dropdown.Item>
-                    <Dropdown.Item>Older Then Last Week</Dropdown.Item>
-                    <Dropdown.Item>More Then Two Weeks Old</Dropdown.Item>
-                    <Dropdown.Item>More Then Three Weeks Old</Dropdown.Item>
-                    <Dropdown.Item>More Then a Month Ago</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            )
-          }
+              <Checkbox toggle />
+            </div>
+          )
+        }
+        if (filter.type === 'date') {
+          return (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: 10,
+                marginRight: 10,
+              }}
+            >
+              <Dropdown text={filter.title} style={{ fontWeight: 'none' }} inline>
+                <Dropdown.Menu>
+                  <Dropdown.Header
+                    className="clickable"
+                    onClick={() => {
+                      setSelectedFilter(
+                        selectedFilters.filter((filterTitle) => filterTitle !== filter.title)
+                      )
+                    }}
+                  >
+                    REMOVE FILTER
+                    <Icon name="delete" />{' '}
+                  </Dropdown.Header>
+                  <Dropdown.Divider />
+                  <Dropdown.Item>
+                    <Dropdown text="Select from Calendar" icon="calendar outline">
+                      <Dropdown.Menu>
+                        <Dropdown.Header>
+                          <Image src="/images/datepicker.png" />
+                        </Dropdown.Header>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item>Last Week</Dropdown.Item>
+                  <Dropdown.Item>Older Then Last Week</Dropdown.Item>
+                  <Dropdown.Item>More Then Two Weeks Old</Dropdown.Item>
+                  <Dropdown.Item>More Then Three Weeks Old</Dropdown.Item>
+                  <Dropdown.Item>More Then a Month Ago</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          )
+        }
 
-          return null
-        })}
+        return null
+      })}
     </div>
   )
 }
