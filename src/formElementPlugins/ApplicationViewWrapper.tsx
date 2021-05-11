@@ -55,7 +55,6 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   const [validationState, setValidationState] = useState<ValidationState>({
     isValid,
   })
-  const [evaluatedParameters, setEvaluatedParameters] = useState({})
 
   // This value prevents the plugin component from rendering until parameters have been evaluated, otherwise React throws an error when trying to pass an Object in as a prop value
   const [parametersReady, setParametersReady] = useState(false)
@@ -65,19 +64,23 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   const dynamicParameters = config?.dynamicParameters
   const dynamicExpressions =
     dynamicParameters && extractDynamicExpressions(dynamicParameters, parameters)
-
   const placeholderParameters: any = {}
   dynamicParameters?.map((field: any) => {
-    if (field === 'options') placeholderParameters[field] = ['Loading']
+    if (field === 'options') placeholderParameters[field] = ['Loading', 'Loading 2', 'Loading 3']
     else placeholderParameters[field] = 'Loading'
   })
+  const [evaluatedParameters, setEvaluatedParameters] = useState(placeholderParameters)
 
-  useEffect(() => {
-    setEvaluatedParameters(placeholderParameters)
-  }, [])
+  // useEffect(() => {
+  //   console.log('placeholderParameters', placeholderParameters)
+  //   setEvaluatedParameters(placeholderParameters)
+  // }, [])
 
   // Update dynamic parameters when responses change
   useEffect(() => {
+    console.log('evaluatedParameters', evaluatedParameters)
+    if ((Object.keys(evaluatedParameters).length = 0)) return
+    console.log('Evaluating...')
     evaluateDynamicParameters(
       dynamicExpressions as ElementPluginParameters,
       {
@@ -85,6 +88,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
         APIfetch: fetch,
         graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
       },
+      evaluatedParameters,
       setEvaluatedParameters
     )
     // .then((result: ElementPluginParameters) => {
@@ -170,7 +174,6 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
 
   if (!pluginCode || !isVisible) return null
 
-  console.log('parameters', parameters)
   const PluginComponent = (
     <ApplicationView
       onUpdate={onUpdate}
@@ -216,13 +219,13 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   return (
     <ErrorBoundary pluginCode={pluginCode}>
       <React.Suspense fallback="Loading Plugin">
-        {changesRequired ? (
-          getResponseAndBorder()
-        ) : (
-          <Form.Field className="element-application-view" required={isRequired}>
-            {PluginComponent}
-          </Form.Field>
-        )}
+        {changesRequired
+          ? getResponseAndBorder()
+          : Object.keys(evaluatedParameters).length > 0 && (
+              <Form.Field className="element-application-view" required={isRequired}>
+                {PluginComponent}
+              </Form.Field>
+            )}
       </React.Suspense>
     </ErrorBoundary>
   )
@@ -284,17 +287,25 @@ export const extractDynamicExpressions = (
 export const evaluateDynamicParameters = async (
   dynamicExpressions: ElementPluginParameters,
   evaluatorParameters: EvaluatorParameters,
+  evaluatedParameters: any,
   setParameters: Function
 ) => {
   if (!dynamicExpressions) return {}
-  const fields = Object.keys(dynamicExpressions)
-  const expressions = Object.values(
-    dynamicExpressions
-  ).map((expression: ElementPluginParameterValue) =>
-    evaluateExpression(expression, evaluatorParameters).then((evaluated: any) =>
-      setParameters(evaluated)
-    )
-  )
+  // const fields = Object.keys(dynamicExpressions)
+  // const expressions = Object.values(dynamicExpressions).map(
+  //   (expression: ElementPluginParameterValue) =>
+  //     evaluateExpression(expression, evaluatorParameters).then((evaluated: any) => {
+  //       // console.log('evaluated', evaluated)
+  //       // setParameters(evaluated)
+  //     })
+  // )
+  Object.keys(dynamicExpressions).map((field: any) => {
+    console.log('PRE:', field, dynamicExpressions[field])
+    evaluateExpression(dynamicExpressions[field], evaluatorParameters).then((evaluated: any) => {
+      console.log('Setting...', { ...evaluatedParameters, [field]: evaluated })
+      setParameters({ ...evaluatedParameters, [field]: evaluated })
+    })
+  })
   // const evaluatedExpressions: any = await Promise.all(expressions)
   // const evaluatedParameters: ElementPluginParameters = {}
   // for (let i = 0; i < fields.length; i++) {
