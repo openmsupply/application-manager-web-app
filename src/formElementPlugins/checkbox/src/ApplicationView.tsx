@@ -88,7 +88,7 @@ const getInitialState = (initialValue: CheckboxSavedState, checkboxes: Checkbox[
     checkboxes
       .map((cb: Checkbox, index: number) => {
         if (typeof cb === 'string' || typeof cb === 'number')
-          return { label: String(cb), text: String(cb), key: index, selected: false }
+          return { label: String(cb), text: String(cb), key: String(index), selected: false }
         else
           return {
             label: cb.label,
