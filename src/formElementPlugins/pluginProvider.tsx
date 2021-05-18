@@ -87,6 +87,13 @@ class pluginProvider {
         folderName: 'fileUpload',
         category: 'Input',
       },
+      listBuilder: {
+        code: 'listBuilder',
+        displayName: 'List Builder',
+        isCore: true,
+        folderName: 'listBuilder',
+        category: 'Input',
+      },
     }
   }
 
