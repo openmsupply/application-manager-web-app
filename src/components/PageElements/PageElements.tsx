@@ -212,17 +212,15 @@ const PageElements: React.FC<PageElementProps> = ({
 }
 
 interface RenderElementWrapperProps {
-  key: string
   isResponseUpdated?: boolean
 }
 const RenderElementWrapper: React.FC<RenderElementWrapperProps> = ({
-  key,
   isResponseUpdated = false,
   children,
 }) => {
-  const backgroudColour = isResponseUpdated ? 'changeable-background' : ''
+  const backgroundColour = isResponseUpdated ? 'changeable-background' : ''
   return (
-    <Segment basic key={`Review_${key}`} className={`summary-page-element ${backgroudColour}`}>
+    <Segment basic className={`summary-page-element ${backgroundColour}`}>
       {children}
     </Segment>
   )

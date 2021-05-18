@@ -2,7 +2,10 @@
   "isCore": true,
   "code": "shortText",
   "displayName": "Basic Text Input",
-  "dynamicParameters": ["label", "description", "placeholder", "default"],
+  "parameterLoadingValues": {
+    "label": "Loading...",
+    "description": ""
+  },
   "//": "categories types: 'Input'|'Informative'",
   "category": "Input"
 }

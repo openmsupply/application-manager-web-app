@@ -2,7 +2,10 @@
   "isCore": true,
   "code": "password",
   "displayName": "Secure Password Input",
-  "dynamicParameters": ["label"],
+  "parameterLoadingValues": {
+    "label": "Loading...",
+    "description": ""
+  },
   "//": "categories types: 'Input'|'Informative'",
   "category": "Input"
 }

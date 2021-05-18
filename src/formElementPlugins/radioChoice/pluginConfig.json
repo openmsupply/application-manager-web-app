@@ -2,14 +2,11 @@
   "isCore": true,
   "code": "radioChoice",
   "displayName": "Radio Button Selector",
-  "dynamicParameters": [
-    "label",
-    "description",
-    "options",
-    "default",
-    "hasOther",
-    "otherPlaceholder"
-  ],
+  "parameterLoadingValues": {
+    "label": "Loading...",
+    "description": "",
+    "options": ["Loading..."]
+  },
   "//": "categories types: 'Input'|'Informative'",
   "category": "Input"
 }

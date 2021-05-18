@@ -2,7 +2,11 @@
   "isCore": true,
   "code": "dropdownChoice",
   "displayName": "Drop-down Selector",
-  "dynamicParameters": ["label", "description", "options"],
+  "parameterLoadingValues": {
+    "label": "Loading...",
+    "description": "",
+    "options": ["Loading..."]
+  },
   "//": "categories types: 'Input'|'Informative'",
   "category": "Input"
 }

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { ErrorBoundary, pluginProvider } from '.'
 import { Form } from 'semantic-ui-react'
 import { SummaryViewWrapperProps, PluginComponents } from './types'
-import { ElementPluginParameters } from '../utils/types'
-import { extractDynamicExpressions, evaluateDynamicParameters } from './ApplicationViewWrapper'
+import evaluateExpression from '@openmsupply/expression-evaluator'
+import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
+import { buildParameters } from './ApplicationViewWrapper'
 import { useUserState } from '../contexts/UserState'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
 import globalConfig from '../config.json'
@@ -22,32 +23,35 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
     userState: { currentUser },
   } = useUserState()
   const [evaluatedParameters, setEvaluatedParameters] = useState({})
-  const [parametersLoaded, setParametersLoaded] = useState(false)
 
   const { SummaryView, config }: PluginComponents = pluginProvider.getPluginElement(pluginCode)
 
-  const dynamicParameters = config?.dynamicParameters
-  const dynamicExpressions =
-    dynamicParameters && extractDynamicExpressions(dynamicParameters, parameters)
+  const parameterLoadingValues = config?.parameterLoadingValues
+  const [simpleParameters, parameterExpressions] = buildParameters(
+    parameters,
+    parameterLoadingValues
+  )
 
   useEffect(() => {
     // Runs once on component mount
-    evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
-      objects: { responses: allResponses, currentUser, applicationData },
-      APIfetch: fetch,
-      graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
-    }).then((result: ElementPluginParameters) => {
-      setEvaluatedParameters(result)
-      setParametersLoaded(true)
+    Object.entries(parameterExpressions).forEach(([field, expression]) => {
+      evaluateExpression(expression as IQueryNode, {
+        objects: { responses: allResponses, currentUser, applicationData },
+        APIfetch: fetch,
+        graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
+      }).then((result: any) =>
+        setEvaluatedParameters((prevState) => ({ ...prevState, [field]: result }))
+      )
     })
   }, [])
+
   if (!pluginCode || !isVisible) return null
 
   const DefaultSummaryView: React.FC = () => {
-    const combinedParams = { ...parameters, ...evaluatedParameters }
+    const combinedParams = { ...simpleParameters, ...evaluatedParameters }
     return (
       <Form.Field className="element-summary-view" required={isRequired}>
-        {parametersLoaded && displayTitle && (
+        {displayTitle && (
           <>
             <label style={{ color: 'black' }}>
               <Markdown text={combinedParams.label} semanticComponent="noParagraph" />
@@ -62,7 +66,7 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
 
   const PluginComponent = (
     <SummaryView
-      parameters={{ ...parameters, ...evaluatedParameters }}
+      parameters={{ ...simpleParameters, ...evaluatedParameters }}
       response={response}
       Markdown={Markdown}
       DefaultSummaryView={DefaultSummaryView}
@@ -72,7 +76,7 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
   return (
     <ErrorBoundary pluginCode={pluginCode}>
       <React.Suspense fallback="Loading Plugin">
-        {parametersLoaded && <Form.Field required={isRequired}>{PluginComponent}</Form.Field>}
+        <Form.Field required={isRequired}>{PluginComponent}</Form.Field>
       </React.Suspense>
     </ErrorBoundary>
   )
