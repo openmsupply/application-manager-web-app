@@ -9,14 +9,12 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   element,
   parameters,
   value,
-  // setValue
   setIsActive,
-  validationState,
   onSave,
   Markdown,
   validate,
   applicationData,
-  currentResponse,
+
   allResponses,
 }) => {
   const { isEditable } = element
@@ -35,13 +33,8 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const {
     userState: { currentUser },
   } = useUserState()
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
-  const [confirmationIsActive, setConfirmationIsActive] = useState(false)
-  const [internalValidation, setInternalValidation] = useState({
-    isValid: true,
-    validationMessage: validationMessageInternal,
-  })
+  const [state, setState] = useState({ password: '', passwordConfirmation: '' })
+  const [errors, setErrors] = useState({ password: '', passwordConfirmation: '' })
   const [masked, setMasked] = useState(maskedInput === undefined ? true : maskedInput)
 
   // Reset saved value when re-loading form (since password can't be stored)
@@ -51,43 +44,45 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     }
   }, [])
 
-  async function handleChange(e: any) {
-    if (e.target.name === 'password') {
-      setPassword(e.target.value)
-      const responses = { thisResponse: e.target.value || '', ...allResponses }
-      // Don't show error state on change if element is being use for checking existing password
-      const shouldShowValidation = requireConfirmation ? currentResponse?.text === '' : false
-      if (shouldShowValidation) {
-        const customValidation = await validate(validationInternal, validationMessageInternal, {
-          objects: { responses, currentUser, applicationData },
-          APIfetch: fetch,
-          graphQLConnection: { fetch: fetch.bind(window), endpoint: config.serverGraphQL },
-        })
-        setInternalValidation(customValidation)
-      }
-    } else {
-      setConfirmationIsActive(true)
-      setPasswordConfirm(e.target.value)
+  const setPasswords =
+    (type: 'password' | 'passwordConfirmation') =>
+    (_: any, { value }: { value: string }) => {
+      setState({ ...state, [type]: value })
+      setErrors({ ...errors, [type]: '' })
     }
-  }
 
-  async function handleLoseFocus(e: any) {
-    if (e.target.name === 'passwordConfirm') setConfirmationIsActive(false)
-    const responses = { thisResponse: password || '', ...allResponses }
-    const customValidation = await validate(validationInternal, validationMessageInternal, {
-      objects: { responses, currentUser, applicationData },
-      APIfetch: fetch,
-      graphQLConnection: { fetch: fetch.bind(window), endpoint: config.serverGraphQL },
-    })
-    setInternalValidation(customValidation)
-    const passwordsMatch = password === passwordConfirm
-    const hash = customValidation.isValid && passwordsMatch ? await createHash(password) : ''
+  async function handleLoseFocus(type: 'password' | 'passwordConfirmation') {
+    let isPasswordValid = !errors.password
 
-    onSave({
-      hash,
-      text: hash !== '' || requireConfirmation === false ? '•••••••' : '',
-      customValidation,
-    })
+    if (type === 'password') {
+      const responses = { thisResponse: state.password || '', ...allResponses }
+      const customValidation = await validate(validationInternal, validationMessageInternal, {
+        objects: { responses, currentUser, applicationData },
+        APIfetch: fetch,
+        graphQLConnection: { fetch: fetch.bind(window), endpoint: config.serverGraphQL },
+      })
+
+      isPasswordValid = customValidation.isValid
+      if (!isPasswordValid) setErrors({ ...errors, password: validationMessageInternal })
+    }
+
+    let isConfirmationMatching = true
+    const isConfirmationEmpty = !state.passwordConfirmation
+
+    if (requireConfirmation) {
+      isConfirmationMatching = state.password === state.passwordConfirmation
+      if (!isConfirmationMatching && !isConfirmationEmpty)
+        setErrors({ ...errors, passwordConfirmation: strings.ALERT_PASSWORDS_DONT_MATCH })
+    }
+
+    const isValid = isConfirmationMatching && isPasswordValid
+    console.log(isValid, isConfirmationMatching, isPasswordValid)
+    if (isValid) {
+      const hash = await createHash(state.password)
+      onSave({ hash, customValidation: isValid, text: '********' })
+    } else {
+      onSave({ customValidation: isValid })
+    }
   }
 
   return (
@@ -100,20 +95,13 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         name="password"
         fluid
         placeholder={placeholder ? placeholder : strings.PLACEHOLDER_DEFAULT}
-        onChange={handleChange}
-        onBlur={handleLoseFocus}
+        onChange={setPasswords('password')}
+        onBlur={() => handleLoseFocus('password')}
         onFocus={setIsActive}
-        value={password ? password : ''}
+        value={state.password}
         disabled={!isEditable}
         type={masked ? 'password' : undefined}
-        error={
-          !internalValidation.isValid && validationState.isValid !== null
-            ? {
-                content: validationMessageInternal,
-                pointing: 'above',
-              }
-            : null
-        }
+        error={errors.password || null}
       />
       {requireConfirmation && (
         <Form.Input
@@ -122,20 +110,13 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
           placeholder={
             confirmPlaceholder ? confirmPlaceholder : strings.PLACEHOLDER_CONFIRM_DEFAULT
           }
-          onChange={handleChange}
-          onBlur={handleLoseFocus}
+          onChange={setPasswords('passwordConfirmation')}
+          onBlur={() => handleLoseFocus('passwordConfirmation')}
           onFocus={setIsActive}
-          value={passwordConfirm ? passwordConfirm : ''}
+          value={state.passwordConfirmation}
           disabled={!isEditable}
           type={masked ? 'password' : undefined}
-          error={
-            passwordConfirm !== password && passwordConfirm !== '' && !confirmationIsActive
-              ? {
-                  content: strings.ALERT_PASSWORDS_DONT_MATCH,
-                  pointing: 'above',
-                }
-              : null
-          }
+          error={errors.passwordConfirmation || null}
         />
       )}
       <Form.Field required={false}>
