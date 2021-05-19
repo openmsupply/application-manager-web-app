@@ -3,6 +3,7 @@ import { ErrorBoundary, pluginProvider } from '.'
 import { ApplicationViewWrapperProps, PluginComponents, ValidationState } from './types'
 import { useUpdateResponseMutation } from '../utils/generated/graphql'
 import {
+  EvaluatorNode,
   EvaluatorParameters,
   LooseString,
   ResponseFull,
@@ -13,7 +14,6 @@ import validate from './defaultValidate'
 import evaluateExpression from '@openmsupply/expression-evaluator'
 import { Form, Icon, Loader } from 'semantic-ui-react'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
-import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import strings from '../utils/constants'
 import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
 import messages from '../utils/messages'
@@ -61,7 +61,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   // Update dynamic parameters when responses change
   useEffect(() => {
     Object.entries(parameterExpressions).forEach(([field, expression]) => {
-      evaluateExpression(expression as IQueryNode, {
+      evaluateExpression(expression as EvaluatorNode, {
         objects: { responses: allResponses, currentUser, applicationData },
         APIfetch: fetch,
         graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
@@ -269,7 +269,7 @@ const calculateValidationState = async ({
   evaluationParameters,
   currentResponse,
 }: {
-  validationExpression: IQueryNode | undefined
+  validationExpression: EvaluatorNode | undefined
   validationMessage: string | null | undefined
   isRequired: boolean | undefined
   isStrictPage: boolean | undefined

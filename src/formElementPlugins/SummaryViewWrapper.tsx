@@ -3,7 +3,7 @@ import { ErrorBoundary, pluginProvider } from '.'
 import { Form } from 'semantic-ui-react'
 import { SummaryViewWrapperProps, PluginComponents } from './types'
 import evaluateExpression from '@openmsupply/expression-evaluator'
-import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
+import { EvaluatorNode } from '../utils/types'
 import { buildParameters } from './ApplicationViewWrapper'
 import { useUserState } from '../contexts/UserState'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
@@ -35,7 +35,7 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
   useEffect(() => {
     // Runs once on component mount
     Object.entries(parameterExpressions).forEach(([field, expression]) => {
-      evaluateExpression(expression as IQueryNode, {
+      evaluateExpression(expression as EvaluatorNode, {
         objects: { responses: allResponses, currentUser, applicationData },
         APIfetch: fetch,
         graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },

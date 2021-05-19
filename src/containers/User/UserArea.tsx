@@ -40,6 +40,9 @@ const MainMenuBar: React.FC = () => {
         <List.Item>
           <Link to="/layout">Layout helpers</Link>
         </List.Item>
+        <List.Item>
+          <Link to="/application/new?type=UserEdit">Edit User Account</Link>
+        </List.Item>
       </List>
     </div>
   )
