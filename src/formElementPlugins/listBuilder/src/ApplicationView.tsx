@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Checkbox, Form } from 'semantic-ui-react'
 import { ApplicationViewProps } from '../../types'
+import { ApplicationViewWrapperProps, PluginComponents, ValidationState } from '../../types'
+import { ErrorBoundary, pluginProvider } from '../../'
 import strings from '../constants'
 
 const ApplicationView: React.FC<ApplicationViewProps> = ({
@@ -9,12 +11,21 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   onSave,
   Markdown,
   initialValue,
+  validate,
   ...props
 }) => {
   const { isEditable } = element
   const { label, description, inputFields } = parameters
 
-  console.log('inputFields', inputFields)
+  const [listElements, setListElements] = useState([])
+
+  const onUpdate = async (value: any) => {
+    // Do something instead of default behaviour
+  }
+
+  const updateList = async (jsonValue: any) => {
+    // Update listElements
+  }
 
   // const [checkboxElements, setCheckboxElements] = useState<Checkbox[]>(
   //   getInitialState(initialValue, checkboxes)
@@ -42,6 +53,27 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         <Markdown text={label} semanticComponent="noParagraph" />
       </label>
       <Markdown text={description} />
+      {inputFields.map((element: any) => {
+        console.log('element', element)
+        return (
+          <InputField
+            key={element.code}
+            code={element.code}
+            // onUpdate={onUpdate}
+            // onSave={onSave}
+            // initialValue={}
+            {...props}
+            element={element}
+            parameters={element.parameters}
+            // value={elemevalue}
+            // setValue={setValue}
+            // setIsActive={setIsActive}
+            Markdown={Markdown}
+            // validationState={validationState || { isValid: true }}
+            validate={validate}
+          />
+        )
+      })}
       {/* {checkboxElements.map((cb: Checkbox, index: number) => {
         return layout === 'inline' ? (
           <Checkbox
@@ -68,6 +100,23 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       })} */}
     </>
   )
+}
+
+// InputField is a simplified version of ApplicationViewWrapper
+const InputField: React.FC<any> = ({
+  elementTypePluginCode,
+  code,
+  parameters,
+  Markdown,
+  validate,
+  element,
+  ...props
+}) => {
+  console.log('element', element)
+  const { ApplicationView, config }: PluginComponents =
+    pluginProvider.getPluginElement(elementTypePluginCode)
+  return <ApplicationView {...props} />
+  return <p>Fallback</p>
 }
 
 export default ApplicationView
