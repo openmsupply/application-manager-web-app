@@ -4,6 +4,19 @@ import { ApplicationViewProps } from '../../types'
 import { ApplicationViewWrapperProps, PluginComponents, ValidationState } from '../../types'
 import { ErrorBoundary, pluginProvider } from '../../'
 import strings from '../constants'
+import { EvaluatorNode } from '../../../utils/types'
+
+interface SimplifiedElement {
+  code: string
+  title: string
+  pluginCode: string
+  validationExpression: EvaluatorNode
+  validationMessage: string | null
+  parameters: any
+  isEditable: boolean
+  isRequired: boolean
+  isVisible: boolean
+}
 
 const ApplicationView: React.FC<ApplicationViewProps> = ({
   element,
@@ -18,6 +31,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const { label, description, inputFields } = parameters
 
   const [listElements, setListElements] = useState([])
+  const [inputElements, setInputElements] = useState(createInputElements(inputFields))
 
   const onUpdate = async (value: any) => {
     // Do something instead of default behaviour
@@ -53,10 +67,10 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         <Markdown text={label} semanticComponent="noParagraph" />
       </label>
       <Markdown text={description} />
-      {inputFields.map((element: any) => {
+      {inputElements.map((element: any) => {
         console.log('element', element)
         return (
-          <InputField
+          <InputElement
             key={element.code}
             code={element.code}
             // onUpdate={onUpdate}
@@ -103,7 +117,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
 }
 
 // InputField is a simplified version of ApplicationViewWrapper
-const InputField: React.FC<any> = ({
+const InputElement: React.FC<any> = ({
   elementTypePluginCode,
   code,
   parameters,
@@ -112,11 +126,40 @@ const InputField: React.FC<any> = ({
   element,
   ...props
 }) => {
-  console.log('element', element)
-  const { ApplicationView, config }: PluginComponents =
-    pluginProvider.getPluginElement(elementTypePluginCode)
-  return <ApplicationView {...props} />
-  return <p>Fallback</p>
+  const { ApplicationView, config }: PluginComponents = pluginProvider.getPluginElement(
+    element.pluginCode
+  )
+  return (
+    <React.Suspense fallback="Loading Plugin">
+      <Form.Field style={inputElementStyleOverrides}>
+        <ApplicationView
+          {...props}
+          parameters={parameters}
+          // value={props.value}
+          setValue={() => {}}
+          Markdown={Markdown}
+          element={element}
+        />
+      </Form.Field>
+    </React.Suspense>
+  )
+}
+
+const inputElementStyleOverrides = {}
+
+const createInputElements = (inputFields: any): SimplifiedElement[] => {
+  return inputFields.map((element: any) => ({
+    code: element.code,
+    title: element.title,
+    pluginCode: element.elementTypePluginCode,
+    validationExpression: element?.validation ?? true,
+    validationMessage: element?.validationMessage,
+    parameters: element.parameters,
+    // Replace the below with expressions from ???
+    isEditable: true,
+    isRequired: false,
+    isVisible: true,
+  }))
 }
 
 export default ApplicationView
