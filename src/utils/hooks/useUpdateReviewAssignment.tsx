@@ -1,3 +1,4 @@
+import { useUserState } from '../../contexts/UserState'
 import {
   useUpdateReviewAssignmentMutation,
   ReviewAssignmentStatus,
@@ -13,9 +14,7 @@ type UseUpdateReviewAssignmentMutationReturnType = ReturnType<
 >
 type PromiseReturnType = ReturnType<UseUpdateReviewAssignmentMutationReturnType[0]>
 // hook used to assign section/s to user as per type definition below (returns promise that resolve with mutation result data)
-type UseUpdateReviewAssignment = (
-  structure: FullStructure
-) => {
+type UseUpdateReviewAssignment = (structure: FullStructure) => {
   assignSectionToUser: (props: {
     // Section code is optional if omitted all sections are assigned
     sectionCode?: string
@@ -32,6 +31,10 @@ type ConstructAssignSectionPatch = (
 
 const useUpdateReviewAssignment: UseUpdateReviewAssignment = (structure) => {
   const [updateAssignment] = useUpdateReviewAssignmentMutation()
+
+  const {
+    userState: { currentUser },
+  } = useUserState()
 
   const constructAssignSectionPatch: ConstructAssignSectionPatch = (
     sectionCode,
@@ -52,6 +55,7 @@ const useUpdateReviewAssignment: UseUpdateReviewAssignment = (structure) => {
 
     return {
       status: ReviewAssignmentStatus.Assigned,
+      assignerId: currentUser?.userId,
       // onReviewSelfAssign will trigger core action to disallow other reviewers to self assign
       trigger: isSelfAssignment ? Trigger.OnReviewSelfAssign : Trigger.OnReviewAssign,
       timeUpdated: new Date().toISOString(),
