@@ -1,3 +1,8 @@
 /*******************************
         User Overrides
 *******************************/
+
+// Make modal fill to edge of window
+.ui.dimmer {
+  padding: 0;
+}

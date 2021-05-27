@@ -1,5 +1,5 @@
-import React, { CSSProperties } from 'react'
-import { Grid, Label } from 'semantic-ui-react'
+import React from 'react'
+import { Grid, Header, Label } from 'semantic-ui-react'
 import getSimplifiedTimeDifference from '../../utils/dateAndTime/getSimplifiedTimeDifference'
 import { ReviewAction, ReviewSectionComponentProps } from '../../utils/types'
 import strings from '../../utils/constants'
@@ -67,30 +67,7 @@ const LastDate: React.FC<{ title: string; indicator?: React.ReactNode }> = ({
   title,
   indicator,
 }) => {
-  return (
-    <div style={inlineStyles.container}>
-      <div style={inlineStyles.title}>{title}</div>
-      <Label className="stripesLabel" style={inlineStyles.indicator}>
-        {indicator}
-      </Label>
-    </div>
-  )
-}
-
-// Styles - TODO: Move to LESS || Global class style (semantic)
-const inlineStyles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  } as CSSProperties,
-  title: {
-    fontSize: 10,
-    fontWeight: 800,
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-  } as CSSProperties,
-  indicator: { fontSize: 12 },
+  return <Label className="simple-label" content={indicator} />
 }
 
 export default ReviewSectionRowLastActionDate

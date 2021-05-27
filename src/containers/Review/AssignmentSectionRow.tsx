@@ -15,7 +15,7 @@ type AssignmentSectionRowProps = {
 }
 // Component renders options calculated in getAssignmentOptions, and will execute assignment mutation on drop down change
 const AssignmentSectionRow: React.FC<AssignmentSectionRowProps> = (props) => {
-  const { structure, sectionCode, assignments } = props
+  const { assignments, sectionCode, structure } = props
   const [assignmentError, setAssignmentError] = useState(false)
 
   const { assignSectionToUser } = useUpdateReviewAssignment(structure)
@@ -42,16 +42,18 @@ const AssignmentSectionRow: React.FC<AssignmentSectionRowProps> = (props) => {
 
   if (assignmentError) return <Message error title={strings.ERROR_GENERIC} />
   return (
-    <Grid className="section-single-row-box-container" verticalAlign="middle">
-      <Grid.Column className="centered-flex-box-row">
-        <Label className="simple-label" content={strings.LABEL_REVIEWED_BY} />
-        <Dropdown
-          className="reviewer-dropdown"
-          options={options}
-          value={value}
-          onChange={onAssignment}
-        />
-      </Grid.Column>
+    <Grid className="section-single-row-box-container">
+      <Grid.Row>
+        <Grid.Column className="centered-flex-box-row">
+          <Label className="simple-label" content={strings.LABEL_REVIEWED_BY} />
+          <Dropdown
+            className="reviewer-dropdown"
+            options={options}
+            value={value}
+            onChange={onAssignment}
+          />
+        </Grid.Column>
+      </Grid.Row>
     </Grid>
   )
 }

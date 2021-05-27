@@ -25,12 +25,26 @@ a:hover {
   opacity: @hoverOpacity;
 }
 
+// Use this for links that use onClick (as opposed to <a> tags)
+.link-style {
+  color: @interactiveHigh;
+}
+
+.link-style:hover {
+  color: @interactiveHigh;
+  opacity: @hoverOpacity;
+}
+
 .center-text {
   text-align: center;
 }
 
 .alert {
   color: @attention;
+}
+
+.information {
+  color: @information;
 }
 
 .clickable {
@@ -41,13 +55,38 @@ a:hover {
   opacity: @hoverOpacity;
 }
 
-.hidden {
-  display: none;
+.hidden-element {
+  display: none !important;
 }
 
 .invisible {
   visibility: hidden;
 }
+
+/*--------------------------------
+   Common layout
+---------------------------------*/
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-row-center {
+  .flex-row();
+  justify-content: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-column-center {
+  .flex-column();
+  justify-content: center;
+}
+
+
 
 /*--------------------------------
    Login page
@@ -215,6 +254,11 @@ a:hover {
    Application/Review Wrappers
 ------------------------------------*/
 
+// Moves back up if UserArea is not displayed
+#application-area.non-registered {
+  margin-top: -@headerHeight;
+}
+
 #content-area .top-container {
   flex-wrap: wrap;
   justify-content: space-between;
@@ -273,7 +317,6 @@ a:hover {
   height: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 // Steps line - progress bar
@@ -283,7 +326,7 @@ a:hover {
 
 // Steps line - actions box
 .actions-box {
-  min-width: 100px;
+  min-width: 120px;
   text-align: right;
 }
 
@@ -293,7 +336,7 @@ a:hover {
 }
 
 /*---------------------------------------
-   Review Home page
+      Review Home page
 ----------------------------------------*/
 
 #review-filters-container {
@@ -311,13 +354,79 @@ a:hover {
   max-width: 150px;
 }
 
+/*---------------------------------------
+      Review page
+----------------------------------------*/
+
+// NOTE: The review page shares a lot of styles with Application Summary
+
+.review-comment-area {
+  margin-top: 10px;
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-bottom: -14px;
+  border-top: 1px solid @surfacesMed;
+  border-bottom: 1px solid @surfacesMed;
+}
+
+.review-approve-all-button {
+  margin-top: 20px;
+}
+
+#review-submit-area {
+  margin-bottom: 30px;
+}
+
+#review-submit-area p {
+  font-size: @tinyBitSmallerText;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+#review-submit-area.ui.form .field {
+  margin-bottom: 10px;
+}
+
+#review-submit-area .ui.checkbox {
+  padding-left: 0;
+}
+
+#review-decision-container {
+  display: flex;
+  justify-content: flex-end;
+  height: 100vh;
+}
+
+#review-decision-content {
+  display: flex;
+}
+
+#document-viewer {
+  // Temp values -- replace once design is clarified
+  background-color: #6f6f6f5e;
+  width: 800px;
+}
+
+#details-panel {
+  background-color: @surfacesWhite;
+  width: 400px;
+  padding: 15px;
+  overflow: scroll;
+}
+
+#history-panel {
+  // Temp - replace when real History Panel built
+  border: 1px solid lightgray;
+  height: 250px;
+}
+
 /*--------------------------------
       Application List
 ---------------------------------*/
 
 #list-container {
   padding: 25px 0;
-  max-width: 900px; // Maybe this could be wider if table is getting cluttered?
+  max-width: @applicationListWidth;
 }
 
 #list-top {
@@ -361,11 +470,19 @@ a:hover {
 }
 
 #progress-column {
-  max-width: 205px;
+  max-width: 200px;
+  padding-left: 5px;
+  padding-right: 0;
+  padding-top: 0;
 }
 
 #form-column {
   padding: 0;
+}
+
+#form-column .ui.basic.segment {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 // Seperation between Section title and form elements
@@ -373,8 +490,127 @@ a:hover {
   margin-top: 30px;
 }
 
-#help-column {
-  max-width: 200px;
+// Contains form-element and help-tips
+.form-element-wrapper {
+  display: flex;
+  padding-left: 10px;
+  justify-content: space-between;
+}
+
+.form-element {
+  width: clamp(350px, 70%, 480px);
+}
+
+.help-tips {
+  width: clamp(50px, 30%, 250px);
+  margin-top: 20px; // height of label, so flush with input field
+  margin-right: -10px;
+  max-height: 80px; // less than element height, so overflows
+  position: relative;
+}
+
+.help-tips-content {
+  font-style: italic;
+  padding-left: 20px;
+}
+
+// Vertical accent line for help tips
+.help-tips-content::before {
+  content: '';
+  border-left: 1px solid @information;
+  height: 40px;
+  position: absolute;
+  top: 5px;
+  left: 3%;
+}
+
+// Progress Bar
+
+.progress-row.ui.grid {
+  margin-top: -10px;
+  margin-bottom: -10px;
+  height: 60px;
+}
+
+.progress-indicator-column {
+  width: 20px !important;
+  padding-right: 7px !important;
+}
+
+.progress-name-column {
+  width: 200px !important;
+}
+
+.progress-indicator.icons,
+.progress-indicator.icon {
+  // Make Section Icons just a little bit bigger
+  font-size: 1.1em;
+}
+
+// .progress-name {
+// }
+
+.page-list {
+  font-size: @slightlySmallerText !important;
+  padding-left: 30px !important;
+  margin-bottom: -30px !important;
+  margin-top: -20px !important;
+}
+
+.page-row.ui.grid {
+  padding-bottom: 8px;
+}
+
+// .progress-page-indicator {
+// }
+
+.progress-page-name-column {
+  width: 150px !important;
+}
+
+.section-progress-bar {
+  position: absolute;
+}
+
+.section-progress-bar .progress {
+  transform-origin: 0 0;
+  transform: rotate(90deg) translate(2px, -10px);
+}
+
+// Element plugins
+
+.element-application-view {
+  margin-bottom: 40px !important;
+}
+
+// .element-summary-view {
+// }
+
+.element-grid.ui.grid {
+  padding: 10px 20px;
+  font-size: @smallerText;
+  color: @headersInteractiveLow;
+}
+
+// For change request borders
+.element-warning-border {
+  border: 1px solid @headersInteractiveMed;
+  padding: 10px;
+  border-radius: @borderRadius;
+  margin-left: -10px !important;
+  margin-right: -10px !important;
+}
+
+.alert-border {
+  border-color: @attention;
+}
+
+.blue-border {
+  border-color: @interactiveHigh;
+}
+
+.reviewer-comment {
+  font-size: 0.9em;
 }
 
 /*--------------------------------
@@ -403,6 +639,7 @@ a:hover {
   width: @applicationFormWidth;
   padding-left: 20px;
   padding-right: 20px;
+  flex-wrap: wrap;
 }
 
 #prev-next-links {
@@ -420,19 +657,265 @@ a:hover {
 }
 
 /*--------------------------------
-      General used classes
+      Application Summary area
 ---------------------------------*/
 
-// In use for ApplicationHeader around all Application pages
+// Note: these layout ids/classes also shared with Review page
 
-.application-form-width {
-  width: 900px !important;
+#application-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: @applicationSummaryWidth;
+  background-color: @surfacesWhite;
+  padding-left: 20px;
+  padding-right: 20px;
 }
+
+#application-summary-header {
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+
+#application-summary-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: @applicationSummaryContentWidth;
+}
+
+#application-sections {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.summary-section {
+  background-color: @surfacesLight;
+  border-radius: @borderRadius;
+  padding: 15px 20px;
+  padding-bottom: 1px;
+  margin-bottom: 15px;
+}
+
+.summary-section-header {
+  background-color: @surfacesLight;
+}
+
+.summary-page {
+  margin-bottom: 30px;
+}
+
+.ui.basic.segment.summary-page-element {
+  background-color: @surfacesWhite;
+  margin-bottom: 10px;
+  border-radius: @borderRadius;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+#application-submit {
+  margin-bottom: 50px;
+}
+
+#application-submit p {
+  margin-top: 20px;
+}
+
+// Hide sticky bar when it jumps to bottom
+.summary-section .bound.bottom {
+  display: none;
+}
+
+/*--------------------------------
+      Application Submission page
+---------------------------------*/
+
+#submission-header i {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+#submission-content {
+  max-width: 600px;
+}
+
+#submission-content .list {
+  margin-top: 25px;
+}
+
+#submission-content .list .header {
+  margin-bottom: 7px;
+}
+
+#submission-content .list .item {
+  margin-bottom: 15px;
+}
+
+#submission-nav {
+  padding-bottom: 60px;
+}
+
+#submission-nav p {
+  margin-top: 25px;
+}
+
+/*--------------------------------
+      Dashboard
+---------------------------------*/
+
+// Layouts
+#dashboard {
+  .flex-row-center();
+  flex-wrap: wrap;
+
+  .template-category {
+    .flex-column-center();
+    align-items: center;
+
+    .title {
+      .flex-row();
+      align-items: center;
+    }
+  }
+
+  .templates {
+    .flex-row-center();
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .template {
+    .flex-column();
+
+    .title {
+      .flex-row-center();
+      align-items: start;
+    }
+  }
+
+  .filters {
+    .flex-column();
+    flex-grow: 1;
+  }
+  
+  .filter {
+    display: flex;
+    align-items: center;
+  }
+
+  .view-all-area {
+    display: flex;
+    max-width: 100%;
+  }
+
+  .view-all {
+    .flex-row-center() ;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1;
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+// Margin and padding
+#dashboard {
+  .template {
+    margin: 15px;
+    max-width: 330px;
+    border-radius: @borderRadius;
+    background-color: @surfacesWhite;
+    box-shadow: @templateBoxShadow;
+    
+    .title {
+      padding: 10px;
+      padding-bottom: 3px;
+
+      .header {
+        margin: 2px;
+      }
+    }
+  }
+
+  .template-category {
+    margin: 10px;
+
+    .title {
+     
+      a {
+        margin-left: 10px;
+      }
+
+      .header {
+        margin: 2px;
+      }
+    }
+  }
+
+  .filters {
+    margin: 5px;
+    padding: 3px
+  }
+
+  .view-all {
+    padding: 5px;
+    font-weight: @semiboldWeight;
+    color:grey !important;
+    border-top: 1px solid rgba(0,0,0,.08);
+
+    i {
+      padding-right: 6px;
+    }
+  }
+}
+
+
+// #dashboard .template-category  .category-header {
+
+// }
+
+/*--------------------------------
+      General used classes
+---------------------------------*/
 
 // Not currently used, but should be appplied to the Link in the menu
 // bar that reflects the current page
 .selected-link {
   font-weight: bold;
+}
+
+// Colours
+
+.dark-grey {
+  color: @darkGrey !important;
+}
+
+.information-colour {
+  color: @information !important;
+}
+
+.interactive-color {
+  color: @interactiveHigh !important;
+}
+
+// Position adjustments
+.shift-up-1 {
+  transform: translateY(-1px);
+}
+
+.right-justify-content {
+  width: 100%;
+  text-align: right;
+}
+
+// Background for Active elements changes (Summary/Review/Consolidation)
+.changeable-background {
+  background-color: @activeCommentBackground !important;
 }
 
 /*******************************
@@ -506,6 +989,9 @@ h6:first-child {
   margin-bottom: 0em;
 }
 
+
+
+
 /*-----------------------------------------------------
       Mobile & Desktop
       - classes for hiding on Mobile or Desktop devices
@@ -514,13 +1000,13 @@ h6:first-child {
 // Desktop
 @media only screen and (min-width: @tabletBreakpoint) {
   .hide-on-desktop {
-    display: none;
+    display: none !important;
   }
 }
 // Mobile
 @media only screen and (max-width: @largestMobileScreen) {
   .hide-on-mobile {
-    display: none;
+    display: none !important;
   }
 }
 

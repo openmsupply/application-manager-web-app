@@ -1,5 +1,5 @@
 import React from 'react'
-import { Checkbox, Form, Message } from 'semantic-ui-react'
+import { Checkbox, Container, Form, Message } from 'semantic-ui-react'
 import { Decision } from '../../utils/generated/graphql'
 import { DecisionOption } from '../../utils/types'
 import strings from '../../utils/constants'
@@ -17,25 +17,35 @@ const ReviewDecision: React.FC<ReviewDecisionProps> = ({
   isDecisionError,
   isEditable,
 }) => {
-  if (isEditable)
+  if (isEditable) {
+    const onChangeDecision = (_: any, { value: code }: any) => setDecision(code)
+    const visibleOptions = decisionOptions.filter((option) => option.isVisible)
     return (
-      <Form style={inlineStyles}>
-        {decisionOptions
-          .filter((option) => option.isVisible)
-          .map((option) => (
-            <Form.Field error={isDecisionError} key={option.code}>
-              <Checkbox
-                radio
-                label={option.title}
-                name={option.title}
-                value={option.code}
-                checked={option.value}
-                onChange={() => setDecision(option.code)}
-              />
-            </Form.Field>
-          ))}
-      </Form>
+      <Container>
+        {visibleOptions.length > 0 && (
+          <p>
+            <strong>{strings.LABEL_REVIEW_SUBMIT_AS}:</strong>
+          </p>
+        )}
+        {visibleOptions.map((option) => (
+          <Form.Field
+            className="reviewer-decision-checkbox"
+            error={isDecisionError}
+            key={option.code}
+          >
+            <Checkbox
+              radio
+              label={option.title}
+              name={option.title}
+              value={option.code}
+              checked={option.value}
+              onChange={onChangeDecision}
+            />
+          </Form.Field>
+        ))}
+      </Container>
     )
+  }
   // If review has been submitted/locked:
   const visibleOption = decisionOptions.find((option) => option.isVisible)
   if (!visibleOption) return null
@@ -48,11 +58,6 @@ const ReviewDecision: React.FC<ReviewDecisionProps> = ({
       content={visibleOption.title}
     />
   )
-}
-
-// Styles - TODO: Move to LESS || Global class style (semantic)
-const inlineStyles = {
-  form: { marginRight: 30 },
 }
 
 export default ReviewDecision

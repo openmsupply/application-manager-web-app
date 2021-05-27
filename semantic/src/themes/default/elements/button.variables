@@ -217,7 +217,7 @@
 @basicFocusBoxShadow: @basicHoverBoxShadow;
 
 /* Basic Down */
-@basicDownBackground: #F8F8F8;
+@basicDownBackground: #F0F0F0;
 @basicDownTextColor: @pressedTextColor;
 @basicDownBoxShadow:
   0px 0px 0px @basicBorderSize rgba(0, 0, 0, 0.15) inset,

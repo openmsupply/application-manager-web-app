@@ -12,7 +12,7 @@ export default gql`
         levelNumber
         reviewerId
         isLastLevel
-        templateSectionRestrictions
+        allowedSections
         trigger
         reviewer {
           id
@@ -37,6 +37,7 @@ export default gql`
         }
         stage {
           title
+          number
           id
         }
         reviewQuestionAssignments {

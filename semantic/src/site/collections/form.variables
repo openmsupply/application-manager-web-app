@@ -22,4 +22,4 @@
 @inputErrorFocusBoxShadow: none;
 
 // Form input border
-@inputBorder: 1px solid #777777;
+@inputBorder: 1px solid @borderColourDark;

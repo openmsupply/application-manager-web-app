@@ -47,7 +47,7 @@ const getSectionProgress = (pages: Page[]): ApplicationProgress => {
   return sectionProgress
 }
 
-const generateResponsesProgress = (structure: FullStructure) => {
+const generateApplicantResponsesProgress = (structure: FullStructure) => {
   let firstIncompleteSectionCode = ''
   let firstIncompleteSectionIndex = Infinity
   let firstStrictInvalidPageInSection = Infinity
@@ -104,4 +104,4 @@ const generateResponsesProgress = (structure: FullStructure) => {
     : null
 }
 
-export default generateResponsesProgress
+export default generateApplicantResponsesProgress

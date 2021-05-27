@@ -1,66 +1,56 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { Label } from 'semantic-ui-react'
 import { CellProps } from '../../../utils/types'
 import strings from '../../../utils/constants'
+import { AssignerAction, ReviewerAction } from '../../../utils/generated/graphql'
 
 const ReviewerActionCell: React.FC<CellProps> = ({
-  application: {
-    reviewAssignedNotStartedCount,
-    reviewAssignedCount,
-    reviewDraftCount,
-    reviewPendingCount,
-    reviewSubmittedCount,
-    reviewAvailableForSelfAssignmentCount,
-    serial,
-    assignCount,
-    isFullyAssignedLevel1,
-  },
+  application: { serial, reviewerAction, assignerAction },
 }) => {
   const actions = []
-  const notZero = (num: number | undefined) => num && Number(num) !== 0
-  let canShowView = notZero(reviewAssignedCount) || notZero(reviewSubmittedCount)
-  let canShowStart = notZero(reviewAssignedNotStartedCount)
 
-  if (notZero(reviewPendingCount)) {
-    canShowView = canShowStart = false
-    actions.push(strings.ACTION_RE_REVIEW)
+  const getReviewActionString = (reviewerAction: ReviewerAction) => {
+    switch (reviewerAction) {
+      case ReviewerAction.SelfAssign:
+        return strings.ACTION_SELF_ASSIGN
+      case ReviewerAction.UpdateReview:
+        return strings.ACTION_UPDATE
+      case ReviewerAction.RestartReview:
+        return strings.ACTION_RE_REVIEW
+      case ReviewerAction.ContinueReview:
+        return strings.ACTION_CONTINUE
+      case ReviewerAction.StartReview:
+        return strings.ACTION_START
+      default:
+        // ReviewerAction.ViewReview
+        return strings.ACTION_VIEW
+    }
   }
 
-  if (notZero(reviewDraftCount)) {
-    canShowView = false
-    actions.push(strings.ACTION_CONTINUE)
+  const getAssignActionString = (assignerAction: AssignerAction) => {
+    switch (assignerAction) {
+      case AssignerAction.ReAssign:
+        return strings.ACTION_RE_ASSIGN
+      default:
+        // AssignerAction.Assign
+        return strings.ACTION_ASSIGN
+    }
   }
 
-  if (notZero(reviewAvailableForSelfAssignmentCount)) {
-    canShowView = false
-    actions.push(strings.ACTION_SELF_ASSIGN)
-  }
-
-  if (notZero(assignCount) && isFullyAssignedLevel1) {
-    canShowView = false
-    actions.push(strings.ACTION_RE_ASSIGN)
-  }
-
-  if (notZero(assignCount) && !isFullyAssignedLevel1) {
-    canShowView = false
-    actions.push(strings.ACTION_ASSIGN)
-  }
-
-  if (canShowStart) actions.push(strings.ACTION_START)
-  else if (canShowView) actions.push(strings.ACTION_VIEW)
+  if (!!reviewerAction) actions.push(getReviewActionString(reviewerAction))
+  if (!!assignerAction) actions.push(getAssignActionString(assignerAction))
 
   return (
     <>
       {actions.map((action, index) => {
         return (
-          <>
+          <React.Fragment key={index}>
             {/* To-do: style the | once we can see it properly */}
             {index > 0 ? <span>{' | '}</span> : ''}
-            <Link key={index} className="user-action" to={`/application/${serial}/review`}>
+            <Link className="user-action" to={`/application/${serial}/review`}>
               {action}
             </Link>
-          </>
+          </React.Fragment>
         )
       })}
     </>

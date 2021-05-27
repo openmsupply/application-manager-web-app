@@ -4,25 +4,23 @@ import { useUserState } from '../../contexts/UserState'
 import { Link } from 'react-router-dom'
 import strings from '../../utils/constants'
 import { User } from '../../utils/types'
-import config from '../../config'
+import config from '../../config.json'
 import { getFullUrl } from '../../utils/helpers/utilityFunctions'
 
 const UserArea: React.FC = () => {
   const {
     userState: { currentUser },
   } = useUserState()
-  const isRegistered = currentUser?.username !== 'nonRegistered'
+
+  if (!currentUser || currentUser?.username === strings.USER_NONREGISTERED) return null
+
   return (
     <Container id="user-area">
-      {isRegistered && (
-        <>
-          <div id="user-area-left">
-            <MainMenuBar />
-            {currentUser?.organisation?.orgName && <OrgSelector user={currentUser} />}
-          </div>
-          <UserMenu user={currentUser as User} />
-        </>
-      )}
+      <div id="user-area-left">
+        <MainMenuBar />
+        {currentUser?.organisation?.orgName && <OrgSelector user={currentUser} />}
+      </div>
+      <UserMenu user={currentUser as User} />
     </Container>
   )
 }
@@ -40,7 +38,10 @@ const MainMenuBar: React.FC = () => {
           </Link>
         </List.Item>
         <List.Item>
-          <Link to="/layoutHelpers">Layout Helpers</Link>
+          <Link to="/layout">Layout helpers</Link>
+        </List.Item>
+        <List.Item>
+          <Link to="/application/new?type=UserEdit">Edit User Account</Link>
         </List.Item>
       </List>
     </div>
@@ -56,7 +57,7 @@ const OrgSelector: React.FC<{ user: User }> = ({ user }) => {
       )}
       <div>
         {user?.organisation?.orgName || ''}
-        <Icon size="small" name="angle down" />
+        <Icon size="small" name="chevron down" />
       </div>
     </div>
   )
@@ -66,9 +67,13 @@ const UserMenu: React.FC<{ user: User }> = ({ user }) => {
   const { logout } = useUserState()
   return (
     <div id="user-menu">
-      <Button onClick={() => logout()}>
-        {user?.firstName || ''} {user?.lastName || ''}
-        <Icon style={{ marginLeft: 4, marginRight: 2 }} size="large" name="log out" />
+      <Button animated onClick={() => logout()}>
+        <Button.Content visible>
+          {user?.firstName || ''} {user?.lastName || ''}
+        </Button.Content>
+        <Button.Content hidden>
+          <Icon name="log out" />
+        </Button.Content>
       </Button>
     </div>
   )

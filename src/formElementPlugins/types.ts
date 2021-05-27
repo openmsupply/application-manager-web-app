@@ -18,6 +18,7 @@ interface ApplicationViewWrapperProps {
     reviewerComment: string
   }
   allResponses: ResponsesByCode
+  onSaveUpdateMethod?: Function
   currentResponse: ResponseFull | null
   applicationData: ApplicationDetails
   currentReview?: ReviewResponse
@@ -32,8 +33,6 @@ interface ApplicationViewProps extends ApplicationViewWrapperProps {
   onUpdate: Function
   onSave: Function
   initialValue: any
-  value: string // TODO: Change to allow object with any shape
-  setValue: (text: string) => void // TO update the value on the ApplicationViewWrapper
   setIsActive: () => void
   validationState: ValidationState
   Markdown: any
@@ -80,7 +79,7 @@ interface PluginConfig {
   code: string
   folderName: string
   displayName: string
-  dynamicParameters?: string[]
+  parameterLoadingValues?: { [key: string]: string | string[] }
   category: 'Input' | 'Informative'
 }
 

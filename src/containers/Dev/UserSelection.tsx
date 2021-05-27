@@ -62,7 +62,7 @@ const UserSelection: React.FC = () => {
   return (
     <Popup
       position="bottom right"
-      trigger={<Icon name="angle down" style={{ paddingLeft: 10 }} />}
+      trigger={<Icon name="chevron down" style={{ paddingLeft: 10 }} />}
       on="click"
       onOpen={() => setIsOpen(true)}
       onClose={() => setIsOpen(false)}

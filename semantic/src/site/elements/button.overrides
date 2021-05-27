@@ -4,7 +4,12 @@
 
 // Custom class for wider buttons
 .button-wide {
-  min-width: 280px;
+  width: 280px;
+  max-width: 100%;
+}
+
+.ui.button.alert {
+  border: 2px solid @attention;
 }
 
 // Override for icon in button

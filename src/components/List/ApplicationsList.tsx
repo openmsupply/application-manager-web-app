@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { Table, Message } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
 import messages from '../../utils/messages'
-import { ApplicationListRow, ColumnDetails, SortQuery } from '../../utils/types'
+import { ApplicationListRow, BasicStringObject, ColumnDetails, SortQuery } from '../../utils/types'
 import Loading from '../Loading'
 
 interface ApplicationsListProps {
@@ -80,8 +80,6 @@ interface ApplicationRowProps {
 }
 
 const ApplicationRow: React.FC<ApplicationRowProps> = ({ columns, application }) => {
-  const { replace, query } = useRouter()
-
   return (
     <Table.Row key={`ApplicationList-application-${application.id}`} className="list-row">
       {columns.map(({ headerName, ColumnComponent }, index) => (
@@ -89,7 +87,6 @@ const ApplicationRow: React.FC<ApplicationRowProps> = ({ columns, application })
           <ColumnComponent application={application} />
         </Table.Cell>
       ))}
-      <Table.Cell icon="angle down" />
     </Table.Row>
   )
 }

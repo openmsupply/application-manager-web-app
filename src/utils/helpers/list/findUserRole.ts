@@ -16,9 +16,7 @@ type UserRoles = {
 
 const userRoles: UserRoles = {
   applicant: [PermissionPolicyType.Apply],
-  consolidator: [PermissionPolicyType.Assign, PermissionPolicyType.Review],
-  reviewer: [PermissionPolicyType.Review],
-  assigner: [PermissionPolicyType.Assign],
+  reviewer: [PermissionPolicyType.Review, PermissionPolicyType.Assign],
 }
 
 // permissions: Array<PermissionPolicyType>
@@ -27,11 +25,10 @@ const getUserRolesForType = (templatePermissions: TemplatePermissions, type: str
   if (!found) return []
 
   const [_, permissions] = found
-  const comparePermissions = permissions.map((permissionType) => permissionType.toUpperCase())
 
   // Compare array of permission checking if are the same
-  const matching = Object.entries(userRoles).filter(([role, permissionList]) => {
-    const common = permissionList.filter((permission) => comparePermissions.includes(permission))
+  const matching = Object.entries(userRoles).filter(([_, permissionList]) => {
+    const common = permissionList.filter((permission) => permissions.includes(permission))
     return common.length > 0
   })
   const filteredRoles = matching.map(([role]) => role)

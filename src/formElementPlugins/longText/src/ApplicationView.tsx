@@ -6,20 +6,23 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   element,
   parameters,
   onUpdate,
-  value,
-  setValue,
   setIsActive,
   currentResponse,
   validationState,
   onSave,
   Markdown,
 }) => {
-  const { label, description, placeholder, lines, maxLength } = parameters
+  const [value, setValue] = useState<string | null | undefined>(currentResponse?.text)
+
+  const { label, description, placeholder, lines, default: defaultValue, maxLength } = parameters
 
   const { isEditable } = element
 
   useEffect(() => {
-    onUpdate(value)
+    if (!value && defaultValue) {
+      onSave({ text: defaultValue })
+      setValue(defaultValue)
+    } else onUpdate(value)
   }, [])
 
   function handleChange(e: any) {

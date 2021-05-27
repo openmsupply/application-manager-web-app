@@ -3,12 +3,15 @@ import { BasicStringObject } from '../../types'
 import { ApplicationStatus, ApplicationOutcome } from '../../generated/graphql'
 
 interface FilterMap {
-  [key: string]: (value: string) => object
+  [urlQueryKey: string]: (urlQueryValue: string) => object
 }
 
 interface NamedDateMap {
   [key: string]: string[]
 }
+
+type GetGenericTypes = () => FilterMap
+type GenericTypesMethod = (filterKey: string) => object
 
 export default function buildQueryFilters(filters: BasicStringObject) {
   const graphQLfilter = Object.entries(filters).reduce((filterObj, [key, value]) => {
@@ -20,36 +23,70 @@ export default function buildQueryFilters(filters: BasicStringObject) {
   return graphQLfilter
 }
 
-const numberTypes = [
-  'reviewAssignedNotStartedCount',
-  'reviewAssignedCount',
-  'reviewAvailableForSelfAssignmentCount',
-  'reviewDraftCount',
-  'reviewPendingCount',
-  'reviewChangeRequestCount',
-  'reviewSubmittedCount',
-  'assignReviewerAssignedCount',
-  'assignReviewersCount',
-  'assignCount',
+/* 
+  Query filters are mapped to an object provided by mapQueryToFilterField, they are in this format:
+  [filterName]: (queryString) => {[columnName]: { graphQLfilter }}
+  for example (url query parameter) ?filterName=queryString (?lastActiveDate=2021-02-01:2021-02-04)
+  would result in => {lastActiveDate: { greaterThanOrEqualTo: "2021-02-01", lessThanOrEqualTo: "2021-02-04"  } } 
+*/
+
+/* 
+  For generic types, mapping is provided via generiTypes -> getGenericTypes, and custom mapping is declared in mapQueryToFilterField
+  for example getGenericTypes will return an object like this: 
+  {
+    ...
+    isFullyAssignedLevel1: (filterString) => { isFullyAssigneLevel1: { equalTo: String(filterString).toLowerCase() === 'true' } }
+  }
+ */
+
+const genericTypes: { computeFilter: GenericTypesMethod; columns: string[] }[] = [
+  // NUMBER TYPE
+  {
+    computeFilter: (filterString: string) => {
+      const [fromNumber, toNumber] = filterString.split(':')
+      const greaterThanOrEqualTo = fromNumber ? fromNumber : undefined
+      const lessThanOrEqualTo = toNumber ? toNumber : undefined
+
+      return { greaterThanOrEqualTo, lessThanOrEqualTo }
+    },
+    columns: ['assignReviewerAssignedCount', 'assignReviewersCount', 'assignCount'],
+  },
+  // DATE TYPE
+  {
+    computeFilter: (filterString: string) => {
+      const [startDate, endDate] = parseDateString(filterString)
+      const greaterThanOrEqualTo = startDate ? startDate : undefined
+      const lessThan = endDate ? endDate : undefined
+
+      return { greaterThanOrEqualTo, lessThan }
+    },
+    columns: ['lastActiveDate'],
+  },
+  // BOOLEAN TYPE
+  {
+    computeFilter: (filterString: string) => {
+      return { equalTo: String(filterString).toLowerCase() === 'true' }
+    },
+    columns: ['isFullyAssignedLevel1'],
+  },
 ]
 
-const getNumberTypes = () => {
-  const numberTypesObject: FilterMap = {}
-  numberTypes.forEach((field) => (numberTypesObject[field] = doNumber(field)))
-  return numberTypesObject
-}
+// For every genericTypes mapping, return a method that generates a filter, see example above (isFullyAssignedLevel1)
+const getGenericTypes: GetGenericTypes = () => {
+  const resultFilters: FilterMap = {}
+  const addToResultFilter = (columnName: string, method: GenericTypesMethod) => {
+    const newFilterMethod = (filterString: string) => ({ [columnName]: method(filterString) })
+    resultFilters[columnName] = newFilterMethod
+  }
 
-const doNumber = (code: string) => (value: string) => {
-  const [fromNumber, toNumber] = value.split(':')
-  const greaterThanOrEqualTo = fromNumber ? fromNumber : undefined
-  const lessThanOrEqualTo = toNumber ? toNumber : undefined
-  const firstFilter = { [code]: { greaterThanOrEqualTo, lessThanOrEqualTo } }
-
-  return { ...firstFilter }
+  genericTypes.forEach(({ computeFilter, columns }) =>
+    columns.forEach((columnName) => addToResultFilter(columnName, computeFilter))
+  )
+  return resultFilters
 }
 
 const mapQueryToFilterField: FilterMap = {
-  ...getNumberTypes(),
+  ...getGenericTypes(),
 
   type: (value: string) => ({ templateCode: { equalToInsensitive: value } }),
 
@@ -60,9 +97,7 @@ const mapQueryToFilterField: FilterMap = {
   status: (values: string) => ({ status: inEnumList(values, ApplicationStatus) }),
 
   outcome: (values: string) => ({ outcome: inEnumList(values, ApplicationOutcome) }),
-  // action
-  // assigned
-  // consolidator
+
   applicant: (values: string) => ({
     or: [
       { applicant: inList(values) },
@@ -72,18 +107,17 @@ const mapQueryToFilterField: FilterMap = {
     ],
   }),
 
+  reviewer: (values: string) => ({ reviewerUsernames: inArray(values) }),
+
+  assigner: (values: string) => ({ assignerUsernames: inArray(values) }),
+
   org: (values: string) => ({ orgName: inList(values) }),
 
-  lastActiveDate: (value: string) => {
-    const [startDate, endDate] = parseDateString(value)
-    return getDateFilter([startDate, endDate])
-  },
+  reviewerAction: (value: string) => ({ reviewerAction: { equalTo: value } }),
+
+  assignerAction: (value: string) => ({ assignerAction: { equalTo: value } }),
 
   // deadlineDate (TBD)
-
-  isFullyAssignedLevel1: (value: string) => ({
-    isFullyAssignedLevel1: { equalTo: String(value).toLowerCase() === 'true' },
-  }),
 
   search: (value: string) => ({
     or: [
@@ -99,6 +133,9 @@ const mapQueryToFilterField: FilterMap = {
 
 const splitCommaList = (values: string) => values.split(',')
 
+// Use this to find string in an array of strings
+const inArray = (values: string) => ({ overlaps: splitCommaList(values) })
+
 // Use this if the values can be free text strings (e.g. stage name)
 const inList = (values: string) => ({ inInsensitive: splitCommaList(values) })
 
@@ -109,6 +146,7 @@ const inEnumList = (values: string, enumList: any) => ({
     .filter((value) => [...Object.values(enumList)].includes(value)),
 })
 
+// Can represent dates as relative numbers (number of days), i.e. -1, +4, 4, -3
 const convertRelativeDates = (dateStrings: string[]) =>
   dateStrings.map((dateString) => {
     if (!dateString.trim().match(/^[-+\d]+$/g)) return dateString
@@ -124,14 +162,6 @@ const parseDateString = (dateString: string) => {
   if (endDate === '') return [startDate, undefined] // No end date boundary
   if (startDate === '') return [undefined, endDate] // No start date boundary
   return [startDate, endDate]
-}
-
-const getDateFilter = (startAndEndDate: (string | undefined)[]) => {
-  const [startDate, endDate] = startAndEndDate
-  const greaterThanOrEqualTo = startDate ? startDate : undefined
-  const lessThan = endDate ? endDate : undefined
-
-  return { lastActiveDate: { greaterThanOrEqualTo, lessThan } }
 }
 
 const datePlusDays = (offset = 0, dateString: string | undefined = undefined) =>

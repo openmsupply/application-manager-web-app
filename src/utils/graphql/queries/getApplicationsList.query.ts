@@ -31,17 +31,11 @@ export default gql`
         status
         outcome
         lastActiveDate
-        reviewAssignedCount
-        reviewAssignedNotStartedCount
-        reviewAvailableForSelfAssignmentCount
-        reviewDraftCount
-        reviewChangeRequestCount
-        reviewSubmittedCount
-        reviewPendingCount
-        assignReviewerAssignedCount
-        assignReviewersCount
-        assignCount
+        reviewerAction
+        assignerAction
         isFullyAssignedLevel1
+        assignedQuestionsLevel1
+        totalQuestions
       }
       # Use the page and count info for rendering Pagination UI
       pageInfo {

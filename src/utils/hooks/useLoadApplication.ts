@@ -17,7 +17,6 @@ import {
   ApplicationStageStatusAll,
   ApplicationStatus,
   Organisation,
-  Template,
   TemplateElement,
   TemplateStage,
   useGetApplicationQuery,
@@ -35,7 +34,6 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
   const [isLoading, setIsLoading] = useState(true)
   const [structureError, setStructureError] = useState('')
   const [structure, setFullStructure] = useState<FullStructure>()
-  const [template, setTemplate] = useState<TemplateDetails>()
   const [refetchAttempts, setRefetchAttempts] = useState(0)
   const {
     userState: { currentUser },
@@ -86,21 +84,12 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
       return
     }
 
-    const { id, code, name, startMessage } = application.template as Template
-
-    setTemplate({
-      id,
-      code,
-      name: name as string,
-      startMessage: startMessage ? startMessage : undefined,
-    })
-
     const applicationSection = application.applicationSections.nodes as ApplicationSection[]
     const sections = getApplicationSections(applicationSection)
 
     const stages = data.applicationStageStatusLatests?.nodes as ApplicationStageStatusAll[]
     if (stages.length > 1) console.log('StageStatusAll More than one results for 1 application!')
-    const { stageId, stage, stageColour, status, statusHistoryTimeCreated } = stages[0] // Should only have one result
+    const { stageId, stage, stageColour, stageNumber, status, statusHistoryTimeCreated } = stages[0] // Should only have one result
 
     const applicationDetails: ApplicationDetails = {
       id: application.id,
@@ -113,6 +102,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
         stage: {
           id: stageId as number,
           name: stage as string,
+          number: stageNumber as number,
           colour: stageColour as string,
         },
         status: status as ApplicationStatus,
@@ -149,6 +139,7 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
             parameters: element.parameters,
             validationExpression: element.validation,
             validationMessage: element.validationMessage,
+            helpText: element.helpText,
           } as TemplateElementState)
       })
     })
@@ -160,31 +151,33 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
       APIfetch: fetch,
       graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
     }
-    evaluate(application.template?.submissionMessage || '', evaluatorParams).then(
-      (submissionMessage: any) => {
-        let newStructure: FullStructure = {
-          info: { ...applicationDetails, submissionMessage },
-          stages: templateStages.map((stage) => ({
-            number: stage.number as number,
-            id: stage.id,
-            title: stage.title as string,
-            description: stage.description ? stage.description : undefined,
-            colour: stage.colour as string,
-          })),
-          sections: buildSectionsStructure({ sections, baseElements }),
-        }
-
-        setFullStructure(newStructure)
-        setIsLoading(false)
+    const templateMessages: any = [
+      evaluate(application.template?.startMessage || '', evaluatorParams),
+      evaluate(application.template?.submissionMessage || '', evaluatorParams),
+    ]
+    Promise.all(templateMessages).then(([startMessage, submissionMessage]: any) => {
+      let newStructure: FullStructure = {
+        info: { ...applicationDetails, submissionMessage, startMessage },
+        stages: templateStages.map((stage) => ({
+          number: stage.number as number,
+          id: stage.id,
+          title: stage.title as string,
+          description: stage.description ? stage.description : undefined,
+          colour: stage.colour as string,
+        })),
+        sections: buildSectionsStructure({ sections, baseElements }),
+        attemptSubmission: false,
       }
-    )
+
+      setFullStructure(newStructure)
+      setIsLoading(false)
+    })
   }, [data, loading])
 
   return {
     error: structureError || error?.message,
     isLoading: loading || isLoading,
     structure,
-    template,
   }
 }
 

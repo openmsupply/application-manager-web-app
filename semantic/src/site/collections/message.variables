@@ -5,13 +5,14 @@
 // Info message left border width
 @accentBorderWidth: 4px;
 
-// Info other borders width
-@borderWidth: 0px;
-
-// Info message colors
+// Info message colours
 @infoTextColor: @headersInteractiveLow;
 @infoHeaderColor: @headersInteractiveLow;
-@infoColor: @surfacesLight;
-@infoBoxShadow: @surfacesLight;
-@infoBorderColor: @surfacesLight;
+@infoBoxShadow: none;
 @infoBackgroundColor: @surfacesLight;
+
+// Error message colours
+@errorHeaderColor: @attention;
+@errorTextColor: @headersInteractiveLow;
+@errorBoxShadow: none;
+@errorBackgroundColor: @surfacesLight;

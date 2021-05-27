@@ -48,14 +48,17 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
 
   function handleChange(e: any, data: any) {
     const { value: optionIndex } = data
-    setSelectedIndex(optionIndex)
-    onSave({
-      text: optionsDisplayProperty
-        ? options[optionIndex][optionsDisplayProperty]
-        : options[optionIndex],
-      selection: options[optionIndex],
-      optionIndex,
-    })
+    setSelectedIndex(optionIndex === '' ? undefined : optionIndex)
+    if (optionIndex !== '')
+      onSave({
+        text: optionsDisplayProperty
+          ? options[optionIndex][optionsDisplayProperty]
+          : options[optionIndex],
+        selection: options[optionIndex],
+        optionIndex,
+      })
+    // Reset response if selection cleared
+    else onSave(null)
   }
 
   const dropdownOptions = options.map((option: any, index: number) => {
@@ -75,6 +78,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       <Dropdown
         fluid
         selection
+        clearable
         search={search}
         placeholder={placeholder}
         options={dropdownOptions}

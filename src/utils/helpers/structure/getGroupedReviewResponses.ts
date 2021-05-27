@@ -8,8 +8,7 @@ const getGroupedReviewResponses = (reviewResponses: ReviewResponse[]): GroupedRe
   const result: GroupedReviewResponses = {}
 
   reviewResponses.forEach((reviewResponse) => {
-    // TODO, use original response link for this
-    const responseTemplateElementId = reviewResponse?.applicationResponse?.templateElementId
+    const responseTemplateElementId = reviewResponse.templateElementId
     if (!responseTemplateElementId) return
 
     if (!result[responseTemplateElementId]) result[responseTemplateElementId] = []

@@ -77,7 +77,7 @@ const ListTable: React.FC<any> = ({
                     />
                   </Button.Group>
                 </Table.Cell>
-                <Table.Cell icon="angle down" collapsing />
+                <Table.Cell icon="chevron down" collapsing />
               </Table.Row>
               {lookupTable.isExpanded && (
                 <Table.Row key={`table_row_detail_${lookupTable.id}`}>

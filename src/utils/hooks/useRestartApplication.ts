@@ -26,7 +26,7 @@ const useRestartApplication: UseRestartApplication = (serial) => {
       templateElementId: element.element.id,
       value: element?.latestApplicationResponse?.value,
     }))
-
+    // See comment at the bottom of file for resulting shape
     return {
       trigger: Trigger.OnApplicationRestart,
       applicationResponsesUsingId: {
@@ -39,6 +39,7 @@ const useRestartApplication: UseRestartApplication = (serial) => {
     await restartApplicationMutation({
       variables: {
         serial,
+        // See comment at the bottom of file for resulting shape
         applicationPatch: constructRestartApplicationPatch(structure),
       },
     })
@@ -47,3 +48,16 @@ const useRestartApplication: UseRestartApplication = (serial) => {
 }
 
 export default useRestartApplication
+
+/* shape of applicationPath
+{
+  "trigger": "ON_APPLICATION_RESTART",
+  "applicationResponsesUsingId": {
+    "create": [
+      {
+        "templateElementId": 4000
+      }
+    ]
+  }
+}
+*/

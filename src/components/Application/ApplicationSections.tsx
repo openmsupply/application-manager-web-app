@@ -6,11 +6,11 @@ import {
   ApplicationProgress,
   SectionAndPage,
 } from '../../utils/types'
+import { ApplicationProgressBar } from '../'
 import strings from '../../utils/constants'
 import { useRouter } from '../../utils/hooks/useRouter'
 import useRestartApplication from '../../utils/hooks/useRestartApplication'
 import { ApplicationStatus } from '../../utils/generated/graphql'
-import { ApplicationProgressBar } from '../Sections/SectionProgress'
 
 interface ApplicationSectionsProps {
   fullStructure: FullStructure

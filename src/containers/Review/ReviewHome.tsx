@@ -61,7 +61,7 @@ const ReviewHome: React.FC<ReviewHomeProps> = ({ assignments, structure }) => {
       {filters &&
         Object.values(fullApplicationStructure.sections).map(({ details: { id, title, code } }) => (
           <Segment className="stripes" key={id}>
-            <Header as="h5" content={title} />
+            <Header className="section-title" as="h5" content={title} />
             <AssignmentSectionRow
               {...{
                 assignments: getFilteredByStage(assignments),
@@ -109,9 +109,11 @@ const ReviewerAndStageSelection: React.FC<ReviewerAndStageSelectionProps> = ({
     })
   }, [])
 
-  const changeFilters = (filterType: keyof Filters) => (_: any, { value }: any) => {
-    if (filters) setFilters({ ...filters, [filterType]: value })
-  }
+  const changeFilters =
+    (filterType: keyof Filters) =>
+    (_: any, { value }: any) => {
+      if (filters) setFilters({ ...filters, [filterType]: value })
+    }
 
   if (!filters) return null
 

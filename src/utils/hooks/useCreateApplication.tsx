@@ -8,6 +8,7 @@ interface CreateApplicationProps {
   templateId: number
   userId?: number
   orgId?: number
+  sessionId: string
   templateSections: { templateSectionId: number }[]
   templateResponses: { templateElementId: number }[]
 }
@@ -37,6 +38,7 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
     templateId,
     userId,
     orgId,
+    sessionId,
     templateSections,
     templateResponses,
   }: CreateApplicationProps) => {
@@ -48,6 +50,7 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
         templateId,
         userId,
         orgId,
+        sessionId,
         sections: templateSections,
         responses: templateResponses,
       },

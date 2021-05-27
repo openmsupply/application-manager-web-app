@@ -43,7 +43,7 @@ const ReviewWrapper: React.FC<ReviewWrapperProps> = ({ structure }) => {
     <ReviewContainer application={structure.info}>
       <Switch>
         <Route exact path={path}>
-          <ReviewHome assignments={assignments} structure={structure} />
+          <ReviewHome {...{ assignments, structure }} />
         </Route>
         <Route exact path={`${path}/:reviewId`}>
           <ReviewPageWrapper {...{ structure, reviewAssignments: assignments }} />

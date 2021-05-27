@@ -17,10 +17,10 @@ const ApplicationWrapper: React.FC = () => {
     query: { serialNumber },
   } = useRouter()
   const {
-    userState: { currentUser },
+    userState: { currentUser, isNonRegistered },
   } = useUserState()
 
-  const { error, isLoading, structure, template } = useLoadApplication({
+  const { error, isLoading, structure } = useLoadApplication({
     serialNumber,
     currentUser: currentUser as User,
     networkFetch: true,
@@ -30,21 +30,23 @@ const ApplicationWrapper: React.FC = () => {
     <Message error header={strings.ERROR_APPLICATION_PAGE} list={[error]} />
   ) : isLoading ? (
     <Loading />
-  ) : structure && template ? (
+  ) : structure ? (
     <Switch>
       <Route path={`${path}/review`}>
         <ReviewWrapper structure={structure} />
       </Route>
       <Route exact path={path}>
-        <ApplicationContainer template={template} currentUser={currentUser}>
-          <ApplicationHome structure={structure} template={template} />
+        <ApplicationContainer template={structure.info.template}>
+          <ApplicationHome structure={structure} template={structure.info.template} />
         </ApplicationContainer>
       </Route>
       <Route exact path={`${path}/submission`}>
-        <ApplicationSubmission structure={structure} />
+        <ApplicationContainer template={structure.info.template}>
+          <ApplicationSubmission structure={structure} />
+        </ApplicationContainer>
       </Route>
       <Route>
-        <ApplicationContainer template={template} currentUser={currentUser}>
+        <ApplicationContainer template={structure.info.template}>
           <ApplicationPageWrapper structure={structure} />
         </ApplicationContainer>
       </Route>

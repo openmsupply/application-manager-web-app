@@ -13,6 +13,7 @@ export default gql`
     isEditable
     validation
     validationMessage
+    helpText
     parameters
   }
 `

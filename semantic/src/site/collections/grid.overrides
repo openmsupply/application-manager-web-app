@@ -2,13 +2,23 @@
          Site Overrides
 *******************************/
 
-.ui.grid {
-  margin: 10px;
+/* Table Striping */
+.stripes .ui.grid > .row {
   border-radius: 6px;
+  padding: 0px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
-/* Table Striping */
-.stripes .ui.grid:nth-child(even) {
+.stripes .ui.grid:first-child > .row {
+  margin-top: 10px;
+}
+
+.stripes .ui.grid:last-child > .row {
+  margin-bottom: 10px;
+}
+
+.stripes .ui.grid:nth-child(even) > .row {
   background: @surfacesLight;
 }
 
@@ -18,10 +28,4 @@
 
 .stripes .ui.grid:nth-child(odd) .stripedlabel {
   background: @surfacesLight;
-}
-
-.ui[class*='middle aligned'].grid > .column:not(.row) {
-  padding: 0px;
-  margin-left: 10px;
-  margin-right: 10px;
 }

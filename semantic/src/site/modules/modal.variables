@@ -1,3 +1,6 @@
 /*******************************
          Site Overrides
 *******************************/
+
+// Prevent rounded corners of full-screen modal
+@borderRadius: 0;

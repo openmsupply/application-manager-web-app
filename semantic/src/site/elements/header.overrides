@@ -98,6 +98,11 @@
   margin-top: 0 !important;
 }
 
+// Add space between section title and assignment/review rows on Review home
+.section-title {
+  margin-bottom: 30px !important;
+}
+
 // Adjustments (overrides) to default header styles
 
 .header-space-around-none {

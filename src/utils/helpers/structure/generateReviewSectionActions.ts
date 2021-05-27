@@ -1,5 +1,12 @@
 import { ReviewStatus, ReviewAssignmentStatus } from '../../generated/graphql'
-import { SectionState, AssignmentDetails, ReviewDetails, ReviewAction } from '../../types'
+import {
+  SectionState,
+  AssignmentDetails,
+  ReviewDetails,
+  ReviewAction,
+  ConsolidationProgress,
+  ReviewProgress,
+} from '../../types'
 
 type GenerateSectionActions = (props: {
   sections: SectionState[]
@@ -8,14 +15,80 @@ type GenerateSectionActions = (props: {
   currentUserId: number
 }) => void
 
-const levelOneActions: { [key in ReviewStatus | 'unknown']: ReviewAction } = {
-  [ReviewStatus.Draft]: ReviewAction.canContinue,
-  [ReviewStatus.Submitted]: ReviewAction.canView,
-  [ReviewStatus.Pending]: ReviewAction.canReReview,
-  [ReviewStatus.Locked]: ReviewAction.canContinueLocked,
-  [ReviewStatus.ChangesRequested]: ReviewAction.canUpdate,
-  unknown: ReviewAction.unknown,
+type ActionDefinition = {
+  action: ReviewAction
+  checkMethod: (props: {
+    reviewLevel: number
+    isReviewable: boolean
+    isAssignedToCurrentUser: boolean
+    reviewAssignmentStatus: ReviewAssignmentStatus | null
+    isPendingReview: boolean
+    isReviewExisting: boolean
+    reviewStatus: ReviewStatus | undefined
+    isCurrentUserReview: boolean
+    isReviewActive: boolean
+  }) => boolean
 }
+
+const actionDefinitions: ActionDefinition[] = [
+  {
+    action: ReviewAction.canStartReview,
+    checkMethod: ({ reviewAssignmentStatus, isPendingReview, isReviewExisting }) => {
+      return (
+        reviewAssignmentStatus === ReviewAssignmentStatus.Assigned &&
+        !isReviewExisting &&
+        isPendingReview
+      )
+    },
+  },
+  {
+    action: ReviewAction.canReReview,
+    checkMethod: ({ reviewStatus, reviewLevel }) =>
+      reviewStatus === ReviewStatus.Pending && reviewLevel === 1,
+  },
+  {
+    action: ReviewAction.canStartReview,
+    checkMethod: ({ reviewStatus, reviewLevel, isReviewActive }) =>
+      reviewStatus === ReviewStatus.Pending && reviewLevel > 1 && !isReviewActive,
+  },
+  {
+    action: ReviewAction.canContinue,
+    checkMethod: ({ reviewStatus, reviewLevel, isReviewActive }) =>
+      reviewStatus === ReviewStatus.Pending && reviewLevel > 1 && isReviewActive,
+  },
+  {
+    action: ReviewAction.canContinueLocked,
+    checkMethod: ({ reviewStatus }) => reviewStatus === ReviewStatus.Locked,
+  },
+  {
+    action: ReviewAction.canSelfAssign,
+    checkMethod: ({ reviewAssignmentStatus }) =>
+      reviewAssignmentStatus === ReviewAssignmentStatus.AvailableForSelfAssignment,
+  },
+  {
+    action: ReviewAction.canSelfAssignLocked,
+    checkMethod: ({ reviewAssignmentStatus }) =>
+      reviewAssignmentStatus === ReviewAssignmentStatus.SelfAssignedByAnother,
+  },
+  {
+    action: ReviewAction.canContinue,
+    checkMethod: ({ reviewStatus, isReviewActive }) =>
+      reviewStatus === ReviewStatus.Draft && isReviewActive,
+  },
+  {
+    action: ReviewAction.canView,
+    checkMethod: ({ reviewStatus, isReviewActive }) =>
+      reviewStatus === ReviewStatus.Draft && !isReviewActive,
+  },
+  {
+    action: ReviewAction.canView,
+    checkMethod: ({ reviewStatus }) => reviewStatus === ReviewStatus.Submitted,
+  },
+  {
+    action: ReviewAction.canUpdate,
+    checkMethod: ({ reviewStatus }) => reviewStatus === ReviewStatus.ChangesRequested,
+  },
+]
 
 const generateReviewSectionActions: GenerateSectionActions = ({
   sections,
@@ -23,26 +96,36 @@ const generateReviewSectionActions: GenerateSectionActions = ({
   thisReview,
   currentUserId,
 }) => {
-  let baseAction: ReviewAction | undefined
   const isCurrentUserReview = reviewAssignment.reviewer.id === currentUserId
-
-  if (reviewAssignment?.status === ReviewAssignmentStatus.AvailableForSelfAssignment)
-    baseAction = ReviewAction.canSelfAssign
-  if (thisReview?.status === ReviewStatus.Locked) baseAction = ReviewAction.canContinueLocked
-  if (isCurrentUserReview && reviewAssignment?.status === ReviewAssignmentStatus.Assigned)
-    baseAction = thisReview ? ReviewAction.canContinue : ReviewAction.canStartReview
-  if (reviewAssignment?.status === ReviewAssignmentStatus.SelfAssignedByAnother)
-    baseAction = ReviewAction.canSelfAssignLocked
+  const isConsolidation = reviewAssignment.level > 1
 
   sections.forEach((section) => {
-    // would need to juggled this around a little bit for level > 1 (i.e. only show canStartReview where sections submitted lvl < 1 review with no linked thisReviewResponse)
-    const isReviewable = (section.reviewProgress?.totalReviewable || 0) > 0
+    const { totalReviewable, totalPendingReview, totalActive } = isConsolidation
+      ? (section.consolidationProgress as ConsolidationProgress)
+      : (section.reviewProgress as ReviewProgress)
+
+    const isReviewable = (totalReviewable || 0) > 0
     const isAssignedToCurrentUser = isCurrentUserReview && isReviewable
 
-    section.reviewAction = {
+    const checkMethodProps = {
+      isReviewable,
+      isAssignedToCurrentUser,
+      isCurrentUserReview,
+      reviewLevel: reviewAssignment.level,
+      reviewAssignmentStatus: reviewAssignment.status,
+      isReviewExisting: !!thisReview,
+      reviewStatus: thisReview?.status,
+      isPendingReview: (totalPendingReview || 0) > 0,
+      isReviewActive: (totalActive || 0) > 0,
+    }
+
+    const foundAction = actionDefinitions.find(({ checkMethod }) => checkMethod(checkMethodProps))
+
+    section.assignment = {
       isAssignedToCurrentUser,
       isReviewable,
-      action: baseAction || levelOneActions[thisReview?.status || 'unknown'],
+      isConsolidation,
+      action: foundAction ? foundAction.action : ReviewAction.unknown,
     }
   })
 }

@@ -2,7 +2,12 @@
   "isCore": true,
   "code": "imageDisplay",
   "displayName": "Image Display",
-  "dynamicParameters": ["label", "description", "url", "size", "alignment"],
+  "parameterLoadingValues": {
+    "label": "Loading...",
+    "description": "",
+    "size": "small",
+    "alignment": "center"
+  },
   "//": "categories types: 'Input'|'Informative'",
   "category": "Informative"
 }

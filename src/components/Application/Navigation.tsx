@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { Button, Container, Icon } from 'semantic-ui-react'
 import {
   MethodRevalidate,
@@ -110,14 +110,14 @@ const Navigation: React.FC<NavigationProps> = ({
         <div id="prev-next-links">
           <p className={`clickable nav-button ${isFirstPage ? 'invisible' : ''}`}>
             <a onClick={previousButtonHandler}>
-              <Icon name="angle left" />
+              <Icon name="chevron left" />
               <strong>{strings.BUTTON_PREVIOUS}</strong>
             </a>
           </p>
           <p className={`clickable nav-button ${isLastPage ? 'invisible' : ''}`}>
             <a onClick={nextPageButtonHandler}>
               <strong>{strings.BUTTON_NEXT}</strong>
-              <Icon name="angle right" />
+              <Icon name="chevron right" />
             </a>
           </p>
         </div>

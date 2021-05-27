@@ -34,8 +34,8 @@ const addApplicantChangeRequestStatusToElement = (structure: FullStructure) => {
       return
     }
 
-    // For draft applicaiton we check previousApplicationResponse
-    // and we should aslo set isChanged for all question elements
+    // For draft application we check previousApplicationResponse
+    // and we should also set isChanged for all question elements
     element.isChangeRequest = previousReviewResponse?.decision === ReviewResponseDecision.Decline
     element.isChanged = !deepEqual(
       latestApplicationResponse?.value,

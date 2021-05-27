@@ -7,6 +7,7 @@ export default gql`
     $templateId: Int!
     $userId: Int
     $orgId: Int
+    $sessionId: String!
     $outcome: ApplicationOutcome = PENDING
     $trigger: Trigger = ON_APPLICATION_CREATE
     $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!]
@@ -20,6 +21,7 @@ export default gql`
           templateId: $templateId
           userId: $userId
           orgId: $orgId
+          sessionId: $sessionId
           isActive: true
           outcome: $outcome
           trigger: $trigger

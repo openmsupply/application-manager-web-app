@@ -3,14 +3,10 @@ import { Grid } from 'semantic-ui-react'
 import { SummaryViewWrapper } from '../../../formElementPlugins'
 import { SummaryViewWrapperProps } from '../../../formElementPlugins/types'
 
-interface SummaryInformationElementProps {
-  summaryProps: SummaryViewWrapperProps
-}
-
-const SummaryInformationElement: React.FC<SummaryInformationElementProps> = ({ summaryProps }) => (
+const SummaryInformationElement: React.FC<SummaryViewWrapperProps> = (summaryViewProps) => (
   <Grid>
     <Grid.Column stretched>
-      <SummaryViewWrapper {...summaryProps} />
+      <SummaryViewWrapper {...summaryViewProps} />
     </Grid.Column>
   </Grid>
 )

@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Container, Grid, Header, Segment } from 'semantic-ui-react'
 import {
   FullStructure,
@@ -6,7 +6,7 @@ import {
   MethodRevalidate,
   ApplicationProps,
 } from '../../utils/types'
-import { Loading, Navigation, PageElements, ProgressBar } from '../../components'
+import { Loading, Navigation, PageElements, ProgressArea } from '../../components'
 import { useUserState } from '../../contexts/UserState'
 import { ApplicationStatus } from '../../utils/generated/graphql'
 import { checkPageIsAccessible } from '../../utils/helpers/structure'
@@ -52,25 +52,26 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
   if (!fullStructure || !fullStructure.responsesByCode) return <Loading />
 
   const {
-    info: { isLinear, current },
+    info: { isLinear, isChangeRequest, current },
   } = fullStructure
-  console.log(currentUser)
+
   return (
     <>
       <Container id="application-form">
-        <Grid stackable className="dev-border">
+        <Grid stackable>
           <Grid.Column width={4} id="progress-column" className="dev-border">
-            <ProgressBar
+            <ProgressArea
               structure={fullStructure}
               requestRevalidation={requestRevalidation as MethodRevalidate}
               strictSectionPage={strictSectionPage as SectionAndPage}
             />
           </Grid.Column>
-          <Grid.Column width={9} stretched id="form-column" className="dev-border">
+          <Grid.Column width={12} stretched id="form-column">
             <Segment basic>
               <Header as="h4" content={fullStructure.sections[sectionCode].details.title} />
               <PageElements
                 canEdit={current?.status === ApplicationStatus.Draft}
+                isUpdating={isChangeRequest}
                 elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
                 responsesByCode={fullStructure.responsesByCode}
                 applicationData={fullStructure.info}
@@ -80,9 +81,6 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
                 }
               />
             </Segment>
-          </Grid.Column>
-          <Grid.Column width={3} id="help-column" className="dev-border">
-            Help tips go here
           </Grid.Column>
         </Grid>
       </Container>

@@ -1,10 +1,9 @@
 import evaluateExpression from '@openmsupply/expression-evaluator'
-import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import { ValidationState } from './types'
-import { EvaluatorParameters } from '../utils/types'
+import { EvaluatorNode, EvaluatorParameters } from '../utils/types'
 
 const defaultValidate = async (
-  validationExpress: IQueryNode,
+  validationExpress: EvaluatorNode,
   validationMessage: string,
   evaluatorParameters: EvaluatorParameters
 ): Promise<ValidationState> => {

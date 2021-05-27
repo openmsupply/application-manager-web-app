@@ -13,13 +13,12 @@ import {
   TemplateElementCategory,
   User as GraphQLUser,
   Organisation as GraphQLOrg,
-  TemplateFilter,
   Filter,
 } from './generated/graphql'
 
 import { ValidationState } from '../formElementPlugins/types'
-import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
-import { SemanticICONS } from 'semantic-ui-react'
+import { OperatorNode, ValueNode } from '@openmsupply/expression-evaluator/lib/types'
+import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic'
 
 export {
   ApplicationDetails,
@@ -38,6 +37,7 @@ export {
   ElementPluginParameterValue,
   ElementPluginParameters,
   ElementState,
+  EvaluatorNode,
   EvaluatorParameters,
   FullStructure,
   LooseString,
@@ -51,18 +51,23 @@ export {
   ReviewAction,
   ReviewDetails,
   ReviewProgress,
+  ConsolidationProgress,
   ReviewQuestion,
   ReviewSectionComponentProps,
   SectionAndPage,
   SectionDetails,
+  SectionAssignment,
   SectionState,
   SectionsStructure,
   SetStrictSectionPage,
   SortQuery,
   StageAndStatus,
   TemplateDetails,
+  TemplateCategoryDetails,
   TemplateElementState,
   TemplatePermissions,
+  TemplateInList,
+  TemplatesDetails,
   UseGetApplicationProps,
   User,
   UseGetReviewStructureForSectionProps,
@@ -71,6 +76,8 @@ export {
   LoginPayload,
   BasicStringObject,
 }
+
+type EvaluatorNode = OperatorNode | ValueNode
 
 interface ApplicationDetails {
   id: number
@@ -83,6 +90,7 @@ interface ApplicationDetails {
   current: StageAndStatus
   firstStrictInvalidPage: SectionAndPage | null
   submissionMessage?: string
+  startMessage?: string
   user?: GraphQLUser
   org?: GraphQLOrg
   config?: any
@@ -105,6 +113,7 @@ interface ApplicationProps {
 interface ApplicationStage {
   id: number
   name: string
+  number: number
   colour: string
 }
 
@@ -156,7 +165,7 @@ type DecisionOption = {
   value: boolean
 }
 
-type ElementPluginParameterValue = string | number | string[] | IQueryNode
+type ElementPluginParameterValue = string | number | string[] | EvaluatorNode
 
 interface ElementPluginParameters {
   [key: string]: ElementPluginParameterValue
@@ -172,8 +181,9 @@ interface ElementBase {
   elementIndex: number
   page: number
   category: TemplateElementCategory
-  validationExpression: IQueryNode
+  validationExpression: EvaluatorNode
   validationMessage: string | null
+  helpText: string | null
   parameters: any
 }
 
@@ -203,6 +213,7 @@ interface FullStructure {
   thisReview?: ReviewDetails | null
   elementsById?: ElementsById
   lastValidationTimestamp?: number
+  attemptSubmission: boolean
   info: ApplicationDetails
   sections: SectionsStructure
   stages: StageDetails[]
@@ -235,6 +246,7 @@ interface Page {
   name: string
   progress: ApplicationProgress
   reviewProgress?: ReviewProgress
+  consolidationProgress?: ConsolidationProgress
   changeRequestsProgress?: ChangeRequestsProgress
   state: PageElement[]
 }
@@ -244,13 +256,20 @@ type PageElement = {
   response: ResponseFull | null
   previousApplicationResponse: ApplicationResponse
   latestApplicationResponse: ApplicationResponse
+  lowerLevelReviewLatestResponse?: ReviewResponse
+  lowerLevelReviewPreviousResponse?: ReviewResponse
   thisReviewLatestResponse?: ReviewResponse
+  thisReviewPreviousResponse?: ReviewResponse
+  latestOriginalReviewResponse?: ReviewResponse
+  previousOriginalReviewResponse?: ReviewResponse
   isNewApplicationResponse?: boolean
   review?: ReviewQuestionDecision
-  assignmentId: number
+  isPendingReview?: boolean
+  reviewQuestionAssignmentId: number
   isAssigned?: boolean
   isChangeRequest?: boolean
   isChanged?: boolean
+  isActiveReviewResponse?: boolean
 }
 
 interface ApplicationProgress {
@@ -272,6 +291,9 @@ interface ResponseFull {
   hash?: string // Used in Password plugin
   files?: any[] // Used in FileUpload plugin
   other?: string // Used in RadioChoice plugin
+  selection?: string // Used in Dropdown/Radio selectors
+  code?: string // Used in ListBuilder
+  list?: any // Used in ListBuilder
   timeCreated?: Date
   reviewResponse?: ReviewResponse
   customValidation?: ValidationState
@@ -288,6 +310,7 @@ type ReviewSectionComponentProps = {
   thisReview?: ReviewDetails | null
   action: ReviewAction
   isAssignedToCurrentUser: boolean
+  isConsolidation: boolean
 }
 
 interface ReviewDetails {
@@ -300,19 +323,13 @@ interface ReviewDetails {
   reviewDecision?: ReviewDecision | null
 }
 
-interface ReviewerDetails {
-  id: number
-  firstName: string
-  lastName: string
-  current: boolean
-}
-
 interface ReviewQuestion {
   code: string
   responseId: number
   id: number
   sectionIndex: number
 }
+
 interface ReviewQuestionDecision {
   id: number
   comment?: string | null
@@ -332,13 +349,31 @@ interface SectionDetails {
   totalPages: number
 }
 
-interface ReviewProgress {
+interface BaseReviewProgress {
   totalReviewable: number
+  totalPendingReview: number
+  totalActive: number // review or application responses that are in progress (as oppose to awaiting review to be started)
+}
+
+interface ReviewProgress extends BaseReviewProgress {
   doneConform: number
   doneNonConform: number
   doneNewReviewable: number
   totalNewReviewable: number
 }
+
+interface ConsolidationProgress extends BaseReviewProgress {
+  doneAgreeConform: number
+  doneAgreeNonConform: number
+  doneDisagree: number
+  doneActiveDisagree: number
+  doneActiveAgreeConform: number
+  doneActiveAgreeNonConform: number
+  totalConform: number
+  totalNonConform: number
+}
+
+// TODO: Maybe better to replace with combined actions from ReviewerAction and AssignerAction
 enum ReviewAction {
   canContinue = 'CAN_CONTINUE',
   canView = 'CAN_VIEW',
@@ -356,17 +391,20 @@ interface ChangeRequestsProgress {
   doneChangeRequests: number
 }
 
+interface SectionAssignment {
+  action: ReviewAction
+  isAssignedToCurrentUser: boolean
+  isConsolidation: boolean
+  isReviewable: boolean
+}
+
 interface SectionState {
   details: SectionDetails
   progress?: ApplicationProgress
   reviewProgress?: ReviewProgress
-  reviewAction?: {
-    action: ReviewAction
-    isAssignedToCurrentUser: boolean
-    isReviewable: boolean
-  }
+  consolidationProgress?: ConsolidationProgress
+  assignment?: SectionAssignment
   changeRequestsProgress?: ChangeRequestsProgress
-  assigned?: ReviewerDetails
   pages: {
     [pageNum: number]: Page
   }
@@ -399,28 +437,46 @@ interface StageDetails {
   description?: string
 }
 
+interface TemplateCategoryDetails {
+  title: string
+  icon: SemanticICONS | undefined
+}
+
+interface TemplateInList {
+  id: number
+  name: string
+  code: string
+  templateCategory: TemplateCategoryDetails
+  permissions: PermissionPolicyType[]
+  hasApplyPermission: boolean
+  hasNonApplyPermissions: boolean
+  filters: Filter[]
+}
+
 interface TemplateDetails {
   id: number
   name: string
   code: string
-  filters?: Filter[]
-  categoryTitle?: string
-  categoryIcon?: SemanticICONS
   elementsIds?: number[] // TODO: Change to not optional after re-structure
   sections?: SectionDetails[] // TODO: Change to not optional after re-structure
   startMessage?: string
-  permissions?: PermissionPolicyType[]
 }
 
 interface TemplateElementState extends ElementBase {
-  isRequiredExpression: IQueryNode
-  isVisibleExpression: IQueryNode
-  isEditableExpression: IQueryNode
+  isRequiredExpression: EvaluatorNode
+  isVisibleExpression: EvaluatorNode
+  isEditableExpression: EvaluatorNode
 }
 
 interface TemplatePermissions {
   [index: string]: Array<PermissionPolicyType>
 }
+
+type TemplatesDetails = {
+  permissions: Array<PermissionPolicyType>
+  name: string
+  code: string
+}[]
 
 interface UseGetApplicationProps {
   serialNumber: string
@@ -440,6 +496,7 @@ interface User {
   email: string
   dateOfBirth?: Date | null
   organisation?: Organisation
+  sessionId: string
 }
 
 interface OrganisationSimple {

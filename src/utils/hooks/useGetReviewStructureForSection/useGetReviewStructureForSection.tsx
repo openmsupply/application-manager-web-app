@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react'
 import { useUserState } from '../../../contexts/UserState'
 import { useGetReviewResponsesQuery } from '../../generated/graphql'
 import { UseGetReviewStructureForSectionProps, FullStructure } from '../../types'
-import { getSectionIds, generateReviewStructure } from './helpers'
+import {
+  getSectionIds,
+  generateReviewStructure,
+  compileVariablesForReviewResponseQuery,
+} from './helpers'
 
 const useGetReviewStructureForSections = (props: UseGetReviewStructureForSectionProps) => {
   const [fullReviewStructure, setFullReviewStructure] = useState<FullStructure>()
@@ -13,11 +17,7 @@ const useGetReviewStructureForSections = (props: UseGetReviewStructureForSection
   const sectionIds = getSectionIds(props)
 
   const { data, error } = useGetReviewResponsesQuery({
-    variables: {
-      reviewAssignmentId: props.reviewAssignment.id as number,
-      sectionIds,
-      userId: currentUser?.userId as number,
-    },
+    variables: compileVariablesForReviewResponseQuery({ ...props, sectionIds, currentUser }),
     fetchPolicy: 'network-only',
   })
 

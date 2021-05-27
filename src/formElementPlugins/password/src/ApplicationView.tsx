@@ -1,32 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Checkbox } from 'semantic-ui-react'
 import { ApplicationViewProps } from '../../types'
-import config from '../../../config'
+import config from '../../../config.json'
+import { useUserState } from '../../../contexts/UserState'
+import strings from '../constants'
 
 const ApplicationView: React.FC<ApplicationViewProps> = ({
   element,
   parameters,
-  value,
-  // setValue
   setIsActive,
   validationState,
   onSave,
   Markdown,
   validate,
+  applicationData,
+  currentResponse,
+  allResponses,
 }) => {
   const { isEditable } = element
   const {
     placeholder,
+    description,
     confirmPlaceholder,
     maskedInput,
     label,
+    requireConfirmation = true,
     showPasswordToggle,
     validationInternal,
     validationMessageInternal,
   } = parameters
 
+  const {
+    userState: { currentUser },
+  } = useUserState()
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [confirmationIsActive, setConfirmationIsActive] = useState(false)
   const [internalValidation, setInternalValidation] = useState({
     isValid: true,
     validationMessage: validationMessageInternal,
@@ -35,7 +44,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
 
   // Reset saved value when re-loading form (since password can't be stored)
   useEffect(() => {
-    if (value !== undefined) {
+    if (currentResponse?.text !== undefined) {
       onSave({ hash: '', text: '', customValidation: { isValid: null } })
     }
   }, [])
@@ -43,18 +52,30 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   async function handleChange(e: any) {
     if (e.target.name === 'password') {
       setPassword(e.target.value)
-      const responses = { thisResponse: password || '' }
-      const customValidation = await validate(validationInternal, validationMessageInternal, {
-        objects: { responses },
-      })
-      setInternalValidation(customValidation)
-    } else setPasswordConfirm(e.target.value)
+      const responses = { thisResponse: e.target.value || '', ...allResponses }
+      // Don't show error state on change if element is being use for checking existing password
+      const shouldShowValidation = requireConfirmation ? currentResponse?.text === '' : false
+      if (shouldShowValidation) {
+        const customValidation = await validate(validationInternal, validationMessageInternal, {
+          objects: { responses, currentUser, applicationData },
+          APIfetch: fetch,
+          graphQLConnection: { fetch: fetch.bind(window), endpoint: config.serverGraphQL },
+        })
+        setInternalValidation(customValidation)
+      }
+    } else {
+      setConfirmationIsActive(true)
+      setPasswordConfirm(e.target.value)
+    }
   }
 
   async function handleLoseFocus(e: any) {
-    const responses = { thisResponse: password || '' }
+    if (e.target.name === 'passwordConfirm') setConfirmationIsActive(false)
+    const responses = { thisResponse: password || '', ...allResponses }
     const customValidation = await validate(validationInternal, validationMessageInternal, {
-      objects: { responses },
+      objects: { responses, currentUser, applicationData },
+      APIfetch: fetch,
+      graphQLConnection: { fetch: fetch.bind(window), endpoint: config.serverGraphQL },
     })
     setInternalValidation(customValidation)
     const passwordsMatch = password === passwordConfirm
@@ -62,7 +83,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
 
     onSave({
       hash,
-      text: hash !== '' ? '•••••••' : '',
+      text: hash !== '' || requireConfirmation === false ? '•••••••' : '',
       customValidation,
     })
   }
@@ -72,10 +93,11 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       <label>
         <Markdown text={label} semanticComponent="noParagraph" />
       </label>
+      <Markdown text={description} />
       <Form.Input
         name="password"
         fluid
-        placeholder={placeholder ? placeholder : 'Enter password'}
+        placeholder={placeholder ? placeholder : strings.PLACEHOLDER_DEFAULT}
         onChange={handleChange}
         onBlur={handleLoseFocus}
         onFocus={setIsActive}
@@ -91,28 +113,36 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
             : null
         }
       />
-      <Form.Input
-        name="passwordConfirm"
-        fluid
-        placeholder={confirmPlaceholder ? confirmPlaceholder : 'Confirm password'}
-        onChange={handleChange}
-        onBlur={handleLoseFocus}
-        onFocus={setIsActive}
-        value={passwordConfirm ? passwordConfirm : ''}
-        disabled={!isEditable}
-        type={masked ? 'password' : undefined}
-        error={
-          passwordConfirm !== password && passwordConfirm !== ''
-            ? {
-                content: 'Passwords do not match',
-                pointing: 'above',
-              }
-            : null
-        }
-      />
+      {requireConfirmation && (
+        <Form.Input
+          name="passwordConfirm"
+          fluid
+          placeholder={
+            confirmPlaceholder ? confirmPlaceholder : strings.PLACEHOLDER_CONFIRM_DEFAULT
+          }
+          onChange={handleChange}
+          onBlur={handleLoseFocus}
+          onFocus={setIsActive}
+          value={passwordConfirm ? passwordConfirm : ''}
+          disabled={!isEditable}
+          type={masked ? 'password' : undefined}
+          error={
+            passwordConfirm !== password && passwordConfirm !== '' && !confirmationIsActive
+              ? {
+                  content: strings.ALERT_PASSWORDS_DONT_MATCH,
+                  pointing: 'above',
+                }
+              : null
+          }
+        />
+      )}
       <Form.Field required={false}>
         {(showPasswordToggle === undefined ? true : showPasswordToggle) && (
-          <Checkbox label="Show password" checked={!masked} onClick={() => setMasked(!masked)} />
+          <Checkbox
+            label={strings.LABEL_SHOW_PASSWORD}
+            checked={!masked}
+            onClick={() => setMasked(!masked)}
+          />
         )}
       </Form.Field>
     </>

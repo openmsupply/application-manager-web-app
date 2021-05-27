@@ -2,77 +2,81 @@
          Site Overrides
 *******************************/
 
-.ui.table {
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  background: none;
-}
-.ui.table td {
-  background: @surfacesWhite;
-  padding: 0;
-}
+// For ApplicationList page
+#list-container {
+  .ui.table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background: none;
+    border: none;
+  }
+  .ui.table td {
+    background: @surfacesWhite;
+    padding: 0;
+  }
 
-.ui.table tr {
-  border: none;
-  height: 52px;
-}
+  .ui.table tr {
+    border: none;
+    height: 52px;
+  }
 
-.ui.table thead tr {
-  height: 0;
-}
+  .ui.table thead tr {
+    height: 0;
+  }
 
-.ui.table thead th {
-  padding: 0;
-}
+  .ui.table thead th {
+    padding: 0;
+  }
 
-.ui.table td:first-child,
-.ui.table thead th:first-child {
-  padding-left: @fontLarge;
-}
+  .ui.table td:first-child,
+  .ui.table thead th:first-child {
+    padding-left: @fontLarge;
+  }
 
-// Prevents column headers having different background when selected
-// and on hover
-.ui.sortable.table thead th.sorted {
-  background: none;
-}
-.ui.sortable.table thead th:hover {
-  background: none;
-  opacity: 0.8;
-}
+  // Prevents column headers having different background when selected
+  // and on hover
+  .ui.sortable.table thead th.sorted {
+    background: none;
+  }
+  .ui.sortable.table thead th:hover {
+    background: none;
+    opacity: 0.8;
+  }
 
-// Removes the faint background that is visibile behind the list row
-// when hovering
-.ui.selectable.table tbody tr:hover,
-.ui.table tbody tr td.selectable:hover {
-  background: none !important;
-  color: @selectableTextColor !important;
-}
+  // Removes the faint background that is visibile behind the list row
+  // when hovering
+  .ui.selectable.table tbody tr:hover,
+  .ui.table tbody tr td.selectable:hover {
+    background: none !important;
+    color: @selectableTextColor !important;
+  }
 
-// Column header text
-.ui.table thead tr th {
-  border: none;
-  background: none;
-  font-weight: @semiboldWeight;
-  font-size: @fontXsmall;
-  letter-spacing: @letterSpacingSmall;
-  text-transform: uppercase;
-  color: @headersInteractiveMed !important;
-}
+  // Column header text
+  .ui.table thead tr th {
+    border: none;
+    background: none;
+    font-weight: @semiboldWeight;
+    font-size: @fontXsmall;
+    letter-spacing: @letterSpacingSmall;
+    text-transform: uppercase;
+    color: @headersInteractiveMed !important;
+  }
 
-.ui.sortable.table thead th {
-  border: none;
-}
+  .ui.sortable.table thead th {
+    border: none;
+  }
 
-.ui.table tr td {
-  border: none;
-}
+  .ui.table tr td {
+    border: none;
+  }
 
-.ui.table tr td:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
+  .ui.table tr td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
 
-.ui.table tr td:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  .ui.table tr td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
 }

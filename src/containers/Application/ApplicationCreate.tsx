@@ -25,7 +25,7 @@ const ApplicationCreate: React.FC = () => {
     templateCode: type,
   })
 
-  usePageTitle(strings.PAGE_TITLE_NEW)
+  usePageTitle(strings.PAGE_TITLE_CREATE)
 
   const {
     userState: { currentUser },
@@ -66,6 +66,7 @@ const ApplicationCreate: React.FC = () => {
       templateId: template.id,
       userId: currentUser?.userId,
       orgId: currentUser?.organisation?.orgId,
+      sessionId: currentUser?.sessionId as string,
       templateSections: sections.map(({ id }) => {
         return { templateSectionId: id }
       }),
@@ -84,6 +85,8 @@ const ApplicationCreate: React.FC = () => {
       />
     )
 
+  if (!template) return null
+  // if (!template) return <ApplicationSelectType /> // TODO
   if (loading || !template?.startMessage) return <Loading />
 
   const StartButtonSegment: React.FC = () => {
@@ -97,7 +100,7 @@ const ApplicationCreate: React.FC = () => {
   }
 
   return template?.sections ? (
-    <ApplicationContainer template={template} currentUser={currentUser}>
+    <ApplicationContainer template={template}>
       <ApplicationHomeWrapper
         startMessage={template.startMessage}
         name={template.name}

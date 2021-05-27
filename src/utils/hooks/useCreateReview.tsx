@@ -1,44 +1,92 @@
-import { ApolloError } from '@apollo/client'
-import { useState } from 'react'
-import { useCreateReviewMutation } from '../../utils/generated/graphql'
-import { FullStructure } from '../types'
+import { Decision, ReviewInput, Trigger, useCreateReviewMutation } from '../generated/graphql'
+import { AssignmentDetails, FullStructure } from '../types'
+import { useGetFullReviewStructureAsync } from './useGetReviewStructureForSection'
 
-interface UseCreateReviewProps {
-  reviewAssigmentId: number
-}
+// below lines are used to get return type of the function that is returned by useCreateReviewMutation
+type UseCreateReviewMutationReturnType = ReturnType<typeof useCreateReviewMutation>
+type PromiseReturnType = ReturnType<UseCreateReviewMutationReturnType[0]>
+// hook used to start a review, , as per type definition below (returns promise that resolve with mutation result data)
+type UseCreateReview = (props: {
+  structure: FullStructure
+  assignment: AssignmentDetails
+}) => () => PromiseReturnType
 
-const useCreateReview = ({ reviewAssigmentId }: UseCreateReviewProps) => {
-  const [error, setError] = useState<ApolloError | undefined>()
+type ConstructReviewInput = (structure: FullStructure) => ReviewInput
 
-  const [createReviewMutation] = useCreateReviewMutation({
-    onError: (error) => setError(error),
+const useCreateReview: UseCreateReview = ({ structure, assignment }) => {
+  const [updateReview] = useCreateReviewMutation()
+
+  const getFullReviewStructureAsync = useGetFullReviewStructureAsync({
+    fullApplicationStructure: structure,
+    reviewAssignment: assignment,
   })
 
-  const createReviewFromStructure = async (structure: FullStructure) => {
+  const constructReviewInput: ConstructReviewInput = (structure) => {
     const elements = Object.values(structure?.elementsById || {})
-    // Exclude not assigned, not visible and missing responses
+    // Only create review for elements that are pendingReview and are assigned
     const reviewableElements = elements.filter(
-      (element) => element?.isAssigned && element?.element.isVisible && element.response?.id
+      ({ isPendingReview, isAssigned }) => isPendingReview && isAssigned
     )
 
-    const applicationResponses = reviewableElements.map((element) => ({
-      applicationResponseId: element.response?.id || 0,
-      reviewQuestionAssignmentId: element.assignmentId,
-    }))
-    const result = await createReviewMutation({
+    const reviewResponseCreate = reviewableElements.map(
+      ({ lowerLevelReviewLatestResponse, response, reviewQuestionAssignmentId }) => {
+        // link to applicaiton response or review response based on review level
+        const applicationResponseId = assignment.level > 1 ? undefined : response?.id
+        const reviewResponseLinkId =
+          assignment.level === 1 ? undefined : lowerLevelReviewLatestResponse?.id
+        return {
+          applicationResponseId,
+          reviewResponseLinkId,
+          reviewQuestionAssignmentId,
+        }
+      }
+    )
+    // See comment at the bottom of file for resulting shape
+    return {
+      trigger: Trigger.OnReviewCreate,
+      reviewAssignmentId: assignment.id,
+      reviewResponsesUsingId: {
+        create: reviewResponseCreate,
+      },
+      // create new empty decision
+      reviewDecisionsUsingId: {
+        create: [{ decision: Decision.NoDecision }],
+      },
+    }
+  }
+
+  return async () => {
+    const result = await updateReview({
       variables: {
-        reviewAssigmentId,
-        applicationResponses,
+        // See comment at the bottom of file for resulting shape
+        reviewInput: constructReviewInput(await getFullReviewStructureAsync()),
       },
     })
     if (result.errors) throw new Error(result.errors.toString())
     return result
   }
-
-  return {
-    error,
-    createReviewFromStructure,
-  }
 }
 
 export default useCreateReview
+
+/* shape of reviewInput
+{
+  "trigger": "ON_REVIEW_CREATE",
+  "reviewAssignmentId": 4,
+  "reviewResponsesUsingId": {
+    "create": [
+      {
+        "applicationResponseId": 11,
+        "reviewQuestionAssignmentId": 11
+      }
+    ]
+  },
+  "reviewDecisionsUsingId": {
+    "create": [
+      {
+        "decision": "NO_DECISION"
+      }
+    ]
+  }
+}
+*/

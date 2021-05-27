@@ -7,19 +7,22 @@ import {
   useGetTemplatesQuery,
 } from '../../utils/generated/graphql'
 import constants from '../constants'
-import { TemplateDetails, TemplatePermissions } from '../types'
+import { TemplateCategoryDetails, TemplateInList, TemplatePermissions } from '../types'
 
-type TemplatesByCategory = { [key: string]: TemplateDetails[] }
+type TemplatesByCategory = {
+  templates: TemplateInList[]
+  templateCategory: TemplateCategoryDetails
+}[]
 
 type TemplatesData = {
-  templates: TemplateDetails[]
+  templates: TemplateInList[]
   templatesByCategory: TemplatesByCategory
 }
 
 const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: boolean) => {
   const [templatesData, setTemplatesData] = useState<TemplatesData>({
     templates: [],
-    templatesByCategory: {},
+    templatesByCategory: [],
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -61,16 +64,18 @@ const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: b
   }
 }
 
-const getTemplatesByCategory = (templates: TemplateDetails[]) => {
-  const templatesByCategory: TemplatesByCategory = {}
-
+const getTemplatesByCategory = (templates: TemplateInList[]) => {
+  const templatesByCategoryObject: { [categoryTitle: string]: TemplateInList[] } = {}
   templates.forEach((template) => {
-    const title = String(template.categoryTitle)
-    if (!templatesByCategory[title]) templatesByCategory[title] = []
-    templatesByCategory[title].push(template)
+    const title = String(template?.templateCategory?.title)
+    if (!templatesByCategoryObject[title]) templatesByCategoryObject[title] = []
+    templatesByCategoryObject[title].push(template)
   })
 
-  return templatesByCategory
+  return Object.values(templatesByCategoryObject).map((templates) => ({
+    templates,
+    templateCategory: templates[0].templateCategory as TemplateCategoryDetails,
+  }))
 }
 
 const convertFromTemplateToTemplateDetails = (
@@ -78,21 +83,35 @@ const convertFromTemplateToTemplateDetails = (
   templatePermissions: TemplatePermissions
 ) => {
   const { id, code, name } = template
-  const permissions = templatePermissions[code]
-  const categoryTitle =
-    template?.templateCategory?.title || constants.DEFAULT_TEMPLATE_CATEGORY_TITLE
-  const categoryIcon = (categoryTitle === constants.DEFAULT_TEMPLATE_CATEGORY_TITLE
-    ? constants.DEFAULT_TEMPLATE_CATEGORY_ICON
-    : template?.templateCategory?.icon || undefined) as SemanticICONS
+  const permissions = templatePermissions[code] || []
 
-  const result: TemplateDetails = {
+  let categoryTitle: string = template?.templateCategory?.title || ''
+  let categoryIcon: SemanticICONS
+  if (!categoryTitle) {
+    categoryIcon = constants.DEFAULT_TEMPLATE_CATEGORY_ICON as SemanticICONS
+    categoryTitle = constants.DEFAULT_TEMPLATE_CATEGORY_TITLE
+  } else {
+    categoryIcon = (template?.templateCategory?.icon as SemanticICONS) || undefined
+  }
+
+  const hasApplyPermission = permissions.includes(PermissionPolicyType.Apply)
+  // This is already checked (permission.length > 0), but added to avoid confusion
+  const hasNonApplyPermissions = !hasApplyPermission && permissions.length > 0
+
+  const filters = extractFilters(template, permissions)
+
+  const result: TemplateInList = {
     id,
     code,
     name: String(name),
     permissions,
-    filters: extractFilters(template, permissions),
-    categoryTitle,
-    categoryIcon,
+    filters,
+    hasApplyPermission,
+    hasNonApplyPermissions,
+    templateCategory: {
+      icon: categoryIcon,
+      title: categoryTitle,
+    },
   }
 
   return result
@@ -100,15 +119,11 @@ const convertFromTemplateToTemplateDetails = (
 
 const extractFilters = (template: Template, permissions: PermissionPolicyType[]) => {
   const templateFilters = template?.templateFilterJoins?.nodes?.map(
-    (templateFilterJoin) => templateFilterJoin?.templateFilter
+    (templateFilterJoin) => templateFilterJoin?.filter
   )
 
-  const userRoleFilters = templateFilters?.filter(
-    (templateFilter) =>
-      templateFilter &&
-      permissions.find(
-        (permission) => permission.toLowerCase() === templateFilter?.userRole?.toLowerCase()
-      )
+  const userRoleFilters = templateFilters?.filter((templateFilter) =>
+    permissions.find((permission) => permission === templateFilter?.userRole)
   )
 
   return (userRoleFilters || []) as Filter[]

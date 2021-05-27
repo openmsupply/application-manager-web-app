@@ -27,10 +27,23 @@
   background-color: transparent;
   color: @darkGrey;
   font-weight: @regularWeight;
-  height: 20px;
   padding-left: 0;
 }
 
-.ui.label.simple-label > .text-blue {
-  color: blue;
+.ui.label.strong-label {
+  background-color: transparent;
+  color: @black;
+  font-weight: @semiboldWeight;
+}
+
+.ui.label.relevant-text {
+  color: @blue;
+}
+
+.ui.label.info-text {
+  color: @information;
+}
+
+.ui.label.alert-text {
+  color: @attention;
 }

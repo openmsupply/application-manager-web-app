@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useReducer } from 'react'
 import fetchUserInfo from '../utils/helpers/fetchUserInfo'
 import { TemplatePermissions, User } from '../utils/types'
+import strings from '../utils/constants'
 
 type UserState = {
   currentUser: User | null
   templatePermissions: TemplatePermissions
   isLoading: boolean
+  isNonRegistered: boolean | null
 }
 
 export type UserActions =
@@ -38,6 +40,7 @@ const reducer = (state: UserState, action: UserActions) => {
         ...state,
         currentUser: newUser,
         templatePermissions: newPermissions,
+        isNonRegistered: newUser.username === strings.USER_NONREGISTERED,
       }
     case 'setLoading':
       const { isLoading } = action
@@ -60,6 +63,7 @@ const initialState: UserState = {
   currentUser: null,
   templatePermissions: {},
   isLoading: false,
+  isNonRegistered: null,
 }
 
 // By setting the typings here, we ensure we get intellisense in VS Code

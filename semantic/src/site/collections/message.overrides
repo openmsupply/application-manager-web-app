@@ -9,5 +9,25 @@
 
 // Info message left border
 .ui.info.message {
+  border: none;
   border-left: @accentBorderWidth solid @information;
+}
+
+// Success message left border
+.ui.success.message {
+  border-left: @accentBorderWidth solid @green;
+}
+
+// Error message
+.ui.error.message {
+  border-left: @accentBorderWidth solid @attention;
+}
+
+.ui.error.message h1,
+.ui.error.message h2,
+.ui.error.message h3,
+.ui.error.message h4,
+.ui.error.message h5,
+.ui.error.message h6 {
+  color: @errorHeaderColor;
 }

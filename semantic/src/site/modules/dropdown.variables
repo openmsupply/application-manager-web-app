@@ -2,4 +2,4 @@
     User Variable Overrides
 *******************************/
 
-@selectionBorder: 1px solid #777777;
+@selectionBorder: 1px solid @borderColourDark;

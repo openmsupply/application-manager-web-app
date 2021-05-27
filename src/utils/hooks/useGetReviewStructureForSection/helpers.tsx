@@ -4,19 +4,27 @@ import {
   ReviewResponse,
   ReviewQuestionAssignment,
   TemplateElement,
+  ReviewResponseStatus,
 } from '../../generated/graphql'
 import {
+  addChangeRequestForReviewer,
   addElementsById,
   addSortedSectionsAndPages,
-  addThisReviewResponses,
-  generateReviewProgress,
+  generateConsolidationValidity,
+  generateConsolidatorResponsesProgress,
+  generateReviewerChangesRequestedProgress,
+  generateReviewerResponsesProgress,
   generateReviewSectionActions,
+  generateReviewValidity,
 } from '../../helpers/structure'
+import addReviewResponses from '../../helpers/structure/addReviewResponses'
+
 import {
   UseGetReviewStructureForSectionProps,
   User,
   FullStructure,
   SectionState,
+  PageElement,
 } from '../../types'
 
 const getSectionIds = ({
@@ -27,13 +35,29 @@ const getSectionIds = ({
   Object.values(fullApplicationStructure.sections).map((section) => section.details.id) ||
   []
 
+interface CompileVariablesForReviewResponseQueryProps extends UseGetReviewStructureForSectionProps {
+  currentUser?: User | null
+  sectionIds: number[]
+}
+
 type GenerateReviewStructure = (
-  props: UseGetReviewStructureForSectionProps & {
-    currentUser?: User | null
-    sectionIds: number[]
-    data: GetReviewResponsesQuery
-  }
+  props: CompileVariablesForReviewResponseQueryProps & { data: GetReviewResponsesQuery }
 ) => FullStructure
+
+// Since useGetReviewResponseQuery is used in both useGetReviewStructureForSection and useGetReviewStructureForSectionAsync, this helper aids in computing variables for the query
+const compileVariablesForReviewResponseQuery = ({
+  reviewAssignment,
+  sectionIds,
+  fullApplicationStructure,
+  currentUser,
+}: CompileVariablesForReviewResponseQueryProps) => ({
+  reviewAssignmentId: reviewAssignment.id as number,
+  sectionIds,
+  userId: currentUser?.userId as number,
+  previousLevel: reviewAssignment.level - 1,
+  stageNumber: reviewAssignment.stage.number,
+  applicationId: fullApplicationStructure.info.id,
+})
 
 const generateReviewStructure: GenerateReviewStructure = ({
   data,
@@ -46,33 +70,44 @@ const generateReviewStructure: GenerateReviewStructure = ({
   // mutate fullApplicationStructure
   let newStructure: FullStructure = cloneDeep(fullApplicationStructure)
 
+  const { reviewQuestionAssignments, level, review } = reviewAssignment
+
   // This is usefull for linking assignments to elements
   newStructure = addElementsById(newStructure)
   newStructure = addSortedSectionsAndPages(newStructure)
 
-  newStructure = addIsAssigned(newStructure, reviewAssignment.reviewQuestionAssignments)
+  newStructure = addIsAssigned(newStructure, reviewQuestionAssignments)
 
   // here we add responses from other review (not from this review assignmnet)
 
   setIsNewApplicationResponse(newStructure)
 
-  if ((data.reviewAssignment?.reviews?.nodes?.length || 0) > 1)
-    console.error(
-      'More then one review associated with reviewAssignment with id',
-      reviewAssignment.id
-    )
-  // There will always just be one review assignment linked to a review. (since review is related to reviewAssignment, many to one relation is created)
-  const reviewResponses = data?.reviewAssignment?.reviews?.nodes[0]?.reviewResponses.nodes
-  if (reviewResponses) {
-    newStructure = addThisReviewResponses({
-      structure: newStructure,
-      sortedReviewResponses: reviewResponses as ReviewResponse[], // Sorted in useGetReviewResponsesQuery
-    })
-  }
-  // review info comes from reviewAssignment that's passed to this hook
-  newStructure.thisReview = reviewAssignment.review
+  // thisReviewLatestResponse and thisReviewPreviousResponse
+  // lowerLevelReviewLatestResponse and previousPreviousReviewLevelResponse
+  // latestOriginalReviewResponse and previousOriginalReviewResponse
+  newStructure = addAllReviewResponses(newStructure, data)
 
-  generateReviewProgress(newStructure)
+  // review info comes from reviewAssignment that's passed to this hook
+  newStructure.thisReview = review
+
+  // when changes requested by consolidator (included in thisReviewPreviousResponse OR thisReviewLatestResponse)
+  addChangeRequestForReviewer(newStructure)
+
+  newStructure = addIsPendingReview(newStructure, level)
+  newStructure = addIsActiveReviewResponse(newStructure)
+
+  // This needs to run before generateReveiwerProgress or generateConsolidatorProgress
+  // since the reviews with isChangeRequest (and not changed) need to be removed from done accountings
+  generateReviewerChangesRequestedProgress(newStructure)
+
+  if (level === 1) {
+    generateReviewerResponsesProgress(newStructure)
+    generateReviewValidity(newStructure)
+  } else {
+    // This progress is NOT removing done from changes requested not changed yet!
+    generateConsolidatorResponsesProgress(newStructure)
+    generateConsolidationValidity(newStructure)
+  }
 
   // filter by supplied sections or by all sections if none supplied to the hook
   const sections = getFilteredSections(sectionIds, newStructure.sortedSections || [])
@@ -101,6 +136,59 @@ const getFilteredSections = (sectionIds: number[], sections: SectionState[]) => 
   )
 }
 
+const addIsPendingReview = (structure: FullStructure, reviewLevel: number) => {
+  const isPendingReview =
+    reviewLevel === 1
+      ? (element: PageElement) =>
+          !!element.response &&
+          element.response?.id !== element?.thisReviewLatestResponse?.applicationResponseId
+      : (element: PageElement) =>
+          !!element?.lowerLevelReviewLatestResponse &&
+          element.lowerLevelReviewLatestResponse?.id !==
+            element?.thisReviewLatestResponse?.reviewResponseLinkId
+
+  Object.values(structure.elementsById || {}).forEach((element) => {
+    element.isPendingReview = isPendingReview(element)
+  })
+  return structure
+}
+// When consolidation is ongoing for one review, and change request was submitted for the other one, the only 'active' or 'editable' review response is the one not in change request (submitted)
+const addIsActiveReviewResponse = (structure: FullStructure) => {
+  Object.values(structure.elementsById || {}).forEach((element) => {
+    element.isActiveReviewResponse =
+      element?.thisReviewLatestResponse?.status === ReviewResponseStatus.Draft
+  })
+  return structure
+}
+
+const addAllReviewResponses = (structure: FullStructure, data: GetReviewResponsesQuery) => {
+  // add thisReviewLatestResponse and thisReviewPreviousResponse
+  // includes for a consolidation also has reviewResponsesByReviewResponseLinkId with Consolidator decision
+  structure = addReviewResponses(
+    structure,
+    data?.thisReviewResponses?.nodes as ReviewResponse[], // Sorted in useGetReviewResponsesQuery
+    (element, response) => (element.thisReviewLatestResponse = response),
+    (element, response) => (element.thisReviewPreviousResponse = response)
+  )
+
+  // add lowerLevelReviewLatestResponse and previousPreviousReviewLevelResponse
+  structure = addReviewResponses(
+    structure,
+    data?.previousLevelReviewResponses?.nodes as ReviewResponse[], // Sorted in useGetReviewResponsesQuery
+    (element, response) => (element.lowerLevelReviewLatestResponse = response),
+    (element, response) => (element.lowerLevelReviewPreviousResponse = response)
+  )
+  // add latestOriginalReviewResponse and previousOriginalReviewResponse
+  structure = addReviewResponses(
+    structure,
+    data?.originalReviewResponses?.nodes as ReviewResponse[], // Sorted in useGetReviewResponsesQuery
+    (element, response) => (element.latestOriginalReviewResponse = response),
+    (element, response) => (element.previousOriginalReviewResponse = response)
+  )
+
+  return structure
+}
+
 const addIsAssigned = (
   newStructure: FullStructure,
   reviewQuestionAssignment: ReviewQuestionAssignment[]
@@ -112,9 +200,9 @@ const addIsAssigned = (
     if (!assignedElement) return
 
     assignedElement.isAssigned = true
-    assignedElement.assignmentId = id
+    assignedElement.reviewQuestionAssignmentId = id
   })
   return newStructure
 }
 
-export { generateReviewStructure, getSectionIds }
+export { generateReviewStructure, getSectionIds, compileVariablesForReviewResponseQuery }

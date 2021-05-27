@@ -1,8 +1,8 @@
 import evaluateExpression from '@openmsupply/expression-evaluator'
-import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import { ApplicationResponse, ReviewResponse } from '../../generated/graphql'
 import {
   ElementState,
+  EvaluatorNode,
   EvaluatorParameters,
   FullStructure,
   PageElement,
@@ -108,7 +108,7 @@ async function evaluateAndValidateElements(
 }
 
 const evaluateExpressionWithFallBack = (
-  expression: IQueryNode,
+  expression: EvaluatorNode,
   evaluationParameters: EvaluatorParameters,
   fallBackValue: any
 ) =>

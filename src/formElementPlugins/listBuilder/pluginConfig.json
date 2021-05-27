@@ -1,0 +1,11 @@
+{
+  "isCore": true,
+  "code": "listBuilder",
+  "displayName": "List Builder",
+  "parameterLoadingValues": {
+    "label": "Loading...",
+    "description": ""
+  },
+  "//": "categories types: 'Input'|'Informative'",
+  "category": "Input"
+}

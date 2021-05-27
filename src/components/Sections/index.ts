@@ -1,5 +1,15 @@
+import {
+  ApplicationProgressBar,
+  ConsolidationSectionProgressBar,
+  ReviewSectionProgressBar,
+} from './SectionProgress'
 import SectionsList from './SectionsList'
-import ReviewStatusOrProgress from './SectionProgress'
 import SectionWrapper from './SectionWrapper'
 
-export { SectionsList, SectionWrapper, ReviewStatusOrProgress }
+export {
+  ApplicationProgressBar,
+  ConsolidationSectionProgressBar,
+  ReviewSectionProgressBar,
+  SectionsList,
+  SectionWrapper,
+}

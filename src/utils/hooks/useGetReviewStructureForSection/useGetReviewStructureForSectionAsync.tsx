@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react'
 import { useUserState } from '../../../contexts/UserState'
 import { useGetReviewResponsesQuery } from '../../generated/graphql'
 import { UseGetReviewStructureForSectionProps, FullStructure } from '../../types'
-import { getSectionIds, generateReviewStructure } from './helpers'
+import {
+  getSectionIds,
+  generateReviewStructure,
+  compileVariablesForReviewResponseQuery,
+} from './helpers'
 
 interface AwaitModeResolver {
   awaitMethod: (result: FullStructure | null) => void
@@ -18,11 +22,7 @@ const useGetReviewStructureForSectionAsync = (props: UseGetReviewStructureForSec
   const sectionIds = getSectionIds(props)
 
   const { data, error } = useGetReviewResponsesQuery({
-    variables: {
-      reviewAssignmentId: props.reviewAssignment.id as number,
-      sectionIds,
-      userId: currentUser?.userId as number,
-    },
+    variables: compileVariablesForReviewResponseQuery({ ...props, sectionIds, currentUser }),
     fetchPolicy: 'network-only',
     skip: !awaitModeResolver,
   })

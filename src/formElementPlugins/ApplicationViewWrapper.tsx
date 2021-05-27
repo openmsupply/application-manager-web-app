@@ -3,27 +3,26 @@ import { ErrorBoundary, pluginProvider } from '.'
 import { ApplicationViewWrapperProps, PluginComponents, ValidationState } from './types'
 import { useUpdateResponseMutation } from '../utils/generated/graphql'
 import {
+  EvaluatorNode,
   EvaluatorParameters,
   LooseString,
   ResponseFull,
   ElementPluginParameters,
-  ElementPluginParameterValue,
 } from '../utils/types'
 import { useUserState } from '../contexts/UserState'
 import validate from './defaultValidate'
 import evaluateExpression from '@openmsupply/expression-evaluator'
 import { Form, Icon, Loader } from 'semantic-ui-react'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
-import { IQueryNode } from '@openmsupply/expression-evaluator/lib/types'
 import strings from '../utils/constants'
 import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
 import messages from '../utils/messages'
-import globalConfig from '../config'
+import globalConfig from '../config.json'
 
 const graphQLEndpoint = globalConfig.serverGraphQL
-const restEndpoint = globalConfig.serverREST
 
 const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) => {
+  const [responseMutation] = useUpdateResponseMutation()
   const {
     element,
     isStrictPage,
@@ -31,6 +30,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
     currentResponse,
     allResponses,
     applicationData,
+    onSaveUpdateMethod = responseMutation,
   } = props
 
   const {
@@ -46,41 +46,34 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
 
   const isValid = currentResponse?.isValid || true
 
-  const [responseMutation] = useUpdateResponseMutation()
   const { setState: setUpdateTrackerState } = useFormElementUpdateTracker()
 
   const {
     userState: { currentUser },
   } = useUserState()
-  const [value, setValue] = useState<any>(currentResponse?.text)
   const [validationState, setValidationState] = useState<ValidationState>({
     isValid,
   })
   const [evaluatedParameters, setEvaluatedParameters] = useState({})
 
-  // This value prevents the plugin component from rendering until parameters have been evaluated, otherwise React throws an error when trying to pass an Object in as a prop value
-  const [parametersReady, setParametersReady] = useState(false)
-
   const { ApplicationView, config }: PluginComponents = pluginProvider.getPluginElement(pluginCode)
 
-  const dynamicParameters = config?.dynamicParameters
-  const dynamicExpressions =
-    dynamicParameters && extractDynamicExpressions(dynamicParameters, parameters)
+  const parameterLoadingValues = config?.parameterLoadingValues
+  const [simpleParameters, parameterExpressions] = buildParameters(
+    parameters,
+    parameterLoadingValues
+  )
 
   // Update dynamic parameters when responses change
   useEffect(() => {
-    evaluateDynamicParameters(dynamicExpressions as ElementPluginParameters, {
-      objects: {
-        responses: allResponses,
-        currentUser,
-        applicationData,
-        endpoints: { restEndpoint, graphQLEndpoint },
-      },
-      APIfetch: fetch,
-      graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
-    }).then((result: ElementPluginParameters) => {
-      setEvaluatedParameters(result)
-      setParametersReady(true)
+    Object.entries(parameterExpressions).forEach(([field, expression]) => {
+      evaluateExpression(expression as EvaluatorNode, {
+        objects: { responses: allResponses, currentUser, applicationData },
+        APIfetch: fetch,
+        graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
+      }).then((result: any) =>
+        setEvaluatedParameters((prevState) => ({ ...prevState, [field]: result }))
+      )
     })
   }, [allResponses])
 
@@ -108,15 +101,24 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   }
 
   const onSave = async (jsonValue: ResponseFull) => {
-    if (!jsonValue.customValidation) {
+    if (!jsonValue?.customValidation) {
       // Validate and Save response -- generic
-      const validationResult: ValidationState = await onUpdate(jsonValue.text)
-      if (jsonValue.text !== undefined)
-        await responseMutation({
+      const validationResult: ValidationState = await onUpdate(jsonValue?.text)
+      if (jsonValue?.text !== undefined)
+        await onSaveUpdateMethod({
           variables: {
             id: currentResponse?.id as number,
             value: jsonValue,
             isValid: validationResult.isValid,
+          },
+        })
+      if (jsonValue === null)
+        // Reset response if cleared
+        await onSaveUpdateMethod({
+          variables: {
+            id: currentResponse?.id as number,
+            value: null,
+            isValid: null,
           },
         })
       setUpdateTrackerState({
@@ -128,7 +130,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
       const { isValid, validationMessage } = jsonValue.customValidation
       setValidationState({ isValid, validationMessage })
       delete jsonValue.customValidation // Don't want to save this field
-      await responseMutation({
+      await onSaveUpdateMethod({
         variables: {
           id: currentResponse?.id as number,
           value: jsonValue,
@@ -146,7 +148,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
     // Tells application state that a plugin field is in focus
     setUpdateTrackerState({
       type: 'setElementEntered',
-      textValue: value || '',
+      textValue: currentResponse?.text || '',
     })
   }
 
@@ -159,9 +161,7 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
       initialValue={currentResponse}
       {...props}
       {...element}
-      parameters={{ ...parameters, ...evaluatedParameters }}
-      value={value}
-      setValue={setValue}
+      parameters={{ ...simpleParameters, ...evaluatedParameters }}
       setIsActive={setIsActive}
       Markdown={Markdown}
       validationState={validationState || { isValid: true }}
@@ -174,24 +174,20 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
     if (!changesRequired) return null
     const { isChangeRequest, isChanged } = changesRequired
     const isValid = validationState ? (validationState.isValid as boolean) : true
-    const displayResponseWarning = isChangeRequest || (isChanged && isValid)
+    const borderClass = isChangeRequest || (isChanged && isValid) ? 'element-warning-border' : ''
+    const borderColorClass = isChangeRequest ? (!isChanged ? 'alert-border' : '') : 'blue-border'
+
     return (
-      <div
-        style={{
-          border: displayResponseWarning ? 'solid 1px' : 'transparent',
-          borderColor: isChangeRequest ? (isChanged ? 'black' : 'red') : 'blue',
-          borderRadius: 7,
-          padding: displayResponseWarning ? 4 : 5,
-          margin: 5,
-        }}
-      >
-        {parametersReady ? (
-          <Form.Field required={isRequired}>{PluginComponent}</Form.Field>
-        ) : (
-          <Loader active inline />
-        )}
-        <ChangesToResponseWarning {...changesRequired} isValid={isValid} />
-      </div>
+      <>
+        <Form.Field
+          className={`element-application-view ${borderClass} ${borderColorClass}`}
+          required={isRequired}
+        >
+          {PluginComponent}
+          <ChangesToResponseWarning {...changesRequired} isValid={isValid} />
+        </Form.Field>
+        : <Loader active inline />
+      </>
     )
   }
 
@@ -200,10 +196,10 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
       <React.Suspense fallback="Loading Plugin">
         {changesRequired ? (
           getResponseAndBorder()
-        ) : parametersReady ? (
-          <Form.Field required={isRequired}>{PluginComponent}</Form.Field>
         ) : (
-          <Loader active inline />
+          <Form.Field className="element-application-view" required={isRequired}>
+            {PluginComponent}
+          </Form.Field>
         )}
       </React.Suspense>
     </ErrorBoundary>
@@ -223,26 +219,18 @@ const ChangesToResponseWarning: React.FC<ChangesToResponseWarningProps> = ({
   reviewerComment,
   isValid,
 }) => {
-  const displayResponseWarning = isChangeRequest || (isChanged && isValid)
+  const visibilityClass = isChangeRequest || (isChanged && isValid) ? '' : 'invisible'
+  const colourClass = isChangeRequest ? (!isChanged ? 'alert' : '') : 'interactive-color'
+  const iconSelection = isChangeRequest
+    ? isChanged
+      ? 'comment alternate outline'
+      : 'exclamation circle'
+    : 'info circle'
   return (
-    <div
-      style={{
-        color: isChangeRequest && isChanged && isValid ? 'grey' : 'red',
-        visibility: displayResponseWarning ? 'visible' : 'hidden',
-      }}
-    >
-      <Icon
-        name={
-          isChangeRequest
-            ? isChanged
-              ? 'comment alternate outline'
-              : 'exclamation circle'
-            : 'info circle'
-        }
-        color={isChangeRequest ? (isChanged ? 'grey' : 'red') : 'blue'}
-      />
+    <p className={`${colourClass} ${visibilityClass} reviewer-comment`}>
+      <Icon name={iconSelection} className="colourClass" />
       {isChangeRequest ? reviewerComment : messages.APPLICATION_OTHER_CHANGES_MADE}
-    </div>
+    </p>
   )
 }
 
@@ -260,34 +248,19 @@ const getDefaultIndex = (defaultOption: string | number, options: string[]) => {
   } else return options.indexOf(defaultOption)
 }
 
-export const extractDynamicExpressions = (
-  fields: string[],
-  parameters: ElementPluginParameters
+export const buildParameters = (
+  parameters: ElementPluginParameters,
+  parameterLoadingValues: any
 ) => {
-  const expressionObject: ElementPluginParameters = {}
-  fields.forEach((field) => {
-    expressionObject[field] = parameters[field]
-  })
-  return expressionObject
-}
-
-export const evaluateDynamicParameters = async (
-  dynamicExpressions: ElementPluginParameters,
-  evaluatorParameters: EvaluatorParameters
-) => {
-  if (!dynamicExpressions) return {}
-  const fields = Object.keys(dynamicExpressions)
-  const expressions = Object.values(
-    dynamicExpressions
-  ).map((expression: ElementPluginParameterValue) =>
-    evaluateExpression(expression, evaluatorParameters)
-  )
-  const evaluatedExpressions: any = await Promise.all(expressions)
-  const evaluatedParameters: ElementPluginParameters = {}
-  for (let i = 0; i < fields.length; i++) {
-    evaluatedParameters[fields[i]] = evaluatedExpressions[i]
+  const simpleParameters: any = {}
+  const parameterExpressions: any = {}
+  for (const [key, value] of Object.entries(parameters)) {
+    if (value instanceof Object && !Array.isArray(value) && 'operator' in value) {
+      parameterExpressions[key] = value
+      simpleParameters[key] = parameterLoadingValues?.[key] ?? 'Loading...'
+    } else simpleParameters[key] = value
   }
-  return evaluatedParameters
+  return [simpleParameters, parameterExpressions]
 }
 
 const calculateValidationState = async ({
@@ -299,7 +272,7 @@ const calculateValidationState = async ({
   evaluationParameters,
   currentResponse,
 }: {
-  validationExpression: IQueryNode | undefined
+  validationExpression: EvaluatorNode | undefined
   validationMessage: string | null | undefined
   isRequired: boolean | undefined
   isStrictPage: boolean | undefined

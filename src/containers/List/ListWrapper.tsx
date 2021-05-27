@@ -28,13 +28,19 @@ const ListWrapper: React.FC = () => {
   const { query, updateQuery } = useRouter()
   const { type, userRole } = query
   const {
-    userState: { templatePermissions },
+    userState: { templatePermissions, isNonRegistered },
+    logout,
   } = useUserState()
   const [columns, setColumns] = useState<ColumnDetails[]>([])
   const [searchText, setSearchText] = useState<string>(query?.search)
   const [sortQuery, setSortQuery] = useState<SortQuery>(getInitialSortQuery(query?.sortBy))
   const [applicationsRows, setApplicationsRows] = useState<ApplicationListRow[]>()
   usePageTitle(strings.PAGE_TITLE_LIST)
+
+  if (isNonRegistered) {
+    logout()
+    return null
+  }
 
   const { error, loading, applications, applicationCount } = useListApplications(query)
 
@@ -76,7 +82,6 @@ const ListWrapper: React.FC = () => {
       ? userRole
       : findUserRole(templatePermissions, redirectType)
     if (redirectType && redirectUserRole) {
-      console.log('Redirecting...')
       updateQuery({ type: redirectType, userRole: redirectUserRole }, true)
     } else {
       // To-Do: Show 404 if no default found

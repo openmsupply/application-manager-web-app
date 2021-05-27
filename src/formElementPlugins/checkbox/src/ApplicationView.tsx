@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Checkbox, Form } from 'semantic-ui-react'
 import { ApplicationViewProps } from '../../types'
 import strings from '../constants'
+import config from '../pluginConfig.json'
 
 interface Checkbox {
   label: string
@@ -29,7 +30,14 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     getInitialState(initialValue, checkboxes)
   )
 
+  // When checkbox array changes after initial load (e.g. when its being dynamically loaded from an API)
   useEffect(() => {
+    setCheckboxElements(getInitialState(initialValue, checkboxes))
+  }, [checkboxes])
+
+  useEffect(() => {
+    // Don't save response if parameters are still loading
+    if (checkboxElements[0].text === config.parameterLoadingValues.label) return
     onSave({
       text: createTextString(checkboxElements),
       values: Object.fromEntries(
