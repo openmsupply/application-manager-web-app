@@ -37,7 +37,7 @@ const ScrollableAttachment: React.FC<{
   const ref = useRef<HTMLParagraphElement>(null)
   addScrollabe(code, ref)
 
-  return <p ref={ref} />
+  return <p className="scrollable-attachment" ref={ref} />
 }
 
 export default useScrollableAttachments

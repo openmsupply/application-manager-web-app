@@ -115,7 +115,7 @@ const ReviewPage: React.FC<{
             isActive={isSectionActive(section.details.code)}
             toggleSection={toggleSection(section.details.code)}
             section={section}
-            failed={isMissingReviewResponses(section.details.code)}
+            isSectionInvalid={isMissingReviewResponses(section.details.code)}
             extraSectionTitleContent={(section: SectionState) => (
               <div>
                 {isMissingReviewResponses(section.details.code) && (

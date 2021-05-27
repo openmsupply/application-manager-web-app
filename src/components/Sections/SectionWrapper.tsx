@@ -20,7 +20,7 @@ interface SectionProps {
   isUpdating?: boolean
   serial: string
   canEdit?: boolean
-  failed?: boolean
+  isSectionInvalid?: boolean
 }
 
 const SectionWrapper: React.FC<SectionProps> = ({
@@ -38,33 +38,32 @@ const SectionWrapper: React.FC<SectionProps> = ({
   isSummary = false,
   isUpdating = false,
   canEdit = false,
-  failed,
+  isSectionInvalid = false,
 }) => {
   const { details, pages } = section
   const stickyRef = useRef(null)
   const {
     userState: { isNonRegistered },
   } = useUserState()
+
+  const validationStateStyle = isSectionInvalid ? 'invalid-section' : ''
+
   return (
     <div ref={stickyRef} key={`${section.details.id}`}>
-      <Accordion className="summary-section" style={sectionStyles.sup(!!failed)}>
+      <Accordion className={`summary-section ${validationStateStyle}`}>
         <Accordion.Title active={isActive} onClick={toggleSection}>
           <Sticky
             context={stickyRef}
             offset={!isNonRegistered ? styleConstants.HEADER_OFFSET : 0}
             bottomOffset={styleConstants.BOTTOM_OFFSET}
           >
-            <Grid columns="equal" className="summary-section-header">
-              <Grid.Column width={10}>
-                <Header as="h4" content={details.title} />
-              </Grid.Column>
-              <Grid.Column textAlign="left">
+            <div className="summary-section-header">
+              <Header as="h4" content={details.title} />
+              <div className="extra-content">
                 {extraSectionTitleContent && extraSectionTitleContent(section)}
-              </Grid.Column>
-              <Grid.Column textAlign="right" width={1}>
-                <Icon name={isActive ? 'chevron up' : 'chevron down'} className="dark-grey" />
-              </Grid.Column>
-            </Grid>
+              </div>
+              <Icon name={isActive ? 'chevron up' : 'chevron down'} className="dark-grey" />
+            </div>
           </Sticky>
         </Accordion.Title>
         <Accordion.Content active={isActive}>
@@ -94,14 +93,6 @@ const SectionWrapper: React.FC<SectionProps> = ({
       </Accordion>
     </div>
   )
-}
-
-// Styles - TODO: Move to LESS || Global class style (semantic)
-const sectionStyles = {
-  sup: (failed: boolean) =>
-    ({
-      border: failed ? '2px solid pink' : 'none',
-    } as CSSProperties),
 }
 
 export default SectionWrapper

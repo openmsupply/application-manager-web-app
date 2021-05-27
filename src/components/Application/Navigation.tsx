@@ -105,23 +105,23 @@ const Navigation: React.FC<NavigationProps> = ({
   }
 
   return (
-    <Container id="app-navigation">
+    <Container>
       <div id="app-navigation-content">
-        <div id="prev-next-links">
+        <div className="prev-next-links">
           <p className={`clickable nav-button ${isFirstPage ? 'invisible' : ''}`}>
             <a onClick={previousButtonHandler}>
-              <Icon name="chevron left" />
               <strong>{strings.BUTTON_PREVIOUS}</strong>
             </a>
           </p>
           <p className={`clickable nav-button ${isLastPage ? 'invisible' : ''}`}>
             <a onClick={nextPageButtonHandler}>
               <strong>{strings.BUTTON_NEXT}</strong>
-              <Icon name="chevron right" />
             </a>
           </p>
         </div>
-        <Button primary onClick={summaryButtonHandler} content={strings.BUTTON_SUMMARY} />
+        <div className="button-container">
+          <Button primary onClick={summaryButtonHandler} content={strings.BUTTON_SUMMARY} />
+        </div>
       </div>
     </Container>
   )

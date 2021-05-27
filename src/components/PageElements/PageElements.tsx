@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Icon, Segment } from 'semantic-ui-react'
+import { Form, Icon, Label, Segment } from 'semantic-ui-react'
 import {
   ApplicationDetails,
   ElementState,
@@ -9,7 +9,7 @@ import {
 } from '../../utils/types'
 import { ApplicationViewWrapper } from '../../formElementPlugins'
 import { ApplicationViewWrapperProps } from '../../formElementPlugins/types'
-import { TemplateElementCategory } from '../../utils/generated/graphql'
+import { ReviewResponse, TemplateElementCategory } from '../../utils/generated/graphql'
 import Markdown from '../../utils/helpers/semanticReactMarkdown'
 import DecisionArea from '../Review/DecisionArea'
 import SummaryInformationElement from './Elements/SummaryInformationElement'
@@ -17,6 +17,8 @@ import ApplicantResponseElement from './Elements/ApplicantResponseElement'
 import { useRouter } from '../../utils/hooks/useRouter'
 import ConsolidateReviewDecision from './Elements/ConsolidateReviewDecision'
 import ReviewApplicantResponse from './Elements/ReviewApplicantResponse'
+import ReviewResponseElement from './Elements/ReviewResponseElement'
+import strings from '../../utils/constants'
 
 interface PageElementProps {
   elements: PageElement[]
@@ -64,7 +66,7 @@ const PageElements: React.FC<PageElementProps> = ({
                 ? {
                     isChangeRequest: isChangeRequest as boolean,
                     isChanged: isChanged as boolean,
-                    reviewerComment: currentReview?.comment || '',
+                    reviewerComment: currentReview?.comment || undefined,
                   }
                 : undefined
 
@@ -109,10 +111,17 @@ const PageElements: React.FC<PageElementProps> = ({
     return (
       <Form>
         {visibleElements.map((state) => {
-          const { element, isChanged, isChangeRequest, latestApplicationResponse } = state
+          const {
+            element,
+            isChanged,
+            isChangeRequest,
+            latestApplicationResponse,
+            previousApplicationResponse,
+          } = state
 
           const isResponseUpdated = !!isChangeRequest || !!isChanged
-
+          const reviewResponse = previousApplicationResponse?.reviewResponses.nodes[0]
+          const canRenderReviewResponse = !!isChangeRequest && reviewResponse
           // Applicant can edit the summary page when is first submission (canEdit true when draft)
           // Or when changes required for any question that have been updated (isUpdating true)
           const canApplicantEdit = isUpdating ? isResponseUpdated && canEdit : canEdit
@@ -125,9 +134,11 @@ const PageElements: React.FC<PageElementProps> = ({
               </RenderElementWrapper>
             )
           }
+
           return (
-            <RenderElementWrapper key={element.code} isResponseUpdated={isResponseUpdated}>
+            <RenderElementWrapper key={element.code}>
               <ApplicantResponseElement
+                key="application-response"
                 applicationResponse={latestApplicationResponse}
                 summaryViewProps={summaryViewProps}
                 isResponseUpdated={isResponseUpdated}
@@ -138,6 +149,20 @@ const PageElements: React.FC<PageElementProps> = ({
                   />
                 )}
               </ApplicantResponseElement>
+              {canRenderReviewResponse && (
+                <>
+                  <ReviewResponseElement
+                    key="review-response"
+                    shouldDim={true}
+                    shouldHideDecision={true}
+                    isCurrentReview={false}
+                    isConsolidation={false}
+                    reviewResponse={reviewResponse as ReviewResponse}
+                  />
+                  {/* div below forced border on review response to be square */}
+                  <div />
+                </>
+              )}
             </RenderElementWrapper>
           )
         })}
@@ -148,7 +173,7 @@ const PageElements: React.FC<PageElementProps> = ({
   // Review & Consolidation
   if (isReview) {
     return (
-      <div>
+      <div className="flex-column">
         <Form>
           {visibleElements.map(
             ({
@@ -211,23 +236,23 @@ const PageElements: React.FC<PageElementProps> = ({
   return null
 }
 
-interface RenderElementWrapperProps {
-  isResponseUpdated?: boolean
-}
-const RenderElementWrapper: React.FC<RenderElementWrapperProps> = ({
-  isResponseUpdated = false,
-  children,
-}) => {
-  const backgroundColour = isResponseUpdated ? 'changeable-background' : ''
-  return (
-    <Segment basic className={`summary-page-element ${backgroundColour}`}>
-      {children}
-    </Segment>
-  )
-}
+const RenderElementWrapper: React.FC = ({ children }) => (
+  <Segment basic className="summary-page-element-container">
+    {children}
+  </Segment>
+)
 
-const UpdateIcon: React.FC<{ onClick: Function }> = ({ onClick }) => (
-  <Icon className="clickable" name="pencil" size="large" color="blue" onClick={onClick} />
+export const UpdateIcon: React.FC<{ onClick: Function }> = ({ onClick }) => (
+  <Icon className="clickable" name="edit" size="large" color="blue" onClick={onClick} />
+)
+
+export const UpdatedLabel: React.FC = () => (
+  <div className="updated-label">
+    <Icon name="circle" size="tiny" color="blue" />
+    <Label className="simple-label">
+      <strong>{strings.LABEL_UPDATED}</strong>
+    </Label>
+  </div>
 )
 
 export default PageElements

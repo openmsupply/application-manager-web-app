@@ -163,6 +163,7 @@
 @applicationListWidth: 900px; // Could be wider if table is getting cluttered?
 @applicationSummaryWidth: 900px;
 @applicationSummaryContentWidth: 700px;
+@applicationFormContentWdith: clamp(350px, 70%, 480px);
 
 // Box shadow -- used in Login form
 @basicBoxShadow: @boxShadowColor 0px -3px 10px 0px;

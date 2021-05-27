@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ApplicationStatus } from '../../../utils/generated/graphql'
 import { CellProps } from '../../../utils/types'
 import strings from '../../../utils/constants'
+import { Icon } from 'semantic-ui-react'
 
 const ApplicantActionCell: React.FC<CellProps> = ({ application: { status, serial } }) => {
   let action = ''
@@ -10,12 +11,17 @@ const ApplicantActionCell: React.FC<CellProps> = ({ application: { status, seria
   if (status === ApplicationStatus.ChangesRequired) action = strings.ACTION_UPDATE
   if (status === ApplicationStatus.Draft) action = strings.ACTION_CONTINUE
 
-  return (
-    <>
+  if (!action)
+    return (
       <Link className="user-action" to={`/application/${serial}`}>
-        {action}
+        <Icon name="angle right" />
       </Link>
-    </>
+    )
+
+  return (
+    <Link className="user-action" to={`/application/${serial}`}>
+      {action}
+    </Link>
   )
 }
 

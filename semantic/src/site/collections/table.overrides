@@ -33,15 +33,21 @@
     padding-left: @fontLarge;
   }
 
-  // Prevents column headers having different background when selected
-  // and on hover
-  .ui.sortable.table thead th.sorted {
-    background: none;
-  }
-  .ui.sortable.table thead th:hover {
-    background: none;
-    opacity: 0.8;
-  }
+.ui.table td:last-child,
+.ui.table thead th:last-child {
+  text-align: right;
+  padding-right: @fontLarge;
+}
+
+// Prevents column headers having different background when selected
+// and on hover
+.ui.sortable.table thead th.sorted {
+  background: none;
+}
+.ui.sortable.table thead th:hover {
+  background: none;
+  opacity: 0.8;
+}
 
   // Removes the faint background that is visibile behind the list row
   // when hovering

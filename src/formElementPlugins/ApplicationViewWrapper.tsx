@@ -18,6 +18,7 @@ import strings from '../utils/constants'
 import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
 import messages from '../utils/messages'
 import globalConfig from '../config.json'
+import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic'
 
 const graphQLEndpoint = globalConfig.serverGraphQL
 
@@ -172,69 +173,55 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
     />
   )
 
-  const getResponseAndBorder = () => {
-    if (!changesRequired) return null
-    const { isChangeRequest, isChanged } = changesRequired
-    const isValid = validationState ? (validationState.isValid as boolean) : true
-    const borderClass = isChangeRequest || (isChanged && isValid) ? 'element-warning-border' : ''
-    const borderColorClass = isChangeRequest ? (!isChanged ? 'alert-border' : '') : 'blue-border'
+  const {
+    isChangeRequest = false,
+    isChanged = false,
+    reviewerComment = messages.APPLICATION_OTHER_CHANGES_MADE,
+  } = changesRequired || {}
 
-    return (
-      <>
-        <Form.Field
-          className={`element-application-view ${borderClass} ${borderColorClass}`}
-          required={isRequired}
-        >
-          {PluginComponent}
-          <ChangesToResponseWarning {...changesRequired} isValid={isValid} />
-        </Form.Field>
-        : <Loader active inline />
-      </>
-    )
+  const getChangeRequestClassesAndIcon = () => {
+    const isValid = validationState ? (validationState.isValid as boolean) : true
+    if (!isValid) return
+    if (isChangeRequest && isChanged)
+      return {
+        extraClasses: 'changes change-request-changed',
+        iconName: 'comment alternate outline',
+      }
+    if (isChangeRequest && !isChanged)
+      return { extraClasses: 'changes change-request-unchanged', iconName: 'exclamation circle' }
+    // Updated withouth change request
+    if (isChanged) return { extraClasses: 'changes updated', iconName: 'info circle' }
+    return
   }
+
+  const { extraClasses = '', iconName = '' } = getChangeRequestClassesAndIcon() || {}
 
   return (
     <ErrorBoundary pluginCode={pluginCode}>
       <React.Suspense fallback="Loading Plugin">
-        {changesRequired ? (
-          getResponseAndBorder()
-        ) : (
-          <Form.Field className="element-application-view" required={isRequired}>
-            {PluginComponent}
-          </Form.Field>
-        )}
+        <Form.Field className={`element-application-view ${extraClasses}`} required={isRequired}>
+          {PluginComponent}
+          <ChangesComment reviewerComment={reviewerComment} iconName={iconName} />
+        </Form.Field>
       </React.Suspense>
     </ErrorBoundary>
   )
 }
 
-interface ChangesToResponseWarningProps {
-  isChangeRequest: boolean
-  isChanged: boolean
+interface ChangesCommentProps {
   reviewerComment: string
-  isValid: boolean
+  iconName: string
 }
 
-const ChangesToResponseWarning: React.FC<ChangesToResponseWarningProps> = ({
-  isChangeRequest,
-  isChanged,
-  reviewerComment,
-  isValid,
-}) => {
-  const visibilityClass = isChangeRequest || (isChanged && isValid) ? '' : 'invisible'
-  const colourClass = isChangeRequest ? (!isChanged ? 'alert' : '') : 'interactive-color'
-  const iconSelection = isChangeRequest
-    ? isChanged
-      ? 'comment alternate outline'
-      : 'exclamation circle'
-    : 'info circle'
-  return (
-    <p className={`${colourClass} ${visibilityClass} reviewer-comment`}>
-      <Icon name={iconSelection} className="colourClass" />
-      {isChangeRequest ? reviewerComment : messages.APPLICATION_OTHER_CHANGES_MADE}
+const ChangesComment: React.FC<ChangesCommentProps> = ({ reviewerComment, iconName }) => (
+  <>
+    {/* reviewer-comment is only visibility when parent class matches ".element-application-view.changes" */}
+    <p className="reviewer-comment">
+      <Icon name={iconName as SemanticICONS} />
+      {reviewerComment}
     </p>
-  )
-}
+  </>
+)
 
 export default ApplicationViewWrapper
 

@@ -56,42 +56,40 @@ const ApplicationPage: React.FC<ApplicationProps> = ({
   } = fullStructure
 
   return (
-    <>
-      <Container id="application-form">
-        <Grid stackable>
-          <Grid.Column width={4} id="progress-column" className="dev-border">
-            <ProgressArea
-              structure={fullStructure}
-              requestRevalidation={requestRevalidation as MethodRevalidate}
-              strictSectionPage={strictSectionPage as SectionAndPage}
+    <Container id="application-form">
+      <Grid stackable>
+        <Grid.Column width={4} id="progress-column" className="dev-border">
+          <ProgressArea
+            structure={fullStructure}
+            requestRevalidation={requestRevalidation as MethodRevalidate}
+            strictSectionPage={strictSectionPage as SectionAndPage}
+          />
+        </Grid.Column>
+        <Grid.Column width={12} stretched id="form-column">
+          <Segment basic>
+            <Header as="h4" content={fullStructure.sections[sectionCode].details.title} />
+            <PageElements
+              canEdit={current?.status === ApplicationStatus.Draft}
+              isUpdating={isChangeRequest}
+              elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
+              responsesByCode={fullStructure.responsesByCode}
+              applicationData={fullStructure.info}
+              isStrictPage={
+                sectionCode === strictSectionPage?.sectionCode &&
+                pageNumber === strictSectionPage?.pageNumber
+              }
             />
-          </Grid.Column>
-          <Grid.Column width={12} stretched id="form-column">
-            <Segment basic>
-              <Header as="h4" content={fullStructure.sections[sectionCode].details.title} />
-              <PageElements
-                canEdit={current?.status === ApplicationStatus.Draft}
-                isUpdating={isChangeRequest}
-                elements={getCurrentPageElements(fullStructure, sectionCode, pageNumber)}
-                responsesByCode={fullStructure.responsesByCode}
-                applicationData={fullStructure.info}
-                isStrictPage={
-                  sectionCode === strictSectionPage?.sectionCode &&
-                  pageNumber === strictSectionPage?.pageNumber
-                }
-              />
-            </Segment>
-          </Grid.Column>
-        </Grid>
-      </Container>
-      <Navigation
-        current={{ sectionCode, pageNumber }}
-        isLinear={isLinear}
-        sections={fullStructure.sections}
-        serialNumber={serialNumber}
-        requestRevalidation={requestRevalidation as MethodRevalidate}
-      />
-    </>
+          </Segment>
+          <Navigation
+            current={{ sectionCode, pageNumber }}
+            isLinear={isLinear}
+            sections={fullStructure.sections}
+            serialNumber={serialNumber}
+            requestRevalidation={requestRevalidation as MethodRevalidate}
+          />
+        </Grid.Column>
+      </Grid>
+    </Container>
   )
 }
 

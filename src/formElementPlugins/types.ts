@@ -15,7 +15,7 @@ interface ApplicationViewWrapperProps {
   changesRequired?: {
     isChangeRequest: boolean
     isChanged: boolean
-    reviewerComment: string
+    reviewerComment?: string
   }
   allResponses: ResponsesByCode
   onSaveUpdateMethod?: Function

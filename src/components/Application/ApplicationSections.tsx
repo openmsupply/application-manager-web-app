@@ -115,7 +115,7 @@ const SectionEdit: React.FC<SectionEditProps> = ({ sectionCode, resumeApplicatio
     <Icon
       link
       inverted
-      name="pencil square"
+      name="edit"
       size="large"
       color="blue"
       onClick={() => resumeApplication({ sectionCode, pageNumber: 1 })}
