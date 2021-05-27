@@ -67,6 +67,8 @@ const ApplicationViewWrapper: React.FC<ApplicationViewWrapperProps> = (props) =>
   // Update dynamic parameters when responses change
   useEffect(() => {
     Object.entries(parameterExpressions).forEach(([field, expression]) => {
+      if (field === 'validationInternal')
+        return setEvaluatedParameters((prevState) => ({ ...prevState, [field]: expression }))
       evaluateExpression(expression as EvaluatorNode, {
         objects: { responses: allResponses, currentUser, applicationData },
         APIfetch: fetch,
