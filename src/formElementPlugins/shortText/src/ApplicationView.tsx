@@ -28,7 +28,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       onSave({ text: defaultValue })
       setValue(defaultValue)
     } else onUpdate(value)
-  }, [])
+  }, [defaultValue])
 
   function handleChange(e: any) {
     let text = e.target.value
