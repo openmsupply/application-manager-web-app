@@ -40,17 +40,6 @@ export default function buildQueryFilters(filters: BasicStringObject) {
  */
 
 const genericTypes: { computeFilter: GenericTypesMethod; columns: string[] }[] = [
-  // NUMBER TYPE
-  {
-    computeFilter: (filterString: string) => {
-      const [fromNumber, toNumber] = filterString.split(':')
-      const greaterThanOrEqualTo = fromNumber ? fromNumber : undefined
-      const lessThanOrEqualTo = toNumber ? toNumber : undefined
-
-      return { greaterThanOrEqualTo, lessThanOrEqualTo }
-    },
-    columns: ['assignReviewerAssignedCount', 'assignReviewersCount', 'assignCount'],
-  },
   // DATE TYPE
   {
     computeFilter: (filterString: string) => {

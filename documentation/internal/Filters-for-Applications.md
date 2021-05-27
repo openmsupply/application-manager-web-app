@@ -8,10 +8,12 @@ The list of applications to display for the current user is based on:
 - the application type (aka template code)
 - other optional filters selected
 
-The user has access to links to see each type of application list from the top menu or in their dashboard - the link will set basic filters in the main URL route of the list: `/applications`. For example the list to see the Application of type "Drug Registration" would take the user to `/applications?type=user-registration&user-role=applicant`.
+The user has access to links to see each type of application list from the top menu or from their dashboard - the link will set basic filters in the main URL route of the list: `/applications`.
+For example to see the list of Applications for "Drug Registration" applyed by you has this link: `/applications?type=user-registration&user-role=applicant`.
 
-The `type` is the template code for the applications type, also displayed in the header of the Applications list.
-The `user-role` is used to determine how the columns and rows should be displayed. The user-role is deduced from the permissions that the current user has to view this application type. In this example the user has **applicant** role by what was set in their permissions.
+The `type` is the template code related to the applications type to be listed.
+The `user-role` is used to determine which columns should be displayed.
+In this example the user has **applicant** role. The user-role can only be `applicant` or `reviewer` and is deduced from the permissions that the current user has to view this application type.
 
 ## Table of contents
 
@@ -24,9 +26,11 @@ The `user-role` is used to determine how the columns and rows should be displaye
 - [sort-by](#sort-by)
 - [user-role](#user-role)
 - [outcome](#outcome)
-- [action](#action)
-- [assigned](#assigned)
-- [consolidator](#consolidator)
+- [applicant-action](#applicant-action)
+- [assiger-action](#assigner-action)
+- [reviewer-action](#reviewer-action)
+- [reviewer](#reviewer)
+- [assigner](#assigner)
 - [applicant](#applicant)
 - [org](#org)
 - [search](#search)
@@ -34,13 +38,14 @@ The `user-role` is used to determine how the columns and rows should be displaye
 - [deadline-date](#deadline-date)
 - [page](#page)
 - [per-page](#per-page)
+- [is-fully-assigned-level-1](#is-fully-assigned-level-1)
 
 ### More
 
 - [Format & Rules](#format-and-rules)
 - [Columns per role](#columns)
 
-## Example: [UI Design] Applicant - applications list
+## Examples: [UI Design] Applicant - applications list
 
 ![Applicant-List](images/Filters-for-Applications-Applicant-List.png)
 
@@ -57,59 +62,56 @@ The `user-role` is used to determine how the columns and rows should be displaye
 #### type
 
 **This is a compulsory filter**
-In case none is included in URL will be deduced from 1st user's persmissions
+In case no `type` is included in URL, the type will be deduced from 1st user's persmissions.
 
-Example: `type=user-registration`  
-Considered in implementation: **Yes** [#131 - Headers]  
+Included: **Yes**
 Can have combined values: **No**
-
-Options:
-
-- `template-code` - Of application type in list (and header)
+Examples: `type=user-registration`
+After is converted to Graphql: `templateCode: { equalToInsensitive: user-registration}`
 
 <a name="category"></a>
 
 #### category (_not yet implemented in schema_)
 
-Example: `category=company`  
-Considered in implementation: **Yes** **[New issue?]**  
+Included: **No** [Epic#82](https://github.com/openmsupply/application-manager-web-app/issues/540)  
 Can have combined values: **No**  
-Options:
-
-- `category-code` - Group of templates (application types)
+Examples: `category=company`  
+After is converted to Graphql: **TODO**
 
 <a name="stage"></a>
 
 #### stage
 
-Example: `stage=screening`  
-Considered in implementation: **Yes** [#251 - Filters]  
-Can have combined values: **Yes** e.g: `stage=screening,assessment,final-decision`  
-Options:
-
-- Set of `stage-name` which is deduced per template (application type)
+Included: **Yes**
+Can have combined values: **Yes**  
+Examples: `stage=screening` or `stage=screening,assessment`
+After is converted to Graphql: `stage: { inInsensitive: ["screening", "assessment"]}`
 
 <a name="status"></a>
 
 #### status
 
-Example: `status=draft`
+Included: **Yes**
+Can have combined values: **Yes**
+Examples: `status=draft` or `status=submitted,changes%20required`
+After is converted to Graphql: `status: {in: ["SUBMITTED", "CHANGES_REQUIRED"]}`
+Options: Set of static statuses from ApplicationStatus ENUM
 
-Considered in implementation: **Yes** [#251 - Filters]
-
-Can have combined values: **Yes** e.g: `status=draft,submitted`
-
-Options:
-
-- Set of `status` options
+- `draft` or `DRAFT`
+- `withdrawn` or `WITHDRAWN` _not implemented_
+- `submitted` or `SUBMITTED`
+- `changes required` or `CHANGES_REQUIRED`
+- `re submitted` or `RE_SUBMITTED` _not implemented_
+- `completed`or `COMPLETED`
+- `expired` or `EXPIRED` _not implemented_
 
 <a name="sort-by"></a>
 
 #### sort-by
 
-Example: `sort-by=stage:asc`  
-Considered in implementation: **Yes** [#131 - Headers]  
-Can have combined values: **Yes** `sort-by=stage:asc,application-name:desc`  
+Included: **Yes**
+Can have combined values: **Yes**
+Examples: `sort-by=stage:asc` or `sort-by=stage:asc,application-name:desc`
 Options:
 
 - `column-name:direction`
@@ -121,11 +123,11 @@ Options:
 #### user-role
 
 **This is a **compulsory** filter.**
-In case none is included in URL will be deduced from permission of type in user's persmissions.
+In case no `user-role` is included in URL, the role will be deduced from permission of type in user's persmissions.
 
-Example: `user-role=applicant`  
-Considered in implementation: **Yes** [#131 - Headers]  
+Included: **Yes**
 Can have combined values: **No**  
+Examples: `user-role=applicant`  
 Options:
 
 - Deduced by user's permissions (**TODO: More detailed explanation of user-role per permissions**)
@@ -134,83 +136,108 @@ Options:
 
 #### outcome
 
-Example: `outcome=pending`  
-Considered in implementation: **Yes** [#251 - Filters]  
-Can have combined values: **Yes** e.g: `outcome=pending,approved`  
-Options:
+Included: **Yes**
+Can have combined values: **Yes**
+Examples: `outcome=pending` or `outcome=pending,approved`
+After is converted to Graphql: `outcome: {in: ["PENDING"]}`
+Options: Set of static `outcome` from `ApplicationOutcome` ENUM
 
-- Set of `outcome` common for all templates (application types)
+- `pending` or `PENDING`
+- `approved` or `APPROVED`
+- `rejected` or `REJECTED`
 
-<a name="action"></a>
+<a name="applicant-action"></a>
 
-#### action
-
-Example: `action=edit-draft`  
-Considered in implementation: **Yes** [#251 - Filters]  
-Can have combined values: **Yes** e.g: `action=edit-draft,make-updates`  
-Options:
+### applicant action _not implemented_
 
 - Applicant:
   `edit-draft`
   `make-updates`
   `renew`
   `view` (Submitted)
-- Reviewer
-  `start-review`
-  `continue-review`
-  `review-updates`
-  `view` (Submitted)
-- Consolidator
-  `assign`
-  `consolidate`
-  `review-updates`
-  `view` (Submitted)
+
+<a name="assigner-action"></a>
+
+#### assigner action
+
+Check out in schema `AssignerAction` ENUM and Function `assigner_list`
+Included: **Yes**
+Can have combined values: **No**
+Examples: `assigner-action=ASSIGN` or `assigner-action=RE_ASSIGN`
+After is converted to Graphql: `assignerAction: {equalTo: "RE_ASSIGN"}`
+Options:
+
+- `ASSIGN`
+- `RE_ASSIGN`
+
+<a name="reviewer-action"></a>
+
+#### reviewer action
+
+Check out in schema `ReviewerAction` ENUM and Function `review_list`
+Included: **Yes**
+Can have combined values: **No**
+Examples: `reviewer-action=start_review` or `reviewer-action=CONTINUE_REVIEW`
+After is converted to Graphql: `reviewerAction: {equalTo: "CONTINUE_REVIEW"}`
+Options:
+
+- `SELF_ASSIGN`
+- `START_REVIEW`
+- `CONTINUE_REVIEW`
+- `RESTART_REVIEW`
+- `UPDATE_REVIEW`
+- `VIEW_REVIEW`
 
 ---
 
 ### String filters:
 
-<a name="assigned"></a>
+<a name="reviewer"></a>
 
-#### assigned
+#### reviewer
 
-Example: `assigned=none`  
-Considered in implementation: **Yes** [#251 - Filters]  
-Can have combined values: **Yes** e.g: `assigned=none,"Carl"`  
+Included: **Yes**  
+Can have combined values: **Yes**  
+Examples: `reviewer=testReveiwer2` or `reviewer=testReveiwer2,testReviewer1`
+After is converted to Graphql: `reviewerUsernames: { overlaps: ["testReviewer2", "testReviewer1"]}`
 Options:
 
-- `none` - Applications with sections not-assigned
-- `"username"` - Reviewer username
+- `"username"` - Reviewer's username
 
-<a name="consolidator"></a>
+<a name="assigner"></a>
 
-#### consolidator
+#### assigner
 
-Example: `consolidator="Tony"`  
-Considered in implementation: **Yes** [#251 - Filters]  
-Can have combined values: **Yes** e.g: `consolidator="Tony","Andrei"`  
+Included: **Yes**  
+Can have combined values: **Yes**
+Examples: `assigner=testAssigner1` or `assigner=testAssigner1,Nicole`
+After is converted to Graphql: `assignerUsernames: { overlaps: ["testAssigner1", "Nicole"]}`
 Options:
 
-- `"username"` - Consolidator username
+- `"username"` - Assigner's username
 
 <a name="applicant"></a>
 
 #### applicant
 
-Example: `applicant="John"`  
-Considered in implementation: **No**  
-Can have combined values: **Yes** e.g: `applicant="John","Nicole"`  
+Included: **Yes**
+Can have combined values: **Yes**
+Exmples: `applicant=Carl` or `applicant=Carl Smith`
+After is converted to Graphql: **TODO**
 Options:
 
-- `"username"` - Applicant username
+- `username`
+- `firstName`
+- `lastName`
+- fullName: `firstName lastName`
 
 <a name="org"></a>
 
 #### org
 
-Example: `org="Company A"`  
-Considered in implementation: **Yes** [#251 - Filters]  
-Can have combined values: **Yes** e.g: `org="Company A","Company B"`  
+Included: **Yes**  
+Can have combined values: **Yes**  
+Examples: `org="Company A"` or `org="Company A","Company B"`
 Options:
 
 - `"organisation name"`
@@ -219,9 +246,9 @@ Options:
 
 #### search
 
-Example: `search="abc 123"`  
-Considered in implementation: **Yes** [#251 - Filters]  
+Included: **Yes**  
 Can have combined values: **No**  
+Examples: `search="abc 123"`  
 Options:
 
 - String containing [A-Z], [a-z], [0-9], _space_
@@ -236,9 +263,9 @@ Options:
 
 #### last-active-date
 
-Example: `last-active-date=2021-01-01`  
-Considered in implementation: **Yes** [#228 - Dates in columns]  
-Can have combined values: **Yes** e.g: `last-active-date=today,last-week`  
+Included: **Yes**
+Can have combined values: **Yes**
+Examples: `last-active-date=2021-01-01` or `last-active-date=today,last-week`
 Options:
 
 - Pre-defined string: `today` (See more formats on Formats & Rules)
@@ -250,9 +277,9 @@ Options:
 
 #### deadline-date
 
-Example: `deadline-date=2021-01-31`  
-Considered in implementation: **Yes** [#228 - Dates in columns]  
-Can have combined values: **Yes** e.g: `deadline-date=today,2021-01-02`  
+Included: **No**
+Can have combined values: **Yes**
+Examples: `deadline-date=2021-01-31` or `deadline-date=today,2021-01-02`
 Options:
 
 - Pre-defined string: `today` (See more formats on Formats & Rules)
@@ -262,15 +289,15 @@ Options:
 
 ---
 
-### Integer filters:
+### Number filters:
 
 <a name="page"></a>
 
 #### page
 
-Example: `page=1`  
-Considered in implementation: **Yes** [#210 - Pagination]  
+Included: **Yes**  
 Can have combined values: **No**  
+Examples: `page=1`  
 Options:
 
 - Positive number (When page number doesn't existing no results are displayed)
@@ -279,12 +306,26 @@ Options:
 
 #### per-page
 
-Example: `per-page=20`  
-Considered in implementation: **Yes** [#210 - Pagination]  
+Included: **Yes**  
 Can have combined values: **No**  
+Examples: `per-page=20`  
 Options:
 
 - Number between 10 - 100
+
+### Boolean filters
+
+<a name="is-fully-assigned-level-1"></a>
+
+#### Is fully assigned level 1
+
+Included: **Yes**  
+Can have combined values: **No**  
+Examples: `is-fully-assigned-level-1=true`
+
+Options:
+
+- `true` of `false`
 
 ---
 
@@ -316,41 +357,3 @@ Filters that aren't provided would be considered as fetch ALL.
 A few filters should automatically used (example page number) and would be in the query filters mirroring the current displayed query.
 
 ---
-
-## Columns per user-role
-
----
-
-<a name="columns"></a>
-
-### Common columns (For all user-roles)
-
-- Serial number
-- Last active date
-- Application name
-- Stage
-- Status / Actionable
-
-### Applicant
-
-- Deadline date
-- Progress
-
-### Reviewer
-
-- Applicant
-- Organisation
-- Consolidator
-- Sections columns:
-  - Section title
-  - _Assigned to you_ / _Assigned to another_
-  - Progress
-
-### Consolidator
-
-- Applicant
-- Organisation
-- Sections columns:
-  - Section title
-  - Reviewer
-  - Progress
