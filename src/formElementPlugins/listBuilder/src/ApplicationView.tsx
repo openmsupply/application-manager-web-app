@@ -141,12 +141,11 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         <Markdown text={label} semanticComponent="noParagraph" />
       </label>
       <Markdown text={description} />
-      <Button
-        primary
-        content={createModalButtonText}
-        onClick={() => setOpen(true)}
-        disabled={!isEditable}
-      />
+      {DisplayComponent}
+      <Button primary inverted onClick={() => setOpen(true)} disabled={!isEditable}>
+        <Icon name="plus" size="tiny" color="blue" />
+        {createModalButtonText}
+      </Button>
       <Modal size="tiny" onClose={() => resetModalState()} onOpen={() => setOpen(true)} open={open}>
         <Segment>
           <Form>
@@ -167,9 +166,14 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
             })}
             <Button
               primary
-              content={selectedListItem !== null ? updateButtonText : addButtonText}
-              onClick={updateList}
+              content="Cancel"
+              onClick={() => setOpen(false)}
+              className="button-med"
             />
+            <Button primary inverted onClick={updateList} className="button-med">
+              <Icon name="plus" size="tiny" color="blue" />
+              {selectedListItem !== null ? updateButtonText : addButtonText}
+            </Button>
             {displayType === 'table' && selectedListItem !== null && (
               <Button
                 secondary
@@ -186,7 +190,6 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
           </Form>
         </Segment>
       </Modal>
-      {DisplayComponent}
     </>
   )
 }
