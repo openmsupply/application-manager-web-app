@@ -15,7 +15,7 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
   element,
   response,
   allResponses,
-  applicationData,
+  applicationData = {},
   displayTitle = true,
 }) => {
   const { parameters, pluginCode, isRequired, isVisible } = element

@@ -30,6 +30,7 @@ import { LookupTableRoutes } from '../../LookupTable'
 import { Container } from 'semantic-ui-react'
 import DevOptions from '../Dev/DevOptions'
 import LayoutHelpers from '../../components/LayoutHelpers'
+import { Outcomes } from '../../components/Outcomes'
 
 const SiteLayout: React.FC = () => {
   return (
@@ -102,6 +103,9 @@ const SiteLayout: React.FC = () => {
             </Route>
             <Route exact path="/products">
               <ProductList />
+            </Route>
+            <Route path="/outcomes">
+              <Outcomes />
             </Route>
             <Route exact path="/products/:productId"></Route>
             {/* Lookup Table routes wrapper */}

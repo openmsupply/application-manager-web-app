@@ -52,7 +52,7 @@ interface SummaryViewWrapperProps {
   element: ElementState
   response: ResponseFull | null
   allResponses: ResponsesByCode
-  applicationData: ApplicationDetails
+  applicationData?: ApplicationDetails
   displayTitle?: boolean
 }
 
