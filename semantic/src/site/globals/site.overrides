@@ -874,10 +874,45 @@ a:hover {
   }
 }
 
+/*--------------------------------
+      Outcomes
+---------------------------------*/
 
-// #dashboard .template-category  .category-header {
+#outcomes-display {
+  .flex-column();
+  align-items: center;
 
-// }
+  .outcomes-container {
+    .flex-row();
+    align-items: center;
+    flex-wrap: 1;
+
+    .outcome {
+      margin: 15px;
+      max-width: 330px;
+      border-radius: @borderRadius;
+      background-color: @surfacesWhite;
+      box-shadow: @templateBoxShadow;
+      padding: 10px;
+    }
+  }
+
+  .outcome-table-container {
+    .flex-column();
+    align-items: center;
+  }
+
+  .summary-page-element {
+    margin: 10px;
+  }
+  
+  .detail-container {
+    .flex-row();
+    align-items: center;
+    flex-wrap: 1;
+  }
+
+}
 
 /*--------------------------------
       General used classes

@@ -67,12 +67,12 @@ export type Query = Node & {
   notifications?: Maybe<NotificationsConnection>;
   /** Reads and enables pagination through a set of `Organisation`. */
   organisations?: Maybe<OrganisationsConnection>;
-  /** Reads and enables pagination through a set of `Outcome`. */
-  outcomes?: Maybe<OutcomesConnection>;
-  /** Reads and enables pagination through a set of `OutcomeDetailView`. */
-  outcomeDetailViews?: Maybe<OutcomeDetailViewsConnection>;
-  /** Reads and enables pagination through a set of `OutcomeTableView`. */
-  outcomeTableViews?: Maybe<OutcomeTableViewsConnection>;
+  /** Reads and enables pagination through a set of `OutcomeDisplay`. */
+  outcomeDisplays?: Maybe<OutcomeDisplaysConnection>;
+  /** Reads and enables pagination through a set of `OutcomeDisplayDetail`. */
+  outcomeDisplayDetails?: Maybe<OutcomeDisplayDetailsConnection>;
+  /** Reads and enables pagination through a set of `OutcomeDisplayTable`. */
+  outcomeDisplayTables?: Maybe<OutcomeDisplayTablesConnection>;
   /** Reads and enables pagination through a set of `PermissionJoin`. */
   permissionJoins?: Maybe<PermissionJoinsConnection>;
   /** Reads and enables pagination through a set of `PermissionName`. */
@@ -141,10 +141,10 @@ export type Query = Node & {
   organisation?: Maybe<Organisation>;
   organisationByName?: Maybe<Organisation>;
   organisationByRegistration?: Maybe<Organisation>;
-  outcome?: Maybe<Outcome>;
-  outcomeByCode?: Maybe<Outcome>;
-  outcomeDetailView?: Maybe<OutcomeDetailView>;
-  outcomeTableView?: Maybe<OutcomeTableView>;
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  outcomeDisplayByCode?: Maybe<OutcomeDisplay>;
+  outcomeDisplayDetail?: Maybe<OutcomeDisplayDetail>;
+  outcomeDisplayTable?: Maybe<OutcomeDisplayTable>;
   permissionJoin?: Maybe<PermissionJoin>;
   permissionName?: Maybe<PermissionName>;
   permissionNameByName?: Maybe<PermissionName>;
@@ -216,12 +216,12 @@ export type Query = Node & {
   notificationByNodeId?: Maybe<Notification>;
   /** Reads a single `Organisation` using its globally unique `ID`. */
   organisationByNodeId?: Maybe<Organisation>;
-  /** Reads a single `Outcome` using its globally unique `ID`. */
-  outcomeByNodeId?: Maybe<Outcome>;
-  /** Reads a single `OutcomeDetailView` using its globally unique `ID`. */
-  outcomeDetailViewByNodeId?: Maybe<OutcomeDetailView>;
-  /** Reads a single `OutcomeTableView` using its globally unique `ID`. */
-  outcomeTableViewByNodeId?: Maybe<OutcomeTableView>;
+  /** Reads a single `OutcomeDisplay` using its globally unique `ID`. */
+  outcomeDisplayByNodeId?: Maybe<OutcomeDisplay>;
+  /** Reads a single `OutcomeDisplayDetail` using its globally unique `ID`. */
+  outcomeDisplayDetailByNodeId?: Maybe<OutcomeDisplayDetail>;
+  /** Reads a single `OutcomeDisplayTable` using its globally unique `ID`. */
+  outcomeDisplayTableByNodeId?: Maybe<OutcomeDisplayTable>;
   /** Reads a single `PermissionJoin` using its globally unique `ID`. */
   permissionJoinByNodeId?: Maybe<PermissionJoin>;
   /** Reads a single `PermissionName` using its globally unique `ID`. */
@@ -497,41 +497,41 @@ export type QueryOrganisationsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomesArgs = {
+export type QueryOutcomeDisplaysArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   after?: Maybe<Scalars['Cursor']>;
-  orderBy?: Maybe<Array<OutcomesOrderBy>>;
-  condition?: Maybe<OutcomeCondition>;
-  filter?: Maybe<OutcomeFilter>;
+  orderBy?: Maybe<Array<OutcomeDisplaysOrderBy>>;
+  condition?: Maybe<OutcomeDisplayCondition>;
+  filter?: Maybe<OutcomeDisplayFilter>;
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeDetailViewsArgs = {
+export type QueryOutcomeDisplayDetailsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   after?: Maybe<Scalars['Cursor']>;
-  orderBy?: Maybe<Array<OutcomeDetailViewsOrderBy>>;
-  condition?: Maybe<OutcomeDetailViewCondition>;
-  filter?: Maybe<OutcomeDetailViewFilter>;
+  orderBy?: Maybe<Array<OutcomeDisplayDetailsOrderBy>>;
+  condition?: Maybe<OutcomeDisplayDetailCondition>;
+  filter?: Maybe<OutcomeDisplayDetailFilter>;
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeTableViewsArgs = {
+export type QueryOutcomeDisplayTablesArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   after?: Maybe<Scalars['Cursor']>;
-  orderBy?: Maybe<Array<OutcomeTableViewsOrderBy>>;
-  condition?: Maybe<OutcomeTableViewCondition>;
-  filter?: Maybe<OutcomeTableViewFilter>;
+  orderBy?: Maybe<Array<OutcomeDisplayTablesOrderBy>>;
+  condition?: Maybe<OutcomeDisplayTableCondition>;
+  filter?: Maybe<OutcomeDisplayTableFilter>;
 };
 
 
@@ -969,25 +969,25 @@ export type QueryOrganisationByRegistrationArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeArgs = {
+export type QueryOutcomeDisplayArgs = {
   id: Scalars['Int'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeByCodeArgs = {
+export type QueryOutcomeDisplayByCodeArgs = {
   code: Scalars['String'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeDetailViewArgs = {
+export type QueryOutcomeDisplayDetailArgs = {
   id: Scalars['Int'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeTableViewArgs = {
+export type QueryOutcomeDisplayTableArgs = {
   id: Scalars['Int'];
 };
 
@@ -1365,19 +1365,19 @@ export type QueryOrganisationByNodeIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeByNodeIdArgs = {
+export type QueryOutcomeDisplayByNodeIdArgs = {
   nodeId: Scalars['ID'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeDetailViewByNodeIdArgs = {
+export type QueryOutcomeDisplayDetailByNodeIdArgs = {
   nodeId: Scalars['ID'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryOutcomeTableViewByNodeIdArgs = {
+export type QueryOutcomeDisplayTableByNodeIdArgs = {
   nodeId: Scalars['ID'];
 };
 
@@ -8317,13 +8317,15 @@ export type OrganisationsEdge = {
   node?: Maybe<Organisation>;
 };
 
-/** Methods to use when ordering `Outcome`. */
-export enum OutcomesOrderBy {
+/** Methods to use when ordering `OutcomeDisplay`. */
+export enum OutcomeDisplaysOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   TableNameAsc = 'TABLE_NAME_ASC',
   TableNameDesc = 'TABLE_NAME_DESC',
+  PluralTableNameAsc = 'PLURAL_TABLE_NAME_ASC',
+  PluralTableNameDesc = 'PLURAL_TABLE_NAME_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
   CodeAsc = 'CODE_ASC',
@@ -8334,12 +8336,14 @@ export enum OutcomesOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `Outcome` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type OutcomeCondition = {
+/** A condition to be used against `OutcomeDisplay` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type OutcomeDisplayCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `tableName` field. */
   tableName?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `pluralTableName` field. */
+  pluralTableName?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `title` field. */
   title?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `code` field. */
@@ -8348,46 +8352,84 @@ export type OutcomeCondition = {
   detailColumnName?: Maybe<Scalars['String']>;
 };
 
-/** A filter to be used against `Outcome` object types. All fields are combined with a logical ‘and.’ */
-export type OutcomeFilter = {
+/** A filter to be used against `OutcomeDisplay` object types. All fields are combined with a logical ‘and.’ */
+export type OutcomeDisplayFilter = {
   /** Filter by the object’s `id` field. */
   id?: Maybe<IntFilter>;
   /** Filter by the object’s `tableName` field. */
   tableName?: Maybe<StringFilter>;
+  /** Filter by the object’s `pluralTableName` field. */
+  pluralTableName?: Maybe<StringFilter>;
   /** Filter by the object’s `title` field. */
   title?: Maybe<StringFilter>;
   /** Filter by the object’s `code` field. */
   code?: Maybe<StringFilter>;
   /** Filter by the object’s `detailColumnName` field. */
   detailColumnName?: Maybe<StringFilter>;
-  /** Filter by the object’s `outcomeDetailViews` relation. */
-  outcomeDetailViews?: Maybe<OutcomeToManyOutcomeDetailViewFilter>;
-  /** Some related `outcomeDetailViews` exist. */
-  outcomeDetailViewsExist?: Maybe<Scalars['Boolean']>;
-  /** Filter by the object’s `outcomeTableViews` relation. */
-  outcomeTableViews?: Maybe<OutcomeToManyOutcomeTableViewFilter>;
-  /** Some related `outcomeTableViews` exist. */
-  outcomeTableViewsExist?: Maybe<Scalars['Boolean']>;
+  /** Filter by the object’s `outcomeDisplayTables` relation. */
+  outcomeDisplayTables?: Maybe<OutcomeDisplayToManyOutcomeDisplayTableFilter>;
+  /** Some related `outcomeDisplayTables` exist. */
+  outcomeDisplayTablesExist?: Maybe<Scalars['Boolean']>;
+  /** Filter by the object’s `outcomeDisplayDetails` relation. */
+  outcomeDisplayDetails?: Maybe<OutcomeDisplayToManyOutcomeDisplayDetailFilter>;
+  /** Some related `outcomeDisplayDetails` exist. */
+  outcomeDisplayDetailsExist?: Maybe<Scalars['Boolean']>;
   /** Checks for all expressions in this list. */
-  and?: Maybe<Array<OutcomeFilter>>;
+  and?: Maybe<Array<OutcomeDisplayFilter>>;
   /** Checks for any expressions in this list. */
-  or?: Maybe<Array<OutcomeFilter>>;
+  or?: Maybe<Array<OutcomeDisplayFilter>>;
   /** Negates the expression. */
-  not?: Maybe<OutcomeFilter>;
+  not?: Maybe<OutcomeDisplayFilter>;
 };
 
-/** A filter to be used against many `OutcomeDetailView` object types. All fields are combined with a logical ‘and.’ */
-export type OutcomeToManyOutcomeDetailViewFilter = {
-  /** Every related `OutcomeDetailView` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: Maybe<OutcomeDetailViewFilter>;
-  /** Some related `OutcomeDetailView` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: Maybe<OutcomeDetailViewFilter>;
-  /** No related `OutcomeDetailView` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: Maybe<OutcomeDetailViewFilter>;
+/** A filter to be used against many `OutcomeDisplayTable` object types. All fields are combined with a logical ‘and.’ */
+export type OutcomeDisplayToManyOutcomeDisplayTableFilter = {
+  /** Every related `OutcomeDisplayTable` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: Maybe<OutcomeDisplayTableFilter>;
+  /** Some related `OutcomeDisplayTable` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: Maybe<OutcomeDisplayTableFilter>;
+  /** No related `OutcomeDisplayTable` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: Maybe<OutcomeDisplayTableFilter>;
 };
 
-/** A filter to be used against `OutcomeDetailView` object types. All fields are combined with a logical ‘and.’ */
-export type OutcomeDetailViewFilter = {
+/** A filter to be used against `OutcomeDisplayTable` object types. All fields are combined with a logical ‘and.’ */
+export type OutcomeDisplayTableFilter = {
+  /** Filter by the object’s `id` field. */
+  id?: Maybe<IntFilter>;
+  /** Filter by the object’s `columnName` field. */
+  columnName?: Maybe<StringFilter>;
+  /** Filter by the object’s `isTextColumn` field. */
+  isTextColumn?: Maybe<BooleanFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: Maybe<StringFilter>;
+  /** Filter by the object’s `code` field. */
+  code?: Maybe<StringFilter>;
+  /** Filter by the object’s `outcomeDisplayId` field. */
+  outcomeDisplayId?: Maybe<IntFilter>;
+  /** Filter by the object’s `outcomeDisplay` relation. */
+  outcomeDisplay?: Maybe<OutcomeDisplayFilter>;
+  /** A related `outcomeDisplay` exists. */
+  outcomeDisplayExists?: Maybe<Scalars['Boolean']>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<OutcomeDisplayTableFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<OutcomeDisplayTableFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<OutcomeDisplayTableFilter>;
+};
+
+/** A filter to be used against many `OutcomeDisplayDetail` object types. All fields are combined with a logical ‘and.’ */
+export type OutcomeDisplayToManyOutcomeDisplayDetailFilter = {
+  /** Every related `OutcomeDisplayDetail` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: Maybe<OutcomeDisplayDetailFilter>;
+  /** Some related `OutcomeDisplayDetail` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: Maybe<OutcomeDisplayDetailFilter>;
+  /** No related `OutcomeDisplayDetail` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: Maybe<OutcomeDisplayDetailFilter>;
+};
+
+/** A filter to be used against `OutcomeDisplayDetail` object types. All fields are combined with a logical ‘and.’ */
+export type OutcomeDisplayDetailFilter = {
   /** Filter by the object’s `id` field. */
   id?: Maybe<IntFilter>;
   /** Filter by the object’s `columnName` field. */
@@ -8400,108 +8442,146 @@ export type OutcomeDetailViewFilter = {
   isTextColumn?: Maybe<BooleanFilter>;
   /** Filter by the object’s `parameters` field. */
   parameters?: Maybe<JsonFilter>;
-  /** Filter by the object’s `outcomeId` field. */
-  outcomeId?: Maybe<IntFilter>;
-  /** Filter by the object’s `outcome` relation. */
-  outcome?: Maybe<OutcomeFilter>;
-  /** A related `outcome` exists. */
-  outcomeExists?: Maybe<Scalars['Boolean']>;
+  /** Filter by the object’s `outcomeDisplayId` field. */
+  outcomeDisplayId?: Maybe<IntFilter>;
+  /** Filter by the object’s `outcomeDisplay` relation. */
+  outcomeDisplay?: Maybe<OutcomeDisplayFilter>;
+  /** A related `outcomeDisplay` exists. */
+  outcomeDisplayExists?: Maybe<Scalars['Boolean']>;
   /** Checks for all expressions in this list. */
-  and?: Maybe<Array<OutcomeDetailViewFilter>>;
+  and?: Maybe<Array<OutcomeDisplayDetailFilter>>;
   /** Checks for any expressions in this list. */
-  or?: Maybe<Array<OutcomeDetailViewFilter>>;
+  or?: Maybe<Array<OutcomeDisplayDetailFilter>>;
   /** Negates the expression. */
-  not?: Maybe<OutcomeDetailViewFilter>;
+  not?: Maybe<OutcomeDisplayDetailFilter>;
 };
 
-/** A filter to be used against many `OutcomeTableView` object types. All fields are combined with a logical ‘and.’ */
-export type OutcomeToManyOutcomeTableViewFilter = {
-  /** Every related `OutcomeTableView` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: Maybe<OutcomeTableViewFilter>;
-  /** Some related `OutcomeTableView` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: Maybe<OutcomeTableViewFilter>;
-  /** No related `OutcomeTableView` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: Maybe<OutcomeTableViewFilter>;
-};
-
-/** A filter to be used against `OutcomeTableView` object types. All fields are combined with a logical ‘and.’ */
-export type OutcomeTableViewFilter = {
-  /** Filter by the object’s `id` field. */
-  id?: Maybe<IntFilter>;
-  /** Filter by the object’s `columnName` field. */
-  columnName?: Maybe<StringFilter>;
-  /** Filter by the object’s `title` field. */
-  title?: Maybe<StringFilter>;
-  /** Filter by the object’s `code` field. */
-  code?: Maybe<StringFilter>;
-  /** Filter by the object’s `outcomeId` field. */
-  outcomeId?: Maybe<IntFilter>;
-  /** Filter by the object’s `outcome` relation. */
-  outcome?: Maybe<OutcomeFilter>;
-  /** A related `outcome` exists. */
-  outcomeExists?: Maybe<Scalars['Boolean']>;
-  /** Checks for all expressions in this list. */
-  and?: Maybe<Array<OutcomeTableViewFilter>>;
-  /** Checks for any expressions in this list. */
-  or?: Maybe<Array<OutcomeTableViewFilter>>;
-  /** Negates the expression. */
-  not?: Maybe<OutcomeTableViewFilter>;
-};
-
-/** A connection to a list of `Outcome` values. */
-export type OutcomesConnection = {
-  __typename?: 'OutcomesConnection';
-  /** A list of `Outcome` objects. */
-  nodes: Array<Maybe<Outcome>>;
-  /** A list of edges which contains the `Outcome` and cursor to aid in pagination. */
-  edges: Array<OutcomesEdge>;
+/** A connection to a list of `OutcomeDisplay` values. */
+export type OutcomeDisplaysConnection = {
+  __typename?: 'OutcomeDisplaysConnection';
+  /** A list of `OutcomeDisplay` objects. */
+  nodes: Array<Maybe<OutcomeDisplay>>;
+  /** A list of edges which contains the `OutcomeDisplay` and cursor to aid in pagination. */
+  edges: Array<OutcomeDisplaysEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `Outcome` you could get from the connection. */
+  /** The count of *all* `OutcomeDisplay` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type Outcome = Node & {
-  __typename?: 'Outcome';
+export type OutcomeDisplay = Node & {
+  __typename?: 'OutcomeDisplay';
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
   id: Scalars['Int'];
   tableName?: Maybe<Scalars['String']>;
+  pluralTableName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   detailColumnName?: Maybe<Scalars['String']>;
-  /** Reads and enables pagination through a set of `OutcomeDetailView`. */
-  outcomeDetailViews: OutcomeDetailViewsConnection;
-  /** Reads and enables pagination through a set of `OutcomeTableView`. */
-  outcomeTableViews: OutcomeTableViewsConnection;
+  /** Reads and enables pagination through a set of `OutcomeDisplayTable`. */
+  outcomeDisplayTables: OutcomeDisplayTablesConnection;
+  /** Reads and enables pagination through a set of `OutcomeDisplayDetail`. */
+  outcomeDisplayDetails: OutcomeDisplayDetailsConnection;
 };
 
 
-export type OutcomeOutcomeDetailViewsArgs = {
+export type OutcomeDisplayOutcomeDisplayTablesArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   after?: Maybe<Scalars['Cursor']>;
-  orderBy?: Maybe<Array<OutcomeDetailViewsOrderBy>>;
-  condition?: Maybe<OutcomeDetailViewCondition>;
-  filter?: Maybe<OutcomeDetailViewFilter>;
+  orderBy?: Maybe<Array<OutcomeDisplayTablesOrderBy>>;
+  condition?: Maybe<OutcomeDisplayTableCondition>;
+  filter?: Maybe<OutcomeDisplayTableFilter>;
 };
 
 
-export type OutcomeOutcomeTableViewsArgs = {
+export type OutcomeDisplayOutcomeDisplayDetailsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   after?: Maybe<Scalars['Cursor']>;
-  orderBy?: Maybe<Array<OutcomeTableViewsOrderBy>>;
-  condition?: Maybe<OutcomeTableViewCondition>;
-  filter?: Maybe<OutcomeTableViewFilter>;
+  orderBy?: Maybe<Array<OutcomeDisplayDetailsOrderBy>>;
+  condition?: Maybe<OutcomeDisplayDetailCondition>;
+  filter?: Maybe<OutcomeDisplayDetailFilter>;
 };
 
-/** Methods to use when ordering `OutcomeDetailView`. */
-export enum OutcomeDetailViewsOrderBy {
+/** Methods to use when ordering `OutcomeDisplayTable`. */
+export enum OutcomeDisplayTablesOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  ColumnNameAsc = 'COLUMN_NAME_ASC',
+  ColumnNameDesc = 'COLUMN_NAME_DESC',
+  IsTextColumnAsc = 'IS_TEXT_COLUMN_ASC',
+  IsTextColumnDesc = 'IS_TEXT_COLUMN_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  CodeAsc = 'CODE_ASC',
+  CodeDesc = 'CODE_DESC',
+  OutcomeDisplayIdAsc = 'OUTCOME_DISPLAY_ID_ASC',
+  OutcomeDisplayIdDesc = 'OUTCOME_DISPLAY_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/** A condition to be used against `OutcomeDisplayTable` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type OutcomeDisplayTableCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `columnName` field. */
+  columnName?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `isTextColumn` field. */
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `code` field. */
+  code?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `outcomeDisplayId` field. */
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
+};
+
+/** A connection to a list of `OutcomeDisplayTable` values. */
+export type OutcomeDisplayTablesConnection = {
+  __typename?: 'OutcomeDisplayTablesConnection';
+  /** A list of `OutcomeDisplayTable` objects. */
+  nodes: Array<Maybe<OutcomeDisplayTable>>;
+  /** A list of edges which contains the `OutcomeDisplayTable` and cursor to aid in pagination. */
+  edges: Array<OutcomeDisplayTablesEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `OutcomeDisplayTable` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type OutcomeDisplayTable = Node & {
+  __typename?: 'OutcomeDisplayTable';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
+  columnName?: Maybe<Scalars['String']>;
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayTable`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+};
+
+/** A `OutcomeDisplayTable` edge in the connection. */
+export type OutcomeDisplayTablesEdge = {
+  __typename?: 'OutcomeDisplayTablesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `OutcomeDisplayTable` at the end of the edge. */
+  node?: Maybe<OutcomeDisplayTable>;
+};
+
+/** Methods to use when ordering `OutcomeDisplayDetail`. */
+export enum OutcomeDisplayDetailsOrderBy {
   Natural = 'NATURAL',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
@@ -8515,14 +8595,14 @@ export enum OutcomeDetailViewsOrderBy {
   IsTextColumnDesc = 'IS_TEXT_COLUMN_DESC',
   ParametersAsc = 'PARAMETERS_ASC',
   ParametersDesc = 'PARAMETERS_DESC',
-  OutcomeIdAsc = 'OUTCOME_ID_ASC',
-  OutcomeIdDesc = 'OUTCOME_ID_DESC',
+  OutcomeDisplayIdAsc = 'OUTCOME_DISPLAY_ID_ASC',
+  OutcomeDisplayIdDesc = 'OUTCOME_DISPLAY_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
-/** A condition to be used against `OutcomeDetailView` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type OutcomeDetailViewCondition = {
+/** A condition to be used against `OutcomeDisplayDetail` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type OutcomeDisplayDetailCondition = {
   /** Checks for equality with the object’s `id` field. */
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `columnName` field. */
@@ -8535,25 +8615,25 @@ export type OutcomeDetailViewCondition = {
   isTextColumn?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `parameters` field. */
   parameters?: Maybe<Scalars['JSON']>;
-  /** Checks for equality with the object’s `outcomeId` field. */
-  outcomeId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `outcomeDisplayId` field. */
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
 };
 
-/** A connection to a list of `OutcomeDetailView` values. */
-export type OutcomeDetailViewsConnection = {
-  __typename?: 'OutcomeDetailViewsConnection';
-  /** A list of `OutcomeDetailView` objects. */
-  nodes: Array<Maybe<OutcomeDetailView>>;
-  /** A list of edges which contains the `OutcomeDetailView` and cursor to aid in pagination. */
-  edges: Array<OutcomeDetailViewsEdge>;
+/** A connection to a list of `OutcomeDisplayDetail` values. */
+export type OutcomeDisplayDetailsConnection = {
+  __typename?: 'OutcomeDisplayDetailsConnection';
+  /** A list of `OutcomeDisplayDetail` objects. */
+  nodes: Array<Maybe<OutcomeDisplayDetail>>;
+  /** A list of edges which contains the `OutcomeDisplayDetail` and cursor to aid in pagination. */
+  edges: Array<OutcomeDisplayDetailsEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `OutcomeDetailView` you could get from the connection. */
+  /** The count of *all* `OutcomeDisplayDetail` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
-export type OutcomeDetailView = Node & {
-  __typename?: 'OutcomeDetailView';
+export type OutcomeDisplayDetail = Node & {
+  __typename?: 'OutcomeDisplayDetail';
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
   id: Scalars['Int'];
@@ -8562,93 +8642,27 @@ export type OutcomeDetailView = Node & {
   elementTypePluginCode?: Maybe<Scalars['String']>;
   isTextColumn?: Maybe<Scalars['Boolean']>;
   parameters?: Maybe<Scalars['JSON']>;
-  outcomeId?: Maybe<Scalars['Int']>;
-  /** Reads a single `Outcome` that is related to this `OutcomeDetailView`. */
-  outcome?: Maybe<Outcome>;
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayDetail`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
 };
 
-/** A `OutcomeDetailView` edge in the connection. */
-export type OutcomeDetailViewsEdge = {
-  __typename?: 'OutcomeDetailViewsEdge';
+/** A `OutcomeDisplayDetail` edge in the connection. */
+export type OutcomeDisplayDetailsEdge = {
+  __typename?: 'OutcomeDisplayDetailsEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `OutcomeDetailView` at the end of the edge. */
-  node?: Maybe<OutcomeDetailView>;
+  /** The `OutcomeDisplayDetail` at the end of the edge. */
+  node?: Maybe<OutcomeDisplayDetail>;
 };
 
-/** Methods to use when ordering `OutcomeTableView`. */
-export enum OutcomeTableViewsOrderBy {
-  Natural = 'NATURAL',
-  IdAsc = 'ID_ASC',
-  IdDesc = 'ID_DESC',
-  ColumnNameAsc = 'COLUMN_NAME_ASC',
-  ColumnNameDesc = 'COLUMN_NAME_DESC',
-  TitleAsc = 'TITLE_ASC',
-  TitleDesc = 'TITLE_DESC',
-  CodeAsc = 'CODE_ASC',
-  CodeDesc = 'CODE_DESC',
-  OutcomeIdAsc = 'OUTCOME_ID_ASC',
-  OutcomeIdDesc = 'OUTCOME_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
-}
-
-/** A condition to be used against `OutcomeTableView` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type OutcomeTableViewCondition = {
-  /** Checks for equality with the object’s `id` field. */
-  id?: Maybe<Scalars['Int']>;
-  /** Checks for equality with the object’s `columnName` field. */
-  columnName?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `title` field. */
-  title?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `code` field. */
-  code?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `outcomeId` field. */
-  outcomeId?: Maybe<Scalars['Int']>;
-};
-
-/** A connection to a list of `OutcomeTableView` values. */
-export type OutcomeTableViewsConnection = {
-  __typename?: 'OutcomeTableViewsConnection';
-  /** A list of `OutcomeTableView` objects. */
-  nodes: Array<Maybe<OutcomeTableView>>;
-  /** A list of edges which contains the `OutcomeTableView` and cursor to aid in pagination. */
-  edges: Array<OutcomeTableViewsEdge>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `OutcomeTableView` you could get from the connection. */
-  totalCount: Scalars['Int'];
-};
-
-export type OutcomeTableView = Node & {
-  __typename?: 'OutcomeTableView';
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  nodeId: Scalars['ID'];
-  id: Scalars['Int'];
-  columnName?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['String']>;
-  outcomeId?: Maybe<Scalars['Int']>;
-  /** Reads a single `Outcome` that is related to this `OutcomeTableView`. */
-  outcome?: Maybe<Outcome>;
-};
-
-/** A `OutcomeTableView` edge in the connection. */
-export type OutcomeTableViewsEdge = {
-  __typename?: 'OutcomeTableViewsEdge';
+/** A `OutcomeDisplay` edge in the connection. */
+export type OutcomeDisplaysEdge = {
+  __typename?: 'OutcomeDisplaysEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `OutcomeTableView` at the end of the edge. */
-  node?: Maybe<OutcomeTableView>;
-};
-
-/** A `Outcome` edge in the connection. */
-export type OutcomesEdge = {
-  __typename?: 'OutcomesEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']>;
-  /** The `Outcome` at the end of the edge. */
-  node?: Maybe<Outcome>;
+  /** The `OutcomeDisplay` at the end of the edge. */
+  node?: Maybe<OutcomeDisplay>;
 };
 
 /** Methods to use when ordering `PermissionPolicy`. */
@@ -9539,12 +9553,12 @@ export type Mutation = {
   createNotification?: Maybe<CreateNotificationPayload>;
   /** Creates a single `Organisation`. */
   createOrganisation?: Maybe<CreateOrganisationPayload>;
-  /** Creates a single `Outcome`. */
-  createOutcome?: Maybe<CreateOutcomePayload>;
-  /** Creates a single `OutcomeDetailView`. */
-  createOutcomeDetailView?: Maybe<CreateOutcomeDetailViewPayload>;
-  /** Creates a single `OutcomeTableView`. */
-  createOutcomeTableView?: Maybe<CreateOutcomeTableViewPayload>;
+  /** Creates a single `OutcomeDisplay`. */
+  createOutcomeDisplay?: Maybe<CreateOutcomeDisplayPayload>;
+  /** Creates a single `OutcomeDisplayDetail`. */
+  createOutcomeDisplayDetail?: Maybe<CreateOutcomeDisplayDetailPayload>;
+  /** Creates a single `OutcomeDisplayTable`. */
+  createOutcomeDisplayTable?: Maybe<CreateOutcomeDisplayTablePayload>;
   /** Creates a single `PermissionJoin`. */
   createPermissionJoin?: Maybe<CreatePermissionJoinPayload>;
   /** Creates a single `PermissionName`. */
@@ -9651,20 +9665,20 @@ export type Mutation = {
   updateOrganisationByName?: Maybe<UpdateOrganisationPayload>;
   /** Updates a single `Organisation` using a unique key and a patch. */
   updateOrganisationByRegistration?: Maybe<UpdateOrganisationPayload>;
-  /** Updates a single `Outcome` using its globally unique id and a patch. */
-  updateOutcomeByNodeId?: Maybe<UpdateOutcomePayload>;
-  /** Updates a single `Outcome` using a unique key and a patch. */
-  updateOutcome?: Maybe<UpdateOutcomePayload>;
-  /** Updates a single `Outcome` using a unique key and a patch. */
-  updateOutcomeByCode?: Maybe<UpdateOutcomePayload>;
-  /** Updates a single `OutcomeDetailView` using its globally unique id and a patch. */
-  updateOutcomeDetailViewByNodeId?: Maybe<UpdateOutcomeDetailViewPayload>;
-  /** Updates a single `OutcomeDetailView` using a unique key and a patch. */
-  updateOutcomeDetailView?: Maybe<UpdateOutcomeDetailViewPayload>;
-  /** Updates a single `OutcomeTableView` using its globally unique id and a patch. */
-  updateOutcomeTableViewByNodeId?: Maybe<UpdateOutcomeTableViewPayload>;
-  /** Updates a single `OutcomeTableView` using a unique key and a patch. */
-  updateOutcomeTableView?: Maybe<UpdateOutcomeTableViewPayload>;
+  /** Updates a single `OutcomeDisplay` using its globally unique id and a patch. */
+  updateOutcomeDisplayByNodeId?: Maybe<UpdateOutcomeDisplayPayload>;
+  /** Updates a single `OutcomeDisplay` using a unique key and a patch. */
+  updateOutcomeDisplay?: Maybe<UpdateOutcomeDisplayPayload>;
+  /** Updates a single `OutcomeDisplay` using a unique key and a patch. */
+  updateOutcomeDisplayByCode?: Maybe<UpdateOutcomeDisplayPayload>;
+  /** Updates a single `OutcomeDisplayDetail` using its globally unique id and a patch. */
+  updateOutcomeDisplayDetailByNodeId?: Maybe<UpdateOutcomeDisplayDetailPayload>;
+  /** Updates a single `OutcomeDisplayDetail` using a unique key and a patch. */
+  updateOutcomeDisplayDetail?: Maybe<UpdateOutcomeDisplayDetailPayload>;
+  /** Updates a single `OutcomeDisplayTable` using its globally unique id and a patch. */
+  updateOutcomeDisplayTableByNodeId?: Maybe<UpdateOutcomeDisplayTablePayload>;
+  /** Updates a single `OutcomeDisplayTable` using a unique key and a patch. */
+  updateOutcomeDisplayTable?: Maybe<UpdateOutcomeDisplayTablePayload>;
   /** Updates a single `PermissionJoin` using its globally unique id and a patch. */
   updatePermissionJoinByNodeId?: Maybe<UpdatePermissionJoinPayload>;
   /** Updates a single `PermissionJoin` using a unique key and a patch. */
@@ -9825,20 +9839,20 @@ export type Mutation = {
   deleteOrganisationByName?: Maybe<DeleteOrganisationPayload>;
   /** Deletes a single `Organisation` using a unique key. */
   deleteOrganisationByRegistration?: Maybe<DeleteOrganisationPayload>;
-  /** Deletes a single `Outcome` using its globally unique id. */
-  deleteOutcomeByNodeId?: Maybe<DeleteOutcomePayload>;
-  /** Deletes a single `Outcome` using a unique key. */
-  deleteOutcome?: Maybe<DeleteOutcomePayload>;
-  /** Deletes a single `Outcome` using a unique key. */
-  deleteOutcomeByCode?: Maybe<DeleteOutcomePayload>;
-  /** Deletes a single `OutcomeDetailView` using its globally unique id. */
-  deleteOutcomeDetailViewByNodeId?: Maybe<DeleteOutcomeDetailViewPayload>;
-  /** Deletes a single `OutcomeDetailView` using a unique key. */
-  deleteOutcomeDetailView?: Maybe<DeleteOutcomeDetailViewPayload>;
-  /** Deletes a single `OutcomeTableView` using its globally unique id. */
-  deleteOutcomeTableViewByNodeId?: Maybe<DeleteOutcomeTableViewPayload>;
-  /** Deletes a single `OutcomeTableView` using a unique key. */
-  deleteOutcomeTableView?: Maybe<DeleteOutcomeTableViewPayload>;
+  /** Deletes a single `OutcomeDisplay` using its globally unique id. */
+  deleteOutcomeDisplayByNodeId?: Maybe<DeleteOutcomeDisplayPayload>;
+  /** Deletes a single `OutcomeDisplay` using a unique key. */
+  deleteOutcomeDisplay?: Maybe<DeleteOutcomeDisplayPayload>;
+  /** Deletes a single `OutcomeDisplay` using a unique key. */
+  deleteOutcomeDisplayByCode?: Maybe<DeleteOutcomeDisplayPayload>;
+  /** Deletes a single `OutcomeDisplayDetail` using its globally unique id. */
+  deleteOutcomeDisplayDetailByNodeId?: Maybe<DeleteOutcomeDisplayDetailPayload>;
+  /** Deletes a single `OutcomeDisplayDetail` using a unique key. */
+  deleteOutcomeDisplayDetail?: Maybe<DeleteOutcomeDisplayDetailPayload>;
+  /** Deletes a single `OutcomeDisplayTable` using its globally unique id. */
+  deleteOutcomeDisplayTableByNodeId?: Maybe<DeleteOutcomeDisplayTablePayload>;
+  /** Deletes a single `OutcomeDisplayTable` using a unique key. */
+  deleteOutcomeDisplayTable?: Maybe<DeleteOutcomeDisplayTablePayload>;
   /** Deletes a single `PermissionJoin` using its globally unique id. */
   deletePermissionJoinByNodeId?: Maybe<DeletePermissionJoinPayload>;
   /** Deletes a single `PermissionJoin` using a unique key. */
@@ -10025,20 +10039,20 @@ export type MutationCreateOrganisationArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateOutcomeArgs = {
-  input: CreateOutcomeInput;
+export type MutationCreateOutcomeDisplayArgs = {
+  input: CreateOutcomeDisplayInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateOutcomeDetailViewArgs = {
-  input: CreateOutcomeDetailViewInput;
+export type MutationCreateOutcomeDisplayDetailArgs = {
+  input: CreateOutcomeDisplayDetailInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateOutcomeTableViewArgs = {
-  input: CreateOutcomeTableViewInput;
+export type MutationCreateOutcomeDisplayTableArgs = {
+  input: CreateOutcomeDisplayTableInput;
 };
 
 
@@ -10361,44 +10375,44 @@ export type MutationUpdateOrganisationByRegistrationArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOutcomeByNodeIdArgs = {
-  input: UpdateOutcomeByNodeIdInput;
+export type MutationUpdateOutcomeDisplayByNodeIdArgs = {
+  input: UpdateOutcomeDisplayByNodeIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOutcomeArgs = {
-  input: UpdateOutcomeInput;
+export type MutationUpdateOutcomeDisplayArgs = {
+  input: UpdateOutcomeDisplayInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOutcomeByCodeArgs = {
-  input: UpdateOutcomeByCodeInput;
+export type MutationUpdateOutcomeDisplayByCodeArgs = {
+  input: UpdateOutcomeDisplayByCodeInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOutcomeDetailViewByNodeIdArgs = {
-  input: UpdateOutcomeDetailViewByNodeIdInput;
+export type MutationUpdateOutcomeDisplayDetailByNodeIdArgs = {
+  input: UpdateOutcomeDisplayDetailByNodeIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOutcomeDetailViewArgs = {
-  input: UpdateOutcomeDetailViewInput;
+export type MutationUpdateOutcomeDisplayDetailArgs = {
+  input: UpdateOutcomeDisplayDetailInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOutcomeTableViewByNodeIdArgs = {
-  input: UpdateOutcomeTableViewByNodeIdInput;
+export type MutationUpdateOutcomeDisplayTableByNodeIdArgs = {
+  input: UpdateOutcomeDisplayTableByNodeIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateOutcomeTableViewArgs = {
-  input: UpdateOutcomeTableViewInput;
+export type MutationUpdateOutcomeDisplayTableArgs = {
+  input: UpdateOutcomeDisplayTableInput;
 };
 
 
@@ -10883,44 +10897,44 @@ export type MutationDeleteOrganisationByRegistrationArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOutcomeByNodeIdArgs = {
-  input: DeleteOutcomeByNodeIdInput;
+export type MutationDeleteOutcomeDisplayByNodeIdArgs = {
+  input: DeleteOutcomeDisplayByNodeIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOutcomeArgs = {
-  input: DeleteOutcomeInput;
+export type MutationDeleteOutcomeDisplayArgs = {
+  input: DeleteOutcomeDisplayInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOutcomeByCodeArgs = {
-  input: DeleteOutcomeByCodeInput;
+export type MutationDeleteOutcomeDisplayByCodeArgs = {
+  input: DeleteOutcomeDisplayByCodeInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOutcomeDetailViewByNodeIdArgs = {
-  input: DeleteOutcomeDetailViewByNodeIdInput;
+export type MutationDeleteOutcomeDisplayDetailByNodeIdArgs = {
+  input: DeleteOutcomeDisplayDetailByNodeIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOutcomeDetailViewArgs = {
-  input: DeleteOutcomeDetailViewInput;
+export type MutationDeleteOutcomeDisplayDetailArgs = {
+  input: DeleteOutcomeDisplayDetailInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOutcomeTableViewByNodeIdArgs = {
-  input: DeleteOutcomeTableViewByNodeIdInput;
+export type MutationDeleteOutcomeDisplayTableByNodeIdArgs = {
+  input: DeleteOutcomeDisplayTableByNodeIdInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteOutcomeTableViewArgs = {
-  input: DeleteOutcomeTableViewInput;
+export type MutationDeleteOutcomeDisplayTableArgs = {
+  input: DeleteOutcomeDisplayTableInput;
 };
 
 
@@ -21495,477 +21509,487 @@ export type CreateOrganisationPayloadOrganisationEdgeArgs = {
   orderBy?: Maybe<Array<OrganisationsOrderBy>>;
 };
 
-/** All input for the create `Outcome` mutation. */
-export type CreateOutcomeInput = {
+/** All input for the create `OutcomeDisplay` mutation. */
+export type CreateOutcomeDisplayInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Outcome` to be created by this mutation. */
-  outcome: OutcomeInput;
+  /** The `OutcomeDisplay` to be created by this mutation. */
+  outcomeDisplay: OutcomeDisplayInput;
 };
 
-/** An input for mutations affecting `Outcome` */
-export type OutcomeInput = {
+/** An input for mutations affecting `OutcomeDisplay` */
+export type OutcomeDisplayInput = {
   id?: Maybe<Scalars['Int']>;
   tableName?: Maybe<Scalars['String']>;
+  pluralTableName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   detailColumnName?: Maybe<Scalars['String']>;
-  outcomeDetailViewsUsingId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInverseInput>;
-  outcomeTableViewsUsingId?: Maybe<OutcomeTableViewOutcomeIdFkeyInverseInput>;
+  outcomeDisplayTablesUsingId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInverseInput>;
+  outcomeDisplayDetailsUsingId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInverseInput>;
 };
 
-/** Input for the nested mutation of `outcomeDetailView` in the `OutcomeInput` mutation. */
-export type OutcomeDetailViewOutcomeIdFkeyInverseInput = {
-  /** Flag indicating whether all other `outcomeDetailView` records that match this relationship should be removed. */
+/** Input for the nested mutation of `outcomeDisplayTable` in the `OutcomeDisplayInput` mutation. */
+export type OutcomeDisplayTableOutcomeDisplayIdFkeyInverseInput = {
+  /** Flag indicating whether all other `outcomeDisplayTable` records that match this relationship should be removed. */
   deleteOthers?: Maybe<Scalars['Boolean']>;
-  /** The primary key(s) for `outcomeDetailView` for the far side of the relationship. */
-  connectById?: Maybe<Array<OutcomeDetailViewOutcomeDetailViewPkeyConnect>>;
-  /** The primary key(s) for `outcomeDetailView` for the far side of the relationship. */
-  connectByNodeId?: Maybe<Array<OutcomeDetailViewNodeIdConnect>>;
-  /** The primary key(s) for `outcomeDetailView` for the far side of the relationship. */
-  deleteById?: Maybe<Array<OutcomeDetailViewOutcomeDetailViewPkeyDelete>>;
-  /** The primary key(s) for `outcomeDetailView` for the far side of the relationship. */
-  deleteByNodeId?: Maybe<Array<OutcomeDetailViewNodeIdDelete>>;
-  /** The primary key(s) and patch data for `outcomeDetailView` for the far side of the relationship. */
-  updateById?: Maybe<Array<OutcomeDetailViewOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyUsingOutcomeDetailViewPkeyUpdate>>;
-  /** The primary key(s) and patch data for `outcomeDetailView` for the far side of the relationship. */
-  updateByNodeId?: Maybe<Array<OutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyNodeIdUpdate>>;
-  /** A `OutcomeDetailViewInput` object that will be created and connected to this object. */
-  create?: Maybe<Array<OutcomeDetailViewOutcomeIdFkeyOutcomeDetailViewCreateInput>>;
+  /** The primary key(s) for `outcomeDisplayTable` for the far side of the relationship. */
+  connectById?: Maybe<Array<OutcomeDisplayTableOutcomeDisplayTablePkeyConnect>>;
+  /** The primary key(s) for `outcomeDisplayTable` for the far side of the relationship. */
+  connectByNodeId?: Maybe<Array<OutcomeDisplayTableNodeIdConnect>>;
+  /** The primary key(s) for `outcomeDisplayTable` for the far side of the relationship. */
+  deleteById?: Maybe<Array<OutcomeDisplayTableOutcomeDisplayTablePkeyDelete>>;
+  /** The primary key(s) for `outcomeDisplayTable` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<Array<OutcomeDisplayTableNodeIdDelete>>;
+  /** The primary key(s) and patch data for `outcomeDisplayTable` for the far side of the relationship. */
+  updateById?: Maybe<Array<OutcomeDisplayTableOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyUsingOutcomeDisplayTablePkeyUpdate>>;
+  /** The primary key(s) and patch data for `outcomeDisplayTable` for the far side of the relationship. */
+  updateByNodeId?: Maybe<Array<OutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyNodeIdUpdate>>;
+  /** A `OutcomeDisplayTableInput` object that will be created and connected to this object. */
+  create?: Maybe<Array<OutcomeDisplayTableOutcomeDisplayIdFkeyOutcomeDisplayTableCreateInput>>;
 };
 
-/** The fields on `outcomeDetailView` to look up the row to connect. */
-export type OutcomeDetailViewOutcomeDetailViewPkeyConnect = {
+/** The fields on `outcomeDisplayTable` to look up the row to connect. */
+export type OutcomeDisplayTableOutcomeDisplayTablePkeyConnect = {
   id: Scalars['Int'];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
-export type OutcomeDetailViewNodeIdConnect = {
-  /** The globally unique `ID` which identifies a single `outcomeDetailView` to be connected. */
+export type OutcomeDisplayTableNodeIdConnect = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplayTable` to be connected. */
   nodeId: Scalars['ID'];
 };
 
-/** The fields on `outcomeDetailView` to look up the row to delete. */
-export type OutcomeDetailViewOutcomeDetailViewPkeyDelete = {
+/** The fields on `outcomeDisplayTable` to look up the row to delete. */
+export type OutcomeDisplayTableOutcomeDisplayTablePkeyDelete = {
   id: Scalars['Int'];
 };
 
 /** The globally unique `ID` look up for the row to delete. */
-export type OutcomeDetailViewNodeIdDelete = {
-  /** The globally unique `ID` which identifies a single `outcomeDetailView` to be deleted. */
+export type OutcomeDisplayTableNodeIdDelete = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplayTable` to be deleted. */
   nodeId: Scalars['ID'];
 };
 
-/** The fields on `outcomeDetailView` to look up the row to update. */
-export type OutcomeDetailViewOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyUsingOutcomeDetailViewPkeyUpdate = {
-  /** An object where the defined keys will be set on the `outcomeDetailView` being updated. */
-  patch: UpdateOutcomeDetailViewOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyPatch;
+/** The fields on `outcomeDisplayTable` to look up the row to update. */
+export type OutcomeDisplayTableOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyUsingOutcomeDisplayTablePkeyUpdate = {
+  /** An object where the defined keys will be set on the `outcomeDisplayTable` being updated. */
+  patch: UpdateOutcomeDisplayTableOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyPatch;
   id: Scalars['Int'];
 };
 
-/** An object where the defined keys will be set on the `outcomeDetailView` being updated. */
-export type UpdateOutcomeDetailViewOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyPatch = {
+/** An object where the defined keys will be set on the `outcomeDisplayTable` being updated. */
+export type UpdateOutcomeDisplayTableOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   columnName?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  elementTypePluginCode?: Maybe<Scalars['String']>;
   isTextColumn?: Maybe<Scalars['Boolean']>;
-  parameters?: Maybe<Scalars['JSON']>;
-  outcomeToOutcomeId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInput>;
+  title?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInput>;
 };
 
-/** Input for the nested mutation of `outcome` in the `OutcomeDetailViewInput` mutation. */
-export type OutcomeDetailViewOutcomeIdFkeyInput = {
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  connectById?: Maybe<OutcomeOutcomePkeyConnect>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  connectByCode?: Maybe<OutcomeOutcomeCodeKeyConnect>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  connectByNodeId?: Maybe<OutcomeNodeIdConnect>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  deleteById?: Maybe<OutcomeOutcomePkeyDelete>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  deleteByCode?: Maybe<OutcomeOutcomeCodeKeyDelete>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  deleteByNodeId?: Maybe<OutcomeNodeIdDelete>;
-  /** The primary key(s) and patch data for `outcome` for the far side of the relationship. */
-  updateById?: Maybe<OutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyUsingOutcomePkeyUpdate>;
-  /** The primary key(s) and patch data for `outcome` for the far side of the relationship. */
-  updateByCode?: Maybe<OutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyUsingOutcomeCodeKeyUpdate>;
-  /** The primary key(s) and patch data for `outcome` for the far side of the relationship. */
-  updateByNodeId?: Maybe<OutcomeDetailViewOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyNodeIdUpdate>;
-  /** A `OutcomeInput` object that will be created and connected to this object. */
-  create?: Maybe<OutcomeDetailViewOutcomeIdFkeyOutcomeCreateInput>;
+/** Input for the nested mutation of `outcomeDisplay` in the `OutcomeDisplayTableInput` mutation. */
+export type OutcomeDisplayTableOutcomeDisplayIdFkeyInput = {
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  connectById?: Maybe<OutcomeDisplayOutcomeDisplayPkeyConnect>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  connectByCode?: Maybe<OutcomeDisplayOutcomeDisplayCodeKeyConnect>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  connectByNodeId?: Maybe<OutcomeDisplayNodeIdConnect>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  deleteById?: Maybe<OutcomeDisplayOutcomeDisplayPkeyDelete>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  deleteByCode?: Maybe<OutcomeDisplayOutcomeDisplayCodeKeyDelete>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<OutcomeDisplayNodeIdDelete>;
+  /** The primary key(s) and patch data for `outcomeDisplay` for the far side of the relationship. */
+  updateById?: Maybe<OutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyUsingOutcomeDisplayPkeyUpdate>;
+  /** The primary key(s) and patch data for `outcomeDisplay` for the far side of the relationship. */
+  updateByCode?: Maybe<OutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyUsingOutcomeDisplayCodeKeyUpdate>;
+  /** The primary key(s) and patch data for `outcomeDisplay` for the far side of the relationship. */
+  updateByNodeId?: Maybe<OutcomeDisplayTableOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyNodeIdUpdate>;
+  /** A `OutcomeDisplayInput` object that will be created and connected to this object. */
+  create?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyOutcomeDisplayCreateInput>;
 };
 
-/** The fields on `outcome` to look up the row to connect. */
-export type OutcomeOutcomePkeyConnect = {
+/** The fields on `outcomeDisplay` to look up the row to connect. */
+export type OutcomeDisplayOutcomeDisplayPkeyConnect = {
   id: Scalars['Int'];
 };
 
-/** The fields on `outcome` to look up the row to connect. */
-export type OutcomeOutcomeCodeKeyConnect = {
+/** The fields on `outcomeDisplay` to look up the row to connect. */
+export type OutcomeDisplayOutcomeDisplayCodeKeyConnect = {
   code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
-export type OutcomeNodeIdConnect = {
-  /** The globally unique `ID` which identifies a single `outcome` to be connected. */
+export type OutcomeDisplayNodeIdConnect = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplay` to be connected. */
   nodeId: Scalars['ID'];
 };
 
-/** The fields on `outcome` to look up the row to delete. */
-export type OutcomeOutcomePkeyDelete = {
+/** The fields on `outcomeDisplay` to look up the row to delete. */
+export type OutcomeDisplayOutcomeDisplayPkeyDelete = {
   id: Scalars['Int'];
 };
 
-/** The fields on `outcome` to look up the row to delete. */
-export type OutcomeOutcomeCodeKeyDelete = {
+/** The fields on `outcomeDisplay` to look up the row to delete. */
+export type OutcomeDisplayOutcomeDisplayCodeKeyDelete = {
   code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to delete. */
-export type OutcomeNodeIdDelete = {
-  /** The globally unique `ID` which identifies a single `outcome` to be deleted. */
+export type OutcomeDisplayNodeIdDelete = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplay` to be deleted. */
   nodeId: Scalars['ID'];
 };
 
-/** The fields on `outcome` to look up the row to update. */
-export type OutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyUsingOutcomePkeyUpdate = {
-  /** An object where the defined keys will be set on the `outcome` being updated. */
-  patch: UpdateOutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyPatch;
+/** The fields on `outcomeDisplay` to look up the row to update. */
+export type OutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyUsingOutcomeDisplayPkeyUpdate = {
+  /** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+  patch: UpdateOutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyPatch;
   id: Scalars['Int'];
 };
 
-/** An object where the defined keys will be set on the `outcome` being updated. */
-export type UpdateOutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyPatch = {
+/** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+export type UpdateOutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   tableName?: Maybe<Scalars['String']>;
+  pluralTableName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   detailColumnName?: Maybe<Scalars['String']>;
-  outcomeDetailViewsUsingId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInverseInput>;
-  outcomeTableViewsUsingId?: Maybe<OutcomeTableViewOutcomeIdFkeyInverseInput>;
+  outcomeDisplayTablesUsingId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInverseInput>;
+  outcomeDisplayDetailsUsingId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInverseInput>;
 };
 
-/** Input for the nested mutation of `outcomeTableView` in the `OutcomeInput` mutation. */
-export type OutcomeTableViewOutcomeIdFkeyInverseInput = {
-  /** Flag indicating whether all other `outcomeTableView` records that match this relationship should be removed. */
+/** Input for the nested mutation of `outcomeDisplayDetail` in the `OutcomeDisplayInput` mutation. */
+export type OutcomeDisplayDetailOutcomeDisplayIdFkeyInverseInput = {
+  /** Flag indicating whether all other `outcomeDisplayDetail` records that match this relationship should be removed. */
   deleteOthers?: Maybe<Scalars['Boolean']>;
-  /** The primary key(s) for `outcomeTableView` for the far side of the relationship. */
-  connectById?: Maybe<Array<OutcomeTableViewOutcomeTableViewPkeyConnect>>;
-  /** The primary key(s) for `outcomeTableView` for the far side of the relationship. */
-  connectByNodeId?: Maybe<Array<OutcomeTableViewNodeIdConnect>>;
-  /** The primary key(s) for `outcomeTableView` for the far side of the relationship. */
-  deleteById?: Maybe<Array<OutcomeTableViewOutcomeTableViewPkeyDelete>>;
-  /** The primary key(s) for `outcomeTableView` for the far side of the relationship. */
-  deleteByNodeId?: Maybe<Array<OutcomeTableViewNodeIdDelete>>;
-  /** The primary key(s) and patch data for `outcomeTableView` for the far side of the relationship. */
-  updateById?: Maybe<Array<OutcomeTableViewOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyUsingOutcomeTableViewPkeyUpdate>>;
-  /** The primary key(s) and patch data for `outcomeTableView` for the far side of the relationship. */
-  updateByNodeId?: Maybe<Array<OutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyNodeIdUpdate>>;
-  /** A `OutcomeTableViewInput` object that will be created and connected to this object. */
-  create?: Maybe<Array<OutcomeTableViewOutcomeIdFkeyOutcomeTableViewCreateInput>>;
+  /** The primary key(s) for `outcomeDisplayDetail` for the far side of the relationship. */
+  connectById?: Maybe<Array<OutcomeDisplayDetailOutcomeDisplayDetailPkeyConnect>>;
+  /** The primary key(s) for `outcomeDisplayDetail` for the far side of the relationship. */
+  connectByNodeId?: Maybe<Array<OutcomeDisplayDetailNodeIdConnect>>;
+  /** The primary key(s) for `outcomeDisplayDetail` for the far side of the relationship. */
+  deleteById?: Maybe<Array<OutcomeDisplayDetailOutcomeDisplayDetailPkeyDelete>>;
+  /** The primary key(s) for `outcomeDisplayDetail` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<Array<OutcomeDisplayDetailNodeIdDelete>>;
+  /** The primary key(s) and patch data for `outcomeDisplayDetail` for the far side of the relationship. */
+  updateById?: Maybe<Array<OutcomeDisplayDetailOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyUsingOutcomeDisplayDetailPkeyUpdate>>;
+  /** The primary key(s) and patch data for `outcomeDisplayDetail` for the far side of the relationship. */
+  updateByNodeId?: Maybe<Array<OutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyNodeIdUpdate>>;
+  /** A `OutcomeDisplayDetailInput` object that will be created and connected to this object. */
+  create?: Maybe<Array<OutcomeDisplayDetailOutcomeDisplayIdFkeyOutcomeDisplayDetailCreateInput>>;
 };
 
-/** The fields on `outcomeTableView` to look up the row to connect. */
-export type OutcomeTableViewOutcomeTableViewPkeyConnect = {
+/** The fields on `outcomeDisplayDetail` to look up the row to connect. */
+export type OutcomeDisplayDetailOutcomeDisplayDetailPkeyConnect = {
   id: Scalars['Int'];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
-export type OutcomeTableViewNodeIdConnect = {
-  /** The globally unique `ID` which identifies a single `outcomeTableView` to be connected. */
+export type OutcomeDisplayDetailNodeIdConnect = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplayDetail` to be connected. */
   nodeId: Scalars['ID'];
 };
 
-/** The fields on `outcomeTableView` to look up the row to delete. */
-export type OutcomeTableViewOutcomeTableViewPkeyDelete = {
+/** The fields on `outcomeDisplayDetail` to look up the row to delete. */
+export type OutcomeDisplayDetailOutcomeDisplayDetailPkeyDelete = {
   id: Scalars['Int'];
 };
 
 /** The globally unique `ID` look up for the row to delete. */
-export type OutcomeTableViewNodeIdDelete = {
-  /** The globally unique `ID` which identifies a single `outcomeTableView` to be deleted. */
+export type OutcomeDisplayDetailNodeIdDelete = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplayDetail` to be deleted. */
   nodeId: Scalars['ID'];
 };
 
-/** The fields on `outcomeTableView` to look up the row to update. */
-export type OutcomeTableViewOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyUsingOutcomeTableViewPkeyUpdate = {
-  /** An object where the defined keys will be set on the `outcomeTableView` being updated. */
-  patch: UpdateOutcomeTableViewOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyPatch;
+/** The fields on `outcomeDisplayDetail` to look up the row to update. */
+export type OutcomeDisplayDetailOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyUsingOutcomeDisplayDetailPkeyUpdate = {
+  /** An object where the defined keys will be set on the `outcomeDisplayDetail` being updated. */
+  patch: UpdateOutcomeDisplayDetailOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyPatch;
   id: Scalars['Int'];
 };
 
-/** An object where the defined keys will be set on the `outcomeTableView` being updated. */
-export type UpdateOutcomeTableViewOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyPatch = {
+/** An object where the defined keys will be set on the `outcomeDisplayDetail` being updated. */
+export type UpdateOutcomeDisplayDetailOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   columnName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['String']>;
-  outcomeToOutcomeId?: Maybe<OutcomeTableViewOutcomeIdFkeyInput>;
+  elementTypePluginCode?: Maybe<Scalars['String']>;
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  parameters?: Maybe<Scalars['JSON']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInput>;
 };
 
-/** Input for the nested mutation of `outcome` in the `OutcomeTableViewInput` mutation. */
-export type OutcomeTableViewOutcomeIdFkeyInput = {
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  connectById?: Maybe<OutcomeOutcomePkeyConnect>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  connectByCode?: Maybe<OutcomeOutcomeCodeKeyConnect>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  connectByNodeId?: Maybe<OutcomeNodeIdConnect>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  deleteById?: Maybe<OutcomeOutcomePkeyDelete>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  deleteByCode?: Maybe<OutcomeOutcomeCodeKeyDelete>;
-  /** The primary key(s) for `outcome` for the far side of the relationship. */
-  deleteByNodeId?: Maybe<OutcomeNodeIdDelete>;
-  /** The primary key(s) and patch data for `outcome` for the far side of the relationship. */
-  updateById?: Maybe<OutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyUsingOutcomePkeyUpdate>;
-  /** The primary key(s) and patch data for `outcome` for the far side of the relationship. */
-  updateByCode?: Maybe<OutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyUsingOutcomeCodeKeyUpdate>;
-  /** The primary key(s) and patch data for `outcome` for the far side of the relationship. */
-  updateByNodeId?: Maybe<OutcomeTableViewOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyNodeIdUpdate>;
-  /** A `OutcomeInput` object that will be created and connected to this object. */
-  create?: Maybe<OutcomeTableViewOutcomeIdFkeyOutcomeCreateInput>;
+/** Input for the nested mutation of `outcomeDisplay` in the `OutcomeDisplayDetailInput` mutation. */
+export type OutcomeDisplayDetailOutcomeDisplayIdFkeyInput = {
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  connectById?: Maybe<OutcomeDisplayOutcomeDisplayPkeyConnect>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  connectByCode?: Maybe<OutcomeDisplayOutcomeDisplayCodeKeyConnect>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  connectByNodeId?: Maybe<OutcomeDisplayNodeIdConnect>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  deleteById?: Maybe<OutcomeDisplayOutcomeDisplayPkeyDelete>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  deleteByCode?: Maybe<OutcomeDisplayOutcomeDisplayCodeKeyDelete>;
+  /** The primary key(s) for `outcomeDisplay` for the far side of the relationship. */
+  deleteByNodeId?: Maybe<OutcomeDisplayNodeIdDelete>;
+  /** The primary key(s) and patch data for `outcomeDisplay` for the far side of the relationship. */
+  updateById?: Maybe<OutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyUsingOutcomeDisplayPkeyUpdate>;
+  /** The primary key(s) and patch data for `outcomeDisplay` for the far side of the relationship. */
+  updateByCode?: Maybe<OutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyUsingOutcomeDisplayCodeKeyUpdate>;
+  /** The primary key(s) and patch data for `outcomeDisplay` for the far side of the relationship. */
+  updateByNodeId?: Maybe<OutcomeDisplayDetailOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyNodeIdUpdate>;
+  /** A `OutcomeDisplayInput` object that will be created and connected to this object. */
+  create?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyOutcomeDisplayCreateInput>;
 };
 
-/** The fields on `outcome` to look up the row to update. */
-export type OutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyUsingOutcomePkeyUpdate = {
-  /** An object where the defined keys will be set on the `outcome` being updated. */
-  patch: UpdateOutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyPatch;
+/** The fields on `outcomeDisplay` to look up the row to update. */
+export type OutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyUsingOutcomeDisplayPkeyUpdate = {
+  /** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+  patch: UpdateOutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyPatch;
   id: Scalars['Int'];
 };
 
-/** An object where the defined keys will be set on the `outcome` being updated. */
-export type UpdateOutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyPatch = {
+/** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+export type UpdateOutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   tableName?: Maybe<Scalars['String']>;
+  pluralTableName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   detailColumnName?: Maybe<Scalars['String']>;
-  outcomeDetailViewsUsingId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInverseInput>;
-  outcomeTableViewsUsingId?: Maybe<OutcomeTableViewOutcomeIdFkeyInverseInput>;
+  outcomeDisplayTablesUsingId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInverseInput>;
+  outcomeDisplayDetailsUsingId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInverseInput>;
 };
 
-/** The fields on `outcome` to look up the row to update. */
-export type OutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyUsingOutcomeCodeKeyUpdate = {
-  /** An object where the defined keys will be set on the `outcome` being updated. */
-  patch: UpdateOutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyPatch;
+/** The fields on `outcomeDisplay` to look up the row to update. */
+export type OutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyUsingOutcomeDisplayCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+  patch: UpdateOutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyPatch;
   code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to update. */
-export type OutcomeTableViewOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyNodeIdUpdate = {
-  /** The globally unique `ID` which identifies a single `outcome` to be connected. */
+export type OutcomeDisplayDetailOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplay` to be connected. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `outcome` being updated. */
-  patch: OutcomePatch;
+  /** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+  patch: OutcomeDisplayPatch;
 };
 
-/** Represents an update to a `Outcome`. Fields that are set will be updated. */
-export type OutcomePatch = {
+/** Represents an update to a `OutcomeDisplay`. Fields that are set will be updated. */
+export type OutcomeDisplayPatch = {
   id?: Maybe<Scalars['Int']>;
   tableName?: Maybe<Scalars['String']>;
+  pluralTableName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   detailColumnName?: Maybe<Scalars['String']>;
-  outcomeDetailViewsUsingId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInverseInput>;
-  outcomeTableViewsUsingId?: Maybe<OutcomeTableViewOutcomeIdFkeyInverseInput>;
+  outcomeDisplayTablesUsingId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInverseInput>;
+  outcomeDisplayDetailsUsingId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInverseInput>;
 };
 
-/** The `outcome` to be created by this mutation. */
-export type OutcomeTableViewOutcomeIdFkeyOutcomeCreateInput = {
+/** The `outcomeDisplay` to be created by this mutation. */
+export type OutcomeDisplayDetailOutcomeDisplayIdFkeyOutcomeDisplayCreateInput = {
   id?: Maybe<Scalars['Int']>;
   tableName?: Maybe<Scalars['String']>;
+  pluralTableName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   detailColumnName?: Maybe<Scalars['String']>;
-  outcomeDetailViewsUsingId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInverseInput>;
-  outcomeTableViewsUsingId?: Maybe<OutcomeTableViewOutcomeIdFkeyInverseInput>;
+  outcomeDisplayTablesUsingId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInverseInput>;
+  outcomeDisplayDetailsUsingId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInverseInput>;
 };
 
 /** The globally unique `ID` look up for the row to update. */
-export type OutcomeOnOutcomeTableViewForOutcomeTableViewOutcomeIdFkeyNodeIdUpdate = {
-  /** The globally unique `ID` which identifies a single `outcomeTableView` to be connected. */
+export type OutcomeDisplayOnOutcomeDisplayDetailForOutcomeDisplayDetailOutcomeDisplayIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplayDetail` to be connected. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `outcomeTableView` being updated. */
-  patch: OutcomeTableViewPatch;
+  /** An object where the defined keys will be set on the `outcomeDisplayDetail` being updated. */
+  patch: OutcomeDisplayDetailPatch;
 };
 
-/** Represents an update to a `OutcomeTableView`. Fields that are set will be updated. */
-export type OutcomeTableViewPatch = {
+/** Represents an update to a `OutcomeDisplayDetail`. Fields that are set will be updated. */
+export type OutcomeDisplayDetailPatch = {
   id?: Maybe<Scalars['Int']>;
   columnName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['String']>;
-  outcomeId?: Maybe<Scalars['Int']>;
-  outcomeToOutcomeId?: Maybe<OutcomeTableViewOutcomeIdFkeyInput>;
+  elementTypePluginCode?: Maybe<Scalars['String']>;
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  parameters?: Maybe<Scalars['JSON']>;
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInput>;
 };
 
-/** The `outcomeTableView` to be created by this mutation. */
-export type OutcomeTableViewOutcomeIdFkeyOutcomeTableViewCreateInput = {
+/** The `outcomeDisplayDetail` to be created by this mutation. */
+export type OutcomeDisplayDetailOutcomeDisplayIdFkeyOutcomeDisplayDetailCreateInput = {
   id?: Maybe<Scalars['Int']>;
   columnName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['String']>;
-  outcomeToOutcomeId?: Maybe<OutcomeTableViewOutcomeIdFkeyInput>;
+  elementTypePluginCode?: Maybe<Scalars['String']>;
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  parameters?: Maybe<Scalars['JSON']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInput>;
 };
 
-/** The fields on `outcome` to look up the row to update. */
-export type OutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyUsingOutcomeCodeKeyUpdate = {
-  /** An object where the defined keys will be set on the `outcome` being updated. */
-  patch: UpdateOutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyPatch;
+/** The fields on `outcomeDisplay` to look up the row to update. */
+export type OutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyUsingOutcomeDisplayCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+  patch: UpdateOutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyPatch;
   code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to update. */
-export type OutcomeDetailViewOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyNodeIdUpdate = {
-  /** The globally unique `ID` which identifies a single `outcome` to be connected. */
+export type OutcomeDisplayTableOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplay` to be connected. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `outcome` being updated. */
-  patch: OutcomePatch;
+  /** An object where the defined keys will be set on the `outcomeDisplay` being updated. */
+  patch: OutcomeDisplayPatch;
 };
 
-/** The `outcome` to be created by this mutation. */
-export type OutcomeDetailViewOutcomeIdFkeyOutcomeCreateInput = {
+/** The `outcomeDisplay` to be created by this mutation. */
+export type OutcomeDisplayTableOutcomeDisplayIdFkeyOutcomeDisplayCreateInput = {
   id?: Maybe<Scalars['Int']>;
   tableName?: Maybe<Scalars['String']>;
+  pluralTableName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   detailColumnName?: Maybe<Scalars['String']>;
-  outcomeDetailViewsUsingId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInverseInput>;
-  outcomeTableViewsUsingId?: Maybe<OutcomeTableViewOutcomeIdFkeyInverseInput>;
+  outcomeDisplayTablesUsingId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInverseInput>;
+  outcomeDisplayDetailsUsingId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInverseInput>;
 };
 
 /** The globally unique `ID` look up for the row to update. */
-export type OutcomeOnOutcomeDetailViewForOutcomeDetailViewOutcomeIdFkeyNodeIdUpdate = {
-  /** The globally unique `ID` which identifies a single `outcomeDetailView` to be connected. */
+export type OutcomeDisplayOnOutcomeDisplayTableForOutcomeDisplayTableOutcomeDisplayIdFkeyNodeIdUpdate = {
+  /** The globally unique `ID` which identifies a single `outcomeDisplayTable` to be connected. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `outcomeDetailView` being updated. */
-  patch: OutcomeDetailViewPatch;
+  /** An object where the defined keys will be set on the `outcomeDisplayTable` being updated. */
+  patch: OutcomeDisplayTablePatch;
 };
 
-/** Represents an update to a `OutcomeDetailView`. Fields that are set will be updated. */
-export type OutcomeDetailViewPatch = {
+/** Represents an update to a `OutcomeDisplayTable`. Fields that are set will be updated. */
+export type OutcomeDisplayTablePatch = {
   id?: Maybe<Scalars['Int']>;
   columnName?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  elementTypePluginCode?: Maybe<Scalars['String']>;
   isTextColumn?: Maybe<Scalars['Boolean']>;
-  parameters?: Maybe<Scalars['JSON']>;
-  outcomeId?: Maybe<Scalars['Int']>;
-  outcomeToOutcomeId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInput>;
-};
-
-/** The `outcomeDetailView` to be created by this mutation. */
-export type OutcomeDetailViewOutcomeIdFkeyOutcomeDetailViewCreateInput = {
-  id?: Maybe<Scalars['Int']>;
-  columnName?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  elementTypePluginCode?: Maybe<Scalars['String']>;
-  isTextColumn?: Maybe<Scalars['Boolean']>;
-  parameters?: Maybe<Scalars['JSON']>;
-  outcomeToOutcomeId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInput>;
-};
-
-/** The output of our create `Outcome` mutation. */
-export type CreateOutcomePayload = {
-  __typename?: 'CreateOutcomePayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Outcome` that was created by this mutation. */
-  outcome?: Maybe<Outcome>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** An edge for our `Outcome`. May be used by Relay 1. */
-  outcomeEdge?: Maybe<OutcomesEdge>;
-};
-
-
-/** The output of our create `Outcome` mutation. */
-export type CreateOutcomePayloadOutcomeEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomesOrderBy>>;
-};
-
-/** All input for the create `OutcomeDetailView` mutation. */
-export type CreateOutcomeDetailViewInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeDetailView` to be created by this mutation. */
-  outcomeDetailView: OutcomeDetailViewInput;
-};
-
-/** An input for mutations affecting `OutcomeDetailView` */
-export type OutcomeDetailViewInput = {
-  id?: Maybe<Scalars['Int']>;
-  columnName?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  elementTypePluginCode?: Maybe<Scalars['String']>;
-  isTextColumn?: Maybe<Scalars['Boolean']>;
-  parameters?: Maybe<Scalars['JSON']>;
-  outcomeId?: Maybe<Scalars['Int']>;
-  outcomeToOutcomeId?: Maybe<OutcomeDetailViewOutcomeIdFkeyInput>;
-};
-
-/** The output of our create `OutcomeDetailView` mutation. */
-export type CreateOutcomeDetailViewPayload = {
-  __typename?: 'CreateOutcomeDetailViewPayload';
-  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeDetailView` that was created by this mutation. */
-  outcomeDetailView?: Maybe<OutcomeDetailView>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** Reads a single `Outcome` that is related to this `OutcomeDetailView`. */
-  outcome?: Maybe<Outcome>;
-  /** An edge for our `OutcomeDetailView`. May be used by Relay 1. */
-  outcomeDetailViewEdge?: Maybe<OutcomeDetailViewsEdge>;
-};
-
-
-/** The output of our create `OutcomeDetailView` mutation. */
-export type CreateOutcomeDetailViewPayloadOutcomeDetailViewEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomeDetailViewsOrderBy>>;
-};
-
-/** All input for the create `OutcomeTableView` mutation. */
-export type CreateOutcomeTableViewInput = {
-  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeTableView` to be created by this mutation. */
-  outcomeTableView: OutcomeTableViewInput;
-};
-
-/** An input for mutations affecting `OutcomeTableView` */
-export type OutcomeTableViewInput = {
-  id?: Maybe<Scalars['Int']>;
-  columnName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
-  outcomeId?: Maybe<Scalars['Int']>;
-  outcomeToOutcomeId?: Maybe<OutcomeTableViewOutcomeIdFkeyInput>;
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInput>;
 };
 
-/** The output of our create `OutcomeTableView` mutation. */
-export type CreateOutcomeTableViewPayload = {
-  __typename?: 'CreateOutcomeTableViewPayload';
+/** The `outcomeDisplayTable` to be created by this mutation. */
+export type OutcomeDisplayTableOutcomeDisplayIdFkeyOutcomeDisplayTableCreateInput = {
+  id?: Maybe<Scalars['Int']>;
+  columnName?: Maybe<Scalars['String']>;
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInput>;
+};
+
+/** The output of our create `OutcomeDisplay` mutation. */
+export type CreateOutcomeDisplayPayload = {
+  __typename?: 'CreateOutcomeDisplayPayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeTableView` that was created by this mutation. */
-  outcomeTableView?: Maybe<OutcomeTableView>;
+  /** The `OutcomeDisplay` that was created by this mutation. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `Outcome` that is related to this `OutcomeTableView`. */
-  outcome?: Maybe<Outcome>;
-  /** An edge for our `OutcomeTableView`. May be used by Relay 1. */
-  outcomeTableViewEdge?: Maybe<OutcomeTableViewsEdge>;
+  /** An edge for our `OutcomeDisplay`. May be used by Relay 1. */
+  outcomeDisplayEdge?: Maybe<OutcomeDisplaysEdge>;
 };
 
 
-/** The output of our create `OutcomeTableView` mutation. */
-export type CreateOutcomeTableViewPayloadOutcomeTableViewEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomeTableViewsOrderBy>>;
+/** The output of our create `OutcomeDisplay` mutation. */
+export type CreateOutcomeDisplayPayloadOutcomeDisplayEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplaysOrderBy>>;
+};
+
+/** All input for the create `OutcomeDisplayDetail` mutation. */
+export type CreateOutcomeDisplayDetailInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `OutcomeDisplayDetail` to be created by this mutation. */
+  outcomeDisplayDetail: OutcomeDisplayDetailInput;
+};
+
+/** An input for mutations affecting `OutcomeDisplayDetail` */
+export type OutcomeDisplayDetailInput = {
+  id?: Maybe<Scalars['Int']>;
+  columnName?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  elementTypePluginCode?: Maybe<Scalars['String']>;
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  parameters?: Maybe<Scalars['JSON']>;
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayDetailOutcomeDisplayIdFkeyInput>;
+};
+
+/** The output of our create `OutcomeDisplayDetail` mutation. */
+export type CreateOutcomeDisplayDetailPayload = {
+  __typename?: 'CreateOutcomeDisplayDetailPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `OutcomeDisplayDetail` that was created by this mutation. */
+  outcomeDisplayDetail?: Maybe<OutcomeDisplayDetail>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayDetail`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  /** An edge for our `OutcomeDisplayDetail`. May be used by Relay 1. */
+  outcomeDisplayDetailEdge?: Maybe<OutcomeDisplayDetailsEdge>;
+};
+
+
+/** The output of our create `OutcomeDisplayDetail` mutation. */
+export type CreateOutcomeDisplayDetailPayloadOutcomeDisplayDetailEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplayDetailsOrderBy>>;
+};
+
+/** All input for the create `OutcomeDisplayTable` mutation. */
+export type CreateOutcomeDisplayTableInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `OutcomeDisplayTable` to be created by this mutation. */
+  outcomeDisplayTable: OutcomeDisplayTableInput;
+};
+
+/** An input for mutations affecting `OutcomeDisplayTable` */
+export type OutcomeDisplayTableInput = {
+  id?: Maybe<Scalars['Int']>;
+  columnName?: Maybe<Scalars['String']>;
+  isTextColumn?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  outcomeDisplayId?: Maybe<Scalars['Int']>;
+  outcomeDisplayToOutcomeDisplayId?: Maybe<OutcomeDisplayTableOutcomeDisplayIdFkeyInput>;
+};
+
+/** The output of our create `OutcomeDisplayTable` mutation. */
+export type CreateOutcomeDisplayTablePayload = {
+  __typename?: 'CreateOutcomeDisplayTablePayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `OutcomeDisplayTable` that was created by this mutation. */
+  outcomeDisplayTable?: Maybe<OutcomeDisplayTable>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayTable`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  /** An edge for our `OutcomeDisplayTable`. May be used by Relay 1. */
+  outcomeDisplayTableEdge?: Maybe<OutcomeDisplayTablesEdge>;
+};
+
+
+/** The output of our create `OutcomeDisplayTable` mutation. */
+export type CreateOutcomeDisplayTablePayloadOutcomeDisplayTableEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplayTablesOrderBy>>;
 };
 
 /** All input for the create `PermissionJoin` mutation. */
@@ -23560,130 +23584,130 @@ export type UpdateOrganisationByRegistrationInput = {
   registration: Scalars['String'];
 };
 
-/** All input for the `updateOutcomeByNodeId` mutation. */
-export type UpdateOutcomeByNodeIdInput = {
+/** All input for the `updateOutcomeDisplayByNodeId` mutation. */
+export type UpdateOutcomeDisplayByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Outcome` to be updated. */
+  /** The globally unique `ID` which will identify a single `OutcomeDisplay` to be updated. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `Outcome` being updated. */
-  patch: OutcomePatch;
+  /** An object where the defined keys will be set on the `OutcomeDisplay` being updated. */
+  patch: OutcomeDisplayPatch;
 };
 
-/** The output of our update `Outcome` mutation. */
-export type UpdateOutcomePayload = {
-  __typename?: 'UpdateOutcomePayload';
+/** The output of our update `OutcomeDisplay` mutation. */
+export type UpdateOutcomeDisplayPayload = {
+  __typename?: 'UpdateOutcomeDisplayPayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Outcome` that was updated by this mutation. */
-  outcome?: Maybe<Outcome>;
+  /** The `OutcomeDisplay` that was updated by this mutation. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** An edge for our `Outcome`. May be used by Relay 1. */
-  outcomeEdge?: Maybe<OutcomesEdge>;
+  /** An edge for our `OutcomeDisplay`. May be used by Relay 1. */
+  outcomeDisplayEdge?: Maybe<OutcomeDisplaysEdge>;
 };
 
 
-/** The output of our update `Outcome` mutation. */
-export type UpdateOutcomePayloadOutcomeEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomesOrderBy>>;
+/** The output of our update `OutcomeDisplay` mutation. */
+export type UpdateOutcomeDisplayPayloadOutcomeDisplayEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplaysOrderBy>>;
 };
 
-/** All input for the `updateOutcome` mutation. */
-export type UpdateOutcomeInput = {
+/** All input for the `updateOutcomeDisplay` mutation. */
+export type UpdateOutcomeDisplayInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** An object where the defined keys will be set on the `Outcome` being updated. */
-  patch: OutcomePatch;
+  /** An object where the defined keys will be set on the `OutcomeDisplay` being updated. */
+  patch: OutcomeDisplayPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateOutcomeByCode` mutation. */
-export type UpdateOutcomeByCodeInput = {
+/** All input for the `updateOutcomeDisplayByCode` mutation. */
+export type UpdateOutcomeDisplayByCodeInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** An object where the defined keys will be set on the `Outcome` being updated. */
-  patch: OutcomePatch;
+  /** An object where the defined keys will be set on the `OutcomeDisplay` being updated. */
+  patch: OutcomeDisplayPatch;
   code: Scalars['String'];
 };
 
-/** All input for the `updateOutcomeDetailViewByNodeId` mutation. */
-export type UpdateOutcomeDetailViewByNodeIdInput = {
+/** All input for the `updateOutcomeDisplayDetailByNodeId` mutation. */
+export type UpdateOutcomeDisplayDetailByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `OutcomeDetailView` to be updated. */
+  /** The globally unique `ID` which will identify a single `OutcomeDisplayDetail` to be updated. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `OutcomeDetailView` being updated. */
-  patch: OutcomeDetailViewPatch;
+  /** An object where the defined keys will be set on the `OutcomeDisplayDetail` being updated. */
+  patch: OutcomeDisplayDetailPatch;
 };
 
-/** The output of our update `OutcomeDetailView` mutation. */
-export type UpdateOutcomeDetailViewPayload = {
-  __typename?: 'UpdateOutcomeDetailViewPayload';
+/** The output of our update `OutcomeDisplayDetail` mutation. */
+export type UpdateOutcomeDisplayDetailPayload = {
+  __typename?: 'UpdateOutcomeDisplayDetailPayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeDetailView` that was updated by this mutation. */
-  outcomeDetailView?: Maybe<OutcomeDetailView>;
+  /** The `OutcomeDisplayDetail` that was updated by this mutation. */
+  outcomeDisplayDetail?: Maybe<OutcomeDisplayDetail>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `Outcome` that is related to this `OutcomeDetailView`. */
-  outcome?: Maybe<Outcome>;
-  /** An edge for our `OutcomeDetailView`. May be used by Relay 1. */
-  outcomeDetailViewEdge?: Maybe<OutcomeDetailViewsEdge>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayDetail`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  /** An edge for our `OutcomeDisplayDetail`. May be used by Relay 1. */
+  outcomeDisplayDetailEdge?: Maybe<OutcomeDisplayDetailsEdge>;
 };
 
 
-/** The output of our update `OutcomeDetailView` mutation. */
-export type UpdateOutcomeDetailViewPayloadOutcomeDetailViewEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomeDetailViewsOrderBy>>;
+/** The output of our update `OutcomeDisplayDetail` mutation. */
+export type UpdateOutcomeDisplayDetailPayloadOutcomeDisplayDetailEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplayDetailsOrderBy>>;
 };
 
-/** All input for the `updateOutcomeDetailView` mutation. */
-export type UpdateOutcomeDetailViewInput = {
+/** All input for the `updateOutcomeDisplayDetail` mutation. */
+export type UpdateOutcomeDisplayDetailInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** An object where the defined keys will be set on the `OutcomeDetailView` being updated. */
-  patch: OutcomeDetailViewPatch;
+  /** An object where the defined keys will be set on the `OutcomeDisplayDetail` being updated. */
+  patch: OutcomeDisplayDetailPatch;
   id: Scalars['Int'];
 };
 
-/** All input for the `updateOutcomeTableViewByNodeId` mutation. */
-export type UpdateOutcomeTableViewByNodeIdInput = {
+/** All input for the `updateOutcomeDisplayTableByNodeId` mutation. */
+export type UpdateOutcomeDisplayTableByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `OutcomeTableView` to be updated. */
+  /** The globally unique `ID` which will identify a single `OutcomeDisplayTable` to be updated. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `OutcomeTableView` being updated. */
-  patch: OutcomeTableViewPatch;
+  /** An object where the defined keys will be set on the `OutcomeDisplayTable` being updated. */
+  patch: OutcomeDisplayTablePatch;
 };
 
-/** The output of our update `OutcomeTableView` mutation. */
-export type UpdateOutcomeTableViewPayload = {
-  __typename?: 'UpdateOutcomeTableViewPayload';
+/** The output of our update `OutcomeDisplayTable` mutation. */
+export type UpdateOutcomeDisplayTablePayload = {
+  __typename?: 'UpdateOutcomeDisplayTablePayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeTableView` that was updated by this mutation. */
-  outcomeTableView?: Maybe<OutcomeTableView>;
+  /** The `OutcomeDisplayTable` that was updated by this mutation. */
+  outcomeDisplayTable?: Maybe<OutcomeDisplayTable>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `Outcome` that is related to this `OutcomeTableView`. */
-  outcome?: Maybe<Outcome>;
-  /** An edge for our `OutcomeTableView`. May be used by Relay 1. */
-  outcomeTableViewEdge?: Maybe<OutcomeTableViewsEdge>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayTable`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  /** An edge for our `OutcomeDisplayTable`. May be used by Relay 1. */
+  outcomeDisplayTableEdge?: Maybe<OutcomeDisplayTablesEdge>;
 };
 
 
-/** The output of our update `OutcomeTableView` mutation. */
-export type UpdateOutcomeTableViewPayloadOutcomeTableViewEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomeTableViewsOrderBy>>;
+/** The output of our update `OutcomeDisplayTable` mutation. */
+export type UpdateOutcomeDisplayTablePayloadOutcomeDisplayTableEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplayTablesOrderBy>>;
 };
 
-/** All input for the `updateOutcomeTableView` mutation. */
-export type UpdateOutcomeTableViewInput = {
+/** All input for the `updateOutcomeDisplayTable` mutation. */
+export type UpdateOutcomeDisplayTableInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** An object where the defined keys will be set on the `OutcomeTableView` being updated. */
-  patch: OutcomeTableViewPatch;
+  /** An object where the defined keys will be set on the `OutcomeDisplayTable` being updated. */
+  patch: OutcomeDisplayTablePatch;
   id: Scalars['Int'];
 };
 
@@ -25175,117 +25199,117 @@ export type DeleteOrganisationByRegistrationInput = {
   registration: Scalars['String'];
 };
 
-/** All input for the `deleteOutcomeByNodeId` mutation. */
-export type DeleteOutcomeByNodeIdInput = {
+/** All input for the `deleteOutcomeDisplayByNodeId` mutation. */
+export type DeleteOutcomeDisplayByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Outcome` to be deleted. */
+  /** The globally unique `ID` which will identify a single `OutcomeDisplay` to be deleted. */
   nodeId: Scalars['ID'];
 };
 
-/** The output of our delete `Outcome` mutation. */
-export type DeleteOutcomePayload = {
-  __typename?: 'DeleteOutcomePayload';
+/** The output of our delete `OutcomeDisplay` mutation. */
+export type DeleteOutcomeDisplayPayload = {
+  __typename?: 'DeleteOutcomeDisplayPayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Outcome` that was deleted by this mutation. */
-  outcome?: Maybe<Outcome>;
-  deletedOutcomeNodeId?: Maybe<Scalars['ID']>;
+  /** The `OutcomeDisplay` that was deleted by this mutation. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  deletedOutcomeDisplayNodeId?: Maybe<Scalars['ID']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** An edge for our `Outcome`. May be used by Relay 1. */
-  outcomeEdge?: Maybe<OutcomesEdge>;
+  /** An edge for our `OutcomeDisplay`. May be used by Relay 1. */
+  outcomeDisplayEdge?: Maybe<OutcomeDisplaysEdge>;
 };
 
 
-/** The output of our delete `Outcome` mutation. */
-export type DeleteOutcomePayloadOutcomeEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomesOrderBy>>;
+/** The output of our delete `OutcomeDisplay` mutation. */
+export type DeleteOutcomeDisplayPayloadOutcomeDisplayEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplaysOrderBy>>;
 };
 
-/** All input for the `deleteOutcome` mutation. */
-export type DeleteOutcomeInput = {
+/** All input for the `deleteOutcomeDisplay` mutation. */
+export type DeleteOutcomeDisplayInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
-/** All input for the `deleteOutcomeByCode` mutation. */
-export type DeleteOutcomeByCodeInput = {
+/** All input for the `deleteOutcomeDisplayByCode` mutation. */
+export type DeleteOutcomeDisplayByCodeInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
   code: Scalars['String'];
 };
 
-/** All input for the `deleteOutcomeDetailViewByNodeId` mutation. */
-export type DeleteOutcomeDetailViewByNodeIdInput = {
+/** All input for the `deleteOutcomeDisplayDetailByNodeId` mutation. */
+export type DeleteOutcomeDisplayDetailByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `OutcomeDetailView` to be deleted. */
+  /** The globally unique `ID` which will identify a single `OutcomeDisplayDetail` to be deleted. */
   nodeId: Scalars['ID'];
 };
 
-/** The output of our delete `OutcomeDetailView` mutation. */
-export type DeleteOutcomeDetailViewPayload = {
-  __typename?: 'DeleteOutcomeDetailViewPayload';
+/** The output of our delete `OutcomeDisplayDetail` mutation. */
+export type DeleteOutcomeDisplayDetailPayload = {
+  __typename?: 'DeleteOutcomeDisplayDetailPayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeDetailView` that was deleted by this mutation. */
-  outcomeDetailView?: Maybe<OutcomeDetailView>;
-  deletedOutcomeDetailViewNodeId?: Maybe<Scalars['ID']>;
+  /** The `OutcomeDisplayDetail` that was deleted by this mutation. */
+  outcomeDisplayDetail?: Maybe<OutcomeDisplayDetail>;
+  deletedOutcomeDisplayDetailNodeId?: Maybe<Scalars['ID']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `Outcome` that is related to this `OutcomeDetailView`. */
-  outcome?: Maybe<Outcome>;
-  /** An edge for our `OutcomeDetailView`. May be used by Relay 1. */
-  outcomeDetailViewEdge?: Maybe<OutcomeDetailViewsEdge>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayDetail`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  /** An edge for our `OutcomeDisplayDetail`. May be used by Relay 1. */
+  outcomeDisplayDetailEdge?: Maybe<OutcomeDisplayDetailsEdge>;
 };
 
 
-/** The output of our delete `OutcomeDetailView` mutation. */
-export type DeleteOutcomeDetailViewPayloadOutcomeDetailViewEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomeDetailViewsOrderBy>>;
+/** The output of our delete `OutcomeDisplayDetail` mutation. */
+export type DeleteOutcomeDisplayDetailPayloadOutcomeDisplayDetailEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplayDetailsOrderBy>>;
 };
 
-/** All input for the `deleteOutcomeDetailView` mutation. */
-export type DeleteOutcomeDetailViewInput = {
+/** All input for the `deleteOutcomeDisplayDetail` mutation. */
+export type DeleteOutcomeDisplayDetailInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
 };
 
-/** All input for the `deleteOutcomeTableViewByNodeId` mutation. */
-export type DeleteOutcomeTableViewByNodeIdInput = {
+/** All input for the `deleteOutcomeDisplayTableByNodeId` mutation. */
+export type DeleteOutcomeDisplayTableByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `OutcomeTableView` to be deleted. */
+  /** The globally unique `ID` which will identify a single `OutcomeDisplayTable` to be deleted. */
   nodeId: Scalars['ID'];
 };
 
-/** The output of our delete `OutcomeTableView` mutation. */
-export type DeleteOutcomeTableViewPayload = {
-  __typename?: 'DeleteOutcomeTableViewPayload';
+/** The output of our delete `OutcomeDisplayTable` mutation. */
+export type DeleteOutcomeDisplayTablePayload = {
+  __typename?: 'DeleteOutcomeDisplayTablePayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
-  /** The `OutcomeTableView` that was deleted by this mutation. */
-  outcomeTableView?: Maybe<OutcomeTableView>;
-  deletedOutcomeTableViewNodeId?: Maybe<Scalars['ID']>;
+  /** The `OutcomeDisplayTable` that was deleted by this mutation. */
+  outcomeDisplayTable?: Maybe<OutcomeDisplayTable>;
+  deletedOutcomeDisplayTableNodeId?: Maybe<Scalars['ID']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** Reads a single `Outcome` that is related to this `OutcomeTableView`. */
-  outcome?: Maybe<Outcome>;
-  /** An edge for our `OutcomeTableView`. May be used by Relay 1. */
-  outcomeTableViewEdge?: Maybe<OutcomeTableViewsEdge>;
+  /** Reads a single `OutcomeDisplay` that is related to this `OutcomeDisplayTable`. */
+  outcomeDisplay?: Maybe<OutcomeDisplay>;
+  /** An edge for our `OutcomeDisplayTable`. May be used by Relay 1. */
+  outcomeDisplayTableEdge?: Maybe<OutcomeDisplayTablesEdge>;
 };
 
 
-/** The output of our delete `OutcomeTableView` mutation. */
-export type DeleteOutcomeTableViewPayloadOutcomeTableViewEdgeArgs = {
-  orderBy?: Maybe<Array<OutcomeTableViewsOrderBy>>;
+/** The output of our delete `OutcomeDisplayTable` mutation. */
+export type DeleteOutcomeDisplayTablePayloadOutcomeDisplayTableEdgeArgs = {
+  orderBy?: Maybe<Array<OutcomeDisplayTablesOrderBy>>;
 };
 
-/** All input for the `deleteOutcomeTableView` mutation. */
-export type DeleteOutcomeTableViewInput = {
+/** All input for the `deleteOutcomeDisplayTable` mutation. */
+export type DeleteOutcomeDisplayTableInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
@@ -26640,27 +26664,27 @@ export type GetLookupTableStructureByIdQuery = (
   )> }
 );
 
-export type GetOutcomesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetOutcomeDisplaysQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetOutcomesQuery = (
+export type GetOutcomeDisplaysQuery = (
   { __typename?: 'Query' }
-  & { outcomes?: Maybe<(
-    { __typename?: 'OutcomesConnection' }
+  & { outcomeDisplays?: Maybe<(
+    { __typename?: 'OutcomeDisplaysConnection' }
     & { nodes: Array<Maybe<(
-      { __typename?: 'Outcome' }
-      & Pick<Outcome, 'code' | 'detailColumnName' | 'id' | 'tableName' | 'title'>
-      & { outcomeDetailViews: (
-        { __typename?: 'OutcomeDetailViewsConnection' }
+      { __typename?: 'OutcomeDisplay' }
+      & Pick<OutcomeDisplay, 'code' | 'detailColumnName' | 'id' | 'pluralTableName' | 'tableName' | 'title'>
+      & { outcomeDisplayTables: (
+        { __typename?: 'OutcomeDisplayTablesConnection' }
         & { nodes: Array<Maybe<(
-          { __typename?: 'OutcomeDetailView' }
-          & Pick<OutcomeDetailView, 'columnName' | 'elementTypePluginCode' | 'id' | 'parameters' | 'isTextColumn' | 'title'>
+          { __typename?: 'OutcomeDisplayTable' }
+          & Pick<OutcomeDisplayTable, 'columnName' | 'id' | 'isTextColumn' | 'title'>
         )>> }
-      ), outcomeTableViews: (
-        { __typename?: 'OutcomeTableViewsConnection' }
+      ), outcomeDisplayDetails: (
+        { __typename?: 'OutcomeDisplayDetailsConnection' }
         & { nodes: Array<Maybe<(
-          { __typename?: 'OutcomeTableView' }
-          & Pick<OutcomeTableView, 'code' | 'columnName' | 'id' | 'title'>
+          { __typename?: 'OutcomeDisplayDetail' }
+          & Pick<OutcomeDisplayDetail, 'columnName' | 'elementTypePluginCode' | 'isTextColumn' | 'id' | 'title' | 'parameters'>
         )>> }
       ) }
     )>> }
@@ -27662,31 +27686,32 @@ export function useGetLookupTableStructureByIdLazyQuery(baseOptions?: Apollo.Laz
 export type GetLookupTableStructureByIdQueryHookResult = ReturnType<typeof useGetLookupTableStructureByIdQuery>;
 export type GetLookupTableStructureByIdLazyQueryHookResult = ReturnType<typeof useGetLookupTableStructureByIdLazyQuery>;
 export type GetLookupTableStructureByIdQueryResult = Apollo.QueryResult<GetLookupTableStructureByIdQuery, GetLookupTableStructureByIdQueryVariables>;
-export const GetOutcomesDocument = gql`
-    query getOutcomes {
-  outcomes {
+export const GetOutcomeDisplaysDocument = gql`
+    query getOutcomeDisplays {
+  outcomeDisplays {
     nodes {
       code
       detailColumnName
       id
+      pluralTableName
       tableName
       title
-      outcomeDetailViews {
+      outcomeDisplayTables {
         nodes {
           columnName
-          elementTypePluginCode
           id
-          parameters
           isTextColumn
           title
         }
       }
-      outcomeTableViews {
+      outcomeDisplayDetails {
         nodes {
-          code
           columnName
+          elementTypePluginCode
+          isTextColumn
           id
           title
+          parameters
         }
       }
     }
@@ -27695,29 +27720,29 @@ export const GetOutcomesDocument = gql`
     `;
 
 /**
- * __useGetOutcomesQuery__
+ * __useGetOutcomeDisplaysQuery__
  *
- * To run a query within a React component, call `useGetOutcomesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetOutcomesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetOutcomeDisplaysQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOutcomeDisplaysQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetOutcomesQuery({
+ * const { data, loading, error } = useGetOutcomeDisplaysQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetOutcomesQuery(baseOptions?: Apollo.QueryHookOptions<GetOutcomesQuery, GetOutcomesQueryVariables>) {
-        return Apollo.useQuery<GetOutcomesQuery, GetOutcomesQueryVariables>(GetOutcomesDocument, baseOptions);
+export function useGetOutcomeDisplaysQuery(baseOptions?: Apollo.QueryHookOptions<GetOutcomeDisplaysQuery, GetOutcomeDisplaysQueryVariables>) {
+        return Apollo.useQuery<GetOutcomeDisplaysQuery, GetOutcomeDisplaysQueryVariables>(GetOutcomeDisplaysDocument, baseOptions);
       }
-export function useGetOutcomesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOutcomesQuery, GetOutcomesQueryVariables>) {
-          return Apollo.useLazyQuery<GetOutcomesQuery, GetOutcomesQueryVariables>(GetOutcomesDocument, baseOptions);
+export function useGetOutcomeDisplaysLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOutcomeDisplaysQuery, GetOutcomeDisplaysQueryVariables>) {
+          return Apollo.useLazyQuery<GetOutcomeDisplaysQuery, GetOutcomeDisplaysQueryVariables>(GetOutcomeDisplaysDocument, baseOptions);
         }
-export type GetOutcomesQueryHookResult = ReturnType<typeof useGetOutcomesQuery>;
-export type GetOutcomesLazyQueryHookResult = ReturnType<typeof useGetOutcomesLazyQuery>;
-export type GetOutcomesQueryResult = Apollo.QueryResult<GetOutcomesQuery, GetOutcomesQueryVariables>;
+export type GetOutcomeDisplaysQueryHookResult = ReturnType<typeof useGetOutcomeDisplaysQuery>;
+export type GetOutcomeDisplaysLazyQueryHookResult = ReturnType<typeof useGetOutcomeDisplaysLazyQuery>;
+export type GetOutcomeDisplaysQueryResult = Apollo.QueryResult<GetOutcomeDisplaysQuery, GetOutcomeDisplaysQueryVariables>;
 export const GetReviewDecisionCommentDocument = gql`
     query getReviewDecisionComment($reviewDecisionId: Int!) {
   reviewDecision(id: $reviewDecisionId) {

@@ -1,11 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { List, Label, Container, Header, Button } from 'semantic-ui-react'
+import useGetOutcomeDisplays from '../utils/hooks/useGetOutcomeDisplays'
 import { useRouter } from '../utils/hooks/useRouter'
 
 export const ProductList: React.FC = () => {
   const { pathname, query } = useRouter()
+  const { error, displays } = useGetOutcomeDisplays()
 
+  console.log(error, displays)
   return (
     <Container text>
       <Header as="h1" content="Registered Products" />

@@ -11,7 +11,6 @@ import {
   Notification,
   NotificationsList,
   NoMatch,
-  Product,
   ProductList,
   Organisation,
   OrgMemberEdit,
@@ -30,7 +29,7 @@ import { LookupTableRoutes } from '../../LookupTable'
 import { Container } from 'semantic-ui-react'
 import DevOptions from '../Dev/DevOptions'
 import LayoutHelpers from '../../components/LayoutHelpers'
-import { Outcomes } from '../../components/Outcomes'
+import Outcomes from '../Outcomes/Outcomes'
 
 const SiteLayout: React.FC = () => {
   return (

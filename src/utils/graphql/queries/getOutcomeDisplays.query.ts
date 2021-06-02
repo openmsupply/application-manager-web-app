@@ -1,30 +1,31 @@
 import { gql } from '@apollo/client'
 
 export default gql`
-  query getOutcomes {
-    outcomes {
+  query getOutcomeDisplays {
+    outcomeDisplays {
       nodes {
         code
         detailColumnName
         id
+        pluralTableName
         tableName
         title
-        outcomeDetailViews {
+        outcomeDisplayTables {
           nodes {
             columnName
-            elementTypePluginCode
             id
-            parameters
             isTextColumn
             title
           }
         }
-        outcomeTableViews {
+        outcomeDisplayDetails {
           nodes {
-            code
             columnName
+            elementTypePluginCode
+            isTextColumn
             id
             title
+            parameters
           }
         }
       }

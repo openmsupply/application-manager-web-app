@@ -58,6 +58,7 @@
     font-weight: @semiboldWeight;
     font-size: @fontXsmall;
     letter-spacing: @letterSpacingSmall;
+    padding-left: 5px;
     text-transform: uppercase;
     color: @headersInteractiveMed !important;
   }
