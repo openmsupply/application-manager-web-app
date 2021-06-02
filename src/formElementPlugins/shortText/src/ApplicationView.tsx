@@ -23,6 +23,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     maxLength = Infinity,
   } = parameters
 
+  // Ensure value gets set after default finishes reloading
   useEffect(() => {
     if (!value && defaultValue) {
       onSave({ text: defaultValue })
