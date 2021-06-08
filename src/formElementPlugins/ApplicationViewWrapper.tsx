@@ -11,8 +11,8 @@ import {
 } from '../utils/types'
 import { useUserState } from '../contexts/UserState'
 import validate from './defaultValidate'
-import evaluateExpression from '@openmsupply/expression-evaluator'
-import { Form, Icon, Loader } from 'semantic-ui-react'
+import evaluateExpression, { isEvaluationExpression } from '@openmsupply/expression-evaluator'
+import { Form, Icon } from 'semantic-ui-react'
 import Markdown from '../utils/helpers/semanticReactMarkdown'
 import strings from '../utils/constants'
 import { useFormElementUpdateTracker } from '../contexts/FormElementUpdateTrackerState'
@@ -246,7 +246,7 @@ export const buildParameters = (
   const parameterExpressions: any = {}
   for (const [key, value] of Object.entries(parameters)) {
     if (internalParameters.includes(key)) simpleParameters[key] = value
-    else if (value instanceof Object && !Array.isArray(value)) {
+    else if (isEvaluationExpression(value)) {
       parameterExpressions[key] = value
       simpleParameters[key] = parameterLoadingValues?.[key] ?? 'Loading...'
     } else simpleParameters[key] = value

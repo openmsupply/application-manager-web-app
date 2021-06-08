@@ -3,6 +3,11 @@
 *******************************/
 
 // Custom class for wider buttons
+.button-med {
+  width: 170px;
+  max-width: 100%;
+}
+
 .button-wide {
   width: 280px;
   max-width: 100%;

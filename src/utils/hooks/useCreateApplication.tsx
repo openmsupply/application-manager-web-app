@@ -10,7 +10,7 @@ interface CreateApplicationProps {
   orgId?: number
   sessionId: string
   templateSections: { templateSectionId: number }[]
-  templateResponses: { templateElementId: number }[]
+  templateResponses: { templateElementId: number; value: any }[]
 }
 
 interface UseCreateApplicationProps {

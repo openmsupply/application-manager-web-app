@@ -61,7 +61,6 @@ _Free-form, single-line text input element_
 - **label\***: `string` -- Text that shows in the HTML "label" attribute of the form element (Markdown string, with dynamic expression evaluation)
 - **description\***: `string` -- additional explanatory text (usually not required) [Optional]
 - **placeholder**: `string`-- text to display before user input (HTML "placeholder" attribute) [Optional]
-- **default**: `string` -- value to set as response before user enters anything. Note that this is different from `placeholder` -- `placeholder` is just temporary display text, wheras `default` is an actual response that will be saved if the user doesn't explicitly change it. In general a `default` for a text input would not be desired; it would usually only be useful for editing _existing_ data.[Optional]
 - **maskedInput**: `boolean` -- if `true`, displays user input as masked (hidden) characters -- i.e. for passwords. [Optional]
 - **maxWidth**: `number` -- the maximum width (in pixels) for the text input box (defaults to fill the width of the container)
 - **maxLength**: `number` -- response must be no longer than this many characters. If the user tries to type more, the response will be truncated to the maximum length.  
@@ -102,7 +101,6 @@ _Free-form, multi-line text input element_
 - **label\***: `string` -- Text that shows in the HTML "label" attribute of the form element (Markdown string, with dynamic expression evaluation)
 - **description\***: `string` -- additional explanatory text (usually not required) [Optional]
 - **placeholder**: `string`-- text to display before user input (HTML "placeholder" attribute) [Optional]
-- **default**: `string` -- value to set as response before user enters anything (see [Short Text](#short-text) above for more detail) [Optional]
 - **lines**: `number` -- height of the TextArea input, in number of lines/rows (default: 5)
 - **maxLength**: `number` -- response must be no longer than this many characters. If the user tries to type more, the response will be truncated to the maximum length. (See Note in ShortText above for how to integrate `maxLength` with validation.)
 

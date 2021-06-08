@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Button, Message, Segment } from 'semantic-ui-react'
-import { ApplicationContainer, ApplicationSelectType, Loading } from '../../components'
+import { ApplicationContainer, Loading } from '../../components'
 import { useApplicationState } from '../../contexts/ApplicationState'
 import { useUserState } from '../../contexts/UserState'
 import useCreateApplication from '../../utils/hooks/useCreateApplication'
@@ -10,6 +10,8 @@ import usePageTitle from '../../utils/hooks/usePageTitle'
 import strings from '../../utils/constants'
 import { SectionsList } from '../../components/Sections'
 import ApplicationHomeWrapper from '../../components/Application/ApplicationHomeWrapper'
+import { ElementForEvaluation, EvaluatorNode, User } from '../../utils/types'
+import { evaluateElements } from '../../utils/helpers/evaluateElements'
 
 const ApplicationCreate: React.FC = () => {
   const {
@@ -36,7 +38,11 @@ const ApplicationCreate: React.FC = () => {
     if (template && !template.startMessage) handleCreate()
   }, [template])
 
-  const { processing, error: creationError, create } = useCreateApplication({
+  const {
+    processing,
+    error: creationError,
+    create,
+  } = useCreateApplication({
     onCompleted: () => {
       if (serialNumber && template?.sections && template?.sections.length > 0) {
         // Call Application page on first section
@@ -47,7 +53,7 @@ const ApplicationCreate: React.FC = () => {
     },
   })
 
-  const handleCreate = (_?: any) => {
+  const handleCreate = async (_?: any) => {
     setApplicationState({ type: 'reset' })
 
     if (!template?.sections) {
@@ -58,7 +64,8 @@ const ApplicationCreate: React.FC = () => {
     const serialNumber = Math.round(Math.random() * 10000).toString()
     setApplicationState({ type: 'setSerialNumber', serialNumber })
 
-    const { name, elementsIds, sections } = template
+    const { name, elementsIds, elementsDefaults, sections } = template
+    const defaultValues = await getDefaults(elementsDefaults || [], currentUser)
 
     create({
       name,
@@ -70,8 +77,8 @@ const ApplicationCreate: React.FC = () => {
       templateSections: sections.map(({ id }) => {
         return { templateSectionId: id }
       }),
-      templateResponses: (elementsIds as number[]).map((id) => {
-        return { templateElementId: id }
+      templateResponses: (elementsIds as number[]).map((id, index) => {
+        return { templateElementId: id, value: defaultValues[index] }
       }),
     })
   }
@@ -110,6 +117,17 @@ const ApplicationCreate: React.FC = () => {
       </ApplicationHomeWrapper>
     </ApplicationContainer>
   ) : null
+}
+
+const getDefaults = async (defaultValueExpressions: EvaluatorNode[], currentUser: User | null) => {
+  const evaluationElements: ElementForEvaluation[] = defaultValueExpressions.map(
+    (defaultValueExpression) => ({ defaultValueExpression, code: '' })
+  )
+
+  const evaluatedElements = await evaluateElements(evaluationElements, ['defaultValue'], {
+    currentUser,
+  })
+  return evaluatedElements.map(({ defaultValue }) => defaultValue)
 }
 
 export default ApplicationCreate

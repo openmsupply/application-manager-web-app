@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { SummaryViewWrapperProps } from '../../../formElementPlugins/types'
 import { ApplicationResponse, ReviewResponse } from '../../../utils/generated/graphql'
 import ApplicantResponseElement from './ApplicantResponseElement'
 import ReviewResponseElement from './ReviewResponseElement'
+import ReviewInlineInput from './ReviewInlineInput'
 import strings from '../../../utils/constants'
-import { Icon } from 'semantic-ui-react'
 import { UpdateIcon } from '../PageElements'
 
 interface ConsolidateReviewDecisionProps {
@@ -25,6 +25,7 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
   originalReviewResponse,
   showModal,
 }) => {
+  const [isActiveEdit, setIsActiveEdit] = useState(false)
   const isConsolidation = true
   const decisionExists = !!reviewResponse?.decision
 
@@ -35,8 +36,16 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
         applicationResponse={applicationResponse}
         summaryViewProps={summaryViewProps}
       />
+      {/* Inline Review area */}
+      {isActiveEdit && (
+        <ReviewInlineInput
+          setIsActiveEdit={setIsActiveEdit}
+          reviewResponse={reviewResponse as ReviewResponse}
+          isConsolidation={isConsolidation}
+        />
+      )}
       {/* Consolidation Response */}
-      {decisionExists && (
+      {decisionExists && !isActiveEdit && (
         <ReviewResponseElement
           isCurrentReview={true}
           isConsolidation={isConsolidation}
@@ -44,7 +53,7 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
             reviewResponse as ReviewResponse /* Casting to ReviewResponse since decision would exist if reviewResponse is defined */
           }
         >
-          {isActiveReviewResponse && <UpdateIcon onClick={showModal} />}
+          {isActiveReviewResponse && <UpdateIcon onClick={() => setIsActiveEdit(true)} />}
         </ReviewResponseElement>
       )}
       {/* Review Response */}
@@ -55,7 +64,10 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
           reviewResponse={originalReviewResponse}
         >
           {isActiveReviewResponse && !decisionExists && (
-            <ReviewElementTrigger title={strings.BUTTON_REVIEW_RESPONSE} onClick={showModal} />
+            <ReviewElementTrigger
+              title={strings.BUTTON_REVIEW_RESPONSE}
+              onClick={() => setIsActiveEdit(true)}
+            />
           )}
         </ReviewResponseElement>
       )}

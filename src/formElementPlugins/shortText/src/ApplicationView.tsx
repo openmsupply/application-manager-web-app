@@ -19,17 +19,9 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     maskedInput,
     label,
     description,
-    default: defaultValue,
     maxWidth,
     maxLength = Infinity,
   } = parameters
-
-  useEffect(() => {
-    if (!value && defaultValue) {
-      onSave({ text: defaultValue })
-      setValue(defaultValue)
-    } else onUpdate(value)
-  }, [defaultValue])
 
   function handleChange(e: any) {
     let text = e.target.value

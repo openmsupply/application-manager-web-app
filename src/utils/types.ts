@@ -14,11 +14,13 @@ import {
   User as GraphQLUser,
   Organisation as GraphQLOrg,
   Filter,
+  Application,
 } from './generated/graphql'
 
 import { ValidationState } from '../formElementPlugins/types'
-import { OperatorNode, ValueNode } from '@openmsupply/expression-evaluator/lib/types'
+import { EvaluatorNode } from '@openmsupply/expression-evaluator/lib/types'
 import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic'
+import { DocumentNode } from '@apollo/client'
 
 export {
   ApplicationDetails,
@@ -64,7 +66,6 @@ export {
   StageAndStatus,
   TemplateDetails,
   TemplateCategoryDetails,
-  TemplateElementState,
   TemplatePermissions,
   TemplateInList,
   TemplatesDetails,
@@ -76,8 +77,6 @@ export {
   LoginPayload,
   BasicStringObject,
 }
-
-type EvaluatorNode = OperatorNode | ValueNode
 
 interface ApplicationDetails {
   id: number
@@ -171,9 +170,17 @@ interface ElementPluginParameters {
   [key: string]: ElementPluginParameterValue
 }
 
-interface ElementBase {
-  id: number
+export type ElementForEvaluation = {
+  isEditableExpression?: EvaluatorNode
+  isRequiredExpression?: EvaluatorNode
+  isVisibleExpression?: EvaluatorNode
+  validationExpression?: EvaluatorNode
+  defaultValueExpression?: EvaluatorNode
   code: string
+}
+
+interface ElementBase extends ElementForEvaluation {
+  id: number
   title: string
   pluginCode: string
   sectionIndex: number
@@ -181,17 +188,22 @@ interface ElementBase {
   elementIndex: number
   page: number
   category: TemplateElementCategory
-  validationExpression: EvaluatorNode
   validationMessage: string | null
   helpText: string | null
   parameters: any
 }
 
-interface ElementState extends ElementBase {
+export type EvaluatedElement = {
   isEditable: boolean
   isRequired: boolean
   isVisible: boolean
+  isValid: boolean | undefined
+  defaultValue: any
 }
+
+export type EvaluationOptions = (keyof EvaluatedElement)[]
+
+type ElementState = ElementBase & EvaluatedElement
 
 interface ElementsActivityState {
   elementEnteredTimestamp: number
@@ -291,7 +303,7 @@ interface ResponseFull {
   hash?: string // Used in Password plugin
   files?: any[] // Used in FileUpload plugin
   other?: string // Used in RadioChoice plugin
-  selection?: any // Used in Dropdown/Radio/Search selectors
+  selection?: any // Used in Dropdown/Radio selectors
   code?: string // Used in ListBuilder
   list?: any // Used in ListBuilder
   timeCreated?: Date
@@ -458,14 +470,9 @@ interface TemplateDetails {
   name: string
   code: string
   elementsIds?: number[] // TODO: Change to not optional after re-structure
+  elementsDefaults?: EvaluatorNode[]
   sections?: SectionDetails[] // TODO: Change to not optional after re-structure
   startMessage?: string
-}
-
-interface TemplateElementState extends ElementBase {
-  isRequiredExpression: EvaluatorNode
-  isVisibleExpression: EvaluatorNode
-  isEditableExpression: EvaluatorNode
 }
 
 interface TemplatePermissions {
@@ -529,4 +536,110 @@ interface UseGetReviewStructureForSectionProps {
 interface SortQuery {
   sortColumn?: string
   sortDirection?: 'ascending' | 'descending'
+}
+
+// Outcomes Display Related
+
+export type OutcomeDisplay = {
+  code: string
+  detailColumnName: string
+  pluralTableName: string
+  tableName: string
+  title: string
+}
+
+export type OutcomeDisplays = OutcomeDisplay[]
+
+export type TableDisplay = {
+  columnName: string
+  isTextColumn: boolean
+  title: string
+}
+
+export type TableDisplaysByCode = {
+  [code: string]: TableDisplay[]
+}
+
+export type DetailDisplay = {
+  columnName: string
+  elementTypePluginCode: string
+  isTextColumn: boolean
+  title: string
+  parameters: object
+}
+
+export type DetailDisplaysByCode = {
+  [code: string]: DetailDisplay[]
+}
+
+export type GenericNode = {
+  [field: string]: object | string
+}
+
+export type TableQueryResult = { [queryName: string]: { nodes: GenericNode[] } }
+
+export type TableDisplayQuery = {
+  query: DocumentNode
+  getNodes: (queryResult: TableQueryResult) => GenericNode[]
+}
+
+export type TableDisplaysQueryByCode = {
+  [code: string]: TableDisplayQuery
+}
+
+export type DetailQueryResult = { [queryName: string]: GenericNode }
+
+export type DetailDisplayQuery = {
+  query: DocumentNode
+  getNode: (queryResult: DetailQueryResult) => GenericNode
+}
+
+export type DetailDisplayQueryByCode = {
+  [code: string]: DetailDisplayQuery
+}
+
+export type ApplicationLinkQueryResult = {
+  [tableName: string]: {
+    [applicationJoin: string]: {
+      nodes: {
+        application: Application
+      }[]
+    }
+  }
+}
+
+export type ApplicationLinkQuery = {
+  query: DocumentNode
+  getApplications: (queryResult: ApplicationLinkQueryResult) => {
+    name: string
+    serial: string
+    templateName: string
+  }[]
+}
+
+export type ApplicationLinkQueryByCode = {
+  [code: string]: ApplicationLinkQuery
+}
+
+export type OutcomeCountQueryResult = {
+  [tableName: string]: { totalCount: number }
+}
+
+export type OutcomeCountQuery = {
+  query: DocumentNode
+  getCount: (queryResult: OutcomeCountQueryResult) => number
+}
+
+export type OutcomeCountQueryByCode = {
+  [code: string]: OutcomeCountQuery
+}
+
+export type OutcomeDisplaysStructure = {
+  outcomeDisplays: OutcomeDisplays
+  tableDisplaysByCode: TableDisplaysByCode
+  detailDisplaysByCode: DetailDisplaysByCode
+  tableDisplayQueryByCode: TableDisplaysQueryByCode
+  detailDisplayQueryByCode: DetailDisplayQueryByCode
+  outcomeCountQueryByCode: OutcomeCountQueryByCode
+  applicationLinkQueryByCode: ApplicationLinkQueryByCode
 }

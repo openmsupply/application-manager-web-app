@@ -15,7 +15,7 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
   element,
   response,
   allResponses,
-  applicationData,
+  applicationData = {},
   displayTitle = true,
 }) => {
   const { parameters, pluginCode, isRequired, isVisible } = element
@@ -38,7 +38,11 @@ const SummaryViewWrapper: React.FC<SummaryViewWrapperProps> = ({
     // Runs once on component mount
     Object.entries(parameterExpressions).forEach(([field, expression]) => {
       evaluateExpression(expression as EvaluatorNode, {
-        objects: { responses: allResponses, currentUser, applicationData },
+        objects: {
+          responses: { ...allResponses, thisResponse: response?.text },
+          currentUser,
+          applicationData,
+        },
         APIfetch: fetch,
         graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
       }).then((result: any) =>

@@ -86,8 +86,6 @@ a:hover {
   justify-content: center;
 }
 
-
-
 /*--------------------------------
    Login page
 ---------------------------------*/
@@ -368,6 +366,14 @@ a:hover {
   margin-bottom: -14px;
   border-top: 1px solid @surfacesMed;
   border-bottom: 1px solid @surfacesMed;
+  padding: 10px 20px;
+}
+
+.review-button-container {
+  margin: 30px 0 20px;
+  .button {
+    margin-right: 40px !important;
+  }
 }
 
 .review-approve-all-button {
@@ -589,10 +595,10 @@ a:hover {
     padding: 10px;
     // Make review-comment visible
     .reviewer-comment {
-      .flex-row()
+      .flex-row();
     }
   }
-  
+
   &.changes.updated {
     border-color: @interactiveHigh;
     .reviewer-comment {
@@ -616,11 +622,9 @@ a:hover {
 }
 
 .element-grid.ui.grid {
-  padding: 10px 20px;
   font-size: @smallerText;
   color: @headersInteractiveLow;
 }
-
 
 /*--------------------------------
       Application Navigation area
@@ -630,7 +634,7 @@ a:hover {
   .flex-row();
   flex-wrap: wrap;
   width: @applicationFormContentWidth;
-  
+
   .prev-next-links {
     .flex-row();
     align-items: center;
@@ -648,7 +652,6 @@ a:hover {
     justify-content: flex-end;
   }
 }
-
 
 .scrollable-attachment {
   margin: 0px;
@@ -724,18 +727,16 @@ a:hover {
       justify-content: flex-end;
     }
 
-        // From accordion
+    // From accordion
     .content {
       padding: 0px;
     }
   }
 }
 
-
-
 .summary-page-header {
-  margin:0px !important;
-  margin-bottom:10px !important;
+  margin: 0px !important;
+  margin-bottom: 10px !important;
 }
 
 .summary-page {
@@ -745,9 +746,9 @@ a:hover {
   padding-bottom: 26px;
 }
 
-.ui.basic.segment.summary-page-element-container{
+.ui.basic.segment.summary-page-element-container {
   margin-bottom: 10px;
-  margin-top:0px;
+  margin-top: 0px;
   padding: 0px;
 
   // Background for Active elements changes (Summary/Review/Consolidation)
@@ -776,7 +777,7 @@ a:hover {
         opacity: 0.6;
       }
     }
-    
+
     .review-response-content {
       .flex-column();
       flex-grow: 1;
@@ -790,9 +791,9 @@ a:hover {
           margin: 0px;
           margin-right: 10px;
         }
-        
+
         p {
-          line-height:unset;
+          line-height: unset;
         }
 
         .decision {
@@ -820,18 +821,18 @@ a:hover {
       }
 
       .comment-container {
-          .flex-row();
+        .flex-row();
 
-          i {
-            margin-right: 10px;
-          }
+        i {
+          margin-right: 10px;
+        }
       }
 
       // If comment is present add margin, if it's just commen or decision don't add margin
-      >:nth-child(2) {
+      > :nth-child(2) {
         margin-top: 5px;
       }
-    }  
+    }
 
     .action-container {
       .flex-column-center();
@@ -839,18 +840,17 @@ a:hover {
       margin-left: 10px;
     }
   }
- 
-  >:first-child {
+
+  > :first-child {
     border-top-left-radius: @borderRadius;
     border-top-right-radius: @borderRadius;
   }
 
-  >:last-child {
+  > :last-child {
     border-bottom-left-radius: @borderRadius;
     border-bottom-right-radius: @borderRadius;
   }
 }
-
 
 .updated-label {
   .flex-row();
@@ -941,7 +941,7 @@ a:hover {
     .flex-column();
     flex-grow: 1;
   }
-  
+
   .filter {
     display: flex;
     align-items: center;
@@ -953,7 +953,7 @@ a:hover {
   }
 
   .view-all {
-    .flex-row-center() ;
+    .flex-row-center();
     align-items: center;
     text-align: center;
     flex-grow: 1;
@@ -973,7 +973,7 @@ a:hover {
     border-radius: @borderRadius;
     background-color: @surfacesWhite;
     box-shadow: @templateBoxShadow;
-    
+
     .title {
       padding: 10px;
       padding-bottom: 3px;
@@ -988,7 +988,6 @@ a:hover {
     margin: 10px;
 
     .title {
-     
       a {
         margin-left: 10px;
       }
@@ -1001,14 +1000,14 @@ a:hover {
 
   .filters {
     margin: 5px;
-    padding: 3px
+    padding: 3px;
   }
 
   .view-all {
     padding: 5px;
     font-weight: @semiboldWeight;
-    color:grey !important;
-    border-top: 1px solid rgba(0,0,0,.08);
+    color: grey !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
 
     i {
       padding-right: 6px;
@@ -1016,10 +1015,45 @@ a:hover {
   }
 }
 
+/*--------------------------------
+      Outcomes
+---------------------------------*/
 
-// #dashboard .template-category  .category-header {
+#outcomes-display {
+  .flex-column();
+  align-items: center;
 
-// }
+  .outcomes-container {
+    .flex-row();
+    align-items: center;
+    flex-wrap: 1;
+
+    .outcome {
+      margin: 15px;
+      max-width: 330px;
+      border-radius: @borderRadius;
+      background-color: @surfacesWhite;
+      box-shadow: @templateBoxShadow;
+      padding: 10px;
+    }
+  }
+
+  .outcome-table-container {
+    .flex-column();
+    align-items: center;
+  }
+
+  .summary-page-element {
+    margin: 10px;
+  }
+  
+  .detail-container {
+    .flex-row();
+    align-items: center;
+    flex-wrap: 1;
+  }
+
+}
 
 /*--------------------------------
       General used classes
@@ -1125,9 +1159,6 @@ h5:last-child,
 h6:first-child {
   margin-bottom: 0em;
 }
-
-
-
 
 /*-----------------------------------------------------
       Mobile & Desktop

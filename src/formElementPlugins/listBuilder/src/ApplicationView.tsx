@@ -208,6 +208,8 @@ const buildElement = (field: TemplateElement, index: number) => ({
   isVisible: true,
   // "Dummy" values, but required for element props:
   elementIndex: 0,
+  isValid: undefined,
+  defaultValue: null,
   page: 0,
   sectionIndex: 0,
   helpText: null,

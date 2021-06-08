@@ -14,6 +14,7 @@ export default gql`
     validation
     validationMessage
     helpText
+    defaultValue
     parameters
   }
 `

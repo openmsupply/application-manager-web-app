@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { FullStructure } from '../types'
+import { EvaluationOptions, FullStructure } from '../types'
 import {
   ApplicationResponse,
   ApplicationResponseStatus,
@@ -84,16 +84,15 @@ const useGetApplicationStructure = ({
     const applicationResponses = data?.applicationBySerial?.applicationResponses
       ?.nodes as ApplicationResponse[]
 
+    const evaluationOptions: EvaluationOptions = ['isEditable', 'isVisible', 'isRequired']
+
+    if (shouldDoValidation) evaluationOptions.push('isValid')
+
     addEvaluatedResponsesToStructure({
       structure,
       applicationResponses,
       currentUser,
-      evaluationOptions: {
-        isEditable: true,
-        isVisible: true,
-        isRequired: true,
-        isValid: shouldDoValidation,
-      },
+      evaluationOptions,
     }).then((newStructure: FullStructure) => {
       if (shouldDoValidation) {
         newStructure.lastValidationTimestamp = Date.now()

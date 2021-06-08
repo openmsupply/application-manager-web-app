@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import {
   ApplicationDetails,
   ElementBase,
+  EvaluatedElement,
   FullStructure,
   TemplateDetails,
-  TemplateElementState,
   UseGetApplicationProps,
 } from '../types'
 import evaluate from '@openmsupply/expression-evaluator'
@@ -18,6 +18,7 @@ import {
   ApplicationStatus,
   Organisation,
   TemplateElement,
+  TemplateElementCategory,
   TemplateStage,
   useGetApplicationQuery,
   User,
@@ -124,23 +125,25 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
         if (element.elementTypePluginCode === 'pageBreak') pageCount++
         else
           baseElements.push({
-            // ...element,
-            category: element.category,
+            category: element.category || TemplateElementCategory.Information,
             id: element.id,
             code: element.code,
-            pluginCode: element.elementTypePluginCode,
-            sectionIndex: sectionNode?.templateSection?.index,
-            sectionCode: sectionNode?.templateSection?.code,
-            elementIndex: element.index,
+            pluginCode: element.elementTypePluginCode || '',
+            sectionIndex: sectionNode?.templateSection?.index || 0,
+            sectionCode: sectionNode?.templateSection?.code || '',
+            elementIndex: element.index || 0,
             page: pageCount,
             isEditableExpression: element.isEditable,
             isRequiredExpression: element.isRequired,
             isVisibleExpression: element.visibilityCondition,
             parameters: element.parameters,
             validationExpression: element.validation,
-            validationMessage: element.validationMessage,
-            helpText: element.helpText,
-          } as TemplateElementState)
+            validationMessage: element.validationMessage || '',
+            helpText: element.helpText || '',
+            title: element.title || '',
+            defaultValueExpression: element.defaultValue,
+            ...defaultEvaluatedElement,
+          })
       })
     })
 
@@ -179,6 +182,14 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
     isLoading: loading || isLoading,
     structure,
   }
+}
+
+export const defaultEvaluatedElement: EvaluatedElement = {
+  isEditable: true,
+  isRequired: true,
+  isVisible: true,
+  isValid: undefined,
+  defaultValue: null,
 }
 
 export default useLoadApplication
