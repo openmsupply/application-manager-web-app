@@ -37,6 +37,7 @@ const reducer = (
         elementUpdatedTextValue: action.textValue,
       }
 
+      // It's possible that element is saved without setElementEntered in which case we want to compare values suppied by this action
       const wasElementChanged =
         typeof newState.elementEnteredTextValue === 'undefined'
           ? action.textValue !== action.previousValue
