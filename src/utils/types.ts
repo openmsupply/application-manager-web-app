@@ -19,7 +19,7 @@ import {
 
 import { ValidationState } from '../formElementPlugins/types'
 import { EvaluatorNode } from '@openmsupply/expression-evaluator/lib/types'
-import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic'
+import { SemanticICONS } from 'semantic-ui-react'
 import { DocumentNode } from '@apollo/client'
 
 export {

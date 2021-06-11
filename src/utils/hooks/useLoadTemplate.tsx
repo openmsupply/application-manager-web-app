@@ -11,7 +11,7 @@ import { useUserState } from '../../contexts/UserState'
 import { EvaluatorParameters } from '../types'
 import { getTemplateSections } from '../helpers/application/getSectionsDetails'
 import { TemplateDetails } from '../types'
-import config from '../../config.json'
+import config from '../../config'
 
 const graphQLEndpoint = config.serverGraphQL
 

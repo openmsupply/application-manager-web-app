@@ -1,31 +1,30 @@
-const commonPaths = require('./common-paths')
-const webpack = require('webpack')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const TerserPlugin = require('terser-webpack-plugin')
 
 const config = {
   mode: 'production',
   output: {
-    filename: 'static/[name].[hash].js'
+    filename: 'static/[name].[hash].js',
   },
-  devtool: 'source-map',
-  module: {
-    rules: [
-      {
-        test: /\.less$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader
-          },
-          'css-loader',
-          'less-loader'
-        ]
-      },
-    ]
+  //  plugins: [new BundleAnalyzerPlugin()],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: 'all',
+      }),
+      new CssMinimizerPlugin({
+        minimizerOptions: {
+          preset: [
+            'default',
+            {
+              discardComments: { removeAll: true },
+            },
+          ],
+        },
+      }),
+    ],
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: '[name].[contenthash:4].css'
-    })
-  ]
-};
+}
 module.exports = config

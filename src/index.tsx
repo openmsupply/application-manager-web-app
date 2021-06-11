@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import '../semantic/src/semantic.less'
-import config from './config.json'
+import config from './config'
 import cache from './cache'
 import { AppWrapper } from './containers/Main'
 import { ApolloClient, ApolloProvider, createHttpLink, NormalizedCacheObject } from '@apollo/client'

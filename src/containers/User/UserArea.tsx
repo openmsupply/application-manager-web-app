@@ -4,7 +4,7 @@ import { useUserState } from '../../contexts/UserState'
 import { Link } from 'react-router-dom'
 import strings from '../../utils/constants'
 import { User } from '../../utils/types'
-import config from '../../config.json'
+import config from '../../config'
 import { getFullUrl } from '../../utils/helpers/utilityFunctions'
 
 const UserArea: React.FC = () => {

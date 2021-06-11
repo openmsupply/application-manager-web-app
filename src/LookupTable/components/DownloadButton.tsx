@@ -1,5 +1,5 @@
 import axios from 'axios'
-import config from '../../config.json'
+import config from '../../config'
 import React, { Fragment, useState } from 'react'
 import { Popup, Button, Icon, Message } from 'semantic-ui-react'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid, Form, Image, List } from 'semantic-ui-react'
-import config from '../../../config.json'
+import config from '../../../config'
 import { SummaryViewProps } from '../../types'
 
 const host = config.serverREST

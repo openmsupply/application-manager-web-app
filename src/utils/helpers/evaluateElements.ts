@@ -1,5 +1,5 @@
 import evaluateExpression, { isEvaluationExpression } from '@openmsupply/expression-evaluator'
-import config from '../../config.json'
+import config from '../../config'
 import {
   EvaluatedElement,
   ResponsesByCode,

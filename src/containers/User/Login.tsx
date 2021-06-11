@@ -8,6 +8,7 @@ import strings from '../../utils/constants'
 import messages from '../../utils/messages'
 import { attemptLogin, attemptLoginOrg } from '../../utils/helpers/attemptLogin'
 import { LoginPayload, OrganisationSimple } from '../../utils/types'
+const logo = require('../../../images/logos/logo_512.png').default
 
 const LOGIN_AS_NO_ORG = 0
 const NO_ORG_SELECTED = -1
@@ -93,7 +94,7 @@ const Login: React.FC = () => {
     <Container id="login-container">
       <div id="login-box">
         <div className="flex-centered">
-          <Image src="/images/logos/logo_512.png" className="image-icon" />
+          <Image src={logo} className="image-icon" />
           <Header as="h3" className="login-header">
             {strings.TITLE_LOGIN_HEADER}
           </Header>

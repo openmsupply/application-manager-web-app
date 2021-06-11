@@ -12,7 +12,7 @@ import {
   DetailDisplayQuery,
   ResponseFull,
 } from '../../utils/types'
-import config from '../../config.json'
+import config from '../../config'
 import { defaultEvaluatedElement } from '../../utils/hooks/useLoadApplication'
 
 const OutcomeDetails: React.FC<{

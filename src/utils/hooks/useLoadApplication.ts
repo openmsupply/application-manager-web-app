@@ -25,7 +25,7 @@ import {
 } from '../generated/graphql'
 import messages from '../messages'
 import { buildSectionsStructure } from '../helpers/structure'
-import config from '../../config.json'
+import config from '../../config'
 
 const graphQLEndpoint = config.serverGraphQL
 
