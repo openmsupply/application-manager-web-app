@@ -15,7 +15,7 @@ const useSubmitApplication = ({ serialNumber }: UseGetApplicationProps) => {
 
   const submit = async (structure: FullStructure) => {
     const elements = Object.values(structure.elementsById || {}).filter(
-      (element) => !!element.latestApplicationResponse.id
+      (element) => !!element?.latestApplicationResponse?.id
     )
     const responsesPatch = elements.map(({ latestApplicationResponse }) => {
       return {
