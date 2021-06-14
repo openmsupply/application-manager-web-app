@@ -53,7 +53,6 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     inputFields,
     displayFormat = getDefaultDisplayFormat(inputFields),
     displayType = DisplayType.CARDS,
-    displayOnly = false,
   } = parameters
 
   const [currentInputResponses, setCurrentInputResponses] = useState<ListItem>(
@@ -143,14 +142,12 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         <Markdown text={label} semanticComponent="noParagraph" />
       </label>
       <Markdown text={description} />
-      {!displayOnly && (
-        <Button
-          primary
-          content={createModalButtonText}
-          onClick={() => setOpen(true)}
-          disabled={!isEditable}
-        />
-      )}
+      <Button
+        primary
+        content={createModalButtonText}
+        onClick={() => setOpen(true)}
+        disabled={!isEditable}
+      />
       <Modal size="tiny" onClose={() => resetModalState()} onOpen={() => setOpen(true)} open={open}>
         <Segment>
           <Form>

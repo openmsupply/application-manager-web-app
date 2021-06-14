@@ -401,8 +401,6 @@ _Allows user to build a list of items, such as an **Ingredients List**_
   - `visibility_condition` / `is_editable` -- not required, always `true` (for now, may be implemented later)
   - `parameters`, `title`, and `code` are essential
 
-- **displayOnly** `boolean` (default `false`) -- if `true` the "Add item" button will be hidden completely (as opposed to just disabled when `isEditable = true`)
-
 - **displayType** `string` (must be either `table` or `cards` (default)) -- how to present the list of items, as shown here:
 
   - **table** view:

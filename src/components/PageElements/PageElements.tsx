@@ -7,8 +7,11 @@ import {
   ResponsesByCode,
   SectionAndPage,
 } from '../../utils/types'
-import { ApplicationViewWrapper } from '../../formElementPlugins'
-import { ApplicationViewWrapperProps } from '../../formElementPlugins/types'
+import { ApplicationViewWrapper, SummaryViewWrapper } from '../../formElementPlugins'
+import {
+  ApplicationViewWrapperProps,
+  SummaryViewWrapperProps,
+} from '../../formElementPlugins/types'
 import { ReviewResponse, TemplateElementCategory } from '../../utils/generated/graphql'
 import Markdown from '../../utils/helpers/semanticReactMarkdown'
 import HistoryPanel from '../Review/HistoryPanel'
@@ -79,10 +82,18 @@ const PageElements: React.FC<PageElementProps> = ({
               currentResponse: responsesByCode?.[element.code],
             }
             // Wrapper displays response & changes requested warning for LOQ re-submission
+            console.log('Element', element)
+            const shouldDisplaySummary =
+              (element.defaultValue || element.defaultValueExpression) && !element.isEditable
+            console.log('shouldDisplaySummary', shouldDisplaySummary)
             return (
               <div className="form-element-wrapper" key={`question_${element.code}`}>
                 <div className="form-element">
-                  <ApplicationViewWrapper {...props} />
+                  {!shouldDisplaySummary ? (
+                    <ApplicationViewWrapper {...props} />
+                  ) : (
+                    <SummaryViewWrapper {...props} response={props.currentResponse} />
+                  )}
                 </div>
                 {element.helpText && (
                   <div className="help-tips hide-on-mobile">
