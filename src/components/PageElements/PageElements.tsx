@@ -92,7 +92,9 @@ const PageElements: React.FC<PageElementProps> = ({
                   {!shouldDisplaySummary ? (
                     <ApplicationViewWrapper {...props} />
                   ) : (
-                    <SummaryViewWrapper {...props} response={props.currentResponse} />
+                    <div style={{ marginBottom: 20 }}>
+                      <SummaryViewWrapper {...props} response={props.currentResponse} />
+                    </div>
                   )}
                 </div>
                 {element.helpText && (
