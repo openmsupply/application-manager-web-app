@@ -3,7 +3,7 @@
 The aim of this page is to outline the structure and flow of:
 
 - Reviewer - reviewing an application
-- Reviewer - submitting LOQ (list of questions or change request)
+- Reviewer - submitting LOQ (List of Questions)
 - Applicant - making changes in response to LOQ
 - Applicant - re-submitting application with changes
 - Reviewer - re-reviewing changes that were made
@@ -23,7 +23,7 @@ Below is the summary of logic aspects of this topic
 
 ### Front End
 
-- Calculates actions and progress of review and application
+- Fetch actions and calculates progress of review and application
 - GraphQL mutation to create review and application responses
 - GraphQL mutation to update `application_response` or `review_response`
 - Validates submission of review and application
@@ -67,13 +67,15 @@ In response to LOQ, an applicant can restart an application. Similar logic to th
 
 ## Review Decision
 
-Is created for each iteration of a review, can be of `status`: 
-- `List of questions`
-- `Conform`
-- `Non-conform`
-- Default: `No Decision`
+Is created for each iteration of a review, can be of `status`:
 
- See `Validation of Submission` below for choices that will be available to the user.
+- `LIST_OF_QUESTIONS`
+- `CONFORM`
+- `NON_CONFORM`
+- `CHANGES_REQUESTED` - To be explained in [Level 1+ Reviews](Level-1+-Reviews-and-Changes-Requested.md)
+- Default: `NO_DECISION`
+
+See `Validation of Submission` below for choices that will be available to the user.
 
 ## Review Responses Visibility
 
@@ -97,9 +99,9 @@ When **application** is restarted as a result of LOQ, it can only be submitted i
 
 `latestApplicationResponse` is different to `previousApplicationResponse` where `previousApplicationResponse` is linked to non confirm `reviewResponse`
 
-**review** can be submitted as `LOQ` or `Non-conform` when at least review_response is marked as `decline`. Otherwise submission of `Conform` can be made if ALL assigned visible latest application responses have `approve` status review responses.
+**review** can be submitted as `LIST_OF_QUESTIONS` or `NON_CONFORM` when at least review_response is marked as `decline`. Otherwise can only be submitted as `CONFORM` if ALL assigned visible latest application responses have `approve` status review responses.
 
-One thing to note, since we always look at latest application response and it's linked review response, we guarantee that all new changes by applicant will be re-reviewed
+One thing to note, since we always look at latest application response and it's linked review response, we guarantee that all new changes by applicant will be re-reviewed.
 
 ## Structure
 
