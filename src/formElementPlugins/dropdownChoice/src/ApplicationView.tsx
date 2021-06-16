@@ -28,13 +28,13 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const { isEditable } = element
 
   useEffect(() => {
-    // This ensures that, if a default is specified, it gets saved on first load
+    // Ensures default values are saved and selected on load
     if (!currentResponse?.text && defaultOption !== undefined) {
       const optionIndex = getDefaultIndex(defaultOption, options)
       onSave({
         text: optionsDisplayProperty
-          ? options[optionIndex][optionsDisplayProperty]
-          : options[optionIndex],
+          ? options?.[optionIndex]?.[optionsDisplayProperty]
+          : options?.[optionIndex],
         selection: options[optionIndex],
         optionIndex,
       })
@@ -44,7 +44,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       const { optionIndex } = currentResponse
       setSelectedIndex(optionIndex)
     }
-  }, [])
+  }, [defaultOption, options])
 
   function handleChange(e: any, data: any) {
     const { value: optionIndex } = data
