@@ -5,10 +5,7 @@ import { ApplicationViewProps } from '../../types'
 const ApplicationView: React.FC<ApplicationViewProps> = ({
   element,
   parameters,
-  onUpdate,
   currentResponse,
-  // value,
-  // setValue,
   validationState,
   onSave,
   Markdown,
@@ -28,13 +25,11 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const { isEditable } = element
 
   useEffect(() => {
-    // Ensures default values are saved and selected on load
+    // Ensures default values are saved and selected when parameters change
     if (!currentResponse?.text && defaultOption !== undefined) {
       const optionIndex = getDefaultIndex(defaultOption, options)
       onSave({
-        text: optionsDisplayProperty
-          ? options?.[optionIndex]?.[optionsDisplayProperty]
-          : options?.[optionIndex],
+        text: getSelectedText(options, optionsDisplayProperty, optionIndex),
         selection: options[optionIndex],
         optionIndex,
       })
@@ -43,17 +38,25 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     if (currentResponse?.text) {
       const { optionIndex } = currentResponse
       setSelectedIndex(optionIndex)
+      // Check if response has changed
+      if (currentResponse.text !== getSelectedText(options, optionsDisplayProperty, optionIndex)) {
+        console.log("It's changed", currentResponse.text)
+        setSelectedIndex(getDefaultIndex(defaultOption, options))
+        onSave({
+          text: getSelectedText(options, optionsDisplayProperty, selectedIndex),
+          selection: options[selectedIndex as number],
+          optionIndex,
+        })
+      }
     }
   }, [defaultOption, options])
 
-  function handleChange(e: any, data: any) {
+  const handleChange = (e: any, data: any) => {
     const { value: optionIndex } = data
     setSelectedIndex(optionIndex === '' ? undefined : optionIndex)
     if (optionIndex !== '')
       onSave({
-        text: optionsDisplayProperty
-          ? options[optionIndex][optionsDisplayProperty]
-          : options[optionIndex],
+        text: getSelectedText(options, optionsDisplayProperty, optionIndex),
         selection: options[optionIndex],
         optionIndex,
       })
@@ -61,13 +64,15 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     else onSave(null)
   }
 
-  const dropdownOptions = options.map((option: any, index: number) => {
-    return {
-      key: `${index}_${option}`,
-      text: optionsDisplayProperty ? option[optionsDisplayProperty] : option,
-      value: index,
-    }
-  })
+  const dropdownOptions = Array.isArray(options)
+    ? options.map((option: any, index: number) => {
+        return {
+          key: `${index}_${option}`,
+          text: optionsDisplayProperty ? option[optionsDisplayProperty] : option,
+          value: index,
+        }
+      })
+    : []
 
   return (
     <>
@@ -95,5 +100,11 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     </>
   )
 }
+
+const getSelectedText = (
+  options: any[],
+  optionsDisplayProperty: string | undefined,
+  index: number = -1
+) => (optionsDisplayProperty ? options?.[index]?.[optionsDisplayProperty] : options?.[index])
 
 export default ApplicationView
