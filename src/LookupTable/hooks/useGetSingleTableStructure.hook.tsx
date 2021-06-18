@@ -14,13 +14,11 @@ const useGetTableStructure = (): LookupTableStructureType => {
   const [structureID, setStructureID] = useState<number>(0)
   const [structure, setStructure] = useState<LookUpTableType>()
 
-  const [execute, structureLoadState]: [
-    (options?: any) => void,
-    ApolloQueryResult<any>
-  ] = useGetLookupTableStructureByIdLazyQuery({
-    variables: { lookupTableID: structureID },
-    fetchPolicy: 'no-cache',
-  })
+  const [execute, structureLoadState]: [(options?: any) => void, ApolloQueryResult<any>] =
+    useGetLookupTableStructureByIdLazyQuery({
+      variables: { lookupTableID: structureID },
+      fetchPolicy: 'network-only',
+    })
 
   const { loading, data, error }: any = structureLoadState
 

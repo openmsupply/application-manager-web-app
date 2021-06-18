@@ -12,7 +12,7 @@
   }
   .ui.table td {
     background: @surfacesWhite;
-    padding: 0;
+    padding: 5px;
   }
 
   .ui.table tr {

@@ -15,7 +15,9 @@ const OutcomeTable: React.FC<{
   const { push } = useRouter()
   const { data, error } = useQuery(tableQuery.query, { fetchPolicy: 'network-only' })
 
-  if (error) return <Message error title={strings.ERROR_GENERIC} list={[error.message]} />
+  // if (error) return <Message error title={strings.ERROR_GENERIC} list={[error.message]} />
+  // Silently ignore errors for demo
+  if (error) return null
   if (!data) return <Loading />
 
   const tableData = tableQuery.getNodes(data)

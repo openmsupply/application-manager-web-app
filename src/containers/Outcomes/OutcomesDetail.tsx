@@ -26,7 +26,9 @@ const OutcomeDetails: React.FC<{
     fetchPolicy: 'network-only',
   })
 
-  if (error) return <Message error title={strings.ERROR_GENERIC} list={[error.message]} />
+  // if (error) return <Message error title={strings.ERROR_GENERIC} list={[error.message]} />
+  // Silently ignore errors for demo
+  if (error) return null
   if (!data) return <Loading />
 
   const detailData = detailQuery.getNode(data)

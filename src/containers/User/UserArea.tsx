@@ -37,8 +37,14 @@ const MainMenuBar: React.FC = () => {
             {strings.MENU_ITEM_DASHBOARD}
           </Link>
         </List.Item>
-        <List.Item>
+        {/* <List.Item>
           <Link to="/layout">Layout helpers</Link>
+        </List.Item> */}
+        <List.Item>
+          <Link to="/lookup-tables">Lookup Tables</Link>
+        </List.Item>
+        <List.Item>
+          <Link to="/outcomes">Outcomes</Link>
         </List.Item>
         <List.Item>
           <Link to="/application/new?type=UserEdit">Edit User Account</Link>

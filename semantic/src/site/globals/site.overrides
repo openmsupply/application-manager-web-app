@@ -43,9 +43,9 @@ a:hover {
   color: @attention;
 }
 
-.information {
-  color: @information;
-}
+//.information {
+//  color: @information;
+//}
 
 .clickable {
   cursor: pointer;

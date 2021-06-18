@@ -7,7 +7,7 @@ import {
   ResponsesByCode,
   SectionAndPage,
 } from '../../utils/types'
-import { ApplicationViewWrapper } from '../../formElementPlugins'
+import { ApplicationViewWrapper, SummaryViewWrapper } from '../../formElementPlugins'
 import { ApplicationViewWrapperProps } from '../../formElementPlugins/types'
 import { ReviewResponse, TemplateElementCategory } from '../../utils/generated/graphql'
 import Markdown from '../../utils/helpers/semanticReactMarkdown'
@@ -54,6 +54,12 @@ const PageElements: React.FC<PageElementProps> = ({
   } = useRouter()
   const visibleElements = elements.filter(({ element }) => element.isVisible)
 
+  const getSummaryViewProps = (element: ElementState) => ({
+    element,
+    response: responsesByCode?.[element.code],
+    allResponses: responsesByCode,
+    applicationData,
+  })
   // Editable Application page
   if (canEdit && !isReview && !isSummary)
     return (
@@ -78,12 +84,20 @@ const PageElements: React.FC<PageElementProps> = ({
               applicationData,
               currentResponse: responsesByCode?.[element.code],
             }
+
             // Wrapper displays response & changes requested warning for LOQ re-submission
             return (
               <div className="form-element-wrapper" key={`question_${element.code}`}>
                 <div className="form-element">
-                  <ApplicationViewWrapper {...props} />
+                  {element.category === TemplateElementCategory.Information ? (
+                    <RenderElementWrapper key={element.code}>
+                      <SummaryViewWrapper {...getSummaryViewProps(element)} />
+                    </RenderElementWrapper>
+                  ) : (
+                    <ApplicationViewWrapper {...props} />
+                  )}
                 </div>
+
                 {element.helpText && (
                   <div className="help-tips hide-on-mobile">
                     <div className="help-tips-content">
@@ -97,13 +111,6 @@ const PageElements: React.FC<PageElementProps> = ({
         )}
       </Form>
     )
-
-  const getSummaryViewProps = (element: ElementState) => ({
-    element,
-    response: responsesByCode?.[element.code],
-    allResponses: responsesByCode,
-    applicationData,
-  })
 
   // Summary Page
   if (isSummary) {

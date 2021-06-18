@@ -17,7 +17,9 @@ const Outcomes: React.FC = () => {
 
   const { displays, error } = useGetOutcomeDisplays()
 
-  if (error) return <Message error title={strings.ERROR_GENERIC} list={[error]} />
+  // if (error) return <Message error title={strings.ERROR_GENERIC} list={[error]} />
+  // Silently ignore errors for demo
+  if (error) return null
   if (!displays) return <Loading />
 
   return (
