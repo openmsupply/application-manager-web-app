@@ -30,7 +30,9 @@ const Outcome: React.FC<{ code: string; title: string; outcomeCountQuery: Outcom
 }) => {
   const { data, error } = useQuery(outcomeCountQuery.query, { fetchPolicy: 'network-only' })
 
-  if (error) return <Message error title={strings.ERROR_GENERIC} list={[error.message]} />
+  // if (error) return <Message error title={strings.ERROR_GENERIC} list={[error.message]} />
+  // Silently ignore errors for demo
+  if (error) return null
   if (!data) return null
 
   const count = outcomeCountQuery.getCount(data)

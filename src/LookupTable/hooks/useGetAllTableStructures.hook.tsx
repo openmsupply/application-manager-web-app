@@ -6,7 +6,7 @@ const useGetAllTableStructures = (): AllLookupTableStructuresType => {
   const [allTableStructures, setAllTableStructures] = useState<LookUpTableType[]>()
 
   const allTableStructuresLoadState = useGetAllLookupTableStructuresQuery({
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'network-only',
   })
 
   const { data, loading, error, refetch: refetchAllTableStructures } = allTableStructuresLoadState

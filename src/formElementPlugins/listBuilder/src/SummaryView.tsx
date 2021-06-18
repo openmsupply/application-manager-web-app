@@ -13,6 +13,7 @@ const SummaryView: React.FC<SummaryViewProps> = ({ parameters, Markdown, respons
   const {
     displayType,
     inputFields,
+    label,
     displayFormat = getDefaultDisplayFormat(inputFields),
   } = parameters
 
@@ -25,10 +26,17 @@ const SummaryView: React.FC<SummaryViewProps> = ({ parameters, Markdown, respons
     isEditable: false,
   }
 
-  return displayType === DisplayType.TABLE ? (
-    <ListTableLayout {...listDisplayProps} />
-  ) : (
-    <ListCardLayout {...listDisplayProps} />
+  return (
+    <>
+      <label>
+        <Markdown text={label} semanticComponent="noParagraph" />
+      </label>
+      {displayType === DisplayType.TABLE ? (
+        <ListTableLayout {...listDisplayProps} />
+      ) : (
+        <ListCardLayout {...listDisplayProps} />
+      )}
+    </>
   )
 }
 

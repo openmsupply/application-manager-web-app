@@ -11,7 +11,7 @@ import { useUserState } from '../../contexts/UserState'
 import { EvaluatorParameters } from '../types'
 import { getTemplateSections } from '../helpers/application/getSectionsDetails'
 import { TemplateDetails } from '../types'
-import config from '../../config.json'
+import config from '../../config'
 
 const graphQLEndpoint = config.serverGraphQL
 
@@ -65,7 +65,10 @@ const useLoadTemplate = ({ templateCode }: UseLoadTemplateProps) => {
     templateSections.forEach((section) => {
       const { templateElementsBySectionId } = section as TemplateSection
       templateElementsBySectionId.nodes.forEach((element) => {
-        if (element?.id && element.category === TemplateElementCategory.Question) {
+        if (
+          element?.id &&
+          (element.category === TemplateElementCategory.Question || element?.defaultValue !== null)
+        ) {
           elementsIds.push(element.id)
           elementsDefaults.push(element.defaultValue)
         }

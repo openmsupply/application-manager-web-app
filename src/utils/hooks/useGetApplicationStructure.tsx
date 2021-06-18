@@ -48,8 +48,6 @@ const useGetApplicationStructure = ({
   const [lastRefetchedTimestamp, setLastRefetchedTimestamp] = useState<number>(0)
   const [lastProcessedTimestamp, setLastProcessedTimestamp] = useState<number>(0)
 
-  const networkFetch = true // To-DO: make this conditional
-
   const { data, error } = useGetAllResponsesQuery({
     variables: {
       serial,
@@ -58,7 +56,7 @@ const useGetApplicationStructure = ({
         : [ApplicationResponseStatus.Submitted],
     },
     skip: !serial,
-    fetchPolicy: networkFetch ? 'network-only' : 'cache-first',
+    fetchPolicy: 'network-only',
   })
 
   // TODO - might need a use effect if serial is changes (navigated to another application from current page)

@@ -22,7 +22,7 @@ const useGetSingleTable = () => {
   `)
 
   const [getSingleTable, singleTableLoadState] = useLazyQuery(dynamicQuery, {
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'network-only',
   })
 
   const { called, loading, data, error } = singleTableLoadState
