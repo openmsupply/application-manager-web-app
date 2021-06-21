@@ -5,7 +5,8 @@
   "parameterLoadingValues": {
     "label": "Loading...",
     "description": "",
-    "options": ["Loading..."]
+    "options": ["Loading..."],
+    "default": ""
   },
   "//": "categories types: 'Input'|'Informative'",
   "category": "Input"

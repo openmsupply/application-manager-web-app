@@ -26,7 +26,9 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
 
   useEffect(() => {
     // Ensures default values are saved and selected when parameters change
-    if (!currentResponse?.text && defaultOption !== undefined) {
+    console.log('Loading??')
+    if (!currentResponse?.text && defaultOption) {
+      console.log('Saving new response', defaultOption)
       const optionIndex = getDefaultIndex(defaultOption, options)
       onSave({
         text: getSelectedText(options, optionsDisplayProperty, optionIndex),
@@ -34,14 +36,15 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         optionIndex,
       })
       setSelectedIndex(optionIndex)
-    }
-    if (currentResponse?.text) {
+    } else if (currentResponse?.text) {
       const { optionIndex } = currentResponse
       setSelectedIndex(optionIndex)
       // Check if response has changed
       if (currentResponse.text !== getSelectedText(options, optionsDisplayProperty, optionIndex)) {
         console.log("It's changed", currentResponse.text)
-        setSelectedIndex(getDefaultIndex(defaultOption, options))
+        console.log('default', defaultOption)
+        if (defaultOption) setSelectedIndex(getDefaultIndex(defaultOption, options))
+        else setSelectedIndex(undefined)
         onSave({
           text: getSelectedText(options, optionsDisplayProperty, selectedIndex),
           selection: options[selectedIndex as number],
@@ -49,7 +52,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         })
       }
     }
-  }, [defaultOption, options])
+  }, [defaultOption, options, currentResponse])
 
   const handleChange = (e: any, data: any) => {
     const { value: optionIndex } = data
