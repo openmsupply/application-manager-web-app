@@ -21,6 +21,7 @@ import { ValidationState } from '../formElementPlugins/types'
 import { EvaluatorNode } from '@openmsupply/expression-evaluator/lib/types'
 import { SemanticICONS } from 'semantic-ui-react'
 import { DocumentNode } from '@apollo/client'
+import { DateTime } from 'luxon'
 
 export {
   ApplicationDetails,
@@ -558,7 +559,9 @@ interface SortQuery {
   sortDirection?: 'ascending' | 'descending'
 }
 
-// Outcomes Display Related
+// *****************
+// OUTCOMES DISPLAY
+// *****************
 
 export type OutcomeDisplay = {
   code: string
@@ -662,4 +665,74 @@ export type OutcomeDisplaysStructure = {
   detailDisplayQueryByCode: DetailDisplayQueryByCode
   outcomeCountQueryByCode: OutcomeCountQueryByCode
   applicationLinkQueryByCode: ApplicationLinkQueryByCode
+}
+
+// *****************
+// LIST FILTERS
+// *****************
+
+export type FilterTypeMethod = (filterKey: string, options?: FilterTypeOptions) => object
+
+export type FilterTypeDefinitions = {
+  [filterType in
+    | 'number'
+    | 'date'
+    | 'boolean'
+    | 'equals'
+    | 'enumList'
+    | 'searchableListIn'
+    | 'searchableListInArray'
+    | 'staticList'
+    | 'search']: FilterTypeMethod
+}
+
+export type FilterTypes = keyof FilterTypeDefinitions
+
+export type FilterListQueryResult = { [queryName: string]: any }
+export type FilterListResultExtractor = (props: FilterListQueryResult) => {
+  list: string[]
+  totalCount: number
+}
+
+export type GetFilterListQueryResult = {
+  query: DocumentNode
+  variables: object
+  resultExtractor: FilterListResultExtractor
+}
+
+export type GetFilterListQuery = (props: {
+  searchValue?: string
+  filterListParameters?: any
+}) => GetFilterListQueryResult
+
+export type NamedDates = {
+  [key: string]: { getDates: () => [DateTime, DateTime]; title: string }
+}
+export type BooleanFilterMapping = { true: string; false: string }
+
+export type FilterTypeOptions = {
+  // For know enum list
+  enumList?: string[]
+  // For option list that requires api query
+  getListQuery?: GetFilterListQuery
+  // Or statement instead of columnOrIdentifier
+  orFieldNames?: string[]
+  // Substitue columnOrIdentifier
+  substituteColumnName?: string
+  // For named dates
+  namedDates?: NamedDates
+  // For boolean to show on and of criteria
+  booleanMapping?: BooleanFilterMapping
+}
+
+export type FilterDefinition = {
+  type: FilterTypes
+  // Empty or undefined title will be excluded from generic fitler UI display (ListFilters)
+  title?: string
+  options?: FilterTypeOptions
+}
+
+export type FilterDefinitions = {
+  // columnOrIdentifier as graphQL filter key unless orFieldNames or substituteColumnName is present in filter options
+  [columnOrIdentifier: string]: FilterDefinition
 }

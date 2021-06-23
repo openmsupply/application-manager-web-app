@@ -1087,6 +1087,230 @@ a:hover {
 }
 
 /*--------------------------------
+      Filters
+---------------------------------*/
+
+.filterItem {
+  border-radius: 4px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: @surfacesWhite;
+  margin-right:10px;
+  color: @darkGrey;
+
+  &.visible {
+    border: solid 1px @blue;
+  }
+
+  .dropdown.icon {
+    margin-left: 6px;
+  }
+
+}
+
+// Layouts
+#list-filter {
+  .flex-row();
+
+  align-items: center;
+  flex-wrap: wrap;
+
+  .ui.dropdown {
+    .clickable();
+    .filterItem();
+
+    .menu {
+      top: 120%;
+      border: solid 1px @blue;
+    }
+  }
+
+  // multiple is used to make sure filter menu stays open, but it adds extra margin on text
+  .ui.multiple.dropdown > .text {
+    margin: 0px;
+  }
+
+  // Add filter selector
+  >.ui.dropdown {
+    color: @blue !important;
+  }
+  
+  .active-filter {
+    // Needed for relative position of floating label
+    position: relative;
+
+    .label.floating {
+      top: -0.8em;
+      left: 95%;
+    }
+  }
+
+  .remove-filter {
+    color: @blue;
+    .icon {
+      margin: 0px;
+      margin-right: 7px;
+    }
+  }
+
+}
+
+/*--------------------------------
+      Date Picker
+---------------------------------*/
+@weekDayRowBorder: 1px solid rgba(0,0,0, 0.05);
+
+.not-clickable {
+  cursor: default;
+}
+
+.in-range-left-border {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.in-range-right-border {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.date-filter-title {
+  .flex-row();
+  align-items: center;
+
+  >div {
+    .flex-column();
+    margin-left: 5px;
+    align-items: center;
+    
+    &.title-and-criteria {
+      :first-child {
+        align-self: flex-start;
+        font-size: 10px;
+        line-height: 10px;
+        color: @darkGrey;
+      }
+    }
+  }
+}
+
+.date-filter {
+  .flex-row();
+  padding: 5px;
+  padding-top:15px;
+  padding-bottom: 5px;
+
+
+
+  .named-dates {
+    .flex-column();
+    padding-left: 10px;
+    padding-right: 10px;
+    align-items: stretch;
+    margin-right:5px;
+    overflow-y: auto;
+    max-height: 300px;
+
+    div {
+      .clickable();
+      border-radius: @borderRadius;
+      padding: 10px;
+      margin-top: 5px;
+      text-align: center;
+    }
+
+    .selected-named-date {
+      background-color: @dateFilterLightBlue;
+    }
+  }
+
+  .calendar-container {
+    .flex-column();
+    margin-left: 10px;
+
+    .month-selector {
+      .flex-row();
+      margin-bottom: 10px;
+
+      .month-name {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 24px;
+      }
+
+      .month-button {
+        .clickable();
+      }
+    }
+
+    .calendar-days-container {
+      .flex-column();
+
+      .week-day-headers {
+        .flex-row();
+        margin-bottom: 5px;
+        div {
+          width: 40px;
+          color: @weekDayHeaderColor;
+          font-size: 12px;
+          text-align: center;
+        }
+      }
+
+      .week-day-row {
+        .flex-row();
+        padding-top: 2px;
+        padding-bottom: 2px;
+        border-top: @weekDayRowBorder;
+
+        :first-child.day-in-range {
+          .in-range-left-border
+        } 
+
+        :last-child.day-in-range {
+          .in-range-right-border
+          
+        }         
+
+        .first-in-range {
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+        }
+    
+        .last-in-range {
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+        }
+
+        div {
+          .flex-row();
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 35px;
+
+          &.day-in-range {
+            background-color: @dateFilterLightBlue;
+          }
+
+          >div {
+            border-radius: 200px;
+            width: 32px;
+            height: 32px;
+
+            &.day-selected {
+              background-color: @selectedDayColor;
+            }
+          }
+          
+        }
+      }
+    }
+  }
+}
+
+/*--------------------------------
       General used classes
 ---------------------------------*/
 

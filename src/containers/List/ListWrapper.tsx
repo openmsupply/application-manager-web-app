@@ -1,16 +1,6 @@
-import React, { CSSProperties, useEffect, useState } from 'react'
-import {
-  Container,
-  List,
-  Label,
-  Segment,
-  Button,
-  Search,
-  Grid,
-  Header,
-  Icon,
-} from 'semantic-ui-react'
-import { FilterList } from '../../components'
+import React, { useEffect, useState } from 'react'
+import { Label, Button, Search, Header, Icon } from 'semantic-ui-react'
+
 import { useRouter } from '../../utils/hooks/useRouter'
 import usePageTitle from '../../utils/hooks/usePageTitle'
 import useListApplications from '../../utils/hooks/useListApplications'
@@ -23,12 +13,14 @@ import { USER_ROLES } from '../../utils/data'
 import { Link } from 'react-router-dom'
 import ApplicationsList from '../../components/List/ApplicationsList'
 import PaginationBar from '../../components/List/Pagination'
+import ListFilters from './ListFilters/ListFilters'
+import { APPLICATION_FILTERS } from '../../utils/data/applicationFilters'
 
 const ListWrapper: React.FC = () => {
   const { query, updateQuery } = useRouter()
   const { type, userRole } = query
   const {
-    userState: { templatePermissions, isNonRegistered },
+    userState: { templatePermissions, isNonRegistered, currentUser },
     logout,
   } = useUserState()
   const [columns, setColumns] = useState<ColumnDetails[]>([])
@@ -112,38 +104,6 @@ const ListWrapper: React.FC = () => {
     <Label content={strings.ERROR_APPLICATIONS_LIST} error={error} />
   ) : (
     <div id="list-container">
-      {/* <FilterList /> */}
-      {/* <Segment vertical>
-        {Object.keys(query).length > 0 && <h3>Query parameters:</h3>}
-        <List>
-          {Object.entries(query).map(([key, value]) => (
-            <List.Item key={`ApplicationList-parameter-${value}`} content={key + ' : ' + value} />
-          ))}
-        </List>
-        <Grid columns={3} style={{ marginTop: '5px' }}>
-          <Grid.Row>
-            <Grid.Column width={3}>
-              <Search
-                // size="large"
-                placeholder={strings.PLACEHOLDER_SEARCH}
-                onSearchChange={handleSearchChange}
-                open={false}
-                value={searchText}
-              />
-            </Grid.Column>
-            <Grid.Column textAlign="left" verticalAlign="middle">
-              <Button content={strings.BUTTON_CLEAR_SEARCH} onClick={() => setSearchText('')} />
-            </Grid.Column>
-            <Grid.Column textAlign="right" verticalAlign="middle" floated="right">
-              <Button
-                as={Link}
-                to={`/application/new?type=${type}`}
-                content={strings.BUTTON_APPLICATION_NEW}
-              />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Segment> */}
       <div id="list-top">
         <Header as="h2">{query.type}</Header>
         <Search
@@ -162,6 +122,10 @@ const ListWrapper: React.FC = () => {
           </Button>
         ) : null}
       </div>
+      <ListFilters
+        filterDefinitions={APPLICATION_FILTERS}
+        filterListParameters={{ userId: currentUser?.userId || 0, templateCode: type }}
+      />
       {columns && applicationsRows && (
         <ApplicationsList
           columns={columns}

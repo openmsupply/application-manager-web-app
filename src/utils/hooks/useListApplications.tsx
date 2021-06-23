@@ -5,6 +5,7 @@ import buildSortFields, { getPaginationVariables } from '../helpers/list/buildQu
 import { useGetApplicationListQuery, ApplicationListShape } from '../../utils/generated/graphql'
 import { BasicStringObject } from '../types'
 import { useUserState } from '../../contexts/UserState'
+import { APPLICATION_FILTERS } from '../data/applicationFilters'
 
 const useListApplications = ({ sortBy, page, perPage, ...queryFilters }: BasicStringObject) => {
   const [applications, setApplications] = useState<ApplicationListShape[]>([])
@@ -15,13 +16,17 @@ const useListApplications = ({ sortBy, page, perPage, ...queryFilters }: BasicSt
     userState: { currentUser },
   } = useUserState()
 
-  const filters = buildFilter(queryFilters)
+  const filters = buildFilter(queryFilters, APPLICATION_FILTERS)
   const sortFields = sortBy ? buildSortFields(sortBy) : []
   const { paginationOffset, numberToFetch } = getPaginationVariables(
     page ? Number(page) : 1,
     perPage ? Number(perPage) : undefined
   )
-  const { data, loading, error: applicationsError } = useGetApplicationListQuery({
+  const {
+    data,
+    loading,
+    error: applicationsError,
+  } = useGetApplicationListQuery({
     variables: {
       filters,
       sortFields,

@@ -22,9 +22,6 @@ export default gql`
         templateCode
         templateName
         applicant
-        applicantFirstName
-        applicantLastName
-        applicantUsername
         orgName
         stage
         stageColour
@@ -33,6 +30,8 @@ export default gql`
         lastActiveDate
         reviewerAction
         assignerAction
+        assigners
+        reviewers
         isFullyAssignedLevel1
         assignedQuestionsLevel1
         totalQuestions
