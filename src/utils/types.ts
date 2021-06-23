@@ -26,6 +26,7 @@ export {
   ApplicationDetails,
   ApplicationElementStates,
   ApplicationListRow,
+  ApplicationStage,
   ApplicationProps,
   AssignmentDetails,
   CellProps,
@@ -64,7 +65,7 @@ export {
   SectionsStructure,
   SetStrictSectionPage,
   SortQuery,
-  StageAndStatus,
+  StageDetails,
   TemplateDetails,
   TemplateCategoryDetails,
   TemplatePermissions,
@@ -87,7 +88,7 @@ interface ApplicationDetails {
   outcome: string
   isLinear: boolean
   isChangeRequest: boolean
-  current: StageAndStatus
+  currentStage: ApplicationStage
   firstStrictInvalidPage: SectionAndPage | null
   submissionMessage?: string
   startMessage?: string
@@ -110,11 +111,10 @@ interface ApplicationProps {
   strictSectionPage?: SectionAndPage | null
 }
 
-interface ApplicationStage {
-  id: number
-  name: string
-  number: number
-  colour: string
+interface ApplicationStage extends StageDetails {
+  createdDate: Date
+  statusCreatedDate: Date
+  status: ApplicationStatus
 }
 
 interface AssignmentDetails {
@@ -126,7 +126,10 @@ interface AssignmentDetails {
   review: ReviewDetails | null
   reviewer: GraphQLUser
   totalAssignedQuestions: number
-  stage: ApplicationStage
+  stage: {
+    // Not storing ReviewStatus
+    createdDate: Date
+  } & StageDetails
   reviewQuestionAssignments: ReviewQuestionAssignment[]
   isCurrentUserAssigner: boolean
   assignableSectionRestrictions: (string | null)[]
@@ -335,12 +338,10 @@ type ReviewSectionComponentProps = {
 
 interface ReviewDetails {
   id: number
-  status: ReviewStatus
-  timeStatusCreated?: Date
-  stage: ApplicationStage
   isLastLevel: boolean
   level: number
   reviewDecision?: ReviewDecision | null
+  stage: ReviewStage
 }
 
 interface ReviewQuestion {
@@ -354,6 +355,12 @@ interface ReviewQuestionDecision {
   id: number
   comment?: string | null
   decision?: ReviewResponseDecision | null
+}
+
+interface ReviewStage extends StageDetails {
+  createdDate: Date
+  statusCreatedDate: Date
+  status: ReviewStatus
 }
 
 type SectionAndPage = {
@@ -445,17 +452,11 @@ interface SortQuery {
   sortDirection?: 'ascending' | 'descending'
 }
 
-interface StageAndStatus {
-  stage: ApplicationStage
-  status: ApplicationStatus
-  date: Date
-}
-
 interface StageDetails {
-  number: number
   id: number
-  title: string
-  colour?: string
+  name: string
+  number: number
+  colour: string
   description?: string
 }
 

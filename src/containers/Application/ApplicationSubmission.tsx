@@ -20,16 +20,17 @@ const ApplicationSubmission: React.FC<ApplicationProps> = ({ structure }) => {
     push,
   } = useRouter()
   const {
-    info: { current, submissionMessage, name },
+    info: {
+      currentStage: { status },
+      submissionMessage,
+      name,
+    },
     stages,
   } = structure
 
   // Check if application not submitted and redirect to the summary page
   // Note: The summary page has its own redirection logic to a specific page (with invalid items).
-  if (
-    current?.status === ApplicationStatus.Draft ||
-    current?.status === ApplicationStatus.ChangesRequired
-  )
+  if (status === ApplicationStatus.Draft || status === ApplicationStatus.ChangesRequired)
     push(`/application/${serialNumber}/summary`)
 
   return (
@@ -46,12 +47,12 @@ const ApplicationSubmission: React.FC<ApplicationProps> = ({ structure }) => {
           <Segment basic textAlign="left" id="submission-content">
             <p className="dark-grey">{strings.SUBTITLE_SUBMISSION_STEPS}</p>
             <List>
-              {stages.map(({ title, description, colour }) =>
-                title ? (
-                  <List.Item key={`list_stage_${title}`}>
+              {stages.map(({ name, description, colour }) =>
+                name ? (
+                  <List.Item key={`list_stage_${name}`}>
                     <List.Content>
                       <List.Header>
-                        <Stage name={title} colour={colour as string} />
+                        <Stage name={name} colour={colour as string} />
                       </List.Header>
                       <List.Description>{description}</List.Description>
                     </List.Content>

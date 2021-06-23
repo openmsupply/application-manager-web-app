@@ -128,7 +128,7 @@ const StartContinueOrRestartButton: React.FC<ReviewSectionComponentProps> = ({
 
   const doAction = async () => {
     let reviewId = thisReview?.id as number
-    if (thisReview?.status == ReviewStatus.Draft)
+    if (thisReview?.stage.status == ReviewStatus.Draft)
       return push(`${pathname}/${reviewId}?activeSections=${details.code}`)
 
     try {

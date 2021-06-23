@@ -23,7 +23,7 @@ const ApplicationSections: React.FC<ApplicationSectionsProps> = ({ fullStructure
     info: {
       serial,
       isChangeRequest,
-      current: { status },
+      currentStage: { status },
       firstStrictInvalidPage,
     },
     sections,

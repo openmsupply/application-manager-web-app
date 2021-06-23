@@ -83,8 +83,9 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
 
       const {
         id,
-        status,
+        status: assignmentStatus,
         stage: assignmentStage,
+        stageDate,
         timeUpdated,
         levelNumber,
         reviewer,
@@ -103,6 +104,7 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
         name: assignmentStage?.title as string,
         number: assignmentStage?.number as number,
         colour: assignmentStage?.colour as string,
+        createdDate: stageDate,
       }
 
       const assignment: AssignmentDetails = {
@@ -110,16 +112,18 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
         review: review
           ? {
               id: review.id,
-              status: review.status as ReviewStatus,
-              timeStatusCreated: review.timeStatusCreated,
               isLastLevel: !!review?.isLastLevel,
               level: review.levelNumber || 0,
-              stage,
+              stage: {
+                ...stage,
+                statusCreatedDate: review.timeStatusCreated,
+                status: review.status as ReviewStatus,
+              },
               reviewDecision: review.reviewDecisions.nodes[0], // this will be the latest, sorted in query
             }
           : null,
-        status,
-        stage,
+        stage, // No status defined (ReviewStatus is defined inside review)
+        status: assignmentStatus,
         reviewer: reviewer as User,
         level: levelNumber || 1,
         isCurrentUserReviewer: reviewer?.id === (currentUser?.userId as number),

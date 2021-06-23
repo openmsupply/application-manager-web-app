@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Button, Message, Segment } from 'semantic-ui-react'
-import { FullStructure, StageAndStatus, TemplateDetails } from '../../utils/types'
+import { ApplicationStage, FullStructure, StageDetails, TemplateDetails } from '../../utils/types'
 import useGetApplicationStructure from '../../utils/hooks/useGetApplicationStructure'
 import { ApplicationSections, Loading } from '../../components'
 import strings from '../../utils/constants'
@@ -30,7 +30,7 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
 
   useEffect(() => {
     if (!fullStructure) return
-    const { status } = fullStructure.info.current as StageAndStatus
+    const { status } = fullStructure.info.currentStage as ApplicationStage
     if (status !== ApplicationStatus.Draft && status !== ApplicationStatus.ChangesRequired)
       replace(`/application/${serialNumber}/summary`)
   }, [fullStructure])
@@ -43,11 +43,14 @@ const ApplicationHome: React.FC<ApplicationProps> = ({ structure, template }) =>
   if (!fullStructure || !fullStructure.responsesByCode) return <Loading />
 
   const {
-    info: { current, isChangeRequest, firstStrictInvalidPage },
+    info: {
+      currentStage: { status },
+      firstStrictInvalidPage,
+    },
   } = fullStructure
 
   const SummaryButtonSegment: React.FC = () => {
-    return current?.status === ApplicationStatus.Draft && !firstStrictInvalidPage ? (
+    return status === ApplicationStatus.Draft && !firstStrictInvalidPage ? (
       <Segment basic className="padding-zero" textAlign="right">
         <Button as={Link} color="blue" onClick={handleSummaryClicked}>
           {strings.BUTTON_SUMMARY}

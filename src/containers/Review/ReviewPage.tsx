@@ -62,7 +62,7 @@ const ReviewPage: React.FC<{
   // TODO decide how to handle this, and localise if not deleted
   if (
     reviewAssignment?.reviewer?.id !== currentUser?.userId &&
-    fullReviewStructure?.thisReview?.status !== ReviewStatus.Submitted
+    fullReviewStructure?.thisReview?.stage.status !== ReviewStatus.Submitted
   )
     return <Header>Review in Progress</Header>
 
@@ -75,7 +75,7 @@ const ReviewPage: React.FC<{
     firstIncompleteReviewPage,
   } = fullReviewStructure
 
-  if (thisReview?.status === ReviewStatus.Pending && showWarningModal.open === false) {
+  if (thisReview?.stage.status === ReviewStatus.Pending && showWarningModal.open === false) {
     const { title, message, option } = messages.REVIEW_STATUS_PENDING
     setShowWarningModal({
       open: true,
@@ -139,8 +139,8 @@ const ReviewPage: React.FC<{
             isReview
             isConsolidation={section.assignment?.isConsolidation}
             canEdit={
-              reviewAssignment?.review?.status === ReviewStatus.Draft ||
-              reviewAssignment?.review?.status === ReviewStatus.Locked
+              reviewAssignment?.review?.stage.status === ReviewStatus.Draft ||
+              reviewAssignment?.review?.stage.status === ReviewStatus.Locked
             }
           />
         ))}

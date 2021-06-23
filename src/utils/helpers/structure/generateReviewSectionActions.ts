@@ -114,7 +114,7 @@ const generateReviewSectionActions: GenerateSectionActions = ({
       reviewLevel: reviewAssignment.level,
       reviewAssignmentStatus: reviewAssignment.status,
       isReviewExisting: !!thisReview,
-      reviewStatus: thisReview?.status,
+      reviewStatus: thisReview?.stage.status,
       isPendingReview: (totalPendingReview || 0) > 0,
       isReviewActive: (totalActive || 0) > 0,
     }

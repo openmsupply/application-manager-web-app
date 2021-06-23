@@ -46,7 +46,7 @@ const useGetDecisionOptions: UseGetDecisionOptions = (canSubmitReviewAs, thisRev
   const [decisionOptions, setDecisionOptions] = useState<DecisionOption[]>(initilDecisionOptions)
   const [isDecisionError, setIsDecisionError] = useState(false)
 
-  const isDraft = thisReview?.status === ReviewStatus.Draft
+  const isDraft = thisReview?.stage.status === ReviewStatus.Draft
   const decisionInStructure = thisReview?.reviewDecision?.decision || Decision.NoDecision
   const reviewerNeedsToMakeDecision = thisReview?.isLastLevel || (thisReview?.level || 0) > 1
 

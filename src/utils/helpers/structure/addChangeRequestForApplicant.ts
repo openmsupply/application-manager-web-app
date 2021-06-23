@@ -28,7 +28,7 @@ const addApplicantChangeRequestStatusToElement = (structure: FullStructure) => {
     const latestReviewResponse = latestApplicationResponse?.reviewResponses?.nodes[0]
     const previousReviewResponse = previousApplicationResponse?.reviewResponses?.nodes[0]
     // For not draft application (in changes requested), we just check the latestApplicationResponse
-    if (structure?.info?.current?.status !== ApplicationStatus.Draft) {
+    if (structure?.info?.currentStage.status !== ApplicationStatus.Draft) {
       element.isChangeRequest = latestReviewResponse?.decision === ReviewResponseDecision.Decline
       element.isChanged = false
       return

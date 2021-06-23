@@ -41,7 +41,7 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
     if (query.dev === 'true' && !isProductionBuild) return
 
     // Re-direct based on application status
-    if (fullStructure.info.current?.status === ApplicationStatus.ChangesRequired)
+    if (fullStructure.info.currentStage.status === ApplicationStatus.ChangesRequired)
       replace(`/application/${fullStructure.info.serial}`)
 
     // Re-direct if application is not valid
@@ -79,7 +79,7 @@ const ApplicationSummary: React.FC<ApplicationProps> = ({
     responsesByCode,
     info: {
       serial,
-      current: { status },
+      currentStage: { status },
       isChangeRequest,
     },
   } = fullStructure

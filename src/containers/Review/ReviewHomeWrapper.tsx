@@ -82,7 +82,7 @@ const ReviewerAndStageSelection: React.FC<ReviewerAndStageSelectionProps> = ({
   useEffect(() => {
     setFilters({
       selectedReviewer: currentUser?.userId as number,
-      selectedStage: structure.info.current?.stage.id as number,
+      selectedStage: structure.info.currentStage.id,
     })
   }, [])
 
@@ -122,11 +122,11 @@ const ReviewerAndStageSelection: React.FC<ReviewerAndStageSelectionProps> = ({
 const getStageOptions = (structure: FullStructure, assignments: AssignmentDetails[]) =>
   structure.stages
     .filter(({ id }) => assignments.some(({ stage }) => id === stage.id))
-    .map(({ id, title, colour }) => ({
+    .map(({ id, name, colour }) => ({
       className: 'padding-zero',
       key: id,
       value: id,
-      text: <Stage name={title} colour={colour || ''} />,
+      text: <Stage name={name} colour={colour || ''} />,
     }))
 
 const getReviewerOptions = (assignments: AssignmentDetails[], currentUserId: number) => {

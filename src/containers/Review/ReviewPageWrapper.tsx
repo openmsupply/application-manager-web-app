@@ -31,9 +31,7 @@ const ReviewPageWrapper: React.FC<{
   if (!fullApplicationStructure) return <Loading />
 
   const {
-    info: {
-      current: { stage },
-    },
+    info: { currentStage },
   } = fullApplicationStructure
 
   // Find the review id used in URL in reviewAssignments
@@ -46,7 +44,7 @@ const ReviewPageWrapper: React.FC<{
   return (
     <>
       <Container id="application-summary">
-        <Stage name={stage.name || ''} colour={stage.colour} />
+        <Stage name={currentStage.name || ''} colour={currentStage.colour} />
         <Switch>
           <Route exact path={path}>
             <ReviewPage {...{ fullApplicationStructure, reviewAssignment }} />

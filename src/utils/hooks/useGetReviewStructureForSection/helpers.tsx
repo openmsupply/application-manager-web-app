@@ -128,8 +128,8 @@ const generateReviewStructure: GenerateReviewStructure = ({
 const setIsNewApplicationResponse = (structure: FullStructure) => {
   Object.values(structure.elementsById || {}).forEach((element) => {
     element.isNewApplicationResponse =
-      element?.latestApplicationResponse?.timeUpdated === structure.info.current?.date &&
-      !!element?.previousApplicationResponse
+      element?.latestApplicationResponse?.timeUpdated ===
+        structure.info.currentStage?.createdDate && !!element?.previousApplicationResponse
   })
 }
 

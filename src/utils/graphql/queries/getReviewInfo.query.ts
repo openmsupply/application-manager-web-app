@@ -6,13 +6,19 @@ export default gql`
     reviewAssignments(condition: { applicationId: $applicationId }, orderBy: TIME_UPDATED_DESC) {
       nodes {
         id
-        levelNumber
         status
         timeUpdated
         levelNumber
         reviewerId
         isLastLevel
         allowedSections
+        stage {
+          id
+          number
+          title
+          colour
+        }
+        stageDate
         trigger
         reviewer {
           id
@@ -34,11 +40,6 @@ export default gql`
               }
             }
           }
-        }
-        stage {
-          title
-          number
-          id
         }
         reviewQuestionAssignments {
           nodes {

@@ -31,7 +31,7 @@ const addChangeRequestForReviewer = (structure: FullStructure): boolean => {
   questionElements.forEach((element) => {
     const { thisReviewLatestResponse, thisReviewPreviousResponse } = element
     // For not draft review (in changes requested status), we check the consolidator linked reviewResponse on thisReviewLatestResponse
-    if (structure?.thisReview?.status !== ReviewStatus.Draft) {
+    if (structure?.thisReview?.stage.status !== ReviewStatus.Draft) {
       const consolidatorLatestReviewResponse =
         thisReviewLatestResponse?.reviewResponsesByReviewResponseLinkId?.nodes[0] // Sorted in useGetReviewResponsesQuery
       element.isChangeRequest =
