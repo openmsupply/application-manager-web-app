@@ -47,6 +47,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
           { text: cb.text, textNegative: cb.textNegative, selected: cb.selected },
         ])
       ),
+      selectedValues: checkboxElements.filter((cb) => !!cb.selected).map((cb) => cb),
     })
   }, [checkboxElements])
 
@@ -105,6 +106,7 @@ const getInitialState = (initialValue: CheckboxSavedState, checkboxes: Checkbox[
           }
         else
           return {
+            ...cb,
             label: cb.label,
             text: cb?.text || cb.label,
             textNegative: cb?.textNegative || '',
