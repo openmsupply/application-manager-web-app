@@ -19,6 +19,9 @@ const agreeThisReview = (element: PageElement) =>
 const disagreeThiReview = (element: PageElement) =>
   element.thisReviewLatestResponse?.decision === ReviewResponseDecision.Disagree
 const activeThisReview = (element: PageElement) => element.isActiveReviewResponse
+const reviewLowerLevelUpdates = (element: PageElement) => element.isNewReviewResponse
+const reviewedLowerLevelUpdates = (element: PageElement) =>
+  element.thisReviewLatestResponse?.decision
 
 const generatePageConsolidationProgress = (page: Page) => {
   const totalReviewable = page.state.filter(
@@ -26,18 +29,14 @@ const generatePageConsolidationProgress = (page: Page) => {
   )
 
   const totalActive = totalReviewable.filter(activeThisReview)
+  const totalNewReviewable = totalReviewable.filter(reviewLowerLevelUpdates)
 
   // totalConform of originalReviewResponse
   const totalConform = totalReviewable.filter(conformOriginal)
   // totalNonConform of originalReviewResponse
   const totalNonConform = totalReviewable.filter(nonConformOriginal)
-  // lowerLevelReviewLatestResponse not linked to thisReviewLatestResponse
+  // reviews pending - used before starting a new review (also need to check isAssigned)
   const totalPendingReview = totalReviewable.filter(({ isPendingReview }) => isPendingReview)
-
-  // // Linked to lowerLevelReviewLatestResponse
-  // const totalUpToDateReviewResponses = totalReviewable.filter(
-  //   ({ isPendingReview }) => !isPendingReview
-  // )
 
   const totalAgree = totalReviewable.filter(agreeThisReview)
 
@@ -49,6 +48,8 @@ const generatePageConsolidationProgress = (page: Page) => {
   const doneActiveAgreeConform = doneAgreeConform.filter(activeThisReview)
   const doneActiveAgreeNonConform = doneAgreeNonConform.filter(activeThisReview)
 
+  const doneNewReviewable = totalNewReviewable.filter(reviewedLowerLevelUpdates)
+
   page.consolidationProgress = {
     doneAgreeConform: doneAgreeConform.length,
     doneAgreeNonConform: doneAgreeNonConform.length,
@@ -56,12 +57,14 @@ const generatePageConsolidationProgress = (page: Page) => {
     doneActiveDisagree: doneActiveDisagree.length,
     doneActiveAgreeConform: doneActiveAgreeConform.length,
     doneActiveAgreeNonConform: doneActiveAgreeNonConform.length,
+    doneNewReviewable: doneNewReviewable.length,
     totalConform: totalConform.length,
     totalNonConform: totalNonConform.length,
     // BaseReviewProgress
     totalReviewable: totalReviewable.length,
     totalPendingReview: totalPendingReview.length,
     totalActive: totalActive.length,
+    totalNewReviewable: totalNewReviewable.length,
   }
 }
 
@@ -75,12 +78,14 @@ export const getConsolidationProgress = (elements: (Page | SectionState)[]) => {
     doneActiveDisagree: 0,
     doneActiveAgreeConform: 0,
     doneActiveAgreeNonConform: 0,
+    doneNewReviewable: 0,
     totalConform: 0,
     totalNonConform: 0,
     // BaseReviewProgress
     totalActive: 0,
     totalReviewable: 0,
     totalPendingReview: 0,
+    totalNewReviewable: 0,
   }
 
   return elements.reduce((sum, page) => {
@@ -91,11 +96,13 @@ export const getConsolidationProgress = (elements: (Page | SectionState)[]) => {
       doneActiveDisagree,
       doneActiveAgreeConform,
       doneActiveAgreeNonConform,
+      doneNewReviewable,
       totalConform,
       totalNonConform,
       totalActive,
       totalReviewable,
       totalPendingReview,
+      totalNewReviewable,
     } = page.consolidationProgress || initial
     return {
       doneAgreeConform: sum.doneAgreeConform + doneAgreeConform,
@@ -104,12 +111,14 @@ export const getConsolidationProgress = (elements: (Page | SectionState)[]) => {
       doneActiveDisagree: sum.doneActiveDisagree + doneActiveDisagree,
       doneActiveAgreeConform: sum.doneActiveAgreeConform + doneActiveAgreeConform,
       doneActiveAgreeNonConform: sum.doneActiveAgreeNonConform + doneActiveAgreeNonConform,
+      doneNewReviewable: sum.doneNewReviewable + doneNewReviewable,
       totalConform: sum.totalConform + totalConform,
       totalNonConform: sum.totalNonConform + totalNonConform,
       // BaseReviewProgress
       totalActive: sum.totalActive + totalActive,
       totalReviewable: sum.totalReviewable + totalReviewable,
       totalPendingReview: sum.totalPendingReview + totalPendingReview,
+      totalNewReviewable: sum.totalNewReviewable + totalNewReviewable,
     }
   }, initial)
 }

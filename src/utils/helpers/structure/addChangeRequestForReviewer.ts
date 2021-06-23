@@ -36,7 +36,13 @@ const addChangeRequestForReviewer = (structure: FullStructure): boolean => {
         thisReviewLatestResponse?.reviewResponsesByReviewResponseLinkId?.nodes[0] // Sorted in useGetReviewResponsesQuery
       element.isChangeRequest =
         consolidatorLatestReviewResponse?.decision === ReviewResponseDecision.Disagree
-      element.isChanged = false
+
+      // Set isChanged fields anytime that thisReview previous and latest are different (and previous not undefined)
+      // this is useful to check if the latest review was done after a consolidation for changes requested (after submitted)
+      element.isChanged = !thisReviewPreviousResponse
+        ? false
+        : thisReviewLatestResponse?.comment !== thisReviewPreviousResponse?.comment ||
+          thisReviewLatestResponse?.decision !== thisReviewPreviousResponse?.decision
       return
     }
 
