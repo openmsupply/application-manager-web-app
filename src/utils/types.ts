@@ -327,6 +327,7 @@ interface ResponseFull {
   selection?: any // Used in Dropdown/Radio selectors
   code?: string // Used in ListBuilder
   list?: any // Used in ListBuilder
+  date?: any // Used in DatePicker
   timeCreated?: Date
   reviewResponse?: ReviewResponse
   customValidation?: ValidationState
