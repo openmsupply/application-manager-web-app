@@ -45,7 +45,7 @@ const AssignmentSectionRow: React.FC<AssignmentSectionRowProps> = (props) => {
     <Grid className="section-single-row-box-container">
       <Grid.Row>
         <Grid.Column className="centered-flex-box-row">
-          <Label className="simple-label" content={strings.LABEL_REVIEWED_BY} />
+          <Label className="simple-label" content={strings.LABEL_REVIEW_REVIEWED_BY} />
           <Dropdown
             className="reviewer-dropdown"
             options={options}

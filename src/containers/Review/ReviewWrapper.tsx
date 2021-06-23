@@ -40,19 +40,17 @@ const ReviewWrapper: React.FC<ReviewWrapperProps> = ({ structure }) => {
   if (!assignments || assignments.length === 0) return <NoMatch />
 
   return (
-    <ReviewContainer application={structure.info}>
-      <Switch>
-        <Route exact path={path}>
-          <ReviewHomeWrapper {...{ assignments, structure }} />
-        </Route>
-        <Route exact path={`${path}/:reviewId`}>
-          <ReviewPageWrapper {...{ structure, reviewAssignments: assignments }} />
-        </Route>
-        <Route>
-          <NoMatch />
-        </Route>
-      </Switch>
-    </ReviewContainer>
+    <Switch>
+      <Route exact path={path}>
+        <ReviewHomeWrapper {...{ assignments, structure }} />
+      </Route>
+      <Route exact path={`${path}/:reviewId`}>
+        <ReviewPageWrapper {...{ structure, reviewAssignments: assignments }} />
+      </Route>
+      <Route>
+        <NoMatch />
+      </Route>
+    </Switch>
   )
 }
 

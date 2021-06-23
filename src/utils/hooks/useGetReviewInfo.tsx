@@ -120,6 +120,7 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
                 status: review.status as ReviewStatus,
               },
               reviewDecision: review.reviewDecisions.nodes[0], // this will be the latest, sorted in query
+              reviewer: reviewer as User,
             }
           : null,
         stage, // No status defined (ReviewStatus is defined inside review)

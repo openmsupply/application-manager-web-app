@@ -19,7 +19,7 @@
   letter-spacing: 0.81px;
   padding: 4px 10px;
   text-transform: uppercase;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 // In use for label over progress bar on Steps line

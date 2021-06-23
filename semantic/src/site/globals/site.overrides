@@ -276,7 +276,6 @@ a:hover {
   max-width: 350px;
   background-color: transparent;
   font-size: @fontSmall;
-  color: @black;
   font-weight: @regularWeight;
 }
 
@@ -306,7 +305,7 @@ a:hover {
   flex-wrap: wrap;
   min-height: 30px; // TODO: Need to be updated for mobile
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 // Inner steps line (left side - icon & header)
@@ -349,6 +348,12 @@ a:hover {
   color: @headersInteractiveMed;
   font-size: @fontSmall;
   font-weight: @semiboldWeight;
+}
+
+#review-home-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
 }
 
 .ui.segment.review-application-segment {
@@ -674,12 +679,14 @@ a:hover {
 
 // Note: these layout ids/classes also shared with Review page
 
-#application-summary {
+#application-summary, #review-page-summary {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: @applicationSummaryWidth;
   background-color: @surfacesWhite;
+  border: 2px solid @surfacesMed;
+  border-radius: @borderRadius;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -687,6 +694,11 @@ a:hover {
 #application-summary-header {
   padding-top: 30px;
   padding-bottom: 20px;
+  text-align: center;
+
+  h2.ui.header {
+    padding-top: 10px;
+  }
 }
 
 #application-summary-content {
@@ -705,6 +717,7 @@ a:hover {
 
 .summary-section {
   background-color: @surfacesLight;
+  border: 2px solid @surfacesMed;
   border-radius: @borderRadius;
   padding: 0px;
   margin-bottom: 15px;
@@ -773,6 +786,7 @@ a:hover {
     padding-right: 20px;
     padding-left: 20px;
     background: @surfacesWhite;
+    border: 2px solid @surfacesMed;
     margin: 0px;
     margin-bottom: 2px;
 

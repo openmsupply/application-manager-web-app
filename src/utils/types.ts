@@ -29,6 +29,7 @@ export {
   ApplicationListRow,
   ApplicationStage,
   ApplicationProps,
+  ApplicationStage,
   AssignmentDetails,
   CellProps,
   ChangeRequestsProgress,
@@ -353,6 +354,7 @@ interface ReviewDetails {
   level: number
   reviewDecision?: ReviewDecision | null
   stage: ReviewStage
+  reviewer: GraphQLUser
 }
 
 interface ReviewQuestion {

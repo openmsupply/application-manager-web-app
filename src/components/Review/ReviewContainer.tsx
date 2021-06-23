@@ -10,17 +10,17 @@ export interface ReviewContainerProps {
 
 const ReviewContainer: React.FC<ReviewContainerProps> = ({ application, children }) => {
   const { push } = useRouter()
-  const { template, name, org } = application
+  const { serial, org } = application
   return (
     <Container id="review-area">
       <div className="top-container">
         <Label
           className="back-label clickable"
-          onClick={() => push(`/applications?type=${template.code}`)}
+          onClick={() => push(`/application/${serial}/review`)}
           content={
             <>
               <Icon name="chevron left" className="dark-grey" />
-              {`${template.name} ${strings.LABEL_APPLICATIONS}`}
+              {strings.BUTTON_BACK}
             </>
           }
         />
