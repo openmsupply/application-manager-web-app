@@ -92,6 +92,7 @@ export default {
   LABEL_RESPONSE_UPDATED: 'Updated',
   LABEL_SECTION_PROBLEM: 'Errors',
   LABEL_SECTION_COMPLETED: 'Completed',
+  LABEL_VERIFICATION_FAILED: 'Verificaton Failed',
   LINK_LOGIN_USER: 'Create new account',
   MENU_ITEM_DASHBOARD: 'Dashboard',
   TITLE_HISTORY_CHANGED_BY_APPLICANT: 'Changed by applicant',
