@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react'
 import { Dropdown } from 'semantic-ui-react'
+import Snapshots from './Snapshots'
 import UserSelection from './UserSelection'
 
 const DevOptions: React.FC = () => {
@@ -7,6 +8,10 @@ const DevOptions: React.FC = () => {
     <div id="dev-options" style={menuStyle}>
       <Dropdown item icon="user">
         <UserSelection />
+      </Dropdown>
+
+      <Dropdown item icon="file video outline">
+        <Snapshots />
       </Dropdown>
     </div>
   )
