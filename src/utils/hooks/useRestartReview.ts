@@ -39,9 +39,9 @@ const useRestartReview: UseRestartReview = ({ reviewId, structure, assignment })
 
     // Exclude not assigned, not visible and missing responses
     const reviewableElements = elements.filter((element) => {
-      const { isAssigned, isActiveReviewResponse } = element
+      const { isAssigned, isActiveReviewResponse, response } = element
       return (
-        shouldCreateConsolidationReviewResponse(element) && isAssigned && !isActiveReviewResponse
+        shouldCreateConsolidationReviewResponse(element) && !!response && isAssigned && !isActiveReviewResponse
       )
     })
 
