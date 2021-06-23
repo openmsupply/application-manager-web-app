@@ -23,6 +23,13 @@ const addApplicationResponses = (
 
       element.latestApplicationResponse = groupedApplicationResponses[0]
       element.previousApplicationResponse = groupedApplicationResponses[1] // will be undefined if doesn't exist
+
+      element.enableViewHistory =
+        groupedApplicationResponses.length > 2 ||
+        (element.latestApplicationResponse && element.previousApplicationResponse
+          ? element.latestApplicationResponse.value.text !==
+            element.previousApplicationResponse.value.text
+          : false)
     }
   )
 }

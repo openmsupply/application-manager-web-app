@@ -6,12 +6,14 @@ import ReviewResponseElement from './ReviewResponseElement'
 import ReviewInlineInput from './ReviewInlineInput'
 import strings from '../../../utils/constants'
 import { UpdateIcon } from '../PageElements'
+import ViewHistoryButton from '../ViewHistoryButton'
 
 interface ConsolidateReviewDecisionProps {
   applicationResponse: ApplicationResponse
   summaryViewProps: SummaryViewWrapperProps
   isActiveReviewResponse: boolean
   isNewReviewResponse: boolean
+  enableViewHistory: boolean
   reviewResponse?: ReviewResponse
   previousReviewResponse?: ReviewResponse
   originalReviewResponse?: ReviewResponse
@@ -22,6 +24,7 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
   summaryViewProps,
   isActiveReviewResponse,
   isNewReviewResponse,
+  enableViewHistory,
   reviewResponse,
   previousReviewResponse,
   originalReviewResponse,
@@ -91,7 +94,8 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
           reviewResponse={previousReviewResponse}
         />
       )}
-      {/*TODO: Add Previous lower level Review response here - Or show history icon */}
+      {/* Show history - for previous consolidations done */}
+      {enableViewHistory && <ViewHistoryButton />}
     </>
   )
 }

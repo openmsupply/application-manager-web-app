@@ -11,6 +11,7 @@ const addElementsById = (structure: FullStructure) => {
   const elementsById: ElementsById = {}
 
   elementStates.forEach((elementState) => {
+    elementState.enableViewHistory = false
     elementsById[elementState.element.id] = elementState
   })
 

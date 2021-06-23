@@ -42,6 +42,7 @@ export default {
   BUTTON_SUBMIT_APPLICATION: 'Submit application',
   BUTTON_SUMMARY_EDIT: 'Edit',
   BUTTON_ADD_REVIEW: 'Add review',
+  BUTTON_VIEW_HISTORY: 'View history',
   PLACEHOLDER_SEARCH: 'Search Applications...',
   DATE_APPLICATION_PLACEHOLDER: '31/12/2020',
   ERROR_APPLICATION_CREATE: 'Problem loading application creation page',

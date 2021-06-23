@@ -30,6 +30,11 @@
   padding-left: 0;
 }
 
+.ui.label.link-label {
+  .ui.label.simple-label();
+  color: @interactiveHigh;
+}
+
 .ui.label.strong-label {
   background-color: transparent;
   color: @black;

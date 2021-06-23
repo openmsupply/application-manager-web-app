@@ -862,6 +862,17 @@ a:hover {
   }
 }
 
+.history-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+  padding-right: 20px;
+  padding-left: 20px;
+  background: @surfacesWhite;
+  border-bottom-left-radius: @borderRadius;
+  border-bottom-right-radius: @borderRadius;
+}
+
 .blue-border {
   border: 2px solid @interactiveHigh;
   border-radius: 10px !important;

@@ -6,6 +6,7 @@ import ReviewResponseElement from './ReviewResponseElement'
 import ReviewInlineInput from './ReviewInlineInput'
 import strings from '../../../utils/constants'
 import { UpdateIcon } from '../PageElements'
+import ViewHistoryButton from '../ViewHistoryButton'
 
 type ReviewType =
   | 'NotReviewable'
@@ -20,6 +21,7 @@ interface ReviewApplicantResponseProps {
   previousReviewResponse?: ReviewResponse
   isActiveReviewResponse: boolean
   isNewApplicationResponse: boolean
+  enableViewHistory: boolean
   isChangeRequest: boolean
   isChanged: boolean
   showModal: () => void
@@ -32,6 +34,7 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
   previousReviewResponse,
   isNewApplicationResponse,
   isActiveReviewResponse,
+  enableViewHistory,
   isChangeRequest,
   isChanged,
   showModal,
@@ -119,8 +122,8 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
               )}
             </>
           )}
-          {/* div below forced border on review response to be square */}
-          <div />
+          {/* Show history - for previous reviews done */}
+          {enableViewHistory && <ViewHistoryButton />}
         </>
       )
 
@@ -173,9 +176,10 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
                   reviewResponse={previousReviewResponse}
                 />
               )}
-              {/*TODO: Add Previous Applicant response here - Or show history icon */}
             </>
           )}
+          {/* Show history - for previous reviews done */}
+          {enableViewHistory && <ViewHistoryButton />}
         </>
       )
     default:
