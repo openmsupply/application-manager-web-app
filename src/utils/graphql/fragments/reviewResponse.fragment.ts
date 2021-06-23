@@ -11,6 +11,9 @@ export default gql`
     originalReviewResponseId
     reviewResponseLinkId
     templateElementId
+    originalReviewResponse {
+      decision
+    }
     applicationResponse {
       id
       templateElementId

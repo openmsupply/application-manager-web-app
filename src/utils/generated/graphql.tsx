@@ -26167,7 +26167,10 @@ export type OrganisationFragment = (
 export type ReviewResponseFragmentFragment = (
   { __typename?: 'ReviewResponse' }
   & Pick<ReviewResponse, 'applicationResponseId' | 'decision' | 'comment' | 'id' | 'status' | 'timeUpdated' | 'originalReviewResponseId' | 'reviewResponseLinkId' | 'templateElementId'>
-  & { applicationResponse?: Maybe<(
+  & { originalReviewResponse?: Maybe<(
+    { __typename?: 'ReviewResponse' }
+    & Pick<ReviewResponse, 'decision'>
+  )>, applicationResponse?: Maybe<(
     { __typename?: 'ApplicationResponse' }
     & Pick<ApplicationResponse, 'id' | 'templateElementId'>
   )>, review?: Maybe<(
@@ -26979,6 +26982,9 @@ export const ReviewResponseFragmentFragmentDoc = gql`
   originalReviewResponseId
   reviewResponseLinkId
   templateElementId
+  originalReviewResponse {
+    decision
+  }
   applicationResponse {
     id
     templateElementId
