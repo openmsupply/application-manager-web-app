@@ -1082,7 +1082,7 @@ a:hover {
   .detail-container {
     .flex-row();
     align-items: center;
-    flex-wrap: 1;
+    flex-wrap: wrap;
   }
 }
 
