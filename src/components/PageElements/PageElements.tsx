@@ -238,7 +238,7 @@ const PageElements: React.FC<PageElementProps> = ({
   return null
 }
 
-const RenderElementWrapper: React.FC = ({ children }) => (
+const RenderElementWrapper: React.FC<{ extraSpacing?: boolean }> = ({ children, extraSpacing }) => (
   <Segment basic className="summary-page-element-container">
     {children}
   </Segment>

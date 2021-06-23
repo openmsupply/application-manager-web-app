@@ -21,13 +21,12 @@ const useQuerySectionActivation = ({
 }) => {
   const {
     query: { activeSections },
-    replace,
-    location,
+    updateQuery,
   } = useRouter()
 
   useEffect(() => {
     if (!activeSections) {
-      replace(`${location.pathname}?activeSections=${joinOrNone(defaultActiveSectionCodes)}`)
+      updateQuery({ activeSections: joinOrNone(defaultActiveSectionCodes) })
     }
   }, [activeSections])
 
@@ -40,7 +39,7 @@ const useQuerySectionActivation = ({
 
   const toggleSection: ToggleSection = (sectionCode) => () => {
     if (currentActiveSections.length === 0) {
-      replace(`${location.pathname}?activeSections=${sectionCode}`)
+      updateQuery({ activeSections: sectionCode })
       return
     }
 
@@ -48,7 +47,7 @@ const useQuerySectionActivation = ({
       currentActiveSections = currentActiveSections.filter((code) => sectionCode !== code)
     else currentActiveSections.push(sectionCode)
 
-    replace(`${location.pathname}?activeSections=${joinOrNone(currentActiveSections.sort())}`)
+    updateQuery({ activeSections: joinOrNone(currentActiveSections.sort()) })
   }
 
   const isSectionActive: IsSectionActive = (sectionCode) =>
