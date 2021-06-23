@@ -15,6 +15,7 @@ type ReviewType =
   | 'ReReviewApplication' // 'Consolidation' is done in separated component
 
 interface ReviewApplicantResponseProps {
+  elementCode: string
   applicationResponse: ApplicationResponse
   summaryViewProps: SummaryViewWrapperProps
   reviewResponse?: ReviewResponse
@@ -24,10 +25,10 @@ interface ReviewApplicantResponseProps {
   enableViewHistory: boolean
   isChangeRequest: boolean
   isChanged: boolean
-  showModal: () => void
 }
 
 const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
+  elementCode,
   applicationResponse,
   summaryViewProps,
   reviewResponse,
@@ -37,7 +38,6 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
   enableViewHistory,
   isChangeRequest,
   isChanged,
-  showModal,
 }) => {
   const [isActiveEdit, setIsActiveEdit] = useState(false)
   const decisionExists = !!reviewResponse?.decision
@@ -123,7 +123,7 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
             </>
           )}
           {/* Show history - for previous reviews done */}
-          {enableViewHistory && <ViewHistoryButton />}
+          {enableViewHistory && <ViewHistoryButton elementCode={elementCode} />}
         </>
       )
 
@@ -179,7 +179,7 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
             </>
           )}
           {/* Show history - for previous reviews done */}
-          {enableViewHistory && <ViewHistoryButton />}
+          {enableViewHistory && <ViewHistoryButton elementCode={elementCode} />}
         </>
       )
     default:

@@ -44,6 +44,7 @@ export {
   EvaluatorParameters,
   Filters,
   FullStructure,
+  HistoryElement,
   LooseString,
   MethodRevalidate,
   MethodToCallProps,
@@ -243,6 +244,14 @@ interface FullStructure {
   canSubmitReviewAs?: Decision | null
   sortedSections?: SectionState[]
   sortedPages?: Page[]
+}
+
+interface HistoryElement {
+  author?: string
+  title: string
+  message: string
+  timeUpdated: Date
+  reviewerComment?: string
 }
 
 interface IGraphQLConnection {

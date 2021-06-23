@@ -1,70 +1,67 @@
-import React, { useState } from 'react'
-import { Button, Form, Header, Modal, Radio, Segment, TextArea } from 'semantic-ui-react'
+import React from 'react'
+import { Button, Modal, Segment } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { ReviewResponse, ReviewResponseDecision } from '../../utils/generated/graphql'
+import useGetQuestionHistory from '../../utils/hooks/useGetQuestionHistory'
+import HistoryResponseElement from '../PageElements/Elements/HistoryResponseElement'
+import { useUserState } from '../../contexts/UserState'
 import strings from '../../utils/constants'
-import messages from '../../utils/messages'
-import SummaryViewWrapper from '../../formElementPlugins/SummaryViewWrapper'
-import { SummaryViewWrapperProps } from '../../formElementPlugins/types'
-import useUpdateReviewResponse from '../../utils/hooks/useUpdateReviewResponse'
 
 interface HistoryPanelProps {
-  summaryViewProps: SummaryViewWrapperProps
-  reviewResponse: ReviewResponse
-  isConsolidation: boolean
+  templateCode: string
+  // userLevel?: number
+  isApplicant?: boolean
 }
 
-const DecisionArea: React.FC<HistoryPanelProps> = ({
-  summaryViewProps,
-  reviewResponse: initialReviewResponse,
-  isConsolidation,
+const HistoryPanel: React.FC<HistoryPanelProps> = ({
+  templateCode,
+  // userLevel = 1,
+  isApplicant = false,
 }) => {
   const {
-    query: { showHistory },
+    userState: { currentUser },
+  } = useUserState()
+  const {
+    query: { serialNumber, showHistory },
     updateQuery,
   } = useRouter()
-  const [reviewResponse, setReviewResponse] = useState(initialReviewResponse)
+
+  const { historyList } = useGetQuestionHistory({
+    serial: serialNumber,
+    questionCode: showHistory,
+    templateCode,
+    userId: currentUser?.userId || 0,
+    // userLevel,
+    isApplicant,
+  })
 
   return (
     <Modal
+      id="history-panel"
       closeIcon
       open={!!showHistory}
-      onClose={() => {
-        updateQuery({ showHistory: null })
-      }}
-      size="fullscreen"
-      style={{ margin: 0, background: 'transparent' }} // TODO: Move style to overrides
+      onClose={() => updateQuery({ showHistory: null })}
     >
-      <div id="review-decision-container">
-        <div id="review-decision-content">
-          <div id="document-viewer" className="hidden-element">
-            TO-DO: DOCUMENT VIEWER
-          </div>
-          <div id="details-panel">
-            <Form>
-              <Segment basic>
-                <Header as="h3">{strings.TITLE_DETAILS}</Header>
-                <SummaryViewWrapper {...summaryViewProps} />
-              </Segment>
-              <Segment basic>
-                <Form.Field>
-                  <strong>
-                    {isConsolidation ? strings.LABEL_CONSOLIDATE : strings.LABEL_REVIEW}
-                  </strong>
-                </Form.Field>
-              </Segment>
-              {/* TO-DO: HISTORY PANEL */}
-              <Segment basic id="history-panel">
-                <p>
-                  <em>History panel goes here</em>
-                </p>
-              </Segment>
-            </Form>
-          </div>
-        </div>
-      </div>
+      <Modal.Header>{strings.TITLE_HISTORY_PANEL}</Modal.Header>
+      <Modal.Content scrolling>
+        <Modal.Description>
+          {historyList.map((historyElement, index) => (
+            <Segment basic className="summary-page-element-container" key={index}>
+              <div className="response-container">
+                <HistoryResponseElement {...historyElement} />
+              </div>
+            </Segment>
+          ))}
+        </Modal.Description>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button
+          onClick={() => updateQuery({ showHistory: null })}
+          primary
+          content={strings.BUTTON_BACK}
+        />
+      </Modal.Actions>
     </Modal>
   )
 }
 
-export default DecisionArea
+export default HistoryPanel

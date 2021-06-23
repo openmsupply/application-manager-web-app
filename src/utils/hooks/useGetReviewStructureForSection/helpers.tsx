@@ -144,7 +144,7 @@ const setIsNewReviewResponse = (structure: FullStructure) => {
 
     // Just update field in assigned elements
     if (isAssigned) {
-      if (structure.thisReview?.status === ReviewStatus.Draft) {
+      if (structure.thisReview?.stage.status === ReviewStatus.Draft) {
         element.isNewReviewResponse =
           !!thisReviewPreviousResponse &&
           lowerLevelReviewLatestResponse?.timeUpdated > thisReviewPreviousResponse?.timeUpdated

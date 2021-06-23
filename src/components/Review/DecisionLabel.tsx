@@ -34,9 +34,9 @@ const DecisionLabel: React.FC<DecisionLabelProps> = ({
   const decisionClass = isPositiveDecision ? 'positive-decision' : 'negative-decision'
 
   return (
-    <div className="review-response-content ">
+    <div className="response-element-content">
       {isDecisionVisible && (
-        <p className="secondary reviewer-name">
+        <p className="secondary author-name">
           {reviewResponse.review?.reviewer?.firstName} {reviewResponse.review?.reviewer?.lastName}
         </p>
       )}

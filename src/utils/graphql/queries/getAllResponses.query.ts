@@ -12,7 +12,7 @@ export default gql`
         filter: { status: { in: $responseStatuses } }
       ) {
         nodes {
-          ...Response
+          ...applicationResponseFragment
           reviewResponses(condition: { isVisibleToApplicant: true }) {
             nodes {
               ...reviewResponseFragment

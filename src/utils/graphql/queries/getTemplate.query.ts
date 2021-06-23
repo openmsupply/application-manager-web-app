@@ -10,7 +10,7 @@ export default gql`
             ...Section
             templateElementsBySectionId {
               nodes {
-                ...Element
+                ...elementFragment
               }
             }
           }

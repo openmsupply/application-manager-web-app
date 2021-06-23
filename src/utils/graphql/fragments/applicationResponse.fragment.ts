@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export default gql`
-  fragment Response on ApplicationResponse {
+  fragment applicationResponseFragment on ApplicationResponse {
     id
     isValid
     value

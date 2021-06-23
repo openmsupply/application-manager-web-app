@@ -7,6 +7,7 @@ import ApplicantResponseElement from './ApplicantResponseElement'
 import ReviewResponseElement from './ReviewResponseElement'
 
 interface ApplicantElementWrapperProps {
+  elementCode: string
   latestApplicationResponse: ApplicationResponse
   summaryViewProps: SummaryViewWrapperProps
   canApplicantEdit: boolean
@@ -18,6 +19,7 @@ interface ApplicantElementWrapperProps {
 }
 
 const ApplicantElementWrapper: React.FC<ApplicantElementWrapperProps> = ({
+  elementCode,
   latestApplicationResponse,
   summaryViewProps,
   reviewResponse,
@@ -50,7 +52,7 @@ const ApplicantElementWrapper: React.FC<ApplicantElementWrapperProps> = ({
         />
       )}
       {/* Show history - for previous Applicant responses */}
-      {enableViewHistory && <ViewHistoryButton />}
+      {enableViewHistory && <ViewHistoryButton elementCode={elementCode} />}
     </>
   )
 }

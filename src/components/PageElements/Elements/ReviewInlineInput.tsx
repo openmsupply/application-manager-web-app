@@ -57,7 +57,7 @@ const ReviewInlineInput: React.FC<ReviewInlineInputProps> = ({
 
   return (
     <div className="response-container changeable-background">
-      <div className="review-response-content">
+      <div className="response-element-content">
         <Form>
           <Form.Field>
             <label>{isConsolidation ? strings.LABEL_CONSOLIDATE : strings.LABEL_REVIEW}</label>

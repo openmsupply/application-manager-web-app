@@ -9,6 +9,7 @@ import { UpdateIcon } from '../PageElements'
 import ViewHistoryButton from '../ViewHistoryButton'
 
 interface ConsolidateReviewDecisionProps {
+  elementCode: string
   applicationResponse: ApplicationResponse
   summaryViewProps: SummaryViewWrapperProps
   isActiveReviewResponse: boolean
@@ -17,9 +18,9 @@ interface ConsolidateReviewDecisionProps {
   reviewResponse?: ReviewResponse
   previousReviewResponse?: ReviewResponse
   originalReviewResponse?: ReviewResponse
-  showModal: () => void
 }
 const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
+  elementCode,
   applicationResponse,
   summaryViewProps,
   isActiveReviewResponse,
@@ -28,7 +29,6 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
   reviewResponse,
   previousReviewResponse,
   originalReviewResponse,
-  showModal,
 }) => {
   const [isActiveEdit, setIsActiveEdit] = useState(false)
   const isConsolidation = true
@@ -95,7 +95,7 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
         />
       )}
       {/* Show history - for previous consolidations done */}
-      {enableViewHistory && <ViewHistoryButton />}
+      {enableViewHistory && <ViewHistoryButton elementCode={elementCode} />}
     </>
   )
 }

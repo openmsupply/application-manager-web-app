@@ -7,7 +7,7 @@ export default gql`
         ...Application
         applicationResponses {
           nodes {
-            ...Response
+            ...applicationResponseFragment
           }
         }
       }

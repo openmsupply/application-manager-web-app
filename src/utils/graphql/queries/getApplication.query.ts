@@ -19,7 +19,7 @@ export default gql`
             ...Section
             templateElementsBySectionId(orderBy: INDEX_ASC) {
               nodes {
-                ...Element
+                ...elementFragment
               }
             }
           }

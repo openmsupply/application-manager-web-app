@@ -429,12 +429,6 @@ a:hover {
   overflow: scroll;
 }
 
-#history-panel {
-  // Temp - replace when real History Panel built
-  border: 1px solid lightgray;
-  height: 250px;
-}
-
 /*--------------------------------
       Application List
 ---------------------------------*/
@@ -794,11 +788,11 @@ a:hover {
       }
     }
 
-    .review-response-content {
+    .response-element-content {
       .flex-row();
       flex-grow: 1;
 
-      .reviewer-name {
+      .author-name {
         width: 20%;
         padding: 0px;
         margin: 0px;
