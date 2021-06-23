@@ -182,11 +182,15 @@ const buildApplicationLinkQuery = ({ tableName }: OutcomeDisplay) => {
   const getApplications = (queryResult: ApplicationLinkQueryResult) => {
     const applicationJoins = queryResult?.[tableName]?.[applicationJoin]?.nodes || []
     if (applicationJoins.length === 0) return []
-    return applicationJoins.map(({ application }) => ({
-      name: String(application.name),
-      serial: String(application.serial),
-      templateName: String(application?.template?.name),
-    }))
+    try {
+      return applicationJoins.map(({ application }) => ({
+        name: String(application.name),
+        serial: String(application.serial),
+        templateName: String(application?.template?.name),
+      }))
+    } catch (e) {
+      return []
+    }
   }
 
   return { query, getApplications }
