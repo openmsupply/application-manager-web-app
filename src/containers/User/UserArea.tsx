@@ -1,15 +1,17 @@
-import React from 'react'
-import { Button, Container, Icon, Image, List } from 'semantic-ui-react'
+import React, { SyntheticEvent } from 'react'
+import { Button, Container, Icon, Image, List, Dropdown } from 'semantic-ui-react'
 import { useUserState } from '../../contexts/UserState'
+import { attemptLoginOrg } from '../../utils/helpers/attemptLogin'
 import { Link } from 'react-router-dom'
 import strings from '../../utils/constants'
-import { User } from '../../utils/types'
+import { OrganisationSimple, User, LoginPayload } from '../../utils/types'
 import config from '../../config'
 import { getFullUrl } from '../../utils/helpers/utilityFunctions'
 
 const UserArea: React.FC = () => {
   const {
-    userState: { currentUser },
+    userState: { currentUser, orgList },
+    onLogin,
   } = useUserState()
 
   if (!currentUser || currentUser?.username === strings.USER_NONREGISTERED) return null
@@ -18,7 +20,7 @@ const UserArea: React.FC = () => {
     <Container id="user-area">
       <div id="user-area-left">
         <MainMenuBar />
-        {currentUser?.organisation?.orgName && <OrgSelector user={currentUser} />}
+        {orgList.length > 0 && <OrgSelector user={currentUser} orgs={orgList} onLogin={onLogin} />}
       </div>
       <UserMenu user={currentUser as User} />
     </Container>
@@ -54,16 +56,42 @@ const MainMenuBar: React.FC = () => {
   )
 }
 
-const OrgSelector: React.FC<{ user: User }> = ({ user }) => {
-  // TO-DO: Make into Dropdown so Org can be selected
+const OrgSelector: React.FC<{ user: User; orgs: OrganisationSimple[]; onLogin: Function }> = ({
+  user,
+  orgs,
+  onLogin,
+}) => {
+  const LOGIN_AS_NO_ORG = 0 // Ensures server returns no organisation
+
+  const JWT = localStorage.getItem('persistJWT') as string
+
+  const handleChange = async (_: SyntheticEvent, { value: orgId }: any) => {
+    await attemptLoginOrg({ orgId, JWT, onLoginOrgSuccess })
+  }
+  const onLoginOrgSuccess = async ({ user, orgList, templatePermissions, JWT }: LoginPayload) => {
+    await onLogin(JWT, user, templatePermissions, orgList)
+  }
+  const dropdownOptions = orgs.map(({ orgId, orgName }) => ({
+    key: orgId,
+    text: orgName,
+    value: orgId,
+  }))
+  dropdownOptions.push({
+    key: LOGIN_AS_NO_ORG,
+    text: strings.LABEL_NO_ORG,
+    value: LOGIN_AS_NO_ORG,
+  })
   return (
     <div id="org-selector">
       {user?.organisation?.logoUrl && (
         <Image src={getFullUrl(user?.organisation?.logoUrl, config.serverREST)} />
       )}
       <div>
-        {user?.organisation?.orgName || ''}
-        <Icon size="small" name="chevron down" />
+        <Dropdown
+          text={user?.organisation?.orgName || strings.LABEL_NO_ORG}
+          options={dropdownOptions}
+          onChange={handleChange}
+        ></Dropdown>
       </div>
     </div>
   )
