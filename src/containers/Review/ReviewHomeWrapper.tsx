@@ -54,7 +54,7 @@ const ReviewHomeWrapper: React.FC<{
 
   return (
     <Container id="review-area">
-      <ReviewHomeHeader 
+      <ReviewHomeHeader
         templateCode={template.code}
         applicationName={name}
         orgName={org?.name as string}
@@ -78,7 +78,6 @@ interface ReviewHomeProps {
 }
 
 const ReviewHomeHeader: React.FC<ReviewHomeProps> = ({
-<<<<<<< HEAD
   templateCode,
   applicationName,
   orgName,
@@ -99,27 +98,6 @@ const ReviewHomeHeader: React.FC<ReviewHomeProps> = ({
     </div>
   )
 }
-=======
-  templateCode, 
-  applicationName, 
-  orgName
-}) => {
-  const { push } = useRouter()
-  return (
-  <div id="review-home-header">
-    <Label
-      className="simple-label clickable"
-      onClick={() => push(`/applications?type=${templateCode}`)}
-      icon={<Icon name="chevron left" className="dark-grey" />}
-    />
-    <Header
-      as="h2"
-      content={applicationName}
-      subheader={<Header as="h5" content={orgName || strings.TITLE_NO_ORGANISATION}/>}
-    />
-  </div>
-)}
->>>>>>> 6a050c81... Layout improvement for Review home page
 
 type ReviewerAndStageSelectionProps = {
   filters: Filters | null

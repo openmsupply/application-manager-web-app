@@ -27,7 +27,6 @@ export {
   ApplicationDetails,
   ApplicationElementStates,
   ApplicationListRow,
-  ApplicationStage,
   ApplicationProps,
   ApplicationStage,
   AssignmentDetails,

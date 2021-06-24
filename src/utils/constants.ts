@@ -25,7 +25,6 @@ export default {
   BUTTON_BACK: 'Back',
   BUTTON_BACK_DASHBOARD: 'Back to dashboard',
   BUTTON_BACK_TO: 'Back to',
-  BUTTON_BACK: 'Back',
   BUTTON_CLEAR_SEARCH: 'Clear Search',
   BUTTON_NEXT: 'Next',
   BUTTON_DASHBOARD_NEW: 'New',

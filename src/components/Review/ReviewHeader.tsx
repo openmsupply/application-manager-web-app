@@ -1,6 +1,6 @@
 import React from 'react'
 import { Header } from 'semantic-ui-react'
-import { StageDetails } from 'utils/types'
+import { StageDetails } from '../../utils/types'
 import strings from '../../utils/constants'
 import { Stage } from '../Review'
 
