@@ -5,6 +5,7 @@ import {
   ReviewQuestionAssignment,
   TemplateElement,
   ReviewResponseStatus,
+  ReviewStatus,
 } from '../../generated/graphql'
 import {
   addChangeRequestForReviewer,
@@ -78,8 +79,7 @@ const generateReviewStructure: GenerateReviewStructure = ({
 
   newStructure = addIsAssigned(newStructure, reviewQuestionAssignments)
 
-  // here we add responses from other review (not from this review assignmnet)
-
+  // Update fields element.isNewApplicantRsponse for applications re-submitted to a reviewer
   setIsNewApplicationResponse(newStructure)
 
   // thisReviewLatestResponse and thisReviewPreviousResponse
@@ -89,6 +89,9 @@ const generateReviewStructure: GenerateReviewStructure = ({
 
   // review info comes from reviewAssignment that's passed to this hook
   newStructure.thisReview = review
+
+  // Update fields element.isNewReviewResponse for reviews re-submitted to a consolidator
+  setIsNewReviewResponse(newStructure)
 
   // when changes requested by consolidator (included in thisReviewPreviousResponse OR thisReviewLatestResponse)
   addChangeRequestForReviewer(newStructure)
@@ -127,6 +130,29 @@ const setIsNewApplicationResponse = (structure: FullStructure) => {
     element.isNewApplicationResponse =
       element?.latestApplicationResponse?.timeUpdated === structure.info.current?.date &&
       !!element?.previousApplicationResponse
+  })
+}
+
+const setIsNewReviewResponse = (structure: FullStructure) => {
+  Object.values(structure.elementsById || {}).forEach((element) => {
+    const {
+      isAssigned,
+      lowerLevelReviewLatestResponse,
+      thisReviewPreviousResponse,
+      thisReviewLatestResponse,
+    } = element
+
+    // Just update field in assigned elements
+    if (isAssigned) {
+      if (structure.thisReview?.status === ReviewStatus.Draft) {
+        element.isNewReviewResponse =
+          !!thisReviewPreviousResponse &&
+          lowerLevelReviewLatestResponse?.timeUpdated > thisReviewPreviousResponse?.timeUpdated
+      } else {
+        element.isNewReviewResponse =
+          lowerLevelReviewLatestResponse?.timeUpdated > thisReviewLatestResponse?.timeUpdated
+      }
+    }
   })
 }
 

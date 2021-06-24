@@ -59,6 +59,11 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const fileInputRef = useRef<any>(null)
 
   useEffect(() => {
+    // Set response to null if no files
+    if (uploadedFiles.length === 0) {
+      onSave(null)
+      return
+    }
     // Only store files that aren't error or loading
     const fileDataToSave = uploadedFiles
       .filter(({ loading, error, fileData }) => !(loading || error) && fileData)

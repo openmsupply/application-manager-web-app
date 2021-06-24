@@ -47,7 +47,7 @@ const actionDefinitions: ActionDefinition[] = [
       reviewStatus === ReviewStatus.Pending && reviewLevel === 1,
   },
   {
-    action: ReviewAction.canStartReview,
+    action: ReviewAction.canReStartReview,
     checkMethod: ({ reviewStatus, reviewLevel, isReviewActive }) =>
       reviewStatus === ReviewStatus.Pending && reviewLevel > 1 && !isReviewActive,
   },
