@@ -32,6 +32,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     minCharacters = 1,
     displayFormat = {},
     resultFormat = displayFormat,
+    textFormat,
   } = parameters
 
   const graphQLEndpoint = applicationData.config.serverGraphQL
@@ -46,7 +47,12 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
 
   useEffect(() => {
     onSave({
-      text: selection.length > 0 ? JSON.stringify(selection) : undefined,
+      text: textFormat
+        ? getTextFormat(textFormat, selection)
+        : selection.length > 0
+        ? JSON.stringify(selection)
+        : undefined,
+      // text: selection.length > 0 ? JSON.stringify(selection) : undefined,
       selection: selection,
     })
   }, [selection])
@@ -163,6 +169,11 @@ const getDefaultString = (result: any, fieldType: ResultsField = 'title') => {
         ? `${fields[0]}: ${result[fields[0]]}`
         : `${fields[1]}: ${result[fields[1]]}`
   }
+}
+
+const getTextFormat = (textFormat: string, selection: any[]) => {
+  const strings = selection.map((item) => substituteValues(textFormat, item))
+  return strings.join(', ')
 }
 
 const substituteValues = (parameterisedString: string, object: { [key: string]: any }) => {
