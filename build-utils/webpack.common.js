@@ -12,9 +12,9 @@ const config = {
     publicPath: '/',
   },
   resolve: {
-    alias: {
-      'semantic-ui-react$': path.resolve(__dirname, '../src/semanticUiReactReExport'),
-    },
+    // alias: {
+    //   'semantic-ui-react$': path.resolve(__dirname, '../src/semanticUiReactReExport'),
+    // },
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   },
   module: {
