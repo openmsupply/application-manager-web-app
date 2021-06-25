@@ -762,7 +762,7 @@ a:hover {
   }
 
   .response-container {
-    .flex-row-center();
+    .flex-row();
     width: 100%;
     padding: 14px;
     padding-right: 20px;
@@ -772,7 +772,7 @@ a:hover {
     margin-bottom: 2px;
 
     &.information {
-      >div{
+      > div {
         width: 100%;
       }
     }
@@ -784,18 +784,18 @@ a:hover {
     }
 
     .review-response-content {
-      .flex-column();
+      .flex-row();
       flex-grow: 1;
 
-      .decision-container {
-        .flex-row();
-        align-items: center;
+      .reviewer-name {
+        width: 20%;
+        padding: 0px;
+        margin: 0px;
+        margin-right: 10px;
+      }
 
-        .reviewer-name {
-          padding: 0px;
-          margin: 0px;
-          margin-right: 10px;
-        }
+      .decision-container {
+        align-items: center;
 
         p {
           line-height: unset;
@@ -804,6 +804,7 @@ a:hover {
         .decision {
           margin: 0px;
           margin-right: 10px;
+          margin-bottom: 10px;
         }
 
         &.positive-decision {
@@ -831,6 +832,10 @@ a:hover {
         i {
           margin-right: 10px;
         }
+
+        .date-indicator {
+          margin-left: 10px;
+        }
       }
 
       // If comment is present add margin, if it's just commen or decision don't add margin
@@ -855,6 +860,12 @@ a:hover {
     border-bottom-left-radius: @borderRadius;
     border-bottom-right-radius: @borderRadius;
   }
+}
+
+.blue-border {
+  border: 2px solid @interactiveHigh;
+  border-radius: 10px !important;
+  overflow: clip;
 }
 
 .updated-label {
@@ -1051,13 +1062,12 @@ a:hover {
   .summary-page-element {
     margin: 10px;
   }
-  
+
   .detail-container {
     .flex-row();
     align-items: center;
     flex-wrap: 1;
   }
-
 }
 
 /*--------------------------------

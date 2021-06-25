@@ -1,4 +1,5 @@
 import React from 'react'
+import { Icon } from 'semantic-ui-react'
 import { ReviewResponse, ReviewResponseDecision } from '../../utils/generated/graphql'
 import strings from '../../utils/constants'
 import getSimplifiedTimeDifference from '../../utils/dateAndTime/getSimplifiedTimeDifference'
@@ -33,18 +34,26 @@ const DecisionLabel: React.FC<DecisionLabelProps> = ({
   const decisionClass = isPositiveDecision ? 'positive-decision' : 'negative-decision'
 
   return (
-    <div className={`decision-container ${decisionClass}`}>
+    <div className="review-response-content ">
       {isDecisionVisible && (
-        <>
-          <p className="secondary reviewer-name">
-            {reviewResponse.review?.reviewer?.firstName} {reviewResponse.review?.reviewer?.lastName}
-          </p>
-          <h5 className="decision">{getDecisionString(isPositiveDecision, isConsolidation)}</h5>
-        </>
+        <p className="secondary reviewer-name">
+          {reviewResponse.review?.reviewer?.firstName} {reviewResponse.review?.reviewer?.lastName}
+        </p>
       )}
-      <p className="secondary date-indicator">
-        <strong>{getSimplifiedTimeDifference(reviewResponse.timeUpdated)}</strong>
-      </p>
+      <div className={`decision-container ${decisionClass}`}>
+        {isDecisionVisible && (
+          <h5 className="decision">{getDecisionString(isPositiveDecision, isConsolidation)}</h5>
+        )}
+        {!!reviewResponse?.comment && (
+          <div className="comment-container">
+            <Icon name="comment alternate outline" color="grey" />
+            <p className="secondary">{reviewResponse.comment}</p>
+            <p className="secondary date-indicator">
+              <strong>{getSimplifiedTimeDifference(reviewResponse.timeUpdated)}</strong>
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

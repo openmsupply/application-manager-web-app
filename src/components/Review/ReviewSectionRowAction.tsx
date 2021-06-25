@@ -3,6 +3,7 @@ import { Grid, Icon, Label, Message } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
 import {
   ChangeRequestsProgress,
+  ConsolidationProgress,
   ReviewAction,
   ReviewProgress,
   ReviewSectionComponentProps,
@@ -42,6 +43,7 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
 
       case ReviewAction.canUpdate:
       case ReviewAction.canStartReview:
+      case ReviewAction.canReStartReview:
       case ReviewAction.canReReview: {
         if (isAssignedToCurrentUser) {
           return <StartContinueOrRestartButton {...props} />
@@ -62,16 +64,19 @@ const ReviewSectionRowAction: React.FC<ReviewSectionComponentProps> = (props) =>
   return <Grid.Column textAlign="right">{getContent()}</Grid.Column>
 }
 
-const reReviewableCount = (reviewProgress?: ReviewProgress) =>
-  (reviewProgress?.totalNewReviewable || 0) - (reviewProgress?.doneNewReviewable || 0)
+const getApplicantChangesUpdatedCount = (reviewProgress?: ReviewProgress) =>
+  reviewProgress?.totalNewReviewable || 0
 
-const changesRequestedCount = (progress?: ChangeRequestsProgress) =>
-  (progress?.totalChangeRequests || 0) - (progress?.doneChangeRequests || 0)
+const getReviewerChangesUpdatedCount = (consolidationProgress?: ConsolidationProgress) =>
+  consolidationProgress?.totalNewReviewable || 0
+
+const getConsolidatorChangesRequestedCount = (progress?: ChangeRequestsProgress) =>
+  progress?.totalChangeRequests || 0
 
 // START REVIEW, CONTINUE REVIEW, UPDATE REVIEW OR RE-REVIEW BUTTON
 const StartContinueOrRestartButton: React.FC<ReviewSectionComponentProps> = ({
   fullStructure,
-  section: { details, reviewProgress, changeRequestsProgress },
+  section: { details, reviewProgress, consolidationProgress, changeRequestsProgress },
   assignment,
   thisReview,
   action,
@@ -97,15 +102,21 @@ const StartContinueOrRestartButton: React.FC<ReviewSectionComponentProps> = ({
   const getButtonName = () => {
     switch (action) {
       case ReviewAction.canUpdate: {
-        const changeRequestsCount = changesRequestedCount(changeRequestsProgress)
+        const changeRequestsCount = getConsolidatorChangesRequestedCount(changeRequestsProgress)
         return strings.ACTION_UPDATE.concat(
           changeRequestsCount > 0 ? ` (${changeRequestsCount})` : ''
         )
       }
       case ReviewAction.canReReview: {
-        const reReviewCount = reReviewableCount(reviewProgress)
+        const applicantChangesCount = getApplicantChangesUpdatedCount(reviewProgress)
         return strings.BUTTON_REVIEW_RE_REVIEW.concat(
-          reReviewCount > 0 ? ` (${reReviewCount})` : ''
+          applicantChangesCount > 0 ? ` (${applicantChangesCount})` : ''
+        )
+      }
+      case ReviewAction.canReStartReview: {
+        const reviewerChangesCount = getReviewerChangesUpdatedCount(consolidationProgress)
+        return strings.BUTTON_REVIEW_RE_REVIEW.concat(
+          reviewerChangesCount > 0 ? ` (${reviewerChangesCount})` : ''
         )
       }
       case ReviewAction.canContinue:
