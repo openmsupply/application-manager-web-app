@@ -30,6 +30,7 @@ import { Container } from 'semantic-ui-react'
 import DevOptions from '../Dev/DevOptions'
 import LayoutHelpers from '../../components/LayoutHelpers'
 import Outcomes from '../Outcomes/Outcomes'
+import Templates from '../TemplateBuilder/templates'
 
 const SiteLayout: React.FC = () => {
   return (
@@ -68,7 +69,7 @@ const SiteLayout: React.FC = () => {
               <Admin />
             </Route>
             <Route exact path="/admin/templates">
-              <TemplateList />
+              <Templates />
             </Route>
             <Route exact path="/admin/templates/new">
               <TemplateNew />

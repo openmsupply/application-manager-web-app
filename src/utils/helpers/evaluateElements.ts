@@ -74,11 +74,14 @@ const evaluateSingleElement: EvaluateElement = async (
     } catch (e) {
       console.log(e, expressionOrValue)
     }
+
+    console.log(expressionOrValue, evaluatedElement[elementResultKey])
   }
 
   const evaluations = evaluationOptions.map((evaluationResultKey) => {
     const elementExpressionKey = evaluationMapping[evaluationResultKey]
     const evaluationExpression = element[elementExpressionKey]
+    console.log(applicationData)
 
     return evaluateSingleExpression(evaluationExpression, evaluationResultKey)
   })

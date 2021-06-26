@@ -30937,6 +30937,27 @@ export type GetAllResponsesQuery = (
   )> }
 );
 
+export type GetAllTemplatesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllTemplatesQuery = (
+  { __typename?: 'Query' }
+  & { templates?: Maybe<(
+    { __typename?: 'TemplatesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'code' | 'status' | 'id' | 'version' | 'versionTimestamp' | 'name'>
+      & { templateCategory?: Maybe<(
+        { __typename?: 'TemplateCategory' }
+        & Pick<TemplateCategory, 'title'>
+      )>, applications: (
+        { __typename?: 'ApplicationsConnection' }
+        & Pick<ApplicationsConnection, 'totalCount'>
+      ) }
+    )>> }
+  )> }
+);
+
 export type GetApplicationQueryVariables = Exact<{
   serial: Scalars['String'];
 }>;
@@ -32131,6 +32152,52 @@ export function useGetAllResponsesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetAllResponsesQueryHookResult = ReturnType<typeof useGetAllResponsesQuery>;
 export type GetAllResponsesLazyQueryHookResult = ReturnType<typeof useGetAllResponsesLazyQuery>;
 export type GetAllResponsesQueryResult = Apollo.QueryResult<GetAllResponsesQuery, GetAllResponsesQueryVariables>;
+export const GetAllTemplatesDocument = gql`
+    query getAllTemplates {
+  templates {
+    nodes {
+      code
+      status
+      id
+      version
+      versionTimestamp
+      name
+      status
+      templateCategory {
+        title
+      }
+      applications {
+        totalCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllTemplatesQuery__
+ *
+ * To run a query within a React component, call `useGetAllTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllTemplatesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllTemplatesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>) {
+        return Apollo.useQuery<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>(GetAllTemplatesDocument, baseOptions);
+      }
+export function useGetAllTemplatesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>(GetAllTemplatesDocument, baseOptions);
+        }
+export type GetAllTemplatesQueryHookResult = ReturnType<typeof useGetAllTemplatesQuery>;
+export type GetAllTemplatesLazyQueryHookResult = ReturnType<typeof useGetAllTemplatesLazyQuery>;
+export type GetAllTemplatesQueryResult = Apollo.QueryResult<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>;
 export const GetApplicationDocument = gql`
     query getApplication($serial: String!) {
   applicationBySerial(serial: $serial) {

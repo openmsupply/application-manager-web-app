@@ -1366,6 +1366,77 @@ a:hover {
   text-align: right;
 }
 
+/*--------------------------------
+      Template Builder Templates
+---------------------------------*/
+
+
+.template-builder-templates {
+  
+  width: 100%;
+  .accordion {
+    >.title {
+      .flex-row();
+      background: white;
+      border-radius: 7px;
+      padding: 5px;
+      padding:3px;
+      margin-top: 5px;
+      >.icon {
+        display: none;
+      }
+     
+    }
+    >.title.active {
+      border-end-start-radius: 0px;
+      border-end-end-radius: 0px;
+    }
+    >.content.active {
+      .flex-column();
+      padding: 5px;
+      border-end-start-radius: 7px;
+      border-end-end-radius: 7px;
+      background: white;
+      .template-container {
+        padding: 5px;
+        border: 2px solid #E8E8E8;
+        margin: 5px;
+        border-radius: 7px;
+        .info-container {
+          .flex-row();
+          flex-wrap: wrap;
+          width: 100%;
+        }
+        
+        .action-container {
+          .flex-row();
+          justify-content: center;
+          width: 100%;
+          padding: 5px;
+        }
+      }
+    }
+  }
+  .indicator-container {
+    margin: 5px;
+    .value {
+      border: 2px solid #E8E8E8;
+      border-start-start-radius: 0px;
+      border-end-start-radius: 0px;
+      background: white;
+      margin: 0px;
+    }
+    .key {
+      border: 2px solid #E8E8E8;
+      border-end-end-radius: 0px;
+      border-start-end-radius: 0px;
+      margin: 0px;
+    }
+  }
+}
+
+
+
 /*******************************
              Headers
 *******************************/
