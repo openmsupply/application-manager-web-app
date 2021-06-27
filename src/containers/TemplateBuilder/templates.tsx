@@ -1,28 +1,35 @@
 import { DateTime } from 'luxon'
-import React from 'react'
+import React, { ReactNode, useRef } from 'react'
 import { useEffect, useState } from 'react'
-import { Accordion, Button, Label } from 'semantic-ui-react'
+import { Button, Header, Icon, Label, Loader, Modal, Table } from 'semantic-ui-react'
+import config from '../../config'
 import { TemplateStatus, useGetAllTemplatesQuery } from '../../utils/generated/graphql'
 
 type Template = {
   name: string
   status: TemplateStatus
   id: number
+  code: string
   category: string
   version: number
   versionTimestamp: DateTime
   applicationCount: number
 }
-type TemplatesByCode = { [code: string]: Template[] }
+type Templates = {
+  main: Template
+  applicationCount: number
+  numberOfTemplates: number
+  all: Template[]
+}[]
 
 const useGetTemplates = () => {
-  const [templatesByCode, setTemplatesByCode] = useState<TemplatesByCode>({})
+  const [templates, setTemplates] = useState<Templates>([])
 
-  const { data, error } = useGetAllTemplatesQuery({ fetchPolicy: 'network-only' })
+  const { data, error, refetch } = useGetAllTemplatesQuery({ fetchPolicy: 'network-only' })
 
   useEffect(() => {
     if (data && !error) {
-      const templatesByCode: TemplatesByCode = {}
+      const templates: Templates = []
 
       const templateNodes = data?.templates?.nodes || []
       templateNodes.forEach((template) => {
@@ -47,125 +54,435 @@ const useGetTemplates = () => {
           templateCategory,
           applications,
         } = template
-        if (!templatesByCode[code]) templatesByCode[code] = []
+        const holder = templates.find(({ main }) => main.code === code)
 
-        templatesByCode[code].push({
+        const current = {
           name,
           status,
           id,
+          code,
           category: templateCategory?.title || '',
           version,
           versionTimestamp: DateTime.fromISO(versionTimestamp),
           applicationCount: applications.totalCount || 0,
-        })
+        }
+
+        if (!holder)
+          return templates.push({
+            main: current,
+            applicationCount: current.applicationCount,
+            numberOfTemplates: 1,
+            all: [current],
+          })
+        const { main, all } = holder
+
+        all.push(current)
+        if (status === TemplateStatus.Available || main.versionTimestamp < current.versionTimestamp)
+          holder.main = current
+
+        holder.main.applicationCount += current.applicationCount
+        holder.numberOfTemplates = all.length
       })
 
-      setTemplatesByCode(templatesByCode)
+      setTemplates(templates)
     }
   }, [data])
 
   return {
     error,
-    templatesByCode,
+    templates,
+    refetch,
   }
 }
 
-const getTemplatesAccordionContent = (templatesByCode: TemplatesByCode) =>
-  Object.entries(templatesByCode).map(([code, templates]) => {
-    return {
-      key: `panel-${code}`,
+const snapshotsBaseUrl = `${config.serverREST}/snapshot`
+const takeSnapshotUrl = `${snapshotsBaseUrl}/take`
+const snapshotFilesUrl = `${snapshotsBaseUrl}/files`
+const useSnapshotUrl = `${snapshotsBaseUrl}/use`
+const templateExportOptionName = 'templateExport'
+const uploadSnapshotUrl = `${snapshotsBaseUrl}/upload`
 
-      title: {
-        icon: '',
-        content: (
-          <>
-            <div className="indicator-container">
-              <Label className="key" content="code" />
-              <Label className="value" content={code} />
-            </div>
-            <div className="indicator-container">
-              <Label className="key" content="number of templates" />
-              <Label className="value" content={templates.length} />
-            </div>
-            <div className="indicator-container">
-              <Label className="key" content="number of applications" />
-              <Label
-                className="value"
-                content={templates.reduce((sum, template) => sum + template.applicationCount, 0)}
-              />
-            </div>
-          </>
-        ),
-      },
-      content: {
-        content: (
-          <>
-            {templates.map((template) => {
-              const canRenderConfigure = template.status === TemplateStatus.Draft
-              const canRenderMakeDraft = template.status === TemplateStatus.Available
-              const canRenderDelete = template.applicationCount === 0
-              return (
-                <div className="template-container">
-                  <div className="info-container">
-                    <div className="indicator-container">
-                      <Label className="key" content="name" />
-                      <Label className="value" content={template.name} />
-                    </div>
-                    <div className="indicator-container">
-                      <Label className="key" content="version" />
-                      <Label className="value" content={template.version} />
-                    </div>
-                    <div className="indicator-container">
-                      <Label className="key" content="status" />
-                      <Label className="value" content={template.status} />
-                    </div>
-                    <div className="indicator-container">
-                      <Label className="key" content="number of applications" />
-                      <Label className="value" content={template.applicationCount} />
-                    </div>
-                    <div className="indicator-container">
-                      <Label className="key" content="version timestamp" />
-                      <Label
-                        className="value"
-                        content={template.versionTimestamp.toFormat('dd MMM yy')}
-                      />
-                    </div>
-                  </div>
-                  <div className="action-container">
-                    {canRenderConfigure && (
-                      <Button inverted primary>
-                        Configure
-                      </Button>
-                    )}
-                    {canRenderMakeDraft && (
-                      <Button inverted primary>
-                        Make Draft
-                      </Button>
-                    )}
-                    {canRenderDelete && (
-                      <Button inverted primary>
-                        Delete
-                      </Button>
-                    )}
-                    <Button inverted primary>
-                      Duplicate
-                    </Button>
-                  </div>
-                </div>
-              )
-            })}
-          </>
-        ),
-      },
-    }
-  })
+type Error = { message: string; error: string }
+type SetError = (error: Error) => void
+type SetIsLoading = (value: boolean) => void
+
+type Columns = {
+  title: string
+  render: (
+    template: Template & { numberOfTemplates?: number },
+    setError: SetError,
+    setIsLoading: SetIsLoading,
+    refetch: () => void
+  ) => ReactNode
+}[]
+
+const columns: Columns = [
+  {
+    title: '',
+    render: ({ code }) => code,
+  },
+  {
+    title: 'name',
+    render: ({ name }) => name,
+  },
+
+  {
+    title: '',
+    render: ({ version, versionTimestamp }) => (
+      <div className="indicators-container">
+        <div key="version" className="indicator">
+          <Label className="key" content="version" />
+          <Label className="value" content={version} />
+        </div>
+        <div key="versionDate" className="indicator">
+          <Label className="key" content="date" />
+          <Label className="value" content={versionTimestamp.toFormat('dd MMM yy')} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: 'category',
+    render: ({ category }) => category,
+  },
+  {
+    title: 'status',
+    render: ({ status }) => status,
+  },
+  {
+    title: '',
+    render: ({ applicationCount, numberOfTemplates }) => (
+      <div className="indicators-container">
+        <div key="appCount" className="indicator">
+          <Label className="key" content="# application" />
+          <Label className="value" content={applicationCount} />
+        </div>
+
+        {numberOfTemplates && (
+          <div key="tempCount" className="indicator">
+            <Label className="key" content="# templates" />
+            <Label className="value" content={numberOfTemplates} />
+          </div>
+        )}
+      </div>
+    ),
+  },
+
+  {
+    title: '',
+    render: ({ code, version, id, status }, setError, setIsLoading, refetch) => (
+      <>
+        <div
+          key="edit"
+          className="clickable"
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+        >
+          <Icon name={status === TemplateStatus.Available ? 'eye' : 'edit outline'} />
+        </div>
+        <ExportButton
+          code={code}
+          key="export"
+          version={version}
+          setError={setError}
+          id={id}
+          setIsLoading={setIsLoading}
+        />
+        <DuplicateButton
+          code={code}
+          key="duplicate"
+          version={version}
+          setError={setError}
+          id={id}
+          setIsLoading={setIsLoading}
+          refetch={refetch}
+        />
+      </>
+    ),
+  },
+]
+
+const ExportButton: React.FC<{
+  code: string
+  version: number
+  id: number
+  setError: SetError
+  setIsLoading: SetIsLoading
+}> = ({ code, version, setError, setIsLoading, id }) => {
+  const downloadLinkRef = useRef<HTMLAnchorElement>(null)
+  const snapshotName = `${code}-${version}`
+  const filter = { template: { id: { equalTo: id } } }
+  const body = JSON.stringify({ filters: filter })
+  return (
+    <>
+      <a ref={downloadLinkRef} href={`${snapshotFilesUrl}/${snapshotName}.zip`} target="_blank"></a>
+      <div
+        className="clickable"
+        onClick={async (e) => {
+          e.stopPropagation()
+          setIsLoading(true)
+          try {
+            const resultRaw = await fetch(
+              `${takeSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body,
+              }
+            )
+            const resultJson = await resultRaw.json()
+
+            if (resultJson.success) {
+              downloadLinkRef?.current?.click()
+              return setIsLoading(false)
+            }
+            setError(resultJson)
+          } catch (error) {
+            setError({ message: 'Front end error while exporting', error })
+          }
+        }}
+      >
+        <Icon className="clickable" key="export" name="sign-out" />
+      </div>
+    </>
+  )
+}
+
+const DuplicateButton: React.FC<{
+  code: string
+  version: number
+  id: number
+  setError: SetError
+  setIsLoading: SetIsLoading
+  refetch: () => void
+}> = ({ code, version, setError, setIsLoading, id, refetch }) => {
+  const snapshotName = `${code}-${version}`
+  const filter = { template: { id: { equalTo: id } } }
+  const body = JSON.stringify({ filters: filter })
+
+  return (
+    <>
+      <div
+        className="clickable"
+        onClick={async (e) => {
+          e.stopPropagation()
+          setIsLoading(true)
+          try {
+            let resultRaw = await fetch(
+              `${takeSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body,
+              }
+            )
+            let resultJson = await resultRaw.json()
+
+            if (!resultJson.success) return setError(resultJson)
+
+            resultRaw = await fetch(
+              `${useSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
+              {
+                method: 'POST',
+              }
+            )
+            resultJson = await resultRaw.json()
+
+            if (!resultJson.success) return setError(resultJson)
+            refetch()
+            return setIsLoading(false)
+          } catch (error) {
+            setError({ message: 'Front end error while duplicating', error })
+          }
+        }}
+      >
+        <Icon className="clickable" key="export" name="copy" />
+      </div>
+    </>
+  )
+}
 
 const Templates: React.FC = () => {
-  const { templatesByCode } = useGetTemplates()
+  const [selectedRow, setSelectedRow] = useState(-1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { templates, refetch } = useGetTemplates()
+
+  const renderLoadingAndError = () => (
+    <Modal open={isLoading} onClick={resetLoading} onClose={resetLoading}>
+      {error ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Label size="large" color="red">
+            {error.message}
+            <Icon name="close" onClick={resetLoading} />
+          </Label>
+          <div style={{ margin: 20 }}>{error.error}</div>
+        </div>
+      ) : (
+        <Loader active>Loading</Loader>
+      )}
+    </Modal>
+  )
+
+  const resetLoading = () => {
+    setError(null)
+    setIsLoading(false)
+  }
+
+  const importTemplate = async (e: any) => {
+    if (!e.target?.files) return
+
+    const file = e.target.files[0]
+    const snapshotName = file.name.replace('.zip', '')
+
+    setIsLoading(true)
+    try {
+      const data = new FormData()
+      data.append('file', file)
+
+      let resultRaw = await fetch(`${uploadSnapshotUrl}?name=${snapshotName}`, {
+        method: 'POST',
+        body: data,
+      })
+      let resultJson = await resultRaw.json()
+
+      if (!resultJson.success) return setError(resultJson)
+
+      resultRaw = await fetch(
+        `${useSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
+        {
+          method: 'POST',
+        }
+      )
+      resultJson = await resultRaw.json()
+
+      if (!resultJson.success) return setError(resultJson)
+      refetch()
+      return setIsLoading(false)
+    } catch (error) {
+      setError({ message: 'Front end error while importing', error })
+    }
+  }
 
   return (
     <div className="template-builder-templates">
-      <Accordion panels={getTemplatesAccordionContent(templatesByCode)} />
+      <Header as="h3">Templates / Proceedures</Header>
+
+      <div className="topbar">
+        <div className="indicators-container">
+          <div key="tempCount" className="indicator">
+            <Label className="key">
+              <Icon name="eye" />
+            </Label>
+            <Label className="value" content="view" />
+          </div>
+          <div key="tempCount" className="indicator">
+            <Label className="key">
+              <Icon name="edit outline" />
+            </Label>
+            <Label className="value" content="edit" />
+          </div>
+          <div key="tempCount" className="indicator">
+            <Label className="key">
+              <Icon name="sign-out" />
+            </Label>
+            <Label className="value" content="export" />
+          </div>
+          <div key="tempCount" className="indicator">
+            <Label className="key">
+              <Icon name="copy" />
+            </Label>
+            <Label className="value" content="duplicate" />
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept=".zip"
+            hidden
+            name="file"
+            multiple={false}
+            onChange={importTemplate}
+          />
+          <Button inverted primary onClick={() => fileInputRef?.current?.click()}>
+            Import
+          </Button>
+        </div>
+      </div>
+
+      <div id="list-container" className="outcome-table-container">
+        <Table sortable stackable selectable>
+          <Table.Header>
+            <Table.Row>
+              {columns.map(({ title }, index) => (
+                <Table.HeaderCell key={index} colSpan={1}>
+                  {title}
+                </Table.HeaderCell>
+              ))}
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {templates.map(({ main, applicationCount, numberOfTemplates, all }, index) => {
+              return (
+                <>
+                  {index !== selectedRow && (
+                    <Table.Row
+                      key={index}
+                      className="clickable"
+                      onClick={() => setSelectedRow(index)}
+                    >
+                      {columns.map(({ render }, index) => (
+                        <Table.Cell key={index}>
+                          {render(
+                            { ...main, applicationCount, numberOfTemplates },
+                            setError,
+                            setIsLoading,
+                            refetch
+                          )}
+                        </Table.Cell>
+                      ))}
+                    </Table.Row>
+                  )}
+                  {index === selectedRow && (
+                    <>
+                      <Table.Row
+                        key={index}
+                        className="clickable"
+                        onClick={() => setSelectedRow(-1)}
+                        style={{
+                          height: 10,
+                        }}
+                      >
+                        <td style={{ textAlign: 'center' }} colSpan={columns.length}>
+                          <Icon name="angle up" />
+                        </td>
+                      </Table.Row>
+                      {all.map((row, innerRowIndex) => (
+                        <Table.Row key={`${index}${innerRowIndex}`}>
+                          {columns.map(({ render }, index) => (
+                            <Table.Cell key={index}>
+                              {render(row, setError, setIsLoading, refetch)}
+                            </Table.Cell>
+                          ))}
+                        </Table.Row>
+                      ))}
+                      <Table.Row style={{ height: 2 }} key={`${index}-end`}>
+                        <td colSpan={columns.length}></td>
+                      </Table.Row>
+                    </>
+                  )}
+                </>
+              )
+            })}
+          </Table.Body>
+        </Table>
+      </div>
+      {renderLoadingAndError()}
     </div>
   )
 }
