@@ -15,7 +15,13 @@ export default gql`
       id
       title
     }
-    applications {
+    configApplications: applications(filter: { isConfig: { equalTo: true } }) {
+      nodes {
+        serial
+        id
+      }
+    }
+    applications(filter: { isConfig: { equalTo: false } }) {
       totalCount
     }
     version

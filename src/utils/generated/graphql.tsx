@@ -167,6 +167,7 @@ export type Query = Node & {
   templateFilterJoin?: Maybe<TemplateFilterJoin>;
   templatePermission?: Maybe<TemplatePermission>;
   templateSection?: Maybe<TemplateSection>;
+  templateSectionByTemplateIdAndCode?: Maybe<TemplateSection>;
   templateStage?: Maybe<TemplateStage>;
   templateStageReviewLevel?: Maybe<TemplateStageReviewLevel>;
   triggerQueue?: Maybe<TriggerQueue>;
@@ -1149,6 +1150,13 @@ export type QueryTemplatePermissionArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryTemplateSectionArgs = {
   id: Scalars['Int'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTemplateSectionByTemplateIdAndCodeArgs = {
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 
@@ -2986,6 +2994,8 @@ export type ApplicationFilter = {
   orgId?: Maybe<IntFilter>;
   /** Filter by the object’s `sessionId` field. */
   sessionId?: Maybe<StringFilter>;
+  /** Filter by the object’s `isConfig` field. */
+  isConfig?: Maybe<BooleanFilter>;
   /** Filter by the object’s `serial` field. */
   serial?: Maybe<StringFilter>;
   /** Filter by the object’s `name` field. */
@@ -5595,6 +5605,8 @@ export enum ApplicationsOrderBy {
   OrgIdDesc = 'ORG_ID_DESC',
   SessionIdAsc = 'SESSION_ID_ASC',
   SessionIdDesc = 'SESSION_ID_DESC',
+  IsConfigAsc = 'IS_CONFIG_ASC',
+  IsConfigDesc = 'IS_CONFIG_DESC',
   SerialAsc = 'SERIAL_ASC',
   SerialDesc = 'SERIAL_DESC',
   NameAsc = 'NAME_ASC',
@@ -5621,6 +5633,8 @@ export type ApplicationCondition = {
   orgId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `sessionId` field. */
   sessionId?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `isConfig` field. */
+  isConfig?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `serial` field. */
   serial?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `name` field. */
@@ -5655,6 +5669,7 @@ export type Application = Node & {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -10091,6 +10106,8 @@ export type Mutation = {
   updateTemplateSectionByNodeId?: Maybe<UpdateTemplateSectionPayload>;
   /** Updates a single `TemplateSection` using a unique key and a patch. */
   updateTemplateSection?: Maybe<UpdateTemplateSectionPayload>;
+  /** Updates a single `TemplateSection` using a unique key and a patch. */
+  updateTemplateSectionByTemplateIdAndCode?: Maybe<UpdateTemplateSectionPayload>;
   /** Updates a single `TemplateStage` using its globally unique id and a patch. */
   updateTemplateStageByNodeId?: Maybe<UpdateTemplateStagePayload>;
   /** Updates a single `TemplateStage` using a unique key and a patch. */
@@ -10273,6 +10290,8 @@ export type Mutation = {
   deleteTemplateSectionByNodeId?: Maybe<DeleteTemplateSectionPayload>;
   /** Deletes a single `TemplateSection` using a unique key. */
   deleteTemplateSection?: Maybe<DeleteTemplateSectionPayload>;
+  /** Deletes a single `TemplateSection` using a unique key. */
+  deleteTemplateSectionByTemplateIdAndCode?: Maybe<DeleteTemplateSectionPayload>;
   /** Deletes a single `TemplateStage` using its globally unique id. */
   deleteTemplateStageByNodeId?: Maybe<DeleteTemplateStagePayload>;
   /** Deletes a single `TemplateStage` using a unique key. */
@@ -10301,6 +10320,7 @@ export type Mutation = {
   deleteVerification?: Maybe<DeleteVerificationPayload>;
   /** Deletes a single `Verification` using a unique key. */
   deleteVerificationByUniqueId?: Maybe<DeleteVerificationPayload>;
+  deleteWholeApplication?: Maybe<DeleteWholeApplicationPayload>;
 };
 
 
@@ -11007,6 +11027,12 @@ export type MutationUpdateTemplateSectionArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTemplateSectionByTemplateIdAndCodeArgs = {
+  input: UpdateTemplateSectionByTemplateIdAndCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTemplateStageByNodeIdArgs = {
   input: UpdateTemplateStageByNodeIdInput;
 };
@@ -11553,6 +11579,12 @@ export type MutationDeleteTemplateSectionArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTemplateSectionByTemplateIdAndCodeArgs = {
+  input: DeleteTemplateSectionByTemplateIdAndCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTemplateStageByNodeIdArgs = {
   input: DeleteTemplateStageByNodeIdInput;
 };
@@ -11633,6 +11665,12 @@ export type MutationDeleteVerificationArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteVerificationByUniqueIdArgs = {
   input: DeleteVerificationByUniqueIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWholeApplicationArgs = {
+  input: DeleteWholeApplicationInput;
 };
 
 /** All input for the create `ActionPlugin` mutation. */
@@ -12139,13 +12177,19 @@ export type TemplateSectionTemplateIdFkeyInverseInput = {
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectById?: Maybe<Array<TemplateSectionTemplateSectionPkeyConnect>>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  connectByTemplateIdAndCode?: Maybe<Array<TemplateSectionTemplateSectionTemplateIdCodeKeyConnect>>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectByNodeId?: Maybe<Array<TemplateSectionNodeIdConnect>>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteById?: Maybe<Array<TemplateSectionTemplateSectionPkeyDelete>>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  deleteByTemplateIdAndCode?: Maybe<Array<TemplateSectionTemplateSectionTemplateIdCodeKeyDelete>>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteByNodeId?: Maybe<Array<TemplateSectionNodeIdDelete>>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateById?: Maybe<Array<TemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyUsingTemplateSectionPkeyUpdate>>;
+  /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
+  updateByTemplateIdAndCode?: Maybe<Array<TemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate>>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateByNodeId?: Maybe<Array<TemplateOnTemplateSectionForTemplateSectionTemplateIdFkeyNodeIdUpdate>>;
   /** A `TemplateSectionInput` object that will be created and connected to this object. */
@@ -12157,6 +12201,12 @@ export type TemplateSectionTemplateSectionPkeyConnect = {
   id: Scalars['Int'];
 };
 
+/** The fields on `templateSection` to look up the row to connect. */
+export type TemplateSectionTemplateSectionTemplateIdCodeKeyConnect = {
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** The globally unique `ID` look up for the row to connect. */
 export type TemplateSectionNodeIdConnect = {
   /** The globally unique `ID` which identifies a single `templateSection` to be connected. */
@@ -12166,6 +12216,12 @@ export type TemplateSectionNodeIdConnect = {
 /** The fields on `templateSection` to look up the row to delete. */
 export type TemplateSectionTemplateSectionPkeyDelete = {
   id: Scalars['Int'];
+};
+
+/** The fields on `templateSection` to look up the row to delete. */
+export type TemplateSectionTemplateSectionTemplateIdCodeKeyDelete = {
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to delete. */
@@ -13301,6 +13357,7 @@ export type UpdateApplicationOnApplicationForApplicationTemplateIdFkeyPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -13741,6 +13798,7 @@ export type UpdateApplicationOnApplicationForApplicationUserIdFkeyPatch = {
   templateId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14067,6 +14125,7 @@ export type UpdateApplicationOnApplicationForApplicationOrgIdFkeyPatch = {
   templateId?: Maybe<Scalars['Int']>;
   userId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14429,6 +14488,7 @@ export type UpdateApplicationOnApplicationStageHistoryForApplicationStageHistory
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14542,6 +14602,7 @@ export type UpdateApplicationOnApplicationSectionForApplicationSectionApplicatio
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14733,6 +14794,7 @@ export type UpdateApplicationOnReviewAssignmentForReviewAssignmentApplicationIdF
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14911,13 +14973,19 @@ export type TemplateElementSectionIdFkeyInput = {
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectById?: Maybe<TemplateSectionTemplateSectionPkeyConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  connectByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyConnect>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectByNodeId?: Maybe<TemplateSectionNodeIdConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteById?: Maybe<TemplateSectionTemplateSectionPkeyDelete>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  deleteByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyDelete>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteByNodeId?: Maybe<TemplateSectionNodeIdDelete>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateById?: Maybe<TemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyUsingTemplateSectionPkeyUpdate>;
+  /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
+  updateByTemplateIdAndCode?: Maybe<TemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateByNodeId?: Maybe<TemplateElementOnTemplateElementForTemplateElementSectionIdFkeyNodeIdUpdate>;
   /** A `TemplateSectionInput` object that will be created and connected to this object. */
@@ -15079,6 +15147,7 @@ export type UpdateApplicationOnApplicationResponseForApplicationResponseApplicat
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -16085,6 +16154,7 @@ export type UpdateApplicationOnReviewForReviewApplicationIdFkeyPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17529,6 +17599,7 @@ export type UpdateApplicationOnFileForFileApplicationSerialFkeyPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17842,6 +17913,7 @@ export type UpdateApplicationOnVerificationForVerificationApplicationIdFkeyPatch
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -18053,6 +18125,7 @@ export type UpdateApplicationOnNotificationForNotificationApplicationIdFkeyPatch
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -18093,6 +18166,7 @@ export type ApplicationPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -18118,6 +18192,7 @@ export type NotificationApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -18272,6 +18347,7 @@ export type VerificationApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -18356,6 +18432,7 @@ export type FileApplicationSerialFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -18695,6 +18772,7 @@ export type ReviewApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19176,6 +19254,7 @@ export type ApplicationResponseApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19297,13 +19376,19 @@ export type ApplicationSectionTemplateSectionIdFkeyInput = {
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectById?: Maybe<TemplateSectionTemplateSectionPkeyConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  connectByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyConnect>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectByNodeId?: Maybe<TemplateSectionNodeIdConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteById?: Maybe<TemplateSectionTemplateSectionPkeyDelete>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  deleteByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyDelete>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteByNodeId?: Maybe<TemplateSectionNodeIdDelete>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateById?: Maybe<TemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyUsingTemplateSectionPkeyUpdate>;
+  /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
+  updateByTemplateIdAndCode?: Maybe<TemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateByNodeId?: Maybe<ApplicationSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyNodeIdUpdate>;
   /** A `TemplateSectionInput` object that will be created and connected to this object. */
@@ -19327,6 +19412,14 @@ export type UpdateTemplateSectionOnApplicationSectionForApplicationSectionTempla
   templateToTemplateId?: Maybe<TemplateSectionTemplateIdFkeyInput>;
   templateElementsUsingId?: Maybe<TemplateElementSectionIdFkeyInverseInput>;
   applicationSectionsUsingId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInverseInput>;
+};
+
+/** The fields on `templateSection` to look up the row to update. */
+export type TemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `templateSection` being updated. */
+  patch: UpdateTemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to update. */
@@ -19384,6 +19477,14 @@ export type ApplicationSectionTemplateSectionIdFkeyApplicationSectionCreateInput
   applicationId?: Maybe<Scalars['Int']>;
   applicationToApplicationId?: Maybe<ApplicationSectionApplicationIdFkeyInput>;
   templateSectionToTemplateSectionId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInput>;
+};
+
+/** The fields on `templateSection` to look up the row to update. */
+export type TemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `templateSection` being updated. */
+  patch: UpdateTemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to update. */
@@ -19492,6 +19593,7 @@ export type ReviewAssignmentApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19783,6 +19885,7 @@ export type ApplicationSectionApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19839,6 +19942,7 @@ export type ApplicationStageHistoryApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -20034,6 +20138,7 @@ export type ApplicationOrgIdFkeyApplicationCreateInput = {
   templateId?: Maybe<Scalars['Int']>;
   userId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -20257,6 +20362,7 @@ export type ApplicationUserIdFkeyApplicationCreateInput = {
   templateId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -20463,6 +20569,7 @@ export type ApplicationTemplateIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -21192,6 +21299,14 @@ export type TemplateSectionTemplateIdFkeyTemplateCreateInput = {
   reviewAssignmentsUsingId?: Maybe<ReviewAssignmentTemplateIdFkeyInverseInput>;
 };
 
+/** The fields on `templateSection` to look up the row to update. */
+export type TemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `templateSection` being updated. */
+  patch: UpdateTemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** The globally unique `ID` look up for the row to update. */
 export type TemplateOnTemplateSectionForTemplateSectionTemplateIdFkeyNodeIdUpdate = {
   /** The globally unique `ID` which identifies a single `templateSection` to be connected. */
@@ -21455,6 +21570,7 @@ export type ApplicationInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -24977,6 +25093,16 @@ export type UpdateTemplateSectionInput = {
   id: Scalars['Int'];
 };
 
+/** All input for the `updateTemplateSectionByTemplateIdAndCode` mutation. */
+export type UpdateTemplateSectionByTemplateIdAndCodeInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `TemplateSection` being updated. */
+  patch: TemplateSectionPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** All input for the `updateTemplateStageByNodeId` mutation. */
 export type UpdateTemplateStageByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
@@ -26575,6 +26701,14 @@ export type DeleteTemplateSectionInput = {
   id: Scalars['Int'];
 };
 
+/** All input for the `deleteTemplateSectionByTemplateIdAndCode` mutation. */
+export type DeleteTemplateSectionByTemplateIdAndCodeInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** All input for the `deleteTemplateStageByNodeId` mutation. */
 export type DeleteTemplateStageByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
@@ -26809,6 +26943,23 @@ export type DeleteVerificationByUniqueIdInput = {
   uniqueId: Scalars['String'];
 };
 
+/** All input for the `deleteWholeApplication` mutation. */
+export type DeleteWholeApplicationInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  applicationId?: Maybe<Scalars['Int']>;
+};
+
+/** The output of our `deleteWholeApplication` mutation. */
+export type DeleteWholeApplicationPayload = {
+  __typename?: 'DeleteWholeApplicationPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  boolean?: Maybe<Scalars['Boolean']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
 export type ApplicationFragment = (
   { __typename?: 'Application' }
   & Pick<Application, 'id' | 'serial' | 'name' | 'outcome' | 'trigger'>
@@ -26845,7 +26996,13 @@ export type FullTemplateFragment = (
   & { templateCategory?: Maybe<(
     { __typename?: 'TemplateCategory' }
     & Pick<TemplateCategory, 'code' | 'icon' | 'id' | 'title'>
-  )>, applications: (
+  )>, configApplications: (
+    { __typename?: 'ApplicationsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Application' }
+      & Pick<Application, 'serial' | 'id'>
+    )>> }
+  ), applications: (
     { __typename?: 'ApplicationsConnection' }
     & Pick<ApplicationsConnection, 'totalCount'>
   ), templateFilterJoins: (
@@ -26925,6 +27082,7 @@ export type UserFragment = (
 
 export type CreateApplicationMutationVariables = Exact<{
   name: Scalars['String'];
+  isConfig: Scalars['Boolean'];
   serial: Scalars['String'];
   templateId: Scalars['Int'];
   userId?: Maybe<Scalars['Int']>;
@@ -27029,6 +27187,19 @@ export type SubmitReviewMutation = (
   )> }
 );
 
+export type DeleteWholeApplicationMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteWholeApplicationMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteWholeApplication?: Maybe<(
+    { __typename?: 'DeleteWholeApplicationPayload' }
+    & Pick<DeleteWholeApplicationPayload, 'clientMutationId'>
+  )> }
+);
+
 export type UpdateTemplateMutationVariables = Exact<{
   id: Scalars['Int'];
   templatePatch: TemplatePatch;
@@ -27042,6 +27213,31 @@ export type UpdateTemplateMutation = (
     & { template?: Maybe<(
       { __typename?: 'Template' }
       & FullTemplateFragment
+    )> }
+  )> }
+);
+
+export type UpdateTemplateElementMutationVariables = Exact<{
+  id: Scalars['Int'];
+  templateElementPatch: TemplateElementPatch;
+}>;
+
+
+export type UpdateTemplateElementMutation = (
+  { __typename: 'Mutation' }
+  & { updateTemplateElement?: Maybe<(
+    { __typename?: 'UpdateTemplateElementPayload' }
+    & { templateElement?: Maybe<(
+      { __typename?: 'TemplateElement' }
+      & Pick<TemplateElement, 'id' | 'category' | 'code' | 'defaultValue' | 'elementTypePluginCode' | 'helpText' | 'index' | 'isEditable' | 'isRequired' | 'parameters' | 'sectionId' | 'templateCode' | 'templateVersion' | 'title' | 'validation' | 'validationMessage' | 'visibilityCondition'>
+      & { section?: Maybe<(
+        { __typename?: 'TemplateSection' }
+        & Pick<TemplateSection, 'id'>
+        & { template?: Maybe<(
+          { __typename?: 'Template' }
+          & Pick<Template, 'id'>
+        )> }
+      )> }
     )> }
   )> }
 );
@@ -27861,7 +28057,13 @@ export const FullTemplateFragmentDoc = gql`
     id
     title
   }
-  applications {
+  configApplications: applications(filter: {isConfig: {equalTo: true}}) {
+    nodes {
+      serial
+      id
+    }
+  }
+  applications(filter: {isConfig: {equalTo: false}}) {
     totalCount
   }
   version
@@ -27946,8 +28148,8 @@ export const TemplateStageFragmentDoc = gql`
 }
     `;
 export const CreateApplicationDocument = gql`
-    mutation createApplication($name: String!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!], $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
-  createApplication(input: {application: {name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, sessionId: $sessionId, isActive: true, outcome: $outcome, trigger: $trigger, applicationSectionsUsingId: {create: $sections}, applicationResponsesUsingId: {create: $responses}}}) {
+    mutation createApplication($name: String!, $isConfig: Boolean!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!], $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
+  createApplication(input: {application: {isConfig: $isConfig, name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, sessionId: $sessionId, isActive: true, outcome: $outcome, trigger: $trigger, applicationSectionsUsingId: {create: $sections}, applicationResponsesUsingId: {create: $responses}}}) {
     application {
       userId
       orgId
@@ -27982,6 +28184,7 @@ export type CreateApplicationMutationFn = Apollo.MutationFunction<CreateApplicat
  * const [createApplicationMutation, { data, loading, error }] = useCreateApplicationMutation({
  *   variables: {
  *      name: // value for 'name'
+ *      isConfig: // value for 'isConfig'
  *      serial: // value for 'serial'
  *      templateId: // value for 'templateId'
  *      userId: // value for 'userId'
@@ -28120,6 +28323,38 @@ export function useSubmitReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type SubmitReviewMutationHookResult = ReturnType<typeof useSubmitReviewMutation>;
 export type SubmitReviewMutationResult = Apollo.MutationResult<SubmitReviewMutation>;
 export type SubmitReviewMutationOptions = Apollo.BaseMutationOptions<SubmitReviewMutation, SubmitReviewMutationVariables>;
+export const DeleteWholeApplicationDocument = gql`
+    mutation deleteWholeApplication($id: Int!) {
+  deleteWholeApplication(input: {applicationId: $id}) {
+    clientMutationId
+  }
+}
+    `;
+export type DeleteWholeApplicationMutationFn = Apollo.MutationFunction<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>;
+
+/**
+ * __useDeleteWholeApplicationMutation__
+ *
+ * To run a mutation, you first call `useDeleteWholeApplicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWholeApplicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWholeApplicationMutation, { data, loading, error }] = useDeleteWholeApplicationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteWholeApplicationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>) {
+        return Apollo.useMutation<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>(DeleteWholeApplicationDocument, baseOptions);
+      }
+export type DeleteWholeApplicationMutationHookResult = ReturnType<typeof useDeleteWholeApplicationMutation>;
+export type DeleteWholeApplicationMutationResult = Apollo.MutationResult<DeleteWholeApplicationMutation>;
+export type DeleteWholeApplicationMutationOptions = Apollo.BaseMutationOptions<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>;
 export const UpdateTemplateDocument = gql`
     mutation updateTemplate($id: Int!, $templatePatch: TemplatePatch!) {
   updateTemplate(input: {id: $id, patch: $templatePatch}) {
@@ -28155,6 +28390,64 @@ export function useUpdateTemplateMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateTemplateMutationHookResult = ReturnType<typeof useUpdateTemplateMutation>;
 export type UpdateTemplateMutationResult = Apollo.MutationResult<UpdateTemplateMutation>;
 export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateMutation, UpdateTemplateMutationVariables>;
+export const UpdateTemplateElementDocument = gql`
+    mutation updateTemplateElement($id: Int!, $templateElementPatch: TemplateElementPatch!) {
+  __typename
+  updateTemplateElement(input: {patch: $templateElementPatch, id: $id}) {
+    templateElement {
+      id
+      category
+      code
+      defaultValue
+      elementTypePluginCode
+      helpText
+      index
+      isEditable
+      isRequired
+      parameters
+      sectionId
+      templateCode
+      templateVersion
+      title
+      validation
+      validationMessage
+      visibilityCondition
+      section {
+        id
+        template {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+export type UpdateTemplateElementMutationFn = Apollo.MutationFunction<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>;
+
+/**
+ * __useUpdateTemplateElementMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateElementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateElementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateElementMutation, { data, loading, error }] = useUpdateTemplateElementMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      templateElementPatch: // value for 'templateElementPatch'
+ *   },
+ * });
+ */
+export function useUpdateTemplateElementMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>(UpdateTemplateElementDocument, baseOptions);
+      }
+export type UpdateTemplateElementMutationHookResult = ReturnType<typeof useUpdateTemplateElementMutation>;
+export type UpdateTemplateElementMutationResult = Apollo.MutationResult<UpdateTemplateElementMutation>;
+export type UpdateTemplateElementMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>;
 export const UpdateTemplateFilterJoinDocument = gql`
     mutation updateTemplateFilterJoin($id: Int!, $filterJoinPatch: TemplateFilterJoinPatch!) {
   updateTemplateFilterJoin(input: {patch: $filterJoinPatch, id: $id}) {

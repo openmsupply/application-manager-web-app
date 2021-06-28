@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 export default gql`
   mutation createApplication(
     $name: String!
+    $isConfig: Boolean!
     $serial: String!
     $templateId: Int!
     $userId: Int
@@ -16,6 +17,7 @@ export default gql`
     createApplication(
       input: {
         application: {
+          isConfig: $isConfig
           name: $name
           serial: $serial
           templateId: $templateId

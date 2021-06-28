@@ -1400,19 +1400,7 @@ a:hover {
   
 }
 
-.filter-joins {
-  .flex-row();
-  flex-wrap: wrap;
-  .label {
-    .clickable();
-    margin: 5px !important;
-  }
 
-  .selected {
-    background-color: @darkGrey !important;
-    color: white !important;
-  }
-}
 
 .indicators-container {
   .flex-column();
@@ -1493,6 +1481,123 @@ a:hover {
     margin: 5px;
   }
 }
+.filter-joins {
+  .flex-row();
+  flex-wrap: wrap;
+  .label {
+    .clickable();
+    margin: 5px !important;
+  }
+
+  .selected {
+    background-color: @darkGrey !important;
+    color: white !important;
+  }
+}
+
+.template-sections-header {
+  .flex-row();
+  align-items: center;
+  .clickable();
+  .header {
+    margin: 5px !important;
+  }
+  .button-container {
+    .flex-row();
+    flex-grow: 1;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .icon {
+    margin: 5px;
+  }
+}
+.element-dropdown-container {
+  .flex-row();
+  align-items: center;
+  margin: 3px;
+}
+.button-container {
+  .flex-row();
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.element-update-container {
+  .flex-column();
+  align-items: center;
+  padding: 5px;
+  input {
+    width: 500px !important;
+  }
+  textarea {
+    width: 500px !important;
+  }
+}
+
+.section-edit {
+ .flex-row();
+ align-items: center;
+ input {
+   width:300px;
+ }
+ .icon {
+   margin: 4px;
+ }
+}
+
+.template-sections {
+  .flex-row();
+  flex-wrap: wrap;
+  .label {
+    .clickable();
+    margin: 5px !important;
+  }
+
+  .selected {
+    background-color: @darkGrey !important;
+    color: white !important;
+  }
+}
+
+.template-pages-header {
+  .flex-row();
+  align-items: center;
+  .clickable();
+  .header {
+    margin: 5px !important;
+  }
+  .icon {
+    margin: 5px;
+  }
+}
+
+.template-pages {
+  .flex-row();
+  flex-wrap: wrap;
+  .label {
+    .clickable();
+    margin: 5px !important;
+  }
+
+  .selected {
+    background-color: @darkGrey !important;
+    color: white !important;
+  }
+}
+
+.config-wrapper {
+  .form-element-wrapper {
+    justify-content: flex-start !important;
+  }
+}
+
+.template-elment-settings {
+  .clickable();
+  margin-right: 10px;
+}
+
 .template-inner-config {
   margin-top: 10px;
   .flex-column();

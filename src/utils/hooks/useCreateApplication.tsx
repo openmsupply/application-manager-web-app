@@ -2,13 +2,14 @@ import { ApolloError } from '@apollo/client'
 import { useState } from 'react'
 import { useCreateApplicationMutation } from '../../utils/generated/graphql'
 
-interface CreateApplicationProps {
+export interface CreateApplicationProps {
   serial: string
   name: string
   templateId: number
   userId?: number
   orgId?: number
   sessionId: string
+  isConfig: boolean
   templateSections: { templateSectionId: number }[]
   templateResponses: { templateElementId: number; value: any }[]
 }
@@ -32,7 +33,7 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
     },
   })
 
-  const createApplication = ({
+  const createApplication = async ({
     serial,
     name,
     templateId,
@@ -41,10 +42,12 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
     sessionId,
     templateSections,
     templateResponses,
+    isConfig,
   }: CreateApplicationProps) => {
     setProcessing(true)
-    applicationMutation({
+    await applicationMutation({
       variables: {
+        isConfig,
         name,
         serial,
         templateId,

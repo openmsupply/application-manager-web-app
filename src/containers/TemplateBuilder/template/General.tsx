@@ -26,7 +26,7 @@ import { TemplateInfo } from './TemplateWrapper'
 
 type Error = { message: string; error: string }
 
-const OnBlurInput: React.FC<{
+export const OnBlurInput: React.FC<{
   label: string
   initialValue: string
   disabled?: boolean
@@ -688,7 +688,7 @@ const Filters: React.FC<{
   )
 }
 
-const JsonTextBox: React.FC<{
+export const JsonTextBox: React.FC<{
   initialValue: object
   label: string
   update: (value: object) => void

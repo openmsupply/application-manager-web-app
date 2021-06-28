@@ -26,7 +26,7 @@ const tabs = [
   {
     route: 'form',
     title: 'Form',
-    render: (templateInfo: TemplateInfo) => <Form />,
+    render: (templateInfo: TemplateInfo) => <Form templateInfo={templateInfo} />,
   },
   {
     route: 'permissions',

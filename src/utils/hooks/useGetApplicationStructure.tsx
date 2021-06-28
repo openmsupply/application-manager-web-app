@@ -24,6 +24,7 @@ interface UseGetApplicationStructureProps {
   firstRunValidation?: boolean
   shouldCalculateProgress?: boolean
   shouldGetDraftResponses?: boolean
+  forceRun?: boolean
 }
 
 const useGetApplicationStructure = ({
@@ -33,6 +34,7 @@ const useGetApplicationStructure = ({
   firstRunValidation = true,
   shouldCalculateProgress = true,
   shouldGetDraftResponses = true,
+  forceRun = false,
 }: UseGetApplicationStructureProps) => {
   const {
     info: { serial },
@@ -76,7 +78,7 @@ const useGetApplicationStructure = ({
       minRefetchTimestampForRevalidation > lastRefetchedTimestamp
     const shouldRevalidateThisRun = shouldRevalidate && !shouldRevalidationWaitForRefetech
 
-    if (isDataUpToDate && !shouldRevalidateThisRun) return
+    if (isDataUpToDate && !shouldRevalidateThisRun && !forceRun) return
 
     const shouldDoValidation = shouldRevalidateThisRun || firstRunProcessValidation
     const applicationResponses = data?.applicationBySerial?.applicationResponses
@@ -120,7 +122,13 @@ const useGetApplicationStructure = ({
 
       setFullStructure(newStructure)
     })
-  }, [lastRefetchedTimestamp, shouldRevalidate, minRefetchTimestampForRevalidation, error])
+  }, [
+    lastRefetchedTimestamp,
+    shouldRevalidate,
+    minRefetchTimestampForRevalidation,
+    error,
+    structure,
+  ])
 
   return {
     fullStructure,
