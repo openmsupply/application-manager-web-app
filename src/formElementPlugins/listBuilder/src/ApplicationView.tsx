@@ -12,11 +12,20 @@ import {
   Label,
 } from 'semantic-ui-react'
 import { ApplicationViewProps } from '../../types'
-import { ResponseFull } from '../../../utils/types'
+import {
+  ApplicationDetails,
+  ElementState,
+  EvaluationOptions,
+  ResponseFull,
+  ResponsesByCode,
+  User,
+} from '../../../utils/types'
 import { TemplateElement, TemplateElementCategory } from '../../../utils/generated/graphql'
 import ApplicationViewWrapper from '../../ApplicationViewWrapper'
 import strings from '../constants'
+import { evaluateElements } from '../../../utils/helpers/evaluateElements'
 import { defaultEvaluatedElement } from '../../../utils/hooks/useLoadApplication'
+import { useUserState } from '../../../contexts/UserState'
 
 export enum DisplayType {
   CARDS = 'cards',
@@ -54,7 +63,9 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     displayFormat = getDefaultDisplayFormat(inputFields),
     displayType = DisplayType.CARDS,
   } = parameters
-
+  const {
+    userState: { currentUser },
+  } = useUserState()
   const [currentInputResponses, setCurrentInputResponses] = useState<ListItem>(
     resetCurrentResponses(inputFields)
   )
@@ -63,6 +74,18 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const [selectedListItem, setSelectedListItem] = useState<number | null>(null)
   const [open, setOpen] = useState(false)
   const [inputError, setInputError] = useState(false)
+
+  const [currentResponseElementsState, setCurrentResponseElementsState] = useState<any>()
+
+  useEffect(() => {
+    buildElements(
+      inputFields,
+      allResponses,
+      currentInputResponses,
+      currentUser as User,
+      applicationData
+    ).then((elements) => setCurrentResponseElementsState(elements))
+  }, [currentInputResponses])
 
   useEffect(() => {
     onSave({
@@ -152,20 +175,22 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         <Segment>
           <Form>
             <Markdown text={modalText} />
-            {inputFields.map((field: TemplateElement, index: number) => {
-              const element = buildElement(field, index)
-              return (
-                <ApplicationViewWrapper
-                  key={`list-${element.code}`}
-                  element={element}
-                  isStrictPage={inputError}
-                  allResponses={allResponses}
-                  currentResponse={currentInputResponses[element.code].value}
-                  onSaveUpdateMethod={innerElementUpdate(element.code)}
-                  applicationData={applicationData}
-                />
-              )
-            })}
+            {currentResponseElementsState &&
+              inputFields.map((field: TemplateElement, index: number) => {
+                const element = currentResponseElementsState?.[field.code]
+                // console.log('Element', element)
+                return (
+                  <ApplicationViewWrapper
+                    key={`list-${element.code}`}
+                    element={element}
+                    isStrictPage={inputError}
+                    allResponses={allResponses}
+                    currentResponse={currentInputResponses[element.code].value}
+                    onSaveUpdateMethod={innerElementUpdate(element.code)}
+                    applicationData={applicationData}
+                  />
+                )
+              })}
             <Button
               primary
               content={selectedListItem !== null ? updateButtonText : addButtonText}
@@ -194,26 +219,55 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
 
 export default ApplicationView
 
-const buildElement = (field: TemplateElement, index: number) => ({
-  ...defaultEvaluatedElement,
-  id: index,
-  code: field.code,
-  pluginCode: field.elementTypePluginCode as string,
-  category: field.category as TemplateElementCategory,
-  title: field.title as string,
-  parameters: field.parameters,
-  validationExpression: field?.validation || true,
-  validationMessage: field?.validationMessage || '',
-  isRequired: field.isRequired ?? true,
-  // Hard-coded visisbility and editability (for now)
-  // "Dummy" values, but required for element props:
-  elementIndex: 0,
-  isValid: undefined,
-  page: 0,
-  sectionIndex: 0,
-  helpText: null,
-  sectionCode: '0',
-})
+const combineResponses = (allResponses: ResponsesByCode, currentInputResponses: ListItem) => {
+  const currentResponses = Object.entries(currentInputResponses).reduce(
+    (responses, [code, value]) => ({ ...responses, [code]: value?.value }),
+    {}
+  )
+  return { ...allResponses, ...currentResponses }
+}
+
+const buildElements = async (
+  fields: TemplateElement[],
+  allResponses: ResponsesByCode,
+  currentInputResponses: ListItem,
+  currentUser: User,
+  applicationData: ApplicationDetails
+) => {
+  const elements = fields.map((field, index) => ({
+    ...defaultEvaluatedElement,
+    id: index,
+    code: field.code,
+    pluginCode: field.elementTypePluginCode as string,
+    category: field.category as TemplateElementCategory,
+    title: field.title as string,
+    parameters: field.parameters,
+    validationExpression: field?.validation || true,
+    validationMessage: field?.validationMessage || '',
+    isVisibleExpression: field?.visibilityCondition || true,
+    isEditableExpression: field?.isEditable || true,
+    isRequiredExpression: field?.isRequired || false,
+    // "Dummy" values, but required for element props:
+    elementIndex: 0,
+    isValid: undefined,
+    page: 0,
+    sectionIndex: 0,
+    helpText: null,
+    sectionCode: '0',
+  }))
+  const evaluationOptions: EvaluationOptions = ['isEditable', 'isVisible', 'isRequired']
+  const evaluationObjects = {
+    responses: combineResponses(allResponses, currentInputResponses),
+    currentUser,
+    applicationData,
+  }
+  const evaluatedElements = await evaluateElements(elements, evaluationOptions, evaluationObjects)
+  const outputElements: { [key: string]: ElementState } = {}
+  for (let i = 0; i < elements.length; i++) {
+    outputElements[elements[i].code] = { ...elements[i], ...evaluatedElements[i] }
+  }
+  return outputElements
+}
 
 export const getDefaultDisplayFormat = (inputFields: TemplateElement[]) => {
   const displayString = inputFields.reduce(
