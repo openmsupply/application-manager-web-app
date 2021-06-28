@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Button, Header, Icon, Label, Loader, Modal, Table } from 'semantic-ui-react'
 import config from '../../config'
 import { TemplateStatus, useGetAllTemplatesQuery } from '../../utils/generated/graphql'
+import { useRouter } from '../../utils/hooks/useRouter'
 
 type Template = {
   name: string
@@ -77,7 +78,11 @@ const useGetTemplates = () => {
         const { main, all } = holder
 
         all.push(current)
-        if (status === TemplateStatus.Available || main.versionTimestamp < current.versionTimestamp)
+        if (
+          status === TemplateStatus.Available ||
+          (main.status !== TemplateStatus.Available &&
+            main.versionTimestamp < current.versionTimestamp)
+        )
           holder.main = current
 
         holder.main.applicationCount += current.applicationCount
@@ -170,17 +175,9 @@ const columns: Columns = [
 
   {
     title: '',
-    render: ({ code, version, id, status }, setError, setIsLoading, refetch) => (
+    render: ({ code, version, id }, setError, setIsLoading, refetch) => (
       <>
-        <div
-          key="edit"
-          className="clickable"
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-        >
-          <Icon name={status === TemplateStatus.Available ? 'eye' : 'edit outline'} />
-        </div>
+        <ViewEditButton id={id} />
         <ExportButton
           code={code}
           key="export"
@@ -202,6 +199,23 @@ const columns: Columns = [
     ),
   },
 ]
+
+const ViewEditButton: React.FC<{ id: number }> = ({ id }) => {
+  const { push } = useRouter()
+
+  return (
+    <div
+      key="edit"
+      className="clickable"
+      onClick={(e) => {
+        e.stopPropagation()
+        push(`/admin/template/${id}/general`)
+      }}
+    >
+      <Icon name="edit outline" />
+    </div>
+  )
+}
 
 const ExportButton: React.FC<{
   code: string
@@ -374,27 +388,21 @@ const Templates: React.FC = () => {
     <div className="template-builder-templates">
       <Header as="h3">Templates / Proceedures</Header>
 
-      <div className="topbar">
+      <div key="topBar" className="topbar">
         <div className="indicators-container">
-          <div key="tempCount" className="indicator">
-            <Label className="key">
-              <Icon name="eye" />
-            </Label>
-            <Label className="value" content="view" />
-          </div>
-          <div key="tempCount" className="indicator">
+          <div key="tooltipEdit" className="indicator">
             <Label className="key">
               <Icon name="edit outline" />
             </Label>
             <Label className="value" content="edit" />
           </div>
-          <div key="tempCount" className="indicator">
+          <div key="tooltipExoirt" className="indicator">
             <Label className="key">
               <Icon name="sign-out" />
             </Label>
             <Label className="value" content="export" />
           </div>
-          <div key="tempCount" className="indicator">
+          <div key="tooltipDuplicate" className="indicator">
             <Label className="key">
               <Icon name="copy" />
             </Label>
@@ -415,9 +423,9 @@ const Templates: React.FC = () => {
         </div>
       </div>
 
-      <div id="list-container" className="outcome-table-container">
+      <div key="listContainer" id="list-container" className="outcome-table-container">
         <Table sortable stackable selectable>
-          <Table.Header>
+          <Table.Header key="header">
             <Table.Row>
               {columns.map(({ title }, index) => (
                 <Table.HeaderCell key={index} colSpan={1}>
@@ -426,7 +434,7 @@ const Templates: React.FC = () => {
               ))}
             </Table.Row>
           </Table.Header>
-          <Table.Body>
+          <Table.Body key="body">
             {templates.map(({ main, applicationCount, numberOfTemplates, all }, index) => {
               return (
                 <>
@@ -451,7 +459,7 @@ const Templates: React.FC = () => {
                   {index === selectedRow && (
                     <>
                       <Table.Row
-                        key={index}
+                        key={`selected_${index}`}
                         className="clickable"
                         onClick={() => setSelectedRow(-1)}
                         style={{
