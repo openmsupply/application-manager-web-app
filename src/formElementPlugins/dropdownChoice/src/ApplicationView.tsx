@@ -38,13 +38,13 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
       setSelectedIndex(optionIndex)
     } else if (currentResponse?.text) {
       const { optionIndex } = currentResponse
-      setSelectedIndex(optionIndex)
+      setSelectedIndex((prev) => optionIndex)
       // Check if response has changed
       if (currentResponse.text !== getSelectedText(options, optionsDisplayProperty, optionIndex)) {
         console.log("It's changed", currentResponse.text)
         console.log('default', defaultOption)
-        if (defaultOption) setSelectedIndex(getDefaultIndex(defaultOption, options))
-        else setSelectedIndex(undefined)
+        if (defaultOption) setSelectedIndex((prev) => getDefaultIndex(defaultOption, options))
+        else setSelectedIndex((prev) => undefined)
         onSave({
           text: getSelectedText(options, optionsDisplayProperty, selectedIndex),
           selection: options[selectedIndex as number],
@@ -108,6 +108,13 @@ const getSelectedText = (
   options: any[],
   optionsDisplayProperty: string | undefined,
   index: number = -1
-) => (optionsDisplayProperty ? options?.[index]?.[optionsDisplayProperty] : options?.[index])
+) => {
+  console.log('index', index)
+  console.log(
+    'text',
+    optionsDisplayProperty ? options?.[index]?.[optionsDisplayProperty] : options?.[index]
+  )
+  return optionsDisplayProperty ? options?.[index]?.[optionsDisplayProperty] : options?.[index]
+}
 
 export default ApplicationView
