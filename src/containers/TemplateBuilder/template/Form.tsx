@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Dropdown, Header, Icon, Label, Modal } from 'semantic-ui-react'
+import { Button, Dropdown, Header, Icon, Label, Modal, Popup } from 'semantic-ui-react'
 import { Loading, PageElements } from '../../../components'
 import { useUserState } from '../../../contexts/UserState'
 import pluginProvider from '../../../formElementPlugins/pluginProvider'
 import {
   TemplateElementCategory,
+  TemplateStatus,
   useDeleteWholeApplicationMutation,
   useUpdateTemplateElementMutation,
   useUpdateTemplateMutation,
@@ -23,6 +24,7 @@ const Form: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo }) => {
   const { template } = useLoadTemplate({
     templateCode: templateInfo?.code,
   })
+  const isEditable = templateInfo?.status === TemplateStatus.Draft
   const { create } = useCreateApplication({
     onCompleted: () => {},
   })
@@ -47,14 +49,20 @@ const Form: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo }) => {
   if (!serial || !template) return <Loading />
 
   return (
-    <ApplicationWrapper key={serial} serialNumber={serial} resetApplication={resetApplication} />
+    <ApplicationWrapper
+      isEditable={isEditable}
+      key={serial}
+      serialNumber={serial}
+      resetApplication={resetApplication}
+    />
   )
 }
 type Error = { message: string; error: string }
-const ApplicationWrapper: React.FC<{ serialNumber: string; resetApplication: () => void }> = ({
-  serialNumber,
-  resetApplication,
-}) => {
+const ApplicationWrapper: React.FC<{
+  serialNumber: string
+  resetApplication: () => void
+  isEditable: boolean
+}> = ({ serialNumber, resetApplication, isEditable }) => {
   const {
     userState: { currentUser },
   } = useUserState()
@@ -67,7 +75,13 @@ const ApplicationWrapper: React.FC<{ serialNumber: string; resetApplication: () 
 
   if (!structure) return <Loading />
 
-  return <Application structure={structure} resetApplication={resetApplication} />
+  return (
+    <Application
+      isEditable={isEditable}
+      structure={structure}
+      resetApplication={resetApplication}
+    />
+  )
 }
 
 type SectionUpdateState = {
@@ -80,7 +94,8 @@ const SectionEdit: React.FC<{
   section?: SectionUpdateState
   templateId: number
   setError: (error: Error) => void
-}> = ({ section, templateId, setError }) => {
+  isEditable: boolean
+}> = ({ section, templateId, setError, isEditable }) => {
   const [updateTemplate] = useUpdateTemplateMutation()
   const [updateState, setUpdateState] = useState<SectionUpdateState>({
     code: section?.code || '',
@@ -102,29 +117,37 @@ const SectionEdit: React.FC<{
         label="Title"
         update={(value: string) => setUpdateState({ ...updateState, title: value })}
       />
-      <Icon
-        name="edit"
-        onClick={async () => {
-          try {
-            const result = await updateTemplate({
-              variables: {
-                id: templateId,
-                templatePatch: {
-                  templateSectionsUsingId: {
-                    updateById: [{ patch: updateState, id: updateState.id || 0 }],
+      <Popup
+        content="Template form only editable on draft templates"
+        key="not draft"
+        disabled={isEditable}
+        trigger={
+          <Icon
+            name="edit"
+            onClick={async () => {
+              if (!isEditable) return
+              try {
+                const result = await updateTemplate({
+                  variables: {
+                    id: templateId,
+                    templatePatch: {
+                      templateSectionsUsingId: {
+                        updateById: [{ patch: updateState, id: updateState.id || 0 }],
+                      },
+                    },
                   },
-                },
-              },
-            })
-            if (result.errors)
-              return setError({
-                message: 'error',
-                error: JSON.stringify(result.errors),
-              })
-          } catch (e) {
-            setError({ message: 'error', error: e })
-          }
-        }}
+                })
+                if (result.errors)
+                  return setError({
+                    message: 'error',
+                    error: JSON.stringify(result.errors),
+                  })
+              } catch (e) {
+                setError({ message: 'error', error: e })
+              }
+            }}
+          />
+        }
       />
       <Icon name="delete" />
     </div>
@@ -148,10 +171,11 @@ type ElementUpdateState = {
   id: number
 }
 
-const Application: React.FC<{ structure: FullStructure; resetApplication: () => void }> = ({
-  structure,
-  resetApplication,
-}) => {
+const Application: React.FC<{
+  structure: FullStructure
+  resetApplication: () => void
+  isEditable: boolean
+}> = ({ structure, resetApplication, isEditable }) => {
   const { fullStructure } = useGetApplicationStructure({
     structure,
     shouldRevalidate: false,
@@ -196,6 +220,7 @@ const Application: React.FC<{ structure: FullStructure; resetApplication: () => 
       {!!selectedSectionCode && (
         <SectionEdit
           setError={setError}
+          isEditable={isEditable}
           key={selectedSectionCode}
           templateId={templateId}
           section={selectedSection?.details as SectionUpdateState}
@@ -379,6 +404,7 @@ const Application: React.FC<{ structure: FullStructure; resetApplication: () => 
             <div className="button-container">
               <Button
                 inverted
+                disabled={!isEditable}
                 primary
                 onClick={() => {
                   updateTemplateElement({
@@ -389,10 +415,14 @@ const Application: React.FC<{ structure: FullStructure; resetApplication: () => 
               >
                 Save
               </Button>
+
               <Button inverted primary onClick={() => setUpdateState(null)}>
                 Cancel
               </Button>
             </div>
+            {!isEditable && (
+              <Label color="red">Template form only editable on draft templates</Label>
+            )}
           </div>
         )}
       </Modal>

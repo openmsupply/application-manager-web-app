@@ -1544,6 +1544,7 @@ a:hover {
  }
  .icon {
    margin: 4px;
+   .clickable();
  }
 }
 

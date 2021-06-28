@@ -4,6 +4,7 @@ import {
   Template,
   TemplateElementCategory,
   TemplateSection,
+  TemplateStatus,
   useGetTemplateQuery,
 } from '../generated/graphql'
 import evaluate from '@openmsupply/expression-evaluator'
@@ -17,9 +18,10 @@ const graphQLEndpoint = config.serverGraphQL
 
 interface UseLoadTemplateProps {
   templateCode?: string
+  status?: TemplateStatus
 }
 
-const useLoadTemplate = ({ templateCode }: UseLoadTemplateProps) => {
+const useLoadTemplate = ({ templateCode, status = TemplateStatus.Draft }: UseLoadTemplateProps) => {
   const [template, setTemplate] = useState<TemplateDetails>()
   const [error, setError] = useState('')
   const {
@@ -33,6 +35,7 @@ const useLoadTemplate = ({ templateCode }: UseLoadTemplateProps) => {
   } = useGetTemplateQuery({
     variables: {
       code: templateCode || '',
+      status,
     },
     skip: !templateCode,
     fetchPolicy: 'network-only',
