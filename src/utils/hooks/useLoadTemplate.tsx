@@ -21,7 +21,10 @@ interface UseLoadTemplateProps {
   status?: TemplateStatus
 }
 
-const useLoadTemplate = ({ templateCode, status = TemplateStatus.Draft }: UseLoadTemplateProps) => {
+const useLoadTemplate = ({
+  templateCode,
+  status = TemplateStatus.Available,
+}: UseLoadTemplateProps) => {
   const [template, setTemplate] = useState<TemplateDetails>()
   const [error, setError] = useState('')
   const {

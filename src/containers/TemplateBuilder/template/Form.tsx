@@ -23,6 +23,7 @@ const Form: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo }) => {
   const [serial, setSerial] = useState(templateInfo?.configApplications?.nodes?.[0]?.serial || '')
   const { template } = useLoadTemplate({
     templateCode: templateInfo?.code,
+    status: templateInfo?.status || TemplateStatus.Draft,
   })
   const isEditable = templateInfo?.status === TemplateStatus.Draft
   const { create } = useCreateApplication({
