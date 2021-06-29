@@ -144,6 +144,8 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
           applicationData={applicationData}
           editItemText={strings.BUTTON_EDIT}
           deleteItemText={deleteItemText}
+          currentResponseElementsState={currentResponseElementsState}
+          innerElementUpdate={innerElementUpdate}
         />
       )
       break

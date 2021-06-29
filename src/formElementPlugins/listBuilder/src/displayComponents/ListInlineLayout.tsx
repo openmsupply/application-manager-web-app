@@ -20,10 +20,14 @@ const ListInlineLayout: React.FC<ListLayoutProps> = ({
   responses,
   currentUser,
   applicationData,
+  currentResponseElementsState,
+  innerElementUpdate,
 }) => {
   // Inner component -- one for each Item in list
   const ItemAccordion: React.FC<any> = ({ item, header, index }) => {
+    console.log('Item key', index)
     const [open, setOpen] = useState(false)
+    const [edit, setEdit] = useState(false)
     const [currentItemElementsState, setItemResponseElementsState] = useState<any>()
     useEffect(() => {
       buildElements(
@@ -46,15 +50,31 @@ const ListInlineLayout: React.FC<ListLayoutProps> = ({
           <Markdown text={substituteValues(header, item)} semanticComponent="noParagraph" />
         </Accordion.Title>
         <Accordion.Content active={open}>
-          {codes.map((code, cellIndex) => (
-            <SummaryViewWrapper
-              key={`item_${cellIndex}`}
-              element={currentItemElementsState[code]}
-              response={item[code].value}
-              allResponses={responses}
-            />
-          ))}
-          <Button primary content={'EDIT'} onClick={() => editItem(index)} />
+          {codes.map((code, cellIndex) =>
+            edit ? (
+              <ApplicationViewWrapper
+                key={`item_${cellIndex}`}
+                element={currentItemElementsState[code]}
+                isStrictPage={false}
+                currentResponse={item[code].value}
+                allResponses={responses}
+                onSaveUpdateMethod={innerElementUpdate(currentItemElementsState[code].code)}
+                applicationData={applicationData as ApplicationDetails}
+              />
+            ) : (
+              <SummaryViewWrapper
+                key={`item_${cellIndex}`}
+                element={currentItemElementsState[code]}
+                response={item[code].value}
+                allResponses={responses}
+              />
+            )
+          )}
+          {edit ? (
+            <Button primary content={'UPDATE'} onClick={() => setEdit(false)} />
+          ) : (
+            <Button primary content={'EDIT'} onClick={() => setEdit(true)} />
+          )}
           <Button secondary content={'DELETE'} onClick={() => deleteItem(index)} />
         </Accordion.Content>
       </Accordion>
