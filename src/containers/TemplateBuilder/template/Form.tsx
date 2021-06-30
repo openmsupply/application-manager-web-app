@@ -1753,7 +1753,7 @@ const Parameters: React.FC<{
                 primary
                 inverted
                 onClick={() => {
-                  setParameters({ ...parameters, newParameters: null })
+                  setParameters({ ...parameters, newParameter: null })
                 }}
               >
                 Add Parameter
@@ -1843,12 +1843,14 @@ const EvaluationContainer: React.FC<{
       >
         {!updateKey && <Label>{label}</Label>}
         {deleteKey && <Icon className="clickable" onClick={deleteKey} />}
-        {updateKey &&
-          semanticComponentLibrary.TextInput({
-            text: label,
-            setText: updateKey,
-            title: 'Parameter Name',
-          })}
+        <div className="config-reduced-width-input">
+          {updateKey &&
+            semanticComponentLibrary.TextInput({
+              text: label,
+              setText: updateKey,
+              title: 'Parameter Name',
+            })}
+        </div>
         <div className="indicators-container as-row">
           <div key="type" className="indicator">
             <Label className="key" content="type" />
@@ -1866,7 +1868,10 @@ const EvaluationContainer: React.FC<{
               <Label className="key" content="value" />
               <Label
                 className="value"
-                content={truncate(String(evaluation?.value), { length: 200 })}
+                content={truncate(
+                  String(evaluation?.value === undefined ? evaluation : evaluation?.value),
+                  { length: 200 }
+                )}
               />
             </div>
           )}
