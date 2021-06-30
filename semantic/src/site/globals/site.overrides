@@ -1676,7 +1676,11 @@ a:hover {
     color: white !important;
   }
 }
-
+.config-reduced-width-input {
+  input {
+    width: 200px !important;
+  }
+}
 .config-wrapper {
   background: white;
   padding: 10px;
