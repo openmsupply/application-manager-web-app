@@ -26992,11 +26992,8 @@ export type ElementFragmentFragment = (
 
 export type FullTemplateFragment = (
   { __typename?: 'Template' }
-  & Pick<Template, 'status' | 'code' | 'id' | 'isLinear' | 'name' | 'submissionMessage' | 'startMessage' | 'version' | 'versionTimestamp'>
-  & { templateCategory?: Maybe<(
-    { __typename?: 'TemplateCategory' }
-    & Pick<TemplateCategory, 'code' | 'icon' | 'id' | 'title'>
-  )>, configApplications: (
+  & Pick<Template, 'nodeId' | 'version' | 'versionTimestamp'>
+  & { configApplications: (
     { __typename?: 'ApplicationsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'Application' }
@@ -27005,17 +27002,27 @@ export type FullTemplateFragment = (
   ), applications: (
     { __typename?: 'ApplicationsConnection' }
     & Pick<ApplicationsConnection, 'totalCount'>
-  ), templateFilterJoins: (
-    { __typename?: 'TemplateFilterJoinsConnection' }
+  ), templateSections: (
+    { __typename?: 'TemplateSectionsConnection' }
     & { nodes: Array<Maybe<(
-      { __typename?: 'TemplateFilterJoin' }
-      & Pick<TemplateFilterJoin, 'id'>
-      & { filter?: Maybe<(
-        { __typename?: 'Filter' }
-        & Pick<Filter, 'id' | 'icon' | 'code' | 'iconColor' | 'nodeId' | 'query' | 'title' | 'userRole'>
-      )> }
+      { __typename?: 'TemplateSection' }
+      & { templateElementsBySectionId: (
+        { __typename?: 'TemplateElementsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateElement' }
+          & ElementFragmentFragment
+        )>> }
+      ) }
+      & SectionFragment
+    )>> }
+  ), templateStages: (
+    { __typename?: 'TemplateStagesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateStage' }
+      & Pick<TemplateStage, 'id' | 'number' | 'title' | 'description'>
     )>> }
   ) }
+  & TemplateFragment
 );
 
 export type OrganisationFragment = (
@@ -27054,17 +27061,18 @@ export type StageFragment = (
 
 export type TemplateFragment = (
   { __typename?: 'Template' }
-  & Pick<Template, 'code' | 'id' | 'name' | 'isLinear' | 'startMessage' | 'submissionMessage'>
+  & Pick<Template, 'code' | 'id' | 'name' | 'status' | 'isLinear' | 'startMessage' | 'submissionMessage'>
   & { templateCategory?: Maybe<(
     { __typename?: 'TemplateCategory' }
-    & Pick<TemplateCategory, 'title' | 'icon'>
+    & Pick<TemplateCategory, 'title' | 'icon' | 'code' | 'id'>
   )>, templateFilterJoins: (
     { __typename?: 'TemplateFilterJoinsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'TemplateFilterJoin' }
+      & Pick<TemplateFilterJoin, 'id'>
       & { filter?: Maybe<(
         { __typename?: 'Filter' }
-        & Pick<Filter, 'id' | 'iconColor' | 'icon' | 'query' | 'title' | 'userRole'>
+        & Pick<Filter, 'id' | 'icon' | 'code' | 'iconColor' | 'query' | 'title' | 'userRole'>
       )> }
     )>> }
   ) }
@@ -27090,7 +27098,6 @@ export type CreateApplicationMutationVariables = Exact<{
   sessionId: Scalars['String'];
   outcome?: Maybe<ApplicationOutcome>;
   trigger?: Maybe<Trigger>;
-  sections?: Maybe<Array<ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput>>;
   responses?: Maybe<Array<ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput>>;
 }>;
 
@@ -27187,6 +27194,36 @@ export type SubmitReviewMutation = (
   )> }
 );
 
+export type CreateSectionMutationVariables = Exact<{
+  templateId: Scalars['Int'];
+  index: Scalars['Int'];
+  code?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateSectionMutation = (
+  { __typename?: 'Mutation' }
+  & { createTemplateSection?: Maybe<(
+    { __typename?: 'CreateTemplateSectionPayload' }
+    & { templateSection?: Maybe<(
+      { __typename?: 'TemplateSection' }
+      & Pick<TemplateSection, 'id' | 'code' | 'index' | 'title' | 'templateId'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'id'>
+        & { templateSections: (
+          { __typename?: 'TemplateSectionsConnection' }
+          & { nodes: Array<Maybe<(
+            { __typename?: 'TemplateSection' }
+            & Pick<TemplateSection, 'id'>
+          )>> }
+        ) }
+      )> }
+    )> }
+  )> }
+);
+
 export type DeleteWholeApplicationMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -27260,6 +27297,30 @@ export type UpdateTemplateFilterJoinMutation = (
         { __typename?: 'Filter' }
         & Pick<Filter, 'id' | 'iconColor' | 'icon' | 'code' | 'query' | 'title' | 'userRole'>
       )> }
+    )> }
+  )> }
+);
+
+export type UpdateTemplateSectionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  sectionPatch: TemplateSectionPatch;
+}>;
+
+
+export type UpdateTemplateSectionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateSection?: Maybe<(
+    { __typename?: 'UpdateTemplateSectionPayload' }
+    & { templateSection?: Maybe<(
+      { __typename?: 'TemplateSection' }
+      & Pick<TemplateSection, 'id' | 'index' | 'code' | 'templateId' | 'title'>
+      & { templateElementsBySectionId: (
+        { __typename?: 'TemplateElementsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateElement' }
+          & ElementFragmentFragment
+        )>> }
+      ) }
     )> }
   )> }
 );
@@ -27524,20 +27585,9 @@ export type GetApplicationQuery = (
     { __typename?: 'Application' }
     & { template?: Maybe<(
       { __typename?: 'Template' }
-      & { templateStages: (
-        { __typename?: 'TemplateStagesConnection' }
+      & { templateSections: (
+        { __typename?: 'TemplateSectionsConnection' }
         & { nodes: Array<Maybe<(
-          { __typename?: 'TemplateStage' }
-          & TemplateStageFragment
-        )>> }
-      ) }
-      & TemplateFragment
-    )>, applicationSections: (
-      { __typename?: 'ApplicationSectionsConnection' }
-      & { nodes: Array<Maybe<(
-        { __typename?: 'ApplicationSection' }
-        & Pick<ApplicationSection, 'id'>
-        & { templateSection?: Maybe<(
           { __typename?: 'TemplateSection' }
           & { templateElementsBySectionId: (
             { __typename?: 'TemplateElementsConnection' }
@@ -27547,9 +27597,16 @@ export type GetApplicationQuery = (
             )>> }
           ) }
           & SectionFragment
-        )> }
-      )>> }
-    ), user?: Maybe<(
+        )>> }
+      ), templateStages: (
+        { __typename?: 'TemplateStagesConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateStage' }
+          & TemplateStageFragment
+        )>> }
+      ) }
+      & TemplateFragment
+    )>, user?: Maybe<(
       { __typename?: 'User' }
       & UserFragment
     )>, org?: Maybe<(
@@ -28024,6 +28081,45 @@ export const ConsolidatorResponseFragmentFragmentDoc = gql`
   }
 }
     ${ReviewResponseFragmentFragmentDoc}`;
+export const TemplateFragmentDoc = gql`
+    fragment Template on Template {
+  code
+  id
+  name
+  status
+  isLinear
+  startMessage
+  submissionMessage
+  templateCategory {
+    title
+    icon
+    code
+    id
+  }
+  templateFilterJoins {
+    nodes {
+      id
+      filter {
+        id
+        icon
+        code
+        iconColor
+        query
+        title
+        userRole
+      }
+    }
+  }
+}
+    `;
+export const SectionFragmentDoc = gql`
+    fragment Section on TemplateSection {
+  id
+  title
+  index
+  code
+}
+    `;
 export const ElementFragmentFragmentDoc = gql`
     fragment elementFragment on TemplateElement {
   id
@@ -28044,19 +28140,8 @@ export const ElementFragmentFragmentDoc = gql`
     `;
 export const FullTemplateFragmentDoc = gql`
     fragment FullTemplate on Template {
-  status
-  code
-  id
-  isLinear
-  name
-  submissionMessage
-  startMessage
-  templateCategory {
-    code
-    icon
-    id
-    title
-  }
+  ...Template
+  nodeId
   configApplications: applications(filter: {isConfig: {equalTo: true}}) {
     nodes {
       serial
@@ -28068,23 +28153,28 @@ export const FullTemplateFragmentDoc = gql`
   }
   version
   versionTimestamp
-  templateFilterJoins {
+  templateSections(orderBy: INDEX_ASC) {
     nodes {
-      id
-      filter {
-        id
-        icon
-        code
-        iconColor
-        nodeId
-        query
-        title
-        userRole
+      ...Section
+      templateElementsBySectionId(orderBy: INDEX_ASC) {
+        nodes {
+          ...elementFragment
+        }
       }
     }
   }
+  templateStages {
+    nodes {
+      id
+      number
+      title
+      description
+    }
+  }
 }
-    `;
+    ${TemplateFragmentDoc}
+${SectionFragmentDoc}
+${ElementFragmentFragmentDoc}`;
 export const OrganisationFragmentDoc = gql`
     fragment Organisation on Organisation {
   id
@@ -28092,14 +28182,6 @@ export const OrganisationFragmentDoc = gql`
   address
   registration
   logoUrl
-}
-    `;
-export const SectionFragmentDoc = gql`
-    fragment Section on TemplateSection {
-  id
-  title
-  index
-  code
 }
     `;
 export const StageFragmentDoc = gql`
@@ -28112,32 +28194,6 @@ export const StageFragmentDoc = gql`
   statusHistoryTimeCreated
 }
     `;
-export const TemplateFragmentDoc = gql`
-    fragment Template on Template {
-  code
-  id
-  name
-  isLinear
-  startMessage
-  submissionMessage
-  templateCategory {
-    title
-    icon
-  }
-  templateFilterJoins {
-    nodes {
-      filter {
-        id
-        iconColor
-        icon
-        query
-        title
-        userRole
-      }
-    }
-  }
-}
-    `;
 export const TemplateStageFragmentDoc = gql`
     fragment TemplateStage on TemplateStage {
   number
@@ -28148,8 +28204,8 @@ export const TemplateStageFragmentDoc = gql`
 }
     `;
 export const CreateApplicationDocument = gql`
-    mutation createApplication($name: String!, $isConfig: Boolean!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!], $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
-  createApplication(input: {application: {isConfig: $isConfig, name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, sessionId: $sessionId, isActive: true, outcome: $outcome, trigger: $trigger, applicationSectionsUsingId: {create: $sections}, applicationResponsesUsingId: {create: $responses}}}) {
+    mutation createApplication($name: String!, $isConfig: Boolean!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
+  createApplication(input: {application: {isConfig: $isConfig, name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, sessionId: $sessionId, isActive: true, outcome: $outcome, trigger: $trigger, applicationResponsesUsingId: {create: $responses}}}) {
     application {
       userId
       orgId
@@ -28192,7 +28248,6 @@ export type CreateApplicationMutationFn = Apollo.MutationFunction<CreateApplicat
  *      sessionId: // value for 'sessionId'
  *      outcome: // value for 'outcome'
  *      trigger: // value for 'trigger'
- *      sections: // value for 'sections'
  *      responses: // value for 'responses'
  *   },
  * });
@@ -28323,6 +28378,55 @@ export function useSubmitReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type SubmitReviewMutationHookResult = ReturnType<typeof useSubmitReviewMutation>;
 export type SubmitReviewMutationResult = Apollo.MutationResult<SubmitReviewMutation>;
 export type SubmitReviewMutationOptions = Apollo.BaseMutationOptions<SubmitReviewMutation, SubmitReviewMutationVariables>;
+export const CreateSectionDocument = gql`
+    mutation createSection($templateId: Int!, $index: Int!, $code: String = "newSection", $title: String = "New Section") {
+  createTemplateSection(input: {templateSection: {code: $code, index: $index, templateId: $templateId, title: $title}}) {
+    templateSection {
+      id
+      template {
+        id
+        templateSections {
+          nodes {
+            id
+          }
+        }
+      }
+      code
+      index
+      title
+      templateId
+    }
+  }
+}
+    `;
+export type CreateSectionMutationFn = Apollo.MutationFunction<CreateSectionMutation, CreateSectionMutationVariables>;
+
+/**
+ * __useCreateSectionMutation__
+ *
+ * To run a mutation, you first call `useCreateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSectionMutation, { data, loading, error }] = useCreateSectionMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      index: // value for 'index'
+ *      code: // value for 'code'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useCreateSectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateSectionMutation, CreateSectionMutationVariables>) {
+        return Apollo.useMutation<CreateSectionMutation, CreateSectionMutationVariables>(CreateSectionDocument, baseOptions);
+      }
+export type CreateSectionMutationHookResult = ReturnType<typeof useCreateSectionMutation>;
+export type CreateSectionMutationResult = Apollo.MutationResult<CreateSectionMutation>;
+export type CreateSectionMutationOptions = Apollo.BaseMutationOptions<CreateSectionMutation, CreateSectionMutationVariables>;
 export const DeleteWholeApplicationDocument = gql`
     mutation deleteWholeApplication($id: Int!) {
   deleteWholeApplication(input: {applicationId: $id}) {
@@ -28494,6 +28598,50 @@ export function useUpdateTemplateFilterJoinMutation(baseOptions?: Apollo.Mutatio
 export type UpdateTemplateFilterJoinMutationHookResult = ReturnType<typeof useUpdateTemplateFilterJoinMutation>;
 export type UpdateTemplateFilterJoinMutationResult = Apollo.MutationResult<UpdateTemplateFilterJoinMutation>;
 export type UpdateTemplateFilterJoinMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateFilterJoinMutation, UpdateTemplateFilterJoinMutationVariables>;
+export const UpdateTemplateSectionDocument = gql`
+    mutation updateTemplateSection($id: Int!, $sectionPatch: TemplateSectionPatch!) {
+  updateTemplateSection(input: {id: $id, patch: $sectionPatch}) {
+    templateSection {
+      id
+      index
+      code
+      templateId
+      title
+      templateElementsBySectionId {
+        nodes {
+          ...elementFragment
+        }
+      }
+    }
+  }
+}
+    ${ElementFragmentFragmentDoc}`;
+export type UpdateTemplateSectionMutationFn = Apollo.MutationFunction<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>;
+
+/**
+ * __useUpdateTemplateSectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateSectionMutation, { data, loading, error }] = useUpdateTemplateSectionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      sectionPatch: // value for 'sectionPatch'
+ *   },
+ * });
+ */
+export function useUpdateTemplateSectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>(UpdateTemplateSectionDocument, baseOptions);
+      }
+export type UpdateTemplateSectionMutationHookResult = ReturnType<typeof useUpdateTemplateSectionMutation>;
+export type UpdateTemplateSectionMutationResult = Apollo.MutationResult<UpdateTemplateSectionMutation>;
+export type UpdateTemplateSectionMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>;
 export const UpdateApplicationDocument = gql`
     mutation updateApplication($serial: String!, $applicationTrigger: Trigger = ON_APPLICATION_SUBMIT, $responses: [ApplicationResponseOnApplicationResponseForApplicationResponseApplicationIdFkeyUsingApplicationResponsePkeyUpdate!]) {
   updateApplicationBySerial(input: {serial: $serial, patch: {trigger: $applicationTrigger, applicationResponsesUsingId: {updateById: $responses}}}) {
@@ -29006,22 +29154,19 @@ export const GetApplicationDocument = gql`
     ...Application
     template {
       ...Template
-      templateStages {
+      templateSections(orderBy: INDEX_ASC) {
         nodes {
-          ...TemplateStage
-        }
-      }
-    }
-    applicationSections {
-      nodes {
-        id
-        templateSection {
           ...Section
           templateElementsBySectionId(orderBy: INDEX_ASC) {
             nodes {
               ...elementFragment
             }
           }
+        }
+      }
+      templateStages {
+        nodes {
+          ...TemplateStage
         }
       }
     }
@@ -29040,9 +29185,9 @@ export const GetApplicationDocument = gql`
 }
     ${ApplicationFragmentDoc}
 ${TemplateFragmentDoc}
-${TemplateStageFragmentDoc}
 ${SectionFragmentDoc}
 ${ElementFragmentFragmentDoc}
+${TemplateStageFragmentDoc}
 ${UserFragmentDoc}
 ${OrganisationFragmentDoc}
 ${StageFragmentDoc}`;
@@ -29694,7 +29839,7 @@ export const GetAllTemplatesDocument = gql`
       templateCategory {
         title
       }
-      applications {
+      applications(filter: {isConfig: {equalTo: false}}) {
         totalCount
       }
     }

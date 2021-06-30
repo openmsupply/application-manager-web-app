@@ -14,7 +14,7 @@ export default gql`
         templateCategory {
           title
         }
-        applications {
+        applications(filter: { isConfig: { equalTo: false } }) {
           totalCount
         }
       }

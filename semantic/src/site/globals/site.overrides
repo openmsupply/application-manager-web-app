@@ -1571,6 +1571,19 @@ a:hover {
   }
   .icon {
     margin: 5px;
+    .clickable();
+  }
+}
+
+.template-page-edit {
+  .flex-row();
+  align-items: center;
+  .header {
+    margin: 5px !important;
+  }
+  .icon {
+    margin: 5px;
+    .clickable();
   }
 }
 
@@ -1589,6 +1602,17 @@ a:hover {
 }
 
 .config-wrapper {
+  .config-container {
+    .flex-row();
+    align-items: flex-start;
+    justify-content: flex-end;
+    width:100px;
+    margin-right:30px;
+
+    .icon {
+      .clickable();
+    }
+  }
   .form-element-wrapper {
     justify-content: flex-start !important;
   }

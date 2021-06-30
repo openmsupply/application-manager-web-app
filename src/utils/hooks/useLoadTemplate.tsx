@@ -4,12 +4,11 @@ import {
   Template,
   TemplateElementCategory,
   TemplateSection,
-  TemplateStatus,
   useGetTemplateQuery,
 } from '../generated/graphql'
 import evaluate from '@openmsupply/expression-evaluator'
 import { useUserState } from '../../contexts/UserState'
-import { EvaluatorParameters } from '../types'
+import { EvaluatorParameters, User } from '../types'
 import { getTemplateSections } from '../helpers/application/getSectionsDetails'
 import { TemplateDetails } from '../types'
 import config from '../../config'
@@ -18,13 +17,53 @@ const graphQLEndpoint = config.serverGraphQL
 
 interface UseLoadTemplateProps {
   templateCode?: string
-  status?: TemplateStatus
 }
 
-const useLoadTemplate = ({
-  templateCode,
-  status = TemplateStatus.Available,
-}: UseLoadTemplateProps) => {
+type CalculateTemplateDetails = (props: {
+  currentUser: User | null
+  template: Template
+}) => Promise<TemplateDetails>
+
+const calculateTemplateDetails: CalculateTemplateDetails = async ({ currentUser, template }) => {
+  const { id, code, name } = template
+  const templateSections = template.templateSections.nodes as TemplateSection[]
+  const sections = getTemplateSections(templateSections)
+  const elementsIds: number[] = []
+  const elementsDefaults: any[] = []
+
+  templateSections.forEach((section) => {
+    const { templateElementsBySectionId } = section as TemplateSection
+    templateElementsBySectionId.nodes.forEach((element) => {
+      if (
+        element?.id &&
+        (element.category === TemplateElementCategory.Question || element?.defaultValue !== null)
+      ) {
+        elementsIds.push(element.id)
+        elementsDefaults.push(element.defaultValue)
+      }
+    })
+  })
+
+  const evaluatorParams: EvaluatorParameters = {
+    objects: { currentUser },
+    APIfetch: fetch,
+    graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
+  }
+
+  const startMessage = await evaluate(template?.startMessage || '', evaluatorParams)
+
+  return {
+    id,
+    code,
+    name: name as string,
+    elementsIds,
+    elementsDefaults,
+    sections,
+    startMessage: String(startMessage),
+  }
+}
+
+const useLoadTemplate = ({ templateCode }: UseLoadTemplateProps) => {
   const [template, setTemplate] = useState<TemplateDetails>()
   const [error, setError] = useState('')
   const {
@@ -38,7 +77,6 @@ const useLoadTemplate = ({
   } = useGetTemplateQuery({
     variables: {
       code: templateCode || '',
-      status,
     },
     skip: !templateCode,
     fetchPolicy: 'network-only',
@@ -62,41 +100,9 @@ const useLoadTemplate = ({
       return
     }
 
-    const { id, code, name } = template
-    const templateSections = template.templateSections.nodes as TemplateSection[]
-    const sections = getTemplateSections(templateSections)
-    const elementsIds: number[] = []
-    const elementsDefaults: any[] = []
-
-    templateSections.forEach((section) => {
-      const { templateElementsBySectionId } = section as TemplateSection
-      templateElementsBySectionId.nodes.forEach((element) => {
-        if (
-          element?.id &&
-          (element.category === TemplateElementCategory.Question || element?.defaultValue !== null)
-        ) {
-          elementsIds.push(element.id)
-          elementsDefaults.push(element.defaultValue)
-        }
-      })
-    })
-
-    const evaluatorParams: EvaluatorParameters = {
-      objects: { currentUser },
-      APIfetch: fetch,
-      graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
-    }
-    evaluate(template?.startMessage || '', evaluatorParams).then((startMessage: any) => {
-      setTemplate({
-        id,
-        code,
-        name: name as string,
-        elementsIds,
-        elementsDefaults,
-        sections,
-        startMessage,
-      })
-    })
+    calculateTemplateDetails({ currentUser, template }).then((templateDetails) =>
+      setTemplate(templateDetails)
+    )
   }, [data, currentUser])
 
   return {
@@ -120,3 +126,4 @@ function checkForTemplateSectionErrors(template: Template) {
 }
 
 export default useLoadTemplate
+export { calculateTemplateDetails }
