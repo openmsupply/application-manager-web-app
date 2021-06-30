@@ -28014,6 +28014,22 @@ export type GetFullTemplateInfoQuery = (
   )> }
 );
 
+export type GetTemplateElementsByPluginQueryVariables = Exact<{
+  pluginCode: Scalars['String'];
+}>;
+
+
+export type GetTemplateElementsByPluginQuery = (
+  { __typename?: 'Query' }
+  & { templateElements?: Maybe<(
+    { __typename?: 'TemplateElementsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateElement' }
+      & Pick<TemplateElement, 'category' | 'helpText' | 'isEditable' | 'isRequired' | 'parameters' | 'validation' | 'code' | 'title' | 'id' | 'defaultValue' | 'validationMessage' | 'visibilityCondition' | 'templateCode'>
+    )>> }
+  )> }
+);
+
 export type GetTeplatesAvailableForCodeQueryVariables = Exact<{
   code: Scalars['String'];
 }>;
@@ -29973,6 +29989,53 @@ export function useGetFullTemplateInfoLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetFullTemplateInfoQueryHookResult = ReturnType<typeof useGetFullTemplateInfoQuery>;
 export type GetFullTemplateInfoLazyQueryHookResult = ReturnType<typeof useGetFullTemplateInfoLazyQuery>;
 export type GetFullTemplateInfoQueryResult = Apollo.QueryResult<GetFullTemplateInfoQuery, GetFullTemplateInfoQueryVariables>;
+export const GetTemplateElementsByPluginDocument = gql`
+    query getTemplateElementsByPlugin($pluginCode: String!) {
+  templateElements(filter: {elementTypePluginCode: {equalTo: $pluginCode}}) {
+    nodes {
+      category
+      helpText
+      isEditable
+      isRequired
+      parameters
+      validation
+      code
+      title
+      id
+      defaultValue
+      validationMessage
+      visibilityCondition
+      templateCode
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTemplateElementsByPluginQuery__
+ *
+ * To run a query within a React component, call `useGetTemplateElementsByPluginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTemplateElementsByPluginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTemplateElementsByPluginQuery({
+ *   variables: {
+ *      pluginCode: // value for 'pluginCode'
+ *   },
+ * });
+ */
+export function useGetTemplateElementsByPluginQuery(baseOptions?: Apollo.QueryHookOptions<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>) {
+        return Apollo.useQuery<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>(GetTemplateElementsByPluginDocument, baseOptions);
+      }
+export function useGetTemplateElementsByPluginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>) {
+          return Apollo.useLazyQuery<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>(GetTemplateElementsByPluginDocument, baseOptions);
+        }
+export type GetTemplateElementsByPluginQueryHookResult = ReturnType<typeof useGetTemplateElementsByPluginQuery>;
+export type GetTemplateElementsByPluginLazyQueryHookResult = ReturnType<typeof useGetTemplateElementsByPluginLazyQuery>;
+export type GetTemplateElementsByPluginQueryResult = Apollo.QueryResult<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>;
 export const GetTeplatesAvailableForCodeDocument = gql`
     query getTeplatesAvailableForCode($code: String!) {
   templates(filter: {status: {equalTo: AVAILABLE}, code: {equalTo: $code}}) {
