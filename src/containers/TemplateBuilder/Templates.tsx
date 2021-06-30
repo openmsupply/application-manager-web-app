@@ -85,7 +85,7 @@ const useGetTemplates = () => {
         )
           holder.main = current
 
-        holder.main.applicationCount += current.applicationCount
+        holder.applicationCount += current.applicationCount
         holder.numberOfTemplates = all.length
       })
 
@@ -136,12 +136,12 @@ const columns: Columns = [
     render: ({ version, versionTimestamp }) => (
       <div className="indicators-container">
         <div key="version" className="indicator">
-          <Label className="key" content="version" />
-          <Label className="value" content={version} />
+          <Label className="key" key="key" content="version" />
+          <Label className="value" key="value" content={version} />
         </div>
         <div key="versionDate" className="indicator">
-          <Label className="key" content="date" />
-          <Label className="value" content={versionTimestamp.toFormat('dd MMM yy')} />
+          <Label className="key" key="key" content="date" />
+          <Label className="value" key="value" content={versionTimestamp.toFormat('dd MMM yy')} />
         </div>
       </div>
     ),
@@ -159,14 +159,14 @@ const columns: Columns = [
     render: ({ applicationCount, numberOfTemplates }) => (
       <div className="indicators-container">
         <div key="appCount" className="indicator">
-          <Label className="key" content="# application" />
-          <Label className="value" content={applicationCount} />
+          <Label className="key" key="key" content="# application" />
+          <Label className="value" key="value" content={applicationCount} />
         </div>
 
         {numberOfTemplates && (
           <div key="tempCount" className="indicator">
-            <Label className="key" content="# templates" />
-            <Label className="value" content={numberOfTemplates} />
+            <Label className="key" key="key" content="# templates" />
+            <Label className="value" key="value" content={numberOfTemplates} />
           </div>
         )}
       </div>
@@ -176,8 +176,8 @@ const columns: Columns = [
   {
     title: '',
     render: ({ code, version, id }, setError, setIsLoading, refetch) => (
-      <>
-        <ViewEditButton id={id} />
+      <div key="buttons">
+        <ViewEditButton key="editButton" id={id} />
         <ExportButton
           code={code}
           key="export"
@@ -195,7 +195,7 @@ const columns: Columns = [
           setIsLoading={setIsLoading}
           refetch={refetch}
         />
-      </>
+      </div>
     ),
   },
 ]
@@ -229,7 +229,7 @@ const ExportButton: React.FC<{
   const filter = { template: { id: { equalTo: id } } }
   const body = JSON.stringify({ filters: filter })
   return (
-    <>
+    <div key="export">
       <a ref={downloadLinkRef} href={`${snapshotFilesUrl}/${snapshotName}.zip`} target="_blank"></a>
       <div
         className="clickable"
@@ -261,7 +261,7 @@ const ExportButton: React.FC<{
       >
         <Icon className="clickable" key="export" name="sign-out" />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -278,7 +278,7 @@ const DuplicateButton: React.FC<{
   const body = JSON.stringify({ filters: filter })
 
   return (
-    <>
+    <div key="dupicate">
       <div
         className="clickable"
         onClick={async (e) => {
@@ -317,7 +317,7 @@ const DuplicateButton: React.FC<{
       >
         <Icon className="clickable" key="export" name="copy" />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -386,7 +386,7 @@ const Templates: React.FC = () => {
 
   return (
     <div className="template-builder-templates">
-      <Header as="h3">Templates / Proceedures</Header>
+      <Header as="h3">Templates / Procedures</Header>
 
       <div key="topBar" className="topbar">
         <div className="indicators-container">
@@ -394,19 +394,19 @@ const Templates: React.FC = () => {
             <Label className="key">
               <Icon name="edit outline" />
             </Label>
-            <Label className="value" content="edit" />
+            <Label className="value" key="value" content="edit" />
           </div>
           <div key="tooltipExoirt" className="indicator">
             <Label className="key">
               <Icon name="sign-out" />
             </Label>
-            <Label className="value" content="export" />
+            <Label className="value" key="value" content="export" />
           </div>
           <div key="tooltipDuplicate" className="indicator">
             <Label className="key">
               <Icon name="copy" />
             </Label>
-            <Label className="value" content="duplicate" />
+            <Label className="value" key="value" content="duplicate" />
           </div>
           <input
             type="file"
@@ -435,17 +435,17 @@ const Templates: React.FC = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body key="body">
-            {templates.map(({ main, applicationCount, numberOfTemplates, all }, index) => {
+            {templates.map(({ main, applicationCount, numberOfTemplates, all }, rowIndex) => {
               return (
-                <>
-                  {index !== selectedRow && (
+                <React.Fragment key={`fragment_${rowIndex}`}>
+                  {rowIndex !== selectedRow && (
                     <Table.Row
-                      key={index}
+                      key={`notselected${rowIndex}`}
                       className="clickable"
-                      onClick={() => setSelectedRow(index)}
+                      onClick={() => setSelectedRow(rowIndex)}
                     >
-                      {columns.map(({ render }, index) => (
-                        <Table.Cell key={index}>
+                      {columns.map(({ render }, cellIndex) => (
+                        <Table.Cell key={`selectedcell${cellIndex}`}>
                           {render(
                             { ...main, applicationCount, numberOfTemplates },
                             setError,
@@ -456,10 +456,10 @@ const Templates: React.FC = () => {
                       ))}
                     </Table.Row>
                   )}
-                  {index === selectedRow && (
-                    <>
+                  {rowIndex === selectedRow && (
+                    <React.Fragment key={`fragment_${rowIndex}`}>
                       <Table.Row
-                        key={`selected_${index}`}
+                        key={`selected_${rowIndex}`}
                         className="clickable"
                         onClick={() => setSelectedRow(-1)}
                         style={{
@@ -471,20 +471,20 @@ const Templates: React.FC = () => {
                         </td>
                       </Table.Row>
                       {all.map((row, innerRowIndex) => (
-                        <Table.Row key={`${index}${innerRowIndex}`}>
-                          {columns.map(({ render }, index) => (
-                            <Table.Cell key={index}>
+                        <Table.Row key={`${rowIndex}_${innerRowIndex}`}>
+                          {columns.map(({ render }, cellIndex) => (
+                            <Table.Cell key={cellIndex}>
                               {render(row, setError, setIsLoading, refetch)}
                             </Table.Cell>
                           ))}
                         </Table.Row>
                       ))}
-                      <Table.Row style={{ height: 2 }} key={`${index}-end`}>
+                      <Table.Row style={{ height: 2 }} key={`${rowIndex}-end`}>
                         <td colSpan={columns.length}></td>
                       </Table.Row>
-                    </>
+                    </React.Fragment>
                   )}
-                </>
+                </React.Fragment>
               )
             })}
           </Table.Body>

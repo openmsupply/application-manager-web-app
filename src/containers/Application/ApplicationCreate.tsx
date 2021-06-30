@@ -5,6 +5,7 @@ import { ApplicationActions, useApplicationState } from '../../contexts/Applicat
 import { useUserState } from '../../contexts/UserState'
 import useCreateApplication, {
   CreateApplicationProps,
+  CreateApplicationReturnType,
 } from '../../utils/hooks/useCreateApplication'
 import useLoadTemplate from '../../utils/hooks/useLoadTemplate'
 import { useRouter } from '../../utils/hooks/useRouter'
@@ -18,10 +19,10 @@ import { evaluateElements } from '../../utils/helpers/evaluateElements'
 type HandlerCreate = (props: {
   template?: TemplateDetails
   currentUser: User | null
-  create: (props: CreateApplicationProps) => Promise<void>
+  create: (props: CreateApplicationProps) => CreateApplicationReturnType
   setApplicationState?: React.Dispatch<ApplicationActions>
   isConfig?: boolean
-}) => Promise<string>
+}) => CreateApplicationReturnType
 
 export const handleCreate: HandlerCreate = async ({
   setApplicationState,
@@ -36,16 +37,10 @@ export const handleCreate: HandlerCreate = async ({
   const serialNumber = Math.round(Math.random() * 10000).toString()
   if (setApplicationState) setApplicationState({ type: 'setSerialNumber', serialNumber })
 
-  const {
-    name = 'no name',
-    elementsIds = [],
-    elementsDefaults = [],
-    sections = [],
-    id = 0,
-  } = template || {}
+  const { name = 'no name', elementsIds = [], elementsDefaults = [], id = 0 } = template || {}
   const defaultValues = await getDefaults(elementsDefaults, currentUser)
 
-  await create({
+  const result = await create({
     name,
     serial: serialNumber,
     templateId: id,
@@ -53,15 +48,13 @@ export const handleCreate: HandlerCreate = async ({
     userId: currentUser?.userId,
     orgId: currentUser?.organisation?.orgId,
     sessionId: currentUser?.sessionId as string,
-    templateSections: sections.map(({ id }) => {
-      return { templateSectionId: id }
-    }),
     templateResponses: (elementsIds as number[]).map((id, index) => {
       return { templateElementId: id, value: defaultValues[index] }
     }),
   })
 
-  return serialNumber
+  console.log(result)
+  return result
 }
 
 const ApplicationCreate: React.FC = () => {

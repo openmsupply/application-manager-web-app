@@ -11,7 +11,6 @@ export default gql`
     $sessionId: String!
     $outcome: ApplicationOutcome = PENDING
     $trigger: Trigger = ON_APPLICATION_CREATE
-    $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!]
     $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]
   ) {
     createApplication(
@@ -27,7 +26,6 @@ export default gql`
           isActive: true
           outcome: $outcome
           trigger: $trigger
-          applicationSectionsUsingId: { create: $sections }
           applicationResponsesUsingId: { create: $responses }
         }
       }

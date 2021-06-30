@@ -2,19 +2,8 @@ import { gql } from '@apollo/client'
 
 export default gql`
   fragment FullTemplate on Template {
-    status
-    code
-    id
-    isLinear
-    name
-    submissionMessage
-    startMessage
-    templateCategory {
-      code
-      icon
-      id
-      title
-    }
+    ...Template
+    nodeId
     configApplications: applications(filter: { isConfig: { equalTo: true } }) {
       nodes {
         serial
@@ -26,19 +15,22 @@ export default gql`
     }
     version
     versionTimestamp
-    templateFilterJoins {
+    templateSections(orderBy: INDEX_ASC) {
+      nodes {
+        ...Section
+        templateElementsBySectionId(orderBy: INDEX_ASC) {
+          nodes {
+            ...elementFragment
+          }
+        }
+      }
+    }
+    templateStages {
       nodes {
         id
-        filter {
-          id
-          icon
-          code
-          iconColor
-          nodeId
-          query
-          title
-          userRole
-        }
+        number
+        title
+        description
       }
     }
   }

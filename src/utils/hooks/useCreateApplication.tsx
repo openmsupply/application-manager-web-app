@@ -10,9 +10,11 @@ export interface CreateApplicationProps {
   orgId?: number
   sessionId: string
   isConfig: boolean
-  templateSections: { templateSectionId: number }[]
   templateResponses: { templateElementId: number; value: any }[]
 }
+
+type UseCreateApplicationMutationReturnType = ReturnType<typeof useCreateApplicationMutation>
+export type CreateApplicationReturnType = ReturnType<UseCreateApplicationMutationReturnType[0]>
 
 interface UseCreateApplicationProps {
   onCompleted: () => void
@@ -40,12 +42,11 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
     userId,
     orgId,
     sessionId,
-    templateSections,
     templateResponses,
     isConfig,
   }: CreateApplicationProps) => {
     setProcessing(true)
-    await applicationMutation({
+    const result = await applicationMutation({
       variables: {
         isConfig,
         name,
@@ -54,10 +55,10 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
         userId,
         orgId,
         sessionId,
-        sections: templateSections,
         responses: templateResponses,
       },
     })
+    return result
   }
 
   return {

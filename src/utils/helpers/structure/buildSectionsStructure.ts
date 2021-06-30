@@ -1,6 +1,6 @@
 import { ElementBase, SectionDetails, SectionsStructure } from '../../types'
 interface BuildSectionsStructureProps {
-  sections: SectionDetails[]
+  sectionDetails: SectionDetails[]
   baseElements: ElementBase[]
 }
 
@@ -15,12 +15,12 @@ interface BuildSectionsStructureProps {
  * @returns Object of complete sections structure
  */
 const buildSectionsStructure = ({
-  sections,
+  sectionDetails,
   baseElements,
 }: BuildSectionsStructureProps): SectionsStructure => {
   // Create the sections and pages structure to display each section's element
   // Will also add the responses for each element, and can add reviews if received by props
-  return sections.reduce((sectionsStructure: SectionsStructure, section) => {
+  return sectionDetails.reduce((sectionsStructure: SectionsStructure, section) => {
     const pageNumbers = Array.from(Array(section.totalPages).keys(), (n) => n + 1)
     const pages = pageNumbers.reduce((pages, pageNumber) => {
       const elements = getPageElements({

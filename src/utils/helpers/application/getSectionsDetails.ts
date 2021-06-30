@@ -1,4 +1,4 @@
-import { ApplicationSection, TemplateElement, TemplateSection } from '../../generated/graphql'
+import { TemplateElement, TemplateSection } from '../../generated/graphql'
 import { SectionDetails } from '../../types'
 
 export const getTemplateSections = (templateSections: TemplateSection[]) => {
@@ -9,10 +9,10 @@ export const getTemplateSections = (templateSections: TemplateSection[]) => {
   return getSectionDetailsArray(templateSections)
 }
 
-export const getApplicationSections = (applicationSections: ApplicationSection[]) => {
-  const sections = applicationSections
-    .map(({ templateSection }: ApplicationSection) => templateSection as TemplateSection)
-    .sort(({ index: aIndex }, { index: bIndex }) => (aIndex as number) - (bIndex as number))
+export const getSectionDetails = (templateSections: TemplateSection[]) => {
+  const sections = [...templateSections].sort(
+    ({ index: aIndex }, { index: bIndex }) => (aIndex as number) - (bIndex as number)
+  )
   return getSectionDetailsArray(sections)
 }
 
