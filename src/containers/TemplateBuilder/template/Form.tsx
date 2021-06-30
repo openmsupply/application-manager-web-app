@@ -744,16 +744,18 @@ const SectionEdit: React.FC<{
         first: index < first ? index : first,
         last: index > last ? index : last,
         firstAbove:
-          thisSectionIndex < index && index - thisSectionIndex < firstAbove - thisSectionIndex
+          firstAbove === null ||
+          (thisSectionIndex < index && index - thisSectionIndex < firstAbove - thisSectionIndex)
             ? index
             : firstAbove,
         firstBelow:
-          thisSectionIndex > index && thisSectionIndex - index < thisSectionIndex - firstBelow
+          firstBelow === null ||
+          (thisSectionIndex > index && thisSectionIndex - index < thisSectionIndex - firstBelow)
             ? index
             : firstBelow,
       }
     },
-    { first: 0, firstBelow: -Infinity, last: 0, firstAbove: Infinity }
+    { first: 0, firstBelow: 0, last: 0, firstAbove: 0 }
   )
 
   return (
@@ -770,12 +772,15 @@ const SectionEdit: React.FC<{
                 if (!isEditable) return
 
                 const currentUpdateById = {
-                  patch: { index: indexRange.firstBelow },
+                  patch: { index: indexRange.firstBelow || 0 },
                   id: section?.id || 0,
                 }
                 const firstBelowUpdateById = sections
                   .filter((section) => section?.index === indexRange.firstBelow)
-                  .map((section) => ({ patch: { index: thisSectionIndex }, id: section?.id || 0 }))
+                  .map((section) => ({
+                    patch: { index: thisSectionIndex || 0 },
+                    id: section?.id || 0,
+                  }))
 
                 await mutate(
                   () =>
@@ -801,12 +806,15 @@ const SectionEdit: React.FC<{
                 if (!isEditable) return
 
                 const currentUpdateById = {
-                  patch: { index: indexRange.firstAbove },
+                  patch: { index: indexRange.firstAbove || 0 },
                   id: section?.id || 0,
                 }
                 const firstAboveUpdateById = sections
                   .filter((section) => section?.index === indexRange.firstAbove)
-                  .map((section) => ({ patch: { index: thisSectionIndex }, id: section?.id || 0 }))
+                  .map((section) => ({
+                    patch: { index: thisSectionIndex || 0 },
+                    id: section?.id || 0,
+                  }))
 
                 await mutate(
                   () =>
