@@ -1,14 +1,30 @@
+import { truncate } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { Button, Dropdown, Header, Icon, Label, Modal, Popup } from 'semantic-ui-react'
+import ReactJson from 'react-json-view'
+import {
+  Accordion,
+  Button,
+  Checkbox,
+  Dropdown,
+  Header,
+  Icon,
+  Input,
+  Label,
+  Modal,
+  Popup,
+} from 'semantic-ui-react'
+
 import { Loading, PageElements } from '../../../components'
+import ConsolidateReviewDecision from '../../../components/PageElements/Elements/ConsolidateReviewDecision'
+import config from '../../../config'
 import { useUserState } from '../../../contexts/UserState'
 import pluginProvider from '../../../formElementPlugins/pluginProvider'
 import {
-  TemplateElement,
   TemplateElementCategory,
   TemplateStatus,
   useCreateSectionMutation,
   useDeleteWholeApplicationMutation,
+  useGetTemplateElementsByPluginQuery,
   useRestartApplicationMutation,
   useUpdateTemplateElementMutation,
   useUpdateTemplateMutation,
@@ -20,6 +36,9 @@ import useLoadApplication from '../../../utils/hooks/useLoadApplication'
 import { calculateTemplateDetails } from '../../../utils/hooks/useLoadTemplate'
 import { ElementState, EvaluatorNode, FullStructure, User } from '../../../utils/types'
 import { handleCreate } from '../../Application/ApplicationCreate'
+import { parseAndRenderEvaluation, renderEvaluationElement } from '../evaluatorGui/renderEvaluation'
+import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
+import { getTypedEvaluation } from '../evaluatorGui/typeHelpers'
 import { JsonTextBox, OnBlurInput } from './General'
 import { TemplateInfo } from './TemplateWrapper'
 
@@ -1005,14 +1024,81 @@ const Application: React.FC<{
 
   const [selectedSectionCode, setSelectedSectionCode] = useState('')
   const [selectedPageNumber, setSelectedPageNumber] = useState(-1)
+  const [elementTemplateState, setElementTemplateState] = useState<{
+    isSearching: boolean
+    pluginCode: string
+    options: {
+      text: string
+      key: number
+      value?: number
+      valueFull?: {
+        category: TemplateElementCategory
+        helpText: string
+        parameters: object
+        defaultValue: EvaluatorNode
+        visibilityCondition: EvaluatorNode
+        validationMessage: string
+        isRequired: EvaluatorNode
+        isEditable: EvaluatorNode
+        validation: EvaluatorNode
+      }
+    }[]
+  }>({
+    isSearching: false,
+    pluginCode: '',
+    options: [],
+  })
 
-  const templateId = fullStructure?.info.template.id || 0
-  const selectedSection = fullStructure?.sections[selectedSectionCode]
   const [updateState, setUpdateState] = useState<ElementUpdateState | null>(null)
   const [updateTemplateElement] = useUpdateTemplateElementMutation()
   const [createSection] = useCreateSectionMutation()
   const [updateApplication] = useRestartApplicationMutation()
   const [updateTemplateSection] = useUpdateTemplateSectionMutation()
+
+  const { data: elementSearchData } = useGetTemplateElementsByPluginQuery({
+    skip: !elementTemplateState.isSearching,
+    variables: { pluginCode: elementTemplateState.pluginCode },
+  })
+
+  useEffect(() => {
+    const newState = { isSearching: false }
+    console.log(elementSearchData, elementTemplateState)
+    if (
+      elementTemplateState.isSearching &&
+      (!elementSearchData?.templateElements?.nodes ||
+        elementSearchData.templateElements?.nodes.length === 0)
+    )
+      return setElementTemplateState({
+        ...elementTemplateState,
+        ...newState,
+        options: [{ text: 'No existing matching template elements found', key: -2 }],
+      })
+
+    if (!elementSearchData?.templateElements?.nodes) return
+
+    const newOptions = elementSearchData.templateElements?.nodes.map((templateElement) => ({
+      text: `${templateElement?.templateCode} - ${templateElement?.code} - ${templateElement?.title}`,
+      key: templateElement?.id || 0,
+      value: templateElement?.id || 0,
+      valueFull: {
+        category: templateElement?.category as TemplateElementCategory,
+        helpText: templateElement?.helpText || '',
+        parameters: templateElement?.parameters || {},
+        defaultValue: templateElement?.defaultValue || '',
+        visibilityCondition: templateElement?.visibilityCondition || true,
+        validationMessage: templateElement?.validationMessage || '',
+        isRequired: templateElement?.isRequired || false,
+        isEditable: templateElement?.isEditable || true,
+        validation: templateElement?.validation || true,
+      },
+    }))
+
+    setElementTemplateState({
+      ...elementTemplateState,
+      ...newState,
+      options: newOptions,
+    })
+  }, [elementSearchData])
 
   useEffect(() => {
     if (selectedPageNumber - 1) return
@@ -1021,6 +1107,8 @@ const Application: React.FC<{
     }
   }, [selectedPageNumber, fullStructure])
 
+  const templateId = fullStructure?.info.template.id || 0
+  const selectedSection = fullStructure?.sections[selectedSectionCode]
   const sections = templateInfo?.templateSections?.nodes || []
   const thisSection = sections.find(
     (templateSection) => templateSection?.code === selectedSectionCode
@@ -1110,8 +1198,6 @@ const Application: React.FC<{
 
     setSelectedPageNumber(-1)
   }
-
-  const movePage = () => {}
 
   const createNewPage = async () => {
     if (!isEditable) return
@@ -1260,7 +1346,7 @@ const Application: React.FC<{
                   key="not draft"
                   disabled={isEditable}
                   trigger={
-                    <div className="config-container">
+                    <div className="config-container" style={{ margin: 5 }}>
                       <ElementMove
                         elementId={element.id}
                         isEditable={isEditable}
@@ -1292,6 +1378,13 @@ const Application: React.FC<{
                           })
                         }
                       />
+                      {!element.isVisible && (
+                        <Popup
+                          content="Visibility criteria did not match"
+                          key="not draft"
+                          trigger={<Icon name="eye slash" />}
+                        />
+                      )}
                     </div>
                   }
                 />
@@ -1317,7 +1410,6 @@ const Application: React.FC<{
                   ...moveStructure.sections[selectedSectionCode].elements,
                 ].filter(({ index }) => index > lastElementIndex)
 
-                console.log(elementsAfterLastIndex, lastElementIndex, thisPageElements)
                 mutate(
                   () =>
                     updateTemplateSection({
@@ -1355,9 +1447,21 @@ const Application: React.FC<{
         </>
       )}
 
-      <Modal open={!!updateState} onClose={() => setUpdateState(null)}>
+      <Modal
+        className="element-edit-modal"
+        open={!!updateState}
+        onClose={() => setUpdateState(null)}
+      >
         {updateState && (
           <div className="element-update-container">
+            <Label attached="top right">
+              <a
+                href="https://github.com/openmsupply/application-manager-web-app/wiki/Element-Type-Specs"
+                target="_blank"
+              >
+                <Icon name="info circle" size="big" color="blue" />
+              </a>
+            </Label>
             <div key="elementPlugin" className="element-dropdown-container">
               <Label content="Type" />
               <Dropdown
@@ -1374,91 +1478,148 @@ const Application: React.FC<{
                   setUpdateState({ ...updateState, elementTypePluginCode: String(value) })
                 }
               />
-            </div>
-            <div key="elementCategory" className="element-dropdown-container">
-              <Label content="Category" />
               <Dropdown
-                value={updateState.category}
+                style={{ margin: 4 }}
+                text="From Existing"
+                search
                 selection
-                options={[
-                  {
-                    key: 'Information',
-                    value: TemplateElementCategory.Information,
-                    text: 'Information',
-                  },
-                  { key: 'Question', value: TemplateElementCategory.Question, text: 'Question' },
-                ]}
-                onChange={(_, { value }) =>
-                  setUpdateState({ ...updateState, category: value as TemplateElementCategory })
-                }
+                icon="search"
+                onClick={() => {
+                  setElementTemplateState({
+                    isSearching: true,
+                    pluginCode: updateState.elementTypePluginCode,
+                    options: [{ text: 'Loading', key: -1 }],
+                  })
+                }}
+                options={elementTemplateState.options}
+                onChange={(_, { value }) => {
+                  const selected = elementTemplateState.options.find(
+                    (option) => option?.value === value
+                  )
+
+                  if (selected?.valueFull) setUpdateState({ ...updateState, ...selected.valueFull })
+                }}
+              />
+              <div key="elementCategory" className="element-dropdown-container">
+                <Label content="Category" />
+                <Dropdown
+                  value={updateState.category}
+                  selection
+                  fluid
+                  options={[
+                    {
+                      key: 'Information',
+                      value: TemplateElementCategory.Information,
+                      text: 'Information',
+                    },
+                    { key: 'Question', value: TemplateElementCategory.Question, text: 'Question' },
+                  ]}
+                  onChange={(_, { value }) =>
+                    setUpdateState({ ...updateState, category: value as TemplateElementCategory })
+                  }
+                />
+              </div>
+              <div className="element-code-edit">
+                <OnBlurInput
+                  key="elementCode"
+                  initialValue={updateState.code}
+                  isPropUpdated={true}
+                  label="Code"
+                  update={(value: string) => setUpdateState({ ...updateState, code: value })}
+                />
+              </div>
+              <OnBlurInput
+                key="elementTitle"
+                isPropUpdated={true}
+                initialValue={updateState.title}
+                label="Title"
+                update={(value: string) => setUpdateState({ ...updateState, title: value })}
               />
             </div>
-            <OnBlurInput
-              key="elementCode"
-              initialValue={updateState.code}
-              label="Code"
-              update={(value: string) => setUpdateState({ ...updateState, code: value })}
+            <div className="element-edit-text-input">
+              <OnBlurInput
+                key="elementValidationMessage"
+                isPropUpdated={true}
+                initialValue={updateState.validationMessage}
+                label="Validation Message"
+                textAreaRows={3}
+                isTextArea={true}
+                update={(value: string) =>
+                  setUpdateState({ ...updateState, validationMessage: value })
+                }
+              />
+              <OnBlurInput
+                key="elementHelpText"
+                isPropUpdated={true}
+                initialValue={updateState.helpText}
+                label="Help Text"
+                isTextArea={true}
+                textAreaRows={3}
+                update={(value: string) => setUpdateState({ ...updateState, helpText: value })}
+              />
+            </div>
+            <EvaluationContainer
+              key="elementIsEditable"
+              label="isEditable"
+              currentElementCode={updateState.code}
+              fullStructure={fullStructure}
+              evaluation={asObject(updateState.isEditable)}
+              setEvaluation={(value: object) =>
+                setUpdateState({ ...updateState, isEditable: value })
+              }
             />
-            <OnBlurInput
-              key="elementTitle"
-              initialValue={updateState.title}
-              label="Title"
-              update={(value: string) => setUpdateState({ ...updateState, title: value })}
+
+            <EvaluationContainer
+              key="elementIsRequired"
+              label="Is Required"
+              currentElementCode={updateState.code}
+              fullStructure={fullStructure}
+              evaluation={asObject(updateState.isRequired)}
+              setEvaluation={(value: object) =>
+                setUpdateState({ ...updateState, isRequired: value })
+              }
             />
-            <JsonTextBox
-              key="elementIsVisible"
-              initialValue={asObject(updateState.visibilityCondition)}
-              label="isVisible"
-              update={(value: object) =>
+            <EvaluationContainer
+              key="elementIsValid"
+              label="Is Valid"
+              currentElementCode={updateState.code}
+              fullStructure={fullStructure}
+              evaluation={asObject(updateState.validation)}
+              setEvaluation={(value: object) =>
+                setUpdateState({ ...updateState, validation: value })
+              }
+            />
+
+            <EvaluationContainer
+              key="elementVisibility"
+              label="Is Visible"
+              currentElementCode={updateState.code}
+              fullStructure={fullStructure}
+              evaluation={asObject(updateState.visibilityCondition)}
+              setEvaluation={(value: object) =>
                 setUpdateState({ ...updateState, visibilityCondition: value })
               }
             />
-            <JsonTextBox
-              key="elementIsEditable"
-              initialValue={asObject(updateState.isEditable)}
-              label="isEditable"
-              update={(value: object) => setUpdateState({ ...updateState, isEditable: value })}
-            />
-            <JsonTextBox
-              key="elementIsRequired"
-              initialValue={asObject(updateState.isRequired)}
-              label="isRequired"
-              update={(value: object) => setUpdateState({ ...updateState, isRequired: value })}
-            />
-            <JsonTextBox
-              key="elementIsValid"
-              initialValue={asObject(updateState.validation)}
-              label="isValid"
-              update={(value: object) => setUpdateState({ ...updateState, validation: value })}
-            />
-            <OnBlurInput
-              key="elementHelpText"
-              initialValue={updateState.validationMessage}
-              label="Validation Message"
-              isTextArea={true}
-              update={(value: string) =>
-                setUpdateState({ ...updateState, validationMessage: value })
+            <EvaluationContainer
+              key="defaultValue"
+              label="Default Value"
+              currentElementCode={updateState.code}
+              fullStructure={fullStructure}
+              evaluation={asObject(updateState.defaultValue)}
+              setEvaluation={(value: object) =>
+                setUpdateState({ ...updateState, defaultValue: value })
               }
             />
-            <JsonTextBox
-              key="elementDefaultValue"
-              initialValue={asObject(updateState.defaultValue)}
-              label="Default Value"
-              update={(value: object) => setUpdateState({ ...updateState, defaultValue: value })}
+            <Parameters
+              key="parametersElement"
+              currentElementCode={updateState.code}
+              fullStructure={fullStructure}
+              parameters={asObject(updateState.parameters)}
+              setParameters={(value: object) =>
+                setUpdateState({ ...updateState, parameters: value })
+              }
             />
-            <JsonTextBox
-              key="elementParameters"
-              initialValue={updateState.parameters}
-              label="Plugin Parameters"
-              update={(value: object) => setUpdateState({ ...updateState, parameters: value })}
-            />
-            <OnBlurInput
-              key="elementHelpText"
-              initialValue={updateState.helpText}
-              label="Help Text"
-              isTextArea={true}
-              update={(value: string) => setUpdateState({ ...updateState, helpText: value })}
-            />
+
             <div className="button-container">
               <Button
                 inverted
@@ -1539,6 +1700,262 @@ const Application: React.FC<{
   )
 }
 
+const Parameters: React.FC<{
+  parameters: any
+  currentElementCode: string
+  setParameters: (evaluation: object) => void
+  fullStructure: FullStructure
+}> = ({ parameters, setParameters, currentElementCode, fullStructure }) => {
+  const [asGui, setAsGui] = useState(true)
+  const [isActive, setIsActive] = useState(false)
+
+  return (
+    <Accordion style={{ borderRadius: 7, border: '2px solid black', padding: 5, margin: 5 }}>
+      <Accordion.Title
+        className="evaluation-container-title"
+        style={{ justifyContent: 'center', alignItems: 'center' }}
+        active={isActive}
+        onClick={() => setIsActive(!isActive)}
+      >
+        <Header as="h3" style={{ margin: 0 }}>
+          {`Parameters (${parameters ? Object.values(parameters).length : 0})`}
+        </Header>
+        <Icon size="large" style={{ margin: 0 }} name={isActive ? 'angle up' : 'angle down'} />
+      </Accordion.Title>
+      <Accordion.Content active={isActive}>
+        <div className="flex-column" style={{ alignItems: 'center' }}>
+          <div className="flex-row">
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 7,
+                padding: 3,
+                margin: 3,
+                background: '#E8E8E8',
+              }}
+            >
+              <Label style={{ whiteSpace: 'nowrap', margin: 3, marginRight: 2 }}>Show As GUI</Label>
+
+              <Checkbox
+                checked={asGui}
+                toggle
+                size="small"
+                onChange={() => {
+                  setAsGui(!asGui)
+                }}
+              />
+            </div>
+            {asGui && (
+              <Button
+                primary
+                inverted
+                onClick={() => {
+                  setParameters({ ...parameters, newParameters: null })
+                }}
+              >
+                Add Parameter
+              </Button>
+            )}
+          </div>
+          {!asGui && (
+            <JsonTextBox
+              key="elementParameters"
+              isPropUpdated={true}
+              initialValue={parameters}
+              label=""
+              update={(value: object) => setParameters(value)}
+            />
+          )}
+
+          {asGui &&
+            Object.entries(parameters)
+              .sort(([key1], [key2]) => (key1 > key2 ? -1 : key1 === key2 ? 0 : 1))
+              .map(([key, value]) => (
+                <EvaluationContainer
+                  setEvaluation={(value: any) =>
+                    setParameters({ ...parameters, [key]: value?.value || value })
+                  }
+                  updateKey={(newKey) => {
+                    const newParameters = { ...parameters }
+                    delete newParameters[key]
+                    setParameters({ ...newParameters, [newKey]: value })
+                  }}
+                  deleteKey={() => {
+                    const newParameters = { ...parameters }
+                    delete newParameters[key]
+                    setParameters(newParameters)
+                  }}
+                  key={key}
+                  evaluation={value}
+                  currentElementCode={currentElementCode}
+                  fullStructure={fullStructure}
+                  label={key}
+                />
+              ))}
+        </div>
+      </Accordion.Content>
+    </Accordion>
+  )
+}
+
+const EvaluationContainer: React.FC<{
+  evaluation: any
+  currentElementCode: string
+  setEvaluation: (evaluation: object) => void
+  fullStructure: FullStructure
+  label: string
+  updateKey?: (key: string) => void
+  deleteKey?: () => void
+}> = ({
+  evaluation,
+  setEvaluation,
+  label,
+  currentElementCode,
+  fullStructure,
+  updateKey,
+  deleteKey,
+}) => {
+  const {
+    userState: { currentUser },
+  } = useUserState()
+  const [isActive, setIsActive] = useState(false)
+  const [asGui, setAsGui] = useState(true)
+  const objects = {
+    responses: {
+      ...fullStructure.responsesByCode,
+      thisResponse: fullStructure.responsesByCode?.[currentElementCode]?.text,
+    },
+    currentUser,
+    applicationData: fullStructure.info,
+  }
+
+  const typedEvaluation = getTypedEvaluation(evaluation)
+
+  return (
+    <Accordion style={{ borderRadius: 7, border: '1px solid black', padding: 5, margin: 5 }}>
+      <Accordion.Title
+        className="evaluation-container-title"
+        style={{ justifyContent: 'center' }}
+        active={isActive}
+      >
+        {!updateKey && <Label>{label}</Label>}
+        {deleteKey && <Icon className="clickable" onClick={deleteKey} />}
+        {updateKey &&
+          semanticComponentLibrary.TextInput({
+            text: label,
+            setText: updateKey,
+            title: 'Parameter Name',
+          })}
+        <div className="indicators-container as-row">
+          <div key="type" className="indicator">
+            <Label className="key" content="type" />
+            <Label className="value" content={typedEvaluation.type} />
+          </div>
+          {typedEvaluation.type === 'operator' && (
+            <div key="operator" className="indicator">
+              <Label className="key" content="operator" />
+              <Label className="value" content={typedEvaluation.asOperator.operator} />
+            </div>
+          )}
+
+          {typedEvaluation.type !== 'operator' && (
+            <div key="value" className="indicator">
+              <Label className="key" content="value" />
+              <Label
+                className="value"
+                content={truncate(String(evaluation?.value), { length: 200 })}
+              />
+            </div>
+          )}
+        </div>
+        <Icon
+          size="large"
+          name={isActive ? 'angle up' : 'angle down'}
+          onClick={() => setIsActive(!isActive)}
+        />
+      </Accordion.Title>
+      <Accordion.Content active={isActive}>
+        {isActive && (
+          <div
+            className="flex-row"
+            style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 7,
+                  padding: 3,
+                  margin: 3,
+                  background: '#E8E8E8',
+                }}
+              >
+                <Label style={{ whiteSpace: 'nowrap', margin: 3, marginRight: 2 }}>
+                  Show As GUI
+                </Label>
+
+                <Checkbox
+                  checked={asGui}
+                  toggle
+                  size="small"
+                  onChange={() => {
+                    setAsGui(!asGui)
+                  }}
+                />
+              </div>
+              {!asGui && (
+                <JsonTextBox
+                  key="elementParameters"
+                  isPropUpdated={true}
+                  initialValue={evaluation}
+                  label="Plugin Parameters"
+                  update={(value: object) => setEvaluation(value)}
+                />
+              )}
+              {asGui &&
+                parseAndRenderEvaluation(
+                  evaluation,
+                  (evaltionAsString: string) => setEvaluation(asObjectOrValue(evaltionAsString)),
+                  semanticComponentLibrary,
+                  {
+                    objects,
+
+                    APIfetch: fetch,
+                    graphQLConnection: {
+                      fetch: fetch.bind(window),
+                      endpoint: config.serverGraphQL,
+                    },
+                  }
+                )}
+            </div>
+            <div
+              style={{
+                marginLeft: 10,
+                borderRadius: 7,
+                border: '2px solid #E8E8E8',
+                overflow: 'auto',
+                maxHeight: '600px',
+                minHeight: 200,
+                maxWidth: '50%',
+              }}
+            >
+              <Label>Object Properties</Label>
+
+              <ReactJson src={objects} collapsed={2} />
+            </div>
+          </div>
+        )}
+      </Accordion.Content>
+    </Accordion>
+  )
+}
+
 const newElement = {
   title: 'New Element',
   category: TemplateElementCategory.Question,
@@ -1553,8 +1970,20 @@ const newElement = {
   defaultValue: {},
 }
 
+const asObjectOrValue = (value: string) => {
+  console.log(value)
+  try {
+    return JSON.parse(value)
+  } catch (e) {
+    console.log('asObjectOrVaelu', { value: value })
+    return { value: value }
+  }
+}
+
 const asObject = (value: EvaluatorNode) =>
-  typeof value === 'object' && value != null ? value : { value: value || null }
+  typeof value === 'object' && value !== null
+    ? value
+    : { value: value || value === false ? false : null }
 
 const getCurrentPageElements = (structure: FullStructure, section: string, page: number) => {
   return structure?.sections[section]?.pages[page]?.state || []

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Dropdown,
@@ -31,11 +31,29 @@ export const OnBlurInput: React.FC<{
   initialValue: string
   disabled?: boolean
   isIcon?: boolean
+  isPropUpdated?: boolean
   isColor?: boolean
+  textAreaRows?: number
   isTextArea?: boolean
   update: (value: string, resetValue: (value: string) => void) => void
-}> = ({ label, initialValue, update, disabled = false, isIcon, isColor, isTextArea = false }) => {
+}> = ({
+  label,
+  initialValue,
+  update,
+  disabled = false,
+  isIcon,
+  isColor,
+  isTextArea = false,
+  isPropUpdated = false,
+  textAreaRows = 5,
+}) => {
   const [value, setValue] = useState(initialValue)
+
+  useEffect(() => {
+    if (isPropUpdated) {
+      setValue(initialValue)
+    }
+  }, [initialValue])
   return (
     <div className="on-blur-input">
       {isIcon && (
@@ -49,7 +67,7 @@ export const OnBlurInput: React.FC<{
           <div style={{ color: value }}>{label}</div>
         </a>
       )}
-      {!isIcon && !isColor && <Label content={label} />}
+      {!isIcon && !isColor && label && <Label content={label} />}
       {!isTextArea && (
         <Input
           disabled={disabled}
@@ -63,7 +81,7 @@ export const OnBlurInput: React.FC<{
           <TextArea
             disabled={disabled}
             value={value}
-            rows={5}
+            rows={textAreaRows}
             onBlur={() => update(value, setValue)}
             onChange={async (_, { value }) => {
               setValue(String(value))
@@ -692,8 +710,24 @@ export const JsonTextBox: React.FC<{
   initialValue: object
   label: string
   update: (value: object) => void
-}> = ({ initialValue, update, label }) => {
+  isPropUpdated?: boolean
+}> = ({ initialValue, update, label, isPropUpdated = false }) => {
   const [isError, setIsError] = useState(false)
+
+  const getInitialValue = () => {
+    try {
+      return JSON.stringify(initialValue, null, ' ')
+    } catch (e) {
+      return '{}'
+    }
+  }
+  const [value, setValue] = useState(getInitialValue())
+
+  useEffect(() => {
+    if (isPropUpdated) {
+      setValue(getInitialValue())
+    }
+  }, [initialValue])
 
   const tryToSetValue = (value: string) => {
     try {
@@ -708,20 +742,13 @@ export const JsonTextBox: React.FC<{
     }
   }
 
-  const getInitialValue = () => {
-    try {
-      return JSON.stringify(initialValue, null, ' ')
-    } catch (e) {
-      return '{}'
-    }
-  }
-
   return (
     <>
       <OnBlurInput
         key="categoryCode"
-        initialValue={getInitialValue()}
+        initialValue={value}
         label={label}
+        isPropUpdated={isPropUpdated}
         isTextArea={true}
         update={(value, resetValue) => resetValue(tryToSetValue(value))}
       />
