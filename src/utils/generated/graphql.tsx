@@ -27318,6 +27318,24 @@ export type UpdateTemplateSectionMutation = (
         { __typename?: 'TemplateElementsConnection' }
         & { nodes: Array<Maybe<(
           { __typename?: 'TemplateElement' }
+          & { applicationResponses: (
+            { __typename?: 'ApplicationResponsesConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'ApplicationResponse' }
+              & Pick<ApplicationResponse, 'id'>
+              & { application?: Maybe<(
+                { __typename?: 'Application' }
+                & Pick<Application, 'id' | 'serial'>
+                & { applicationResponses: (
+                  { __typename?: 'ApplicationResponsesConnection' }
+                  & { nodes: Array<Maybe<(
+                    { __typename?: 'ApplicationResponse' }
+                    & Pick<ApplicationResponse, 'id'>
+                  )>> }
+                ) }
+              )> }
+            )>> }
+          ) }
           & ElementFragmentFragment
         )>> }
       ) }
@@ -28610,6 +28628,20 @@ export const UpdateTemplateSectionDocument = gql`
       templateElementsBySectionId {
         nodes {
           ...elementFragment
+          applicationResponses {
+            nodes {
+              id
+              application {
+                id
+                serial
+                applicationResponses {
+                  nodes {
+                    id
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

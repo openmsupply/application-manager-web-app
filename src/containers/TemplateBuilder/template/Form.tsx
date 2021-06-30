@@ -451,7 +451,7 @@ const PageMove: React.FC<{
     )
   }
 
-  if (!moveStructure?.sections[sectionCode]?.pages[pageNumber]?.isFirst) return null
+  if (!moveStructure?.sections[sectionCode]?.pages[pageNumber]) return null
 
   return (
     <>
@@ -576,6 +576,8 @@ const ElementMove: React.FC<{
     if (moveStructure.elements[elementId].page.isLast) {
     }
   }
+
+  if (!moveStructure?.elements[elementId]?.section) return null
 
   return (
     <>
@@ -873,6 +875,7 @@ const SectionEdit: React.FC<{
                 .filter((pageElement) => !!pageElement?.latestApplicationResponse?.id)
                 .map((pageElement) => pageElement.latestApplicationResponse.id)
 
+              console.log(applicationResponseIds)
               const elementsInSection = thisSection?.templateElementsBySectionId?.nodes || []
 
               if (applicationResponseIds.length > 0) {
@@ -1293,6 +1296,53 @@ const Application: React.FC<{
               responsesByCode={fullStructure.responsesByCode}
               applicationData={fullStructure.info}
             />
+            <Button
+              inverted
+              primary
+              onClick={() => {
+                const thisPage =
+                  moveStructure.sections[selectedSectionCode].pages[selectedPageNumber] || []
+                const thisPageElements = thisPage.elements
+                const lastElementIndex = thisPageElements[thisPageElements.length - 1]?.index || 0
+                const elementsAfterLastIndex = [
+                  ...thisPage.endPageBreaks,
+                  ...moveStructure.sections[selectedSectionCode].elements,
+                ].filter(({ index }) => index > lastElementIndex)
+
+                console.log(elementsAfterLastIndex, lastElementIndex, thisPageElements)
+                mutate(
+                  () =>
+                    updateTemplateSection({
+                      variables: {
+                        id: selectedSection?.details.id || 0,
+                        sectionPatch: {
+                          templateElementsUsingId: {
+                            updateById: elementsAfterLastIndex.map(({ id, index }) => ({
+                              id,
+                              patch: { index: index + 1 },
+                            })),
+                            create: [
+                              {
+                                ...newElement,
+                                code: `newElementCode_${Math.floor(
+                                  Math.random() * Math.pow(9, 9)
+                                )}`,
+                                index: lastElementIndex + 1,
+                                applicationResponsesUsingId: {
+                                  create: [{ applicationId: fullStructure.info.id }],
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    }),
+                  setError
+                )
+              }}
+            >
+              New Element
+            </Button>
           </div>
         </>
       )}
@@ -1419,7 +1469,54 @@ const Application: React.FC<{
               >
                 Save
               </Button>
+              <Button
+                disabled={!isEditable}
+                inverted
+                primary
+                onClick={async () => {
+                  const applicationResponseId =
+                    fullStructure?.elementsById?.[updateState.id || 0]?.latestApplicationResponse
+                      ?.id || 0
+                  if (applicationResponseId) {
+                    const result = await mutate(
+                      () =>
+                        updateApplication({
+                          variables: {
+                            serial: fullStructure.info.serial,
+                            applicationPatch: {
+                              applicationResponsesUsingId: {
+                                deleteById: [{ id: applicationResponseId }],
+                              },
+                            },
+                          },
+                        }),
+                      setError
+                    )
 
+                    if (!result) return
+                  }
+
+                  const result = await mutate(
+                    () =>
+                      updateTemplateSection({
+                        variables: {
+                          id: thisSection?.id || 0,
+                          sectionPatch: {
+                            templateElementsUsingId: {
+                              deleteById: [{ id: updateState.id || 0 }],
+                            },
+                          },
+                        },
+                      }),
+                    setError
+                  )
+
+                  if (!result) return
+                  setUpdateState(null)
+                }}
+              >
+                Remove
+              </Button>
               <Button inverted primary onClick={() => setUpdateState(null)}>
                 Cancel
               </Button>
@@ -1432,6 +1529,20 @@ const Application: React.FC<{
       </Modal>
     </>
   )
+}
+
+const newElement = {
+  title: 'New Element',
+  category: TemplateElementCategory.Question,
+  elementTypePluginCode: 'shortText',
+  visibilityCondition: true,
+  isRequired: false,
+  isEditable: true,
+  validation: true,
+  validationMessage: 'no validation',
+  helpText: '',
+  parameters: { label: 'New Element' },
+  defaultValue: {},
 }
 
 const asObject = (value: EvaluatorNode) =>

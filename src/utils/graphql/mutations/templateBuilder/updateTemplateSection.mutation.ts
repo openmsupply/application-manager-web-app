@@ -12,6 +12,20 @@ export default gql`
         templateElementsBySectionId {
           nodes {
             ...elementFragment
+            applicationResponses {
+              nodes {
+                id
+                application {
+                  id
+                  serial
+                  applicationResponses {
+                    nodes {
+                      id
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
