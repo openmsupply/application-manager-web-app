@@ -202,6 +202,7 @@ const ComponentLibrary: ComponentLibraryType = {
         alignItems: 'flex-start',
         border: '2px solid rgba(0,0,0,0.2)',
         borderRadius: 7,
+        margin: 2,
         padding: 5,
       }}
     >
