@@ -1369,8 +1369,34 @@ a:hover {
 /*--------------------------------
       Template Builder Templates
 ---------------------------------*/
-
-
+.increased-font-size {
+  .label {
+    font-size: 16px !important;
+    margin: 0;
+    white-space: nowrap !important;
+  }
+}
+.config-permission-container {
+  .flex-column();
+  position: relative;
+  padding: 10px;
+  background: white;
+  border-radius: 7px;
+  margin: 5px;
+  .dropdown {
+    font-size: 10px !important;
+  }
+}
+.increased-width-input {
+  .input {
+    width: 500px !important;
+  }
+}
+.config-permission-wrapper {
+  .icon {
+    line-height: normal !important;
+  }
+}
 
 .template-builder-templates {
   position: relative;
@@ -1477,6 +1503,7 @@ a:hover {
   }
   .indicator {
     .flex-row();
+    align-items: center;
     .label {
       flex-grow: 1;
       white-space: nowrap;
