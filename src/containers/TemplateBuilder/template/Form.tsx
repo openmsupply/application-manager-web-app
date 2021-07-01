@@ -38,7 +38,7 @@ import { ElementState, EvaluatorNode, FullStructure, User } from '../../../utils
 import { handleCreate } from '../../Application/ApplicationCreate'
 import { parseAndRenderEvaluation, renderEvaluationElement } from '../evaluatorGui/renderEvaluation'
 import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
-import { getTypedEvaluation } from '../evaluatorGui/typeHelpers'
+import { getTypedEvaluation, getTypedEvaluationAsString } from '../evaluatorGui/typeHelpers'
 import { JsonTextBox, OnBlurInput } from './General'
 import { TemplateInfo } from './TemplateWrapper'
 
@@ -1869,7 +1869,7 @@ const EvaluationContainer: React.FC<{
               <Label
                 className="value"
                 content={truncate(
-                  String(evaluation?.value === undefined ? evaluation : evaluation?.value),
+                  getTypedEvaluationAsString(typedEvaluation),
                   { length: 200 }
                 )}
               />

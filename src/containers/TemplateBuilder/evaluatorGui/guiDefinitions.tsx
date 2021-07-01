@@ -23,6 +23,7 @@ export const guis: GuisType = [
       />
     ),
   },
+
   {
     selector: 'number',
     default: getTypedEvaluation(1),
@@ -104,6 +105,23 @@ export const guis: GuisType = [
     selector: 'addition',
     operator: '+',
   }),
+  {
+    selector: 'REGEX',
+    default: getTypedEvaluation({
+      operator: 'REGEX',
+      children: ['02312312', '^[0-9]+$'],
+    }),
+    match: (typedEvaluation) => typedEvaluation.asOperator.operator === 'REGEX',
+    render: (evaluation, setEvaluation, ComponentLibrary, evaluatorParameters) => (
+      <React.Fragment key="regexCompare">
+        <ComponentLibrary.Label key="value" title="String to match: " />
+        {renderSingleChild(evaluation, 0, setEvaluation, ComponentLibrary, evaluatorParameters)}
+
+        <ComponentLibrary.Label key="value" title="Regex: " />
+        {renderSingleChild(evaluation, 1, setEvaluation, ComponentLibrary, evaluatorParameters)}
+      </React.Fragment>
+    ),
+  },
   {
     selector: 'equality',
     default: getTypedEvaluation({
