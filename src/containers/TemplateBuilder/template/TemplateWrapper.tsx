@@ -31,7 +31,7 @@ const tabs = [
   {
     route: 'permissions',
     title: 'Permissions',
-    render: (templateInfo: TemplateInfo) => <Permissions />,
+    render: (templateInfo: TemplateInfo) => <Permissions templateInfo={templateInfo} />,
   },
   {
     route: 'actions',

@@ -8,7 +8,12 @@ import React from 'react'
 export type Operator = OperatorNode['operator'] | 'none' | 'buildObject'
 
 export type ComponentLibraryType = {
-  TextInput: React.FC<{ text: string; setText: (text: string) => void; title?: string }>
+  TextInput: React.FC<{
+    text: string
+    setText: (text: string) => void
+    title?: string
+    disabled?: boolean
+  }>
   NumberInput: React.FC<{
     number: number
     setNumber: (number: number) => void
@@ -18,6 +23,7 @@ export type ComponentLibraryType = {
     checked: boolean
     setChecked: (checked: boolean) => void
     title?: string
+    disabled?: boolean
   }>
   ObjectInput: React.FC<{
     object: object

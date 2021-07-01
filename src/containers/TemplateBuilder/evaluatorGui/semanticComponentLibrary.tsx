@@ -3,7 +3,7 @@ import { Checkbox, Dropdown, Form, Icon, Input, Label, TextArea } from 'semantic
 import { ComponentLibraryType } from './types'
 // All 'sets' are done onBlur (loose focus), to avoid excessible evaluations (especially for api types)
 const ComponentLibrary: ComponentLibraryType = {
-  TextInput: ({ text, setText, title = '' }) => {
+  TextInput: ({ text, setText, title = '', disabled = false }) => {
     const [innerValue, setInnerValue] = useState(text)
 
     return (
@@ -11,6 +11,7 @@ const ComponentLibrary: ComponentLibraryType = {
         <Label className="key">{title}</Label>
         <Input
           value={innerValue}
+          disabled={disabled}
           className="value"
           size="small"
           onChange={(_, { value }) => {
@@ -153,7 +154,7 @@ const ComponentLibrary: ComponentLibraryType = {
       </div>
     )
   },
-  Checkbox: ({ checked, setChecked, title = '' }) => {
+  Checkbox: ({ checked, setChecked, title = '', disabled = false }) => {
     const [innerValue, setInnerValue] = useState(checked)
 
     return (
@@ -173,6 +174,7 @@ const ComponentLibrary: ComponentLibraryType = {
         <Checkbox
           checked={innerValue}
           toggle
+          disabled={disabled}
           size="small"
           onChange={() => {
             const value = innerValue

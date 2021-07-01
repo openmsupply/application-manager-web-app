@@ -1696,11 +1696,11 @@ const Application: React.FC<{
   )
 }
 
-const Parameters: React.FC<{
+export const Parameters: React.FC<{
   parameters: any
   currentElementCode: string
   setParameters: (evaluation: object) => void
-  fullStructure: FullStructure
+  fullStructure?: FullStructure
 }> = ({ parameters, setParameters, currentElementCode, fullStructure }) => {
   const [asGui, setAsGui] = useState(true)
   const [isActive, setIsActive] = useState(false)
@@ -1797,11 +1797,11 @@ const Parameters: React.FC<{
   )
 }
 
-const EvaluationContainer: React.FC<{
+export const EvaluationContainer: React.FC<{
   evaluation: any
   currentElementCode: string
   setEvaluation: (evaluation: object) => void
-  fullStructure: FullStructure
+  fullStructure?: FullStructure
   label: string
   updateKey?: (key: string) => void
   deleteKey?: () => void
@@ -1821,11 +1821,11 @@ const EvaluationContainer: React.FC<{
   const [asGui, setAsGui] = useState(true)
   const objects = {
     responses: {
-      ...fullStructure.responsesByCode,
-      thisResponse: fullStructure.responsesByCode?.[currentElementCode]?.text,
+      ...fullStructure?.responsesByCode,
+      thisResponse: fullStructure?.responsesByCode?.[currentElementCode]?.text,
     },
     currentUser,
-    applicationData: fullStructure.info,
+    applicationData: fullStructure?.info,
   }
 
   const typedEvaluation = getTypedEvaluation(evaluation)
@@ -1864,7 +1864,7 @@ const EvaluationContainer: React.FC<{
               <Label className="key" content="value" />
               <Label
                 className="value"
-                content={truncate(getTypedEvaluationAsString(typedEvaluation), { length: 200 })}
+                content={truncate(getTypedEvaluationAsString(typedEvaluation), { length: 80 })}
               />
             </div>
           )}
@@ -1945,7 +1945,7 @@ const EvaluationContainer: React.FC<{
             >
               <Label>Object Properties</Label>
 
-              <ReactJson src={objects} collapsed={2} />
+              {fullStructure && <ReactJson src={objects} collapsed={2} />}
             </div>
           </div>
         )}
@@ -1976,7 +1976,7 @@ const asObjectOrValue = (value: string) => {
   }
 }
 
-const asObject = (value: EvaluatorNode) =>
+export const asObject = (value: EvaluatorNode) =>
   typeof value === 'object' && value !== null
     ? value
     : { value: value || value === false ? false : null }

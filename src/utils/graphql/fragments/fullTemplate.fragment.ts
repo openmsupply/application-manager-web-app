@@ -25,12 +25,45 @@ export default gql`
         }
       }
     }
-    templateStages {
+    templatePermissions {
+      nodes {
+        allowedSections
+        canSelfAssign
+        id
+        levelNumber
+        permissionName {
+          id
+          name
+          permissionPolicyId
+          permissionPolicy {
+            defaultRestrictions
+            description
+            name
+            id
+            rules
+            type
+          }
+        }
+        restrictions
+        stageNumber
+        permissionNameId
+      }
+    }
+    templateStages(orderBy: NUMBER_ASC) {
       nodes {
         id
         number
+        colour
         title
         description
+        templateStageReviewLevelsByStageId(orderBy: NUMBER_ASC) {
+          nodes {
+            description
+            id
+            name
+            number
+          }
+        }
       }
     }
   }
