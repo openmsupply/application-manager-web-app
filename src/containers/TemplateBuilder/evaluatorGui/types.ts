@@ -5,7 +5,7 @@ import {
 } from '@openmsupply/expression-evaluator/lib/types'
 import React from 'react'
 
-export type Operator = OperatorNode['operator'] | 'none'
+export type Operator = OperatorNode['operator'] | 'none' | 'buildObject'
 
 export type ComponentLibraryType = {
   TextInput: React.FC<{ text: string; setText: (text: string) => void; title?: string }>
@@ -84,6 +84,9 @@ export type EvaluationType = {
   asArray: EvaluationType[]
   asNull: null
   asOperator: OperatorType
+  asBuildObject: {
+    properties: { key: EvaluationType; value: EvaluationType }[]
+  }
 }
 
 export type GetEvaluationType = (evaluation: any) => EvaluationType

@@ -38,7 +38,7 @@ import { ElementState, EvaluatorNode, FullStructure, User } from '../../../utils
 import { handleCreate } from '../../Application/ApplicationCreate'
 import { parseAndRenderEvaluation, renderEvaluationElement } from '../evaluatorGui/renderEvaluation'
 import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
-import { getTypedEvaluation } from '../evaluatorGui/typeHelpers'
+import { getTypedEvaluation, getTypedEvaluationAsString } from '../evaluatorGui/typeHelpers'
 import { JsonTextBox, OnBlurInput } from './General'
 import { TemplateInfo } from './TemplateWrapper'
 
@@ -315,7 +315,6 @@ const Form: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo }) => {
   if (!ready) return <Loading />
 
   const moveStructure = getMoveStructure(templateInfo)
-  console.log(moveStructure)
 
   return <CreateApplicationWrapper moveStructure={moveStructure} templateInfo={templateInfo} />
 }
@@ -607,7 +606,6 @@ const ElementMove: React.FC<{
           onClick={async () => {
             if (!isEditable) return
 
-            console.log(moveStructure.elements[elementId].page)
             if (moveStructure.elements[elementId].page.isLast) {
               moveToSection(moveStructure.elements[elementId].section.nextSection)
             } else {
@@ -902,7 +900,6 @@ const SectionEdit: React.FC<{
                 .filter((pageElement) => !!pageElement?.latestApplicationResponse?.id)
                 .map((pageElement) => pageElement.latestApplicationResponse.id)
 
-              console.log(applicationResponseIds)
               const elementsInSection = thisSection?.templateElementsBySectionId?.nodes || []
 
               if (applicationResponseIds.length > 0) {
@@ -1062,7 +1059,6 @@ const Application: React.FC<{
 
   useEffect(() => {
     const newState = { isSearching: false }
-    console.log(elementSearchData, elementTemplateState)
     if (
       elementTemplateState.isSearching &&
       (!elementSearchData?.templateElements?.nodes ||
@@ -1868,10 +1864,7 @@ const EvaluationContainer: React.FC<{
               <Label className="key" content="value" />
               <Label
                 className="value"
-                content={truncate(
-                  String(evaluation?.value === undefined ? evaluation : evaluation?.value),
-                  { length: 200 }
-                )}
+                content={truncate(getTypedEvaluationAsString(typedEvaluation), { length: 200 })}
               />
             </div>
           )}
@@ -1976,11 +1969,9 @@ const newElement = {
 }
 
 const asObjectOrValue = (value: string) => {
-  console.log(value)
   try {
     return JSON.parse(value)
   } catch (e) {
-    console.log('asObjectOrVaelu', { value: value })
     return { value: value }
   }
 }

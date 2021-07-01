@@ -26,6 +26,7 @@ const ComponentLibrary: ComponentLibraryType = {
     const [innerValue, setInnerValue] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
 
+    console.log('here')
     const checkAndUpdateState = (value: string) => {
       try {
         JSON.parse(value)
@@ -41,7 +42,7 @@ const ComponentLibrary: ComponentLibraryType = {
         const object = JSON.parse(value)
         setObject(object)
         setErrorMessage('')
-        setInnerValue(JSON.stringify(value, null, '  '))
+        setInnerValue(JSON.stringify(object, null, '  '))
       } catch (e) {
         setErrorMessage('Invalid JSON')
       }
@@ -201,6 +202,7 @@ const ComponentLibrary: ComponentLibraryType = {
         alignItems: 'flex-start',
         border: '2px solid rgba(0,0,0,0.2)',
         borderRadius: 7,
+        margin: 2,
         padding: 5,
       }}
     >

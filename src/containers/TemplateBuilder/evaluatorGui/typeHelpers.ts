@@ -7,6 +7,19 @@ import {
   Operator,
 } from './types'
 
+const parseBuildObject = (evaluation: any, resultEvaluation: EvaluationType) => {
+  resultEvaluation.asBuildObject.properties = []
+
+  if (evaluation?.properties) {
+    resultEvaluation.asBuildObject.properties = evaluation?.properties.map((property: any) => ({
+      key: getTypedEvaluation(property?.key),
+      value: getTypedEvaluation(property?.value),
+    }))
+  }
+
+  return resultEvaluation
+}
+
 export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
   const resultEvaluation: EvaluationType = {
     alreadyTyped: true,
@@ -18,6 +31,7 @@ export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
     asArray: [],
     asNull: null,
     asOperator: { operator: 'none', children: [] },
+    asBuildObject: { properties: [] },
   }
 
   if (Array.isArray(evaluation)) {
@@ -49,10 +63,14 @@ export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
   // Must be an object
   if (evaluation.alreadyTyped) return evaluation as EvaluationType
 
-  console.log('typeof operator', typeof evaluation.operator)
   if (typeof evaluation.operator === 'string') {
     resultEvaluation.type = 'operator'
     resultEvaluation.asOperator.operator = evaluation.operator
+
+    if (evaluation.operator === 'buildObject') {
+      return parseBuildObject(evaluation, resultEvaluation)
+    }
+
     if (Array.isArray(evaluation.children)) {
       evaluation.children.forEach((evaluation: any) => {
         resultEvaluation.asOperator.children.push(getTypedEvaluation(evaluation))
@@ -60,9 +78,9 @@ export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
       return resultEvaluation
     }
     // Must be plain
-    // resultEvaluation.type = 'object'
-    // resultEvaluation.asObject = evaluation
-    // return resultEvaluation
+    resultEvaluation.type = 'object'
+    resultEvaluation.asObject = evaluation
+    return resultEvaluation
   }
   // Want to strip of 'value' not sure what is the use for it in current implementation
   if (typeof evaluation.value !== 'undefined') {
@@ -104,6 +122,15 @@ export const convertTypedEvaluationToBaseType: ConvertTypedEvaluationToBaseType 
       })
       return arrayResult
     case 'operator':
+      if (evaluation.asOperator.operator === 'buildObject') {
+        return {
+          operator: 'buildObject',
+          properties: evaluation.asBuildObject.properties.map((property) => ({
+            key: convertTypedEvaluationToBaseType(getTypedEvaluation(property.key)),
+            value: convertTypedEvaluationToBaseType(getTypedEvaluation(property.value)),
+          })),
+        }
+      }
       const operatorResult: {
         operator: Operator
         children: EvaluatorNode[]

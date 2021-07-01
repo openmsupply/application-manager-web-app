@@ -5,7 +5,8 @@ import {
   renderDynamicParameters,
   renderSingleChild,
 } from './guiCommon'
-import { addToArray, removeFromArray } from './helpers'
+import { addToArray, removeFromArray, setInArray } from './helpers'
+import { renderEvaluationElement } from './renderEvaluation'
 
 import { getTypedEvaluation } from './typeHelpers'
 import { GuisType } from './types'
@@ -23,6 +24,7 @@ export const guis: GuisType = [
       />
     ),
   },
+
   {
     selector: 'number',
     default: getTypedEvaluation(1),
@@ -104,6 +106,23 @@ export const guis: GuisType = [
     selector: 'addition',
     operator: '+',
   }),
+  {
+    selector: 'REGEX',
+    default: getTypedEvaluation({
+      operator: 'REGEX',
+      children: ['02312312', '^[0-9]+$'],
+    }),
+    match: (typedEvaluation) => typedEvaluation.asOperator.operator === 'REGEX',
+    render: (evaluation, setEvaluation, ComponentLibrary, evaluatorParameters) => (
+      <React.Fragment key="regexCompare">
+        <ComponentLibrary.Label key="value" title="String to match: " />
+        {renderSingleChild(evaluation, 0, setEvaluation, ComponentLibrary, evaluatorParameters)}
+
+        <ComponentLibrary.Label key="value" title="Regex: " />
+        {renderSingleChild(evaluation, 1, setEvaluation, ComponentLibrary, evaluatorParameters)}
+      </React.Fragment>
+    ),
+  },
   {
     selector: 'equality',
     default: getTypedEvaluation({
@@ -375,6 +394,74 @@ export const guis: GuisType = [
               </ComponentLibrary.FlexColumn>
             )}
           </ComponentLibrary.FlexRow>
+        </React.Fragment>
+      )
+    },
+  },
+  {
+    selector: 'build object',
+    default: getTypedEvaluation({
+      operator: 'buildObject',
+      properties: [{ key: 'keyToBuild', value: 'valueToBuild' }],
+    }),
+    match: (typedEvaluation) => typedEvaluation.asOperator.operator === 'buildObject',
+    render: (evaluation, setEvaluation, ComponentLibrary, evaluatorParameters) => {
+      const propertiesToBuild = evaluation.asBuildObject.properties
+      const newProperty = {
+        key: getTypedEvaluation('keyToBuild'),
+        value: getTypedEvaluation('valueToBuild'),
+      }
+
+      return (
+        <React.Fragment key="buildObject">
+          <ComponentLibrary.FlexRow>
+            <ComponentLibrary.Add
+              title="Properties"
+              onClick={() => {
+                propertiesToBuild.push(newProperty)
+                setEvaluation(evaluation)
+              }}
+            />
+          </ComponentLibrary.FlexRow>
+          <ComponentLibrary.FlexColumn>
+            {propertiesToBuild.map(({ key, value }, index) => (
+              <ComponentLibrary.OperatorContainer key={index}>
+                <ComponentLibrary.FlexRow>
+                  <ComponentLibrary.Remove
+                    key="removeButton"
+                    onClick={() => {
+                      propertiesToBuild.splice(index, 1)
+                      setEvaluation(evaluation)
+                    }}
+                  />
+
+                  <ComponentLibrary.FlexColumn>
+                    <ComponentLibrary.Label key="keyTitle" title="Key:" />
+                    {renderEvaluationElement(
+                      key,
+                      (newKey) => {
+                        propertiesToBuild[index].key = newKey
+                        setEvaluation(evaluation)
+                      },
+
+                      ComponentLibrary,
+                      evaluatorParameters
+                    )}
+                    <ComponentLibrary.Label key="valueTitle" title="Value:" />
+                    {renderEvaluationElement(
+                      value,
+                      (newValue) => {
+                        propertiesToBuild[index].value = newValue
+                        setEvaluation(evaluation)
+                      },
+                      ComponentLibrary,
+                      evaluatorParameters
+                    )}
+                  </ComponentLibrary.FlexColumn>
+                </ComponentLibrary.FlexRow>
+              </ComponentLibrary.OperatorContainer>
+            ))}
+          </ComponentLibrary.FlexColumn>
         </React.Fragment>
       )
     },

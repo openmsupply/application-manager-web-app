@@ -108,7 +108,6 @@ export const renderEvaluationElement: RenderEvaluationElementType = (
   } catch (e) {
     return <ComponentLibrary.Error error={'problem rendering element'} info={e.toString()} />
   }
-  console.log('wtf')
   return (
     <ComponentLibrary.Error
       error={'operator not found'}
