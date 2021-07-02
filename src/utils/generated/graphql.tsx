@@ -79,6 +79,8 @@ export type Query = Node & {
   permissionPolicies?: Maybe<PermissionPoliciesConnection>;
   /** Reads and enables pagination through a set of `PermissionsAll`. */
   permissionsAlls?: Maybe<PermissionsAllsConnection>;
+  /** Reads and enables pagination through a set of `PostgresRowLevel`. */
+  postgresRowLevels?: Maybe<PostgresRowLevelsConnection>;
   /** Reads and enables pagination through a set of `Review`. */
   reviews?: Maybe<ReviewsConnection>;
   /** Reads and enables pagination through a set of `ReviewAssignment`. */
@@ -598,6 +600,19 @@ export type QueryPermissionsAllsArgs = {
   orderBy?: Maybe<Array<PermissionsAllsOrderBy>>;
   condition?: Maybe<PermissionsAllCondition>;
   filter?: Maybe<PermissionsAllFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostgresRowLevelsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<PostgresRowLevelsOrderBy>>;
+  condition?: Maybe<PostgresRowLevelCondition>;
+  filter?: Maybe<PostgresRowLevelFilter>;
 };
 
 
@@ -4363,6 +4378,8 @@ export type TemplateActionFilter = {
   condition?: Maybe<JsonFilter>;
   /** Filter by the object’s `parameterQueries` field. */
   parameterQueries?: Maybe<JsonFilter>;
+  /** Filter by the object’s `description` field. */
+  description?: Maybe<StringFilter>;
   /** Filter by the object’s `sequence` field. */
   sequence?: Maybe<IntFilter>;
   /** Filter by the object’s `parametersQueriesString` field. */
@@ -7359,6 +7376,8 @@ export enum TemplateActionsOrderBy {
   ConditionDesc = 'CONDITION_DESC',
   ParameterQueriesAsc = 'PARAMETER_QUERIES_ASC',
   ParameterQueriesDesc = 'PARAMETER_QUERIES_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
   SequenceAsc = 'SEQUENCE_ASC',
   SequenceDesc = 'SEQUENCE_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
@@ -7379,6 +7398,8 @@ export type TemplateActionCondition = {
   condition?: Maybe<Scalars['JSON']>;
   /** Checks for equality with the object’s `parameterQueries` field. */
   parameterQueries?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `sequence` field. */
   sequence?: Maybe<Scalars['Int']>;
 };
@@ -7406,6 +7427,7 @@ export type TemplateAction = Node & {
   trigger?: Maybe<Trigger>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
   sequence?: Maybe<Scalars['Int']>;
   /** Reads a single `Template` that is related to this `TemplateAction`. */
   template?: Maybe<Template>;
@@ -9144,6 +9166,107 @@ export type PermissionsAllsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `PermissionsAll` at the end of the edge. */
   node?: Maybe<PermissionsAll>;
+};
+
+/** Methods to use when ordering `PostgresRowLevel`. */
+export enum PostgresRowLevelsOrderBy {
+  Natural = 'NATURAL',
+  SchemanameAsc = 'SCHEMANAME_ASC',
+  SchemanameDesc = 'SCHEMANAME_DESC',
+  TablenameAsc = 'TABLENAME_ASC',
+  TablenameDesc = 'TABLENAME_DESC',
+  PolicynameAsc = 'POLICYNAME_ASC',
+  PolicynameDesc = 'POLICYNAME_DESC',
+  PermissiveAsc = 'PERMISSIVE_ASC',
+  PermissiveDesc = 'PERMISSIVE_DESC',
+  RolesAsc = 'ROLES_ASC',
+  RolesDesc = 'ROLES_DESC',
+  CmdAsc = 'CMD_ASC',
+  CmdDesc = 'CMD_DESC',
+  QualAsc = 'QUAL_ASC',
+  QualDesc = 'QUAL_DESC',
+  WithCheckAsc = 'WITH_CHECK_ASC',
+  WithCheckDesc = 'WITH_CHECK_DESC'
+}
+
+/** A condition to be used against `PostgresRowLevel` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type PostgresRowLevelCondition = {
+  /** Checks for equality with the object’s `schemaname` field. */
+  schemaname?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `tablename` field. */
+  tablename?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `policyname` field. */
+  policyname?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `permissive` field. */
+  permissive?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `roles` field. */
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Checks for equality with the object’s `cmd` field. */
+  cmd?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `qual` field. */
+  qual?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `withCheck` field. */
+  withCheck?: Maybe<Scalars['String']>;
+};
+
+/** A filter to be used against `PostgresRowLevel` object types. All fields are combined with a logical ‘and.’ */
+export type PostgresRowLevelFilter = {
+  /** Filter by the object’s `schemaname` field. */
+  schemaname?: Maybe<StringFilter>;
+  /** Filter by the object’s `tablename` field. */
+  tablename?: Maybe<StringFilter>;
+  /** Filter by the object’s `policyname` field. */
+  policyname?: Maybe<StringFilter>;
+  /** Filter by the object’s `permissive` field. */
+  permissive?: Maybe<StringFilter>;
+  /** Filter by the object’s `roles` field. */
+  roles?: Maybe<StringListFilter>;
+  /** Filter by the object’s `cmd` field. */
+  cmd?: Maybe<StringFilter>;
+  /** Filter by the object’s `qual` field. */
+  qual?: Maybe<StringFilter>;
+  /** Filter by the object’s `withCheck` field. */
+  withCheck?: Maybe<StringFilter>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<PostgresRowLevelFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<PostgresRowLevelFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<PostgresRowLevelFilter>;
+};
+
+/** A connection to a list of `PostgresRowLevel` values. */
+export type PostgresRowLevelsConnection = {
+  __typename?: 'PostgresRowLevelsConnection';
+  /** A list of `PostgresRowLevel` objects. */
+  nodes: Array<Maybe<PostgresRowLevel>>;
+  /** A list of edges which contains the `PostgresRowLevel` and cursor to aid in pagination. */
+  edges: Array<PostgresRowLevelsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `PostgresRowLevel` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type PostgresRowLevel = {
+  __typename?: 'PostgresRowLevel';
+  schemaname?: Maybe<Scalars['String']>;
+  tablename?: Maybe<Scalars['String']>;
+  policyname?: Maybe<Scalars['String']>;
+  permissive?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  cmd?: Maybe<Scalars['String']>;
+  qual?: Maybe<Scalars['String']>;
+  withCheck?: Maybe<Scalars['String']>;
+};
+
+/** A `PostgresRowLevel` edge in the connection. */
+export type PostgresRowLevelsEdge = {
+  __typename?: 'PostgresRowLevelsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `PostgresRowLevel` at the end of the edge. */
+  node?: Maybe<PostgresRowLevel>;
 };
 
 /** Methods to use when ordering `SchemaColumn`. */
@@ -13582,6 +13705,7 @@ export type UpdateTemplateActionOnTemplateActionForTemplateActionTemplateIdFkeyP
   trigger?: Maybe<Trigger>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
   sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
@@ -20508,6 +20632,7 @@ export type TemplateActionPatch = {
   trigger?: Maybe<Trigger>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
   sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
@@ -20519,6 +20644,7 @@ export type TemplateActionTemplateIdFkeyTemplateActionCreateInput = {
   trigger?: Maybe<Trigger>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
   sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
@@ -23109,6 +23235,7 @@ export type TemplateActionInput = {
   trigger?: Maybe<Trigger>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
   sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
@@ -27021,6 +27148,12 @@ export type FullTemplateFragment = (
       ) }
       & SectionFragment
     )>> }
+  ), templateActions: (
+    { __typename?: 'TemplateActionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateAction' }
+      & Pick<TemplateAction, 'actionCode' | 'condition' | 'id' | 'parameterQueries' | 'sequence' | 'trigger' | 'description' | 'templateId'>
+    )>> }
   ), templatePermissions: (
     { __typename?: 'TemplatePermissionsConnection' }
     & { nodes: Array<Maybe<(
@@ -28003,6 +28136,40 @@ export type GetUsersQuery = (
   )> }
 );
 
+export type GeTemplateActionByCodeQueryVariables = Exact<{
+  pluginCode: Scalars['String'];
+}>;
+
+
+export type GeTemplateActionByCodeQuery = (
+  { __typename?: 'Query' }
+  & { templateActions?: Maybe<(
+    { __typename?: 'TemplateActionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateAction' }
+      & Pick<TemplateAction, 'id' | 'description' | 'condition' | 'parameterQueries' | 'trigger'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'name' | 'code'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type GetAllActionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllActionsQuery = (
+  { __typename?: 'Query' }
+  & { actionPlugins?: Maybe<(
+    { __typename?: 'ActionPluginsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'ActionPlugin' }
+      & Pick<ActionPlugin, 'id' | 'code' | 'description' | 'name' | 'optionalParameters' | 'outputProperties' | 'requiredParameters'>
+    )>> }
+  )> }
+);
+
 export type GetAllFiltersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -28086,6 +28253,7 @@ export type GetFullTemplateInfoQuery = (
 export type GetPermissionStatisticsQueryVariables = Exact<{
   id: Scalars['Int'];
   name: Scalars['String'];
+  rowLeveSearch: Scalars['String'];
 }>;
 
 
@@ -28109,7 +28277,16 @@ export type GetPermissionStatisticsQuery = (
     ), permissionPolicy?: Maybe<(
       { __typename?: 'PermissionPolicy' }
       & Pick<PermissionPolicy, 'description' | 'rules' | 'type' | 'name'>
-    )> }
+    )>, templatePermissions: (
+      { __typename?: 'TemplatePermissionsConnection' }
+      & { nodes: Array<Maybe<(
+        { __typename?: 'TemplatePermission' }
+        & { template?: Maybe<(
+          { __typename?: 'Template' }
+          & Pick<Template, 'id' | 'name' | 'code' | 'version'>
+        )> }
+      )>> }
+    ) }
   )>, templateActions?: Maybe<(
     { __typename?: 'TemplateActionsConnection' }
     & { nodes: Array<Maybe<(
@@ -28132,6 +28309,12 @@ export type GetPermissionStatisticsQuery = (
           & Pick<Template, 'code' | 'name'>
         )> }
       )> }
+    )>> }
+  )>, postgresRowLevels?: Maybe<(
+    { __typename?: 'PostgresRowLevelsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'PostgresRowLevel' }
+      & Pick<PostgresRowLevel, 'policyname' | 'tablename' | 'withCheck' | 'qual' | 'roles' | 'schemaname' | 'permissive' | 'cmd'>
     )>> }
   )> }
 );
@@ -28317,6 +28500,18 @@ export const FullTemplateFragmentDoc = gql`
           ...elementFragment
         }
       }
+    }
+  }
+  templateActions(orderBy: SEQUENCE_ASC) {
+    nodes {
+      actionCode
+      condition
+      id
+      parameterQueries
+      sequence
+      trigger
+      description
+      templateId
     }
   }
   templatePermissions {
@@ -30035,6 +30230,90 @@ export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const GeTemplateActionByCodeDocument = gql`
+    query geTemplateActionByCode($pluginCode: String!) {
+  templateActions(filter: {actionCode: {equalTo: $pluginCode}}) {
+    nodes {
+      id
+      description
+      condition
+      parameterQueries
+      trigger
+      description
+      template {
+        name
+        code
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGeTemplateActionByCodeQuery__
+ *
+ * To run a query within a React component, call `useGeTemplateActionByCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGeTemplateActionByCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGeTemplateActionByCodeQuery({
+ *   variables: {
+ *      pluginCode: // value for 'pluginCode'
+ *   },
+ * });
+ */
+export function useGeTemplateActionByCodeQuery(baseOptions?: Apollo.QueryHookOptions<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>) {
+        return Apollo.useQuery<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>(GeTemplateActionByCodeDocument, baseOptions);
+      }
+export function useGeTemplateActionByCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>) {
+          return Apollo.useLazyQuery<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>(GeTemplateActionByCodeDocument, baseOptions);
+        }
+export type GeTemplateActionByCodeQueryHookResult = ReturnType<typeof useGeTemplateActionByCodeQuery>;
+export type GeTemplateActionByCodeLazyQueryHookResult = ReturnType<typeof useGeTemplateActionByCodeLazyQuery>;
+export type GeTemplateActionByCodeQueryResult = Apollo.QueryResult<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>;
+export const GetAllActionsDocument = gql`
+    query getAllActions {
+  actionPlugins {
+    nodes {
+      id
+      code
+      description
+      name
+      optionalParameters
+      outputProperties
+      requiredParameters
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllActionsQuery__
+ *
+ * To run a query within a React component, call `useGetAllActionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllActionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllActionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllActionsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllActionsQuery, GetAllActionsQueryVariables>) {
+        return Apollo.useQuery<GetAllActionsQuery, GetAllActionsQueryVariables>(GetAllActionsDocument, baseOptions);
+      }
+export function useGetAllActionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllActionsQuery, GetAllActionsQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllActionsQuery, GetAllActionsQueryVariables>(GetAllActionsDocument, baseOptions);
+        }
+export type GetAllActionsQueryHookResult = ReturnType<typeof useGetAllActionsQuery>;
+export type GetAllActionsLazyQueryHookResult = ReturnType<typeof useGetAllActionsLazyQuery>;
+export type GetAllActionsQueryResult = Apollo.QueryResult<GetAllActionsQuery, GetAllActionsQueryVariables>;
 export const GetAllFiltersDocument = gql`
     query getAllFilters {
   filters {
@@ -30236,7 +30515,7 @@ export type GetFullTemplateInfoQueryHookResult = ReturnType<typeof useGetFullTem
 export type GetFullTemplateInfoLazyQueryHookResult = ReturnType<typeof useGetFullTemplateInfoLazyQuery>;
 export type GetFullTemplateInfoQueryResult = Apollo.QueryResult<GetFullTemplateInfoQuery, GetFullTemplateInfoQueryVariables>;
 export const GetPermissionStatisticsDocument = gql`
-    query getPermissionStatistics($id: Int!, $name: String!) {
+    query getPermissionStatistics($id: Int!, $name: String!, $rowLeveSearch: String!) {
   permissionName(id: $id) {
     name
     permissionJoins {
@@ -30257,6 +30536,16 @@ export const GetPermissionStatisticsDocument = gql`
       rules
       type
       name
+    }
+    templatePermissions {
+      nodes {
+        template {
+          id
+          name
+          code
+          version
+        }
+      }
     }
   }
   templateActions(filter: {parametersQueriesString: {includes: $name}}) {
@@ -30284,6 +30573,18 @@ export const GetPermissionStatisticsDocument = gql`
       }
     }
   }
+  postgresRowLevels(filter: {policyname: {endsWith: $rowLeveSearch}}) {
+    nodes {
+      policyname
+      tablename
+      withCheck
+      qual
+      roles
+      schemaname
+      permissive
+      cmd
+    }
+  }
 }
     `;
 
@@ -30301,6 +30602,7 @@ export const GetPermissionStatisticsDocument = gql`
  *   variables: {
  *      id: // value for 'id'
  *      name: // value for 'name'
+ *      rowLeveSearch: // value for 'rowLeveSearch'
  *   },
  * });
  */

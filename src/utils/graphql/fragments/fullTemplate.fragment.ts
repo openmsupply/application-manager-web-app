@@ -25,6 +25,18 @@ export default gql`
         }
       }
     }
+    templateActions(orderBy: SEQUENCE_ASC) {
+      nodes {
+        actionCode
+        condition
+        id
+        parameterQueries
+        sequence
+        trigger
+        description
+        templateId
+      }
+    }
     templatePermissions {
       nodes {
         allowedSections
