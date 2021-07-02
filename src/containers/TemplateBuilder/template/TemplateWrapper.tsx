@@ -36,7 +36,7 @@ const tabs = [
   {
     route: 'actions',
     title: 'Actions',
-    render: (templateInfo: TemplateInfo) => <Actions />,
+    render: (templateInfo: TemplateInfo) => <Actions templateInfo={templateInfo} />,
   },
 ]
 

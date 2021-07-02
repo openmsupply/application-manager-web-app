@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export default gql`
-  query getPermissionStatistics($id: Int!, $name: String!) {
+  query getPermissionStatistics($id: Int!, $name: String!, $rowLeveSearch: String!) {
     permissionName(id: $id) {
       name
       permissionJoins {
@@ -22,6 +22,16 @@ export default gql`
         rules
         type
         name
+      }
+      templatePermissions {
+        nodes {
+          template {
+            id
+            name
+            code
+            version
+          }
+        }
       }
     }
     templateActions(filter: { parametersQueriesString: { includes: $name } }) {
@@ -47,6 +57,18 @@ export default gql`
             name
           }
         }
+      }
+    }
+    postgresRowLevels(filter: { policyname: { endsWith: $rowLeveSearch } }) {
+      nodes {
+        policyname
+        tablename
+        withCheck
+        qual
+        roles
+        schemaname
+        permissive
+        cmd
       }
     }
   }

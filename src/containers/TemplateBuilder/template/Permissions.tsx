@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Checkbox, Dropdown, Header, Icon, Label, Modal, Popup } from 'semantic-ui-react'
+import ReactJson from 'react-json-view'
+import {
+  Accordion,
+  Button,
+  Checkbox,
+  Dropdown,
+  Header,
+  Icon,
+  Label,
+  Modal,
+  Popup,
+} from 'semantic-ui-react'
 import { Loading } from '../../../components'
 import { Stage } from '../../../components/Review'
 import config from '../../../config'
@@ -24,7 +35,7 @@ import { TemplateInfo } from './TemplateWrapper'
 type Error = { message: string; error: string }
 type Mutate = (doMutation: () => Promise<any>, setError: (error: Error) => void) => Promise<any>
 
-const mutate: Mutate = async (doMutation, setError) => {
+export const mutate: Mutate = async (doMutation, setError) => {
   try {
     const result = await doMutation()
     if (result?.errors) {
@@ -48,6 +59,7 @@ const Permissions: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo })
   const [permissionSatistics, setPermissionSatistics] = useState<{
     id: number
     name: string
+    templatePermissionId: number
   } | null>(null)
 
   const isEditable = templateInfo?.status === TemplateStatus.Draft
@@ -171,6 +183,7 @@ const Permissions: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo })
                   setPermissionSatistics({
                     id: permissionName?.id,
                     name: permissionName?.name || '',
+                    templatePermissionId: permissionName?.templatePermission?.id || 0,
                   })
                 }
               />
@@ -282,48 +295,60 @@ const Permissions: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo })
       <PermissionStatisticsWrapper
         id={permissionSatistics?.id}
         name={permissionSatistics?.name}
+        templatePermissionId={permissionSatistics?.templatePermissionId}
         onClose={() => setPermissionSatistics(null)}
       />
     </div>
   )
 }
 
-const PermissionStatisticsWrapper: React.FC<{ id?: number; name?: string; onClose: () => void }> =
-  ({ id, name, onClose }) => {
-    const [isOpen, setIsOpen] = useState(false)
+const PermissionStatisticsWrapper: React.FC<{
+  id?: number
+  name?: string
+  onClose: () => void
+  templatePermissionId?: number
+}> = ({ id, name, onClose, templatePermissionId }) => {
+  const [isOpen, setIsOpen] = useState(false)
 
-    useEffect(() => {
-      if (id && name) {
-        setIsOpen(true)
-      }
-    }, [id, name])
+  useEffect(() => {
+    if (id && name && templatePermissionId) {
+      setIsOpen(true)
+    }
+  }, [id, name])
 
-    if (!id || !name || !isOpen) return null
+  if (!id || !name || !isOpen || !templatePermissionId) return null
 
-    return (
-      <PermissionStatistics
-        id={id}
-        name={name}
-        setIsOpen={() => {
-          onClose()
-          setIsOpen(false)
-        }}
-      />
-    )
-  }
+  return (
+    <PermissionStatistics
+      id={id}
+      name={name}
+      templatePermissionId={templatePermissionId}
+      setIsOpen={() => {
+        onClose()
+        setIsOpen(false)
+      }}
+    />
+  )
+}
 
 const PermissionStatistics: React.FC<{
   id: number
+  templatePermissionId: number
   name: string
   setIsOpen: (isOpen: boolean) => void
-}> = ({ id, name, setIsOpen }) => {
-  const { data } = useGetPermissionStatisticsQuery({ variables: { id, name } })
+}> = ({ id, name, setIsOpen, templatePermissionId }) => {
+  const { data } = useGetPermissionStatisticsQuery({
+    variables: { id, name, rowLeveSearch: `pn${id}tp${templatePermissionId}` },
+  })
+  const [isOpenRules, setIsOpenRules] = useState(false)
+  const [isOpenRowLevel, setIsOpenRowLevel] = useState(false)
 
   return (
     <Modal open={true} onClose={() => setIsOpen(false)} className="element-edit-modal">
       {!data && <Loading />}
       {data && (
         <div className="flex-column" style={{ padding: 10, alignItems: 'center' }}>
+          <Header as="h1"> {`Statistics for ${name}`} </Header>
           <div className="flex-row" style={{ justifyContent: 'space-between' }}>
             <div className="flex-column">
               <Header as="h2">Users and Organisations</Header>
@@ -359,84 +384,229 @@ const PermissionStatistics: React.FC<{
               ))}
             </div>
             <div className="flex-column">
-              <Header as="h2">Template Actions</Header>
-              {(data.templateActions?.nodes || []).map((templateAction, index) => (
-                <div
-                  className="flex-column"
-                  style={{ padding: 5, borderRadius: 7, background: 'rgba(50, 252, 50, 0.01)' }}
+              {(data.templateActions?.nodes || []).length > 0 && (
+                <>
+                  <Header as="h2">Template Actions</Header>
+                  {(data.templateActions?.nodes || []).map((templateAction, index) => (
+                    <div
+                      className="flex-column"
+                      style={{ padding: 5, borderRadius: 7, background: 'rgba(50, 252, 50, 0.01)' }}
+                    >
+                      <div
+                        key={index}
+                        className="indicators-container as-row"
+                        style={{ justifyContent: 'flex-start' }}
+                      >
+                        <div key="template" className="indicator">
+                          <Label className="key" content="template" />
+                          <Label
+                            className="value"
+                            content={`${templateAction?.template?.code} - ${templateAction?.template?.name} `}
+                          />
+                        </div>
+                        <div key="action" className="indicator">
+                          <Label className="key" content="action code" />
+                          <Label className="value" content={`${templateAction?.actionCode}`} />
+                        </div>
+
+                        <div key="trigger" className="indicator">
+                          <Label className="key" content="trigger" />
+                          <Label className="value" content={`${templateAction?.trigger}`} />
+                        </div>
+                      </div>
+                      <EvaluationContainer
+                        key="condition"
+                        label="condition"
+                        currentElementCode={''}
+                        evaluation={asObject(templateAction?.condition)}
+                        setEvaluation={() => {}}
+                      />
+                      <Parameters
+                        key="parametersElement"
+                        currentElementCode={''}
+                        parameters={asObject(templateAction?.parameterQueries)}
+                        setParameters={() => {}}
+                      />
+                    </div>
+                  ))}
+                </>
+              )}
+              {(data.templateElements?.nodes || []).length > 0 && (
+                <>
+                  <Header as="h2">Template Elements</Header>
+                  {(data.templateElements?.nodes || []).map((templateElement, index) => (
+                    <div
+                      className="flex-column"
+                      style={{ padding: 5, borderRadius: 7, background: 'rgba(50, 252, 50, 0.01)' }}
+                    >
+                      <div
+                        key={index}
+                        className="indicators-container as-row"
+                        style={{ justifyContent: 'flex-start' }}
+                      >
+                        <div key="template" className="indicator">
+                          <Label className="key" content="template" />
+                          <Label
+                            className="value"
+                            content={`${templateElement?.section?.template?.code} - ${templateElement?.section?.template?.name} `}
+                          />
+                        </div>
+                        <div key="templateElement" className="indicator">
+                          <Label className="key" content="template element" />
+                          <Label
+                            className="value"
+                            content={`${templateElement?.code} - ${templateElement?.title}`}
+                          />
+                        </div>
+                      </div>
+                      <Parameters
+                        key="parametersElement"
+                        currentElementCode={''}
+                        parameters={asObject(templateElement?.parameters)}
+                        setParameters={() => {}}
+                      />
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+            <div className="flex-column">
+              <Header as="h2">Permission Policy</Header>
+              <div
+                key="permissionPolicy"
+                className="indicators-container as-row"
+                style={{ justifyContent: 'flex-start' }}
+              >
+                <div key="permissinPolicy" className="indicator">
+                  <Label className="key" content="Policy" />
+                  <Label
+                    className="value"
+                    content={`${data?.permissionName?.permissionPolicy?.name} - ${data?.permissionName?.permissionPolicy?.type} `}
+                  />
+                </div>
+                <div key="permissinPolicy" className="indicator">
+                  <Label className="key" content="Description" />
+                  <Label
+                    className="value"
+                    content={`${data?.permissionName?.permissionPolicy?.name} - ${data?.permissionName?.permissionPolicy?.description} `}
+                  />
+                </div>
+              </div>
+
+              <Accordion
+                style={{ borderRadius: 7, border: '1px solid black', padding: 3, margin: 5 }}
+              >
+                <Accordion.Title
+                  className="evaluation-container-title"
+                  style={{ justifyContent: 'center', padding: 2 }}
+                  active={isOpenRules}
                 >
+                  Policy Rules
+                  <Icon
+                    size="large"
+                    name={isOpenRules ? 'angle up' : 'angle down'}
+                    onClick={() => setIsOpenRules(!isOpenRules)}
+                  />
+                </Accordion.Title>
+                <Accordion.Content active={isOpenRules}>
+                  <ReactJson
+                    src={data?.permissionName?.permissionPolicy?.rules || {}}
+                    collapsed={2}
+                  />
+                </Accordion.Content>
+              </Accordion>
+              <Accordion
+                style={{ borderRadius: 7, border: '1px solid black', padding: 3, margin: 5 }}
+              >
+                <Accordion.Title
+                  className="evaluation-container-title"
+                  style={{ justifyContent: 'center', padding: 2 }}
+                  active={isOpenRowLevel}
+                >
+                  Row Level Policies
+                  <Icon
+                    size="large"
+                    name={isOpenRowLevel ? 'angle up' : 'angle down'}
+                    onClick={() => setIsOpenRowLevel(!isOpenRowLevel)}
+                  />
+                </Accordion.Title>
+                <Accordion.Content active={isOpenRowLevel}>
+                  {(data.postgresRowLevels?.nodes || []).length === 0 && (
+                    <div>No row level policies found, did you run row level update ?</div>
+                  )}
+
+                  {(data.postgresRowLevels?.nodes || []).length > 0 &&
+                    (data.postgresRowLevels?.nodes || []).map((postgresRowLevel, index) => (
+                      <div
+                        key={index}
+                        className="indicators-container as-row"
+                        style={{ justifyContent: 'flex-start' }}
+                      >
+                        <div key="type" className="indicator">
+                          <Label className="key" content="type" />
+                          <Label className="value" content={postgresRowLevel?.cmd} />
+                        </div>
+                        <div key="table" className="indicator">
+                          <Label className="key" content="table" />
+                          <Label className="value" content={postgresRowLevel?.tablename} />
+                        </div>
+                        <div key="policy-name" className="indicator">
+                          <Label className="key" content="policy name" />
+                          <Label className="value" content={postgresRowLevel?.policyname} />
+                        </div>
+                        {postgresRowLevel?.qual && (
+                          <div key="using" className="indicator">
+                            <Label className="key" content="USING" />
+                            <Label
+                              className="value"
+                              content={postgresRowLevel?.qual}
+                              style={{ whiteSpace: 'initial' }}
+                            />
+                          </div>
+                        )}
+                        {postgresRowLevel?.withCheck && (
+                          <div key="with-check" className="indicator">
+                            <Label className="key" content="WITH CHECK" />
+                            <Label
+                              className="value"
+                              content={postgresRowLevel?.withCheck}
+                              style={{ whiteSpace: 'initial' }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                </Accordion.Content>
+              </Accordion>
+              <Header as="h2">Templates</Header>
+
+              {(data?.permissionName?.templatePermissions?.nodes || []).map(
+                (templatePermission, index) => (
                   <div
                     key={index}
                     className="indicators-container as-row"
                     style={{ justifyContent: 'flex-start' }}
                   >
-                    <div key="template" className="indicator">
+                    <div key="templateName" className="indicator">
                       <Label className="key" content="template" />
                       <Label
                         className="value"
-                        content={`${templateAction?.template?.code} - ${templateAction?.template?.name} `}
+                        content={`${templatePermission?.template?.code} - ${templatePermission?.template?.name} `}
                       />
                     </div>
-                    <div key="action" className="indicator">
-                      <Label className="key" content="action code" />
-                      <Label className="value" content={`${templateAction?.actionCode}`} />
-                    </div>
-
-                    <div key="trigger" className="indicator">
-                      <Label className="key" content="trigger" />
-                      <Label className="value" content={`${templateAction?.trigger}`} />
+                    <div key="templateVersion" className="indicator">
+                      <Label className="key" content="version" />
+                      <Label className="value" content={templatePermission?.template?.version} />
+                      <a
+                        target="_blank"
+                        href={`/admin/template/${templatePermission?.template?.id}/permissions`}
+                      >
+                        <Icon color="blue" style={{ lineHeight: 'normal' }} name="info circle" />
+                      </a>
                     </div>
                   </div>
-                  <EvaluationContainer
-                    key="condition"
-                    label="condition"
-                    currentElementCode={''}
-                    evaluation={asObject(templateAction?.condition)}
-                    setEvaluation={() => {}}
-                  />
-                  <Parameters
-                    key="parametersElement"
-                    currentElementCode={''}
-                    parameters={asObject(templateAction?.parameterQueries)}
-                    setParameters={() => {}}
-                  />
-                </div>
-              ))}
-
-              <Header as="h2">Template Elements</Header>
-              {(data.templateElements?.nodes || []).map((templateElement, index) => (
-                <div
-                  className="flex-column"
-                  style={{ padding: 5, borderRadius: 7, background: 'rgba(50, 252, 50, 0.01)' }}
-                >
-                  <div
-                    key={index}
-                    className="indicators-container as-row"
-                    style={{ justifyContent: 'flex-start' }}
-                  >
-                    <div key="template" className="indicator">
-                      <Label className="key" content="template" />
-                      <Label
-                        className="value"
-                        content={`${templateElement?.section?.template?.code} - ${templateElement?.section?.template?.name} `}
-                      />
-                    </div>
-                    <div key="templateElement" className="indicator">
-                      <Label className="key" content="template element" />
-                      <Label
-                        className="value"
-                        content={`${templateElement?.code} - ${templateElement?.title}`}
-                      />
-                    </div>
-                  </div>
-                  <Parameters
-                    key="parametersElement"
-                    currentElementCode={''}
-                    parameters={asObject(templateElement?.parameters)}
-                    setParameters={() => {}}
-                  />
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
           <Button style={{ margin: 10 }} primary inverted onClick={() => setIsOpen(false)}>
@@ -458,7 +628,11 @@ const StageDisplay: React.FC<{
   allPermissionNames: PermissionName[]
   templateInfo: TemplateInfo
   names: PermissionNameFlat[]
-  setPermissionSatistics: (props: { id: number; name: string }) => void
+  setPermissionSatistics: (props: {
+    id: number
+    name: string
+    templatePermissionId: number
+  }) => void
 }> = ({
   stage,
   templateId,
@@ -688,6 +862,7 @@ const StageDisplay: React.FC<{
                 setPermissionSatistics({
                   id: permissionName?.id,
                   name: permissionName?.name || '',
+                  templatePermissionId: permissionName?.templatePermission?.id || 0,
                 })
               }
             />
@@ -807,7 +982,11 @@ const ReviewLevel: React.FC<{
   names: PermissionNameFlat[]
   templateInfo: TemplateInfo
   templateId: number
-  setPermissionSatistics: (props: { id: number; name: string }) => void
+  setPermissionSatistics: (props: {
+    id: number
+    name: string
+    templatePermissionId: number
+  }) => void
 }> = ({
   isEditable,
   templateId,
@@ -1023,6 +1202,7 @@ const ReviewLevel: React.FC<{
                     setPermissionSatistics({
                       id: permissionName?.id,
                       name: permissionName?.name || '',
+                      templatePermissionId: permissionName?.templatePermission?.id || 0,
                     })
                   }
                 />

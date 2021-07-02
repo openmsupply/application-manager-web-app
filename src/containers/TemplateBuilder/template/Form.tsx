@@ -1706,10 +1706,10 @@ export const Parameters: React.FC<{
   const [isActive, setIsActive] = useState(false)
 
   return (
-    <Accordion style={{ borderRadius: 7, border: '2px solid black', padding: 5, margin: 5 }}>
+    <Accordion style={{ borderRadius: 7, border: '2px solid black', padding: 2, margin: 5 }}>
       <Accordion.Title
         className="evaluation-container-title"
-        style={{ justifyContent: 'center', alignItems: 'center' }}
+        style={{ padding: 2, justifyContent: 'center', alignItems: 'center' }}
         active={isActive}
         onClick={() => setIsActive(!isActive)}
       >
@@ -1831,10 +1831,10 @@ export const EvaluationContainer: React.FC<{
   const typedEvaluation = getTypedEvaluation(evaluation)
 
   return (
-    <Accordion style={{ borderRadius: 7, border: '1px solid black', padding: 5, margin: 5 }}>
+    <Accordion style={{ borderRadius: 7, border: '1px solid black', padding: 2, margin: 5 }}>
       <Accordion.Title
         className="evaluation-container-title"
-        style={{ justifyContent: 'center' }}
+        style={{ justifyContent: 'center', padding: 2 }}
         active={isActive}
       >
         {!updateKey && <Label>{label}</Label>}
@@ -1932,21 +1932,23 @@ export const EvaluationContainer: React.FC<{
                   }
                 )}
             </div>
-            <div
-              style={{
-                marginLeft: 10,
-                borderRadius: 7,
-                border: '2px solid #E8E8E8',
-                overflow: 'auto',
-                maxHeight: '600px',
-                minHeight: 200,
-                maxWidth: '50%',
-              }}
-            >
-              <Label>Object Properties</Label>
+            {fullStructure && (
+              <div
+                style={{
+                  marginLeft: 10,
+                  borderRadius: 7,
+                  border: '2px solid #E8E8E8',
+                  overflow: 'auto',
+                  maxHeight: '600px',
+                  minHeight: 200,
+                  maxWidth: '50%',
+                }}
+              >
+                <Label>Object Properties</Label>
 
-              {fullStructure && <ReactJson src={objects} collapsed={2} />}
-            </div>
+                <ReactJson src={objects} collapsed={2} />
+              </div>
+            )}
           </div>
         )}
       </Accordion.Content>
@@ -1979,7 +1981,7 @@ const asObjectOrValue = (value: string) => {
 export const asObject = (value: EvaluatorNode) =>
   typeof value === 'object' && value !== null
     ? value
-    : { value: value || value === false ? false : null }
+    : { value: value || (value === false ? false : null) }
 
 const getCurrentPageElements = (structure: FullStructure, section: string, page: number) => {
   return structure?.sections[section]?.pages[page]?.state || []
