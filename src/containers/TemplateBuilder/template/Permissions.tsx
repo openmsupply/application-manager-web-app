@@ -59,7 +59,7 @@ const Permissions: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo })
   const [permissionSatistics, setPermissionSatistics] = useState<{
     id: number
     name: string
-    templatePermissionId: number
+    permissionPolicyId: number
   } | null>(null)
 
   const isEditable = templateInfo?.status === TemplateStatus.Draft
@@ -183,7 +183,7 @@ const Permissions: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo })
                   setPermissionSatistics({
                     id: permissionName?.id,
                     name: permissionName?.name || '',
-                    templatePermissionId: permissionName?.templatePermission?.id || 0,
+                    permissionPolicyId: permissionName?.permissionPolicyId || 0,
                   })
                 }
               />
@@ -295,7 +295,7 @@ const Permissions: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo })
       <PermissionStatisticsWrapper
         id={permissionSatistics?.id}
         name={permissionSatistics?.name}
-        templatePermissionId={permissionSatistics?.templatePermissionId}
+        permissionPolicyId={permissionSatistics?.permissionPolicyId}
         onClose={() => setPermissionSatistics(null)}
       />
     </div>
@@ -306,23 +306,23 @@ const PermissionStatisticsWrapper: React.FC<{
   id?: number
   name?: string
   onClose: () => void
-  templatePermissionId?: number
-}> = ({ id, name, onClose, templatePermissionId }) => {
+  permissionPolicyId?: number
+}> = ({ id, name, onClose, permissionPolicyId }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    if (id && name && templatePermissionId) {
+    if (id && name && permissionPolicyId) {
       setIsOpen(true)
     }
   }, [id, name])
 
-  if (!id || !name || !isOpen || !templatePermissionId) return null
+  if (!id || !name || !isOpen || !permissionPolicyId) return null
 
   return (
     <PermissionStatistics
       id={id}
       name={name}
-      templatePermissionId={templatePermissionId}
+      permissionPolicyId={permissionPolicyId}
       setIsOpen={() => {
         onClose()
         setIsOpen(false)
@@ -333,12 +333,12 @@ const PermissionStatisticsWrapper: React.FC<{
 
 const PermissionStatistics: React.FC<{
   id: number
-  templatePermissionId: number
+  permissionPolicyId: number
   name: string
   setIsOpen: (isOpen: boolean) => void
-}> = ({ id, name, setIsOpen, templatePermissionId }) => {
+}> = ({ id, name, setIsOpen, permissionPolicyId }) => {
   const { data } = useGetPermissionStatisticsQuery({
-    variables: { id, name, rowLeveSearch: `pn${id}tp${templatePermissionId}` },
+    variables: { id, name, rowLeveSearch: `pp${permissionPolicyId}` },
   })
   const [isOpenRules, setIsOpenRules] = useState(false)
   const [isOpenRowLevel, setIsOpenRowLevel] = useState(false)
@@ -628,11 +628,7 @@ const StageDisplay: React.FC<{
   allPermissionNames: PermissionName[]
   templateInfo: TemplateInfo
   names: PermissionNameFlat[]
-  setPermissionSatistics: (props: {
-    id: number
-    name: string
-    templatePermissionId: number
-  }) => void
+  setPermissionSatistics: (props: { id: number; name: string; permissionPolicyId: number }) => void
 }> = ({
   stage,
   templateId,
@@ -862,7 +858,7 @@ const StageDisplay: React.FC<{
                 setPermissionSatistics({
                   id: permissionName?.id,
                   name: permissionName?.name || '',
-                  templatePermissionId: permissionName?.templatePermission?.id || 0,
+                  permissionPolicyId: permissionName?.permissionPolicyId || 0,
                 })
               }
             />
@@ -982,11 +978,7 @@ const ReviewLevel: React.FC<{
   names: PermissionNameFlat[]
   templateInfo: TemplateInfo
   templateId: number
-  setPermissionSatistics: (props: {
-    id: number
-    name: string
-    templatePermissionId: number
-  }) => void
+  setPermissionSatistics: (props: { id: number; name: string; permissionPolicyId: number }) => void
 }> = ({
   isEditable,
   templateId,
@@ -1202,7 +1194,7 @@ const ReviewLevel: React.FC<{
                     setPermissionSatistics({
                       id: permissionName?.id,
                       name: permissionName?.name || '',
-                      templatePermissionId: permissionName?.templatePermission?.id || 0,
+                      permissionPolicyId: permissionName?.permissionPolicyId || 0,
                     })
                   }
                 />

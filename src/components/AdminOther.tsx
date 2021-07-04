@@ -12,14 +12,16 @@ export const AdminPermissions: React.FC = () => {
   return (
     <div>
       <h1>Permissions Management page</h1>
+      not implemented
     </div>
   )
 }
 
-export const Config: React.FC = () => {
+export const OutcomesConfigurations: React.FC = () => {
   return (
     <div>
-      <h1>Configuration page</h1>
+      <h1>Outcome Configuration Page</h1>
+      not implemented
     </div>
   )
 }

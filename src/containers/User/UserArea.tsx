@@ -28,6 +28,10 @@ const UserArea: React.FC = () => {
 }
 
 const MainMenuBar: React.FC = () => {
+  const {
+    userState: { currentUser },
+  } = useUserState()
+
   // TO-DO: Logic for deducing what should show in menu bar
   // Probably passed in as props
   return (
@@ -39,18 +43,17 @@ const MainMenuBar: React.FC = () => {
             {strings.MENU_ITEM_DASHBOARD}
           </Link>
         </List.Item>
-        {/* <List.Item>
-          <Link to="/layout">Layout helpers</Link>
-        </List.Item> */}
-        <List.Item>
-          <Link to="/lookup-tables">Lookup Tables</Link>
-        </List.Item>
         <List.Item>
           <Link to="/outcomes">Outcomes</Link>
         </List.Item>
         <List.Item>
           <Link to="/application/new?type=UserEdit">Edit User Account</Link>
         </List.Item>
+        {(currentUser?.username || '').toLowerCase() === 'admin' && (
+          <List.Item>
+            <Link to="/admin">Admin Configurations</Link>
+          </List.Item>
+        )}
       </List>
     </div>
   )

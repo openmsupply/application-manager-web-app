@@ -1,22 +1,12 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import {
-  Account,
   AdminPermissions,
   AdminUsers,
   Approval,
   Admin,
-  Config,
   Dashboard,
-  Notification,
-  NotificationsList,
   NoMatch,
-  ProductList,
-  Organisation,
-  OrgMemberEdit,
-  TemplateList,
-  TemplateNew,
-  Template,
   Footer,
 } from '../../components'
 import { ApplicationCreate, ApplicationWrapper } from '../Application'
@@ -32,6 +22,7 @@ import LayoutHelpers from '../../components/LayoutHelpers'
 import Outcomes from '../Outcomes/Outcomes'
 import Templates from '../TemplateBuilder/Templates'
 import TemplateWrapper from '../TemplateBuilder/template/TemplateWrapper'
+import { OutcomesConfigurations } from '../../components/AdminOther'
 
 const SiteLayout: React.FC = () => {
   return (
@@ -72,9 +63,6 @@ const SiteLayout: React.FC = () => {
             <Route exact path="/admin/templates">
               <Templates />
             </Route>
-            <Route exact path="/admin/templates/new">
-              <TemplateNew />
-            </Route>
             <Route path="/admin/template/:templateId">
               <TemplateWrapper />
             </Route>
@@ -84,26 +72,8 @@ const SiteLayout: React.FC = () => {
             <Route exact path="/admin/permissions">
               <AdminPermissions />
             </Route>
-            <Route exact path="/admin/config">
-              <Config />
-            </Route>
-            <Route exact path="/account">
-              <Account />
-            </Route>
-            <Route exact path="/organisations/:orgName">
-              <Organisation />
-            </Route>
-            <Route exact path="/organisations/:orgName/members">
-              <OrgMemberEdit />
-            </Route>
-            <Route exact path="/notifications">
-              <NotificationsList />
-            </Route>
-            <Route exact path="/notifications/:notificationId">
-              <Notification />
-            </Route>
-            <Route exact path="/products">
-              <ProductList />
+            <Route exact path="/admin/outcomes">
+              <OutcomesConfigurations />
             </Route>
             <Route path="/outcomes">
               <Outcomes />
