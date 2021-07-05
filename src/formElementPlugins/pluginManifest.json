@@ -1,0 +1,147 @@
+{
+  "checkbox": {
+    "code": "checkbox",
+    "displayName": "Checkbox Selectors",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": "",
+      "checkboxes": ["Loading..."]
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "checkbox"
+  },
+  "dropdownChoice": {
+    "code": "dropdownChoice",
+    "displayName": "Drop-down Selector",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": "",
+      "options": ["Loading..."]
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "dropdownChoice"
+  },
+  "fileUpload": {
+    "code": "fileUpload",
+    "displayName": "File Upload interface",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": ""
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "fileUpload"
+  },
+  "imageDisplay": {
+    "code": "imageDisplay",
+    "displayName": "Image Display",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": "",
+      "size": "small",
+      "alignment": "center"
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Informative",
+    "folderName": "imageDisplay"
+  },
+  "listBuilder": {
+    "code": "listBuilder",
+    "displayName": "List Builder",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": ""
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "listBuilder"
+  },
+  "longText": {
+    "code": "longText",
+    "displayName": "Multi-line Text Input",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": "",
+      "placeholder": "Loading..."
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "longText"
+  },
+  "password": {
+    "code": "password",
+    "displayName": "Secure Password Input",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "default": "",
+      "description": ""
+    },
+    "internalParameters": ["validationInternal"],
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "password"
+  },
+  "radioChoice": {
+    "code": "radioChoice",
+    "displayName": "Radio Button Selector",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": "",
+      "options": ["Loading..."]
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "radioChoice"
+  },
+  "search": {
+    "code": "search",
+    "displayName": "Search Field",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "description": "",
+      "options": ["Loading..."]
+    },
+    "internalParameters": ["source"],
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "search"
+  },
+  "shortText": {
+    "code": "shortText",
+    "displayName": "Basic Text Input",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "default": "",
+      "description": ""
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "shortText"
+  },
+  "shortText2": {
+    "code": "shortText2",
+    "displayName": "Basic Text Input2",
+    "parameterLoadingValues": {
+      "label": "Loading...",
+      "default": "",
+      "description": ""
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Input",
+    "folderName": "shortText2"
+  },
+  "textInfo": {
+    "code": "textInfo",
+    "displayName": "Static Text",
+    "parameterLoadingValues": {
+      "title": "Loading...",
+      "text": "",
+      "style": "none"
+    },
+    "//": "categories types: 'Input'|'Informative'",
+    "category": "Informative",
+    "folderName": "textInfo"
+  }
+}

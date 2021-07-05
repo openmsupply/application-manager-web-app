@@ -1,5 +1,4 @@
 {
-  "isCore": true,
   "code": "shortText",
   "displayName": "Basic Text Input",
   "parameterLoadingValues": {

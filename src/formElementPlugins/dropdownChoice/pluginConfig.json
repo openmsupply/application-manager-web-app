@@ -1,5 +1,4 @@
 {
-  "isCore": true,
   "code": "dropdownChoice",
   "displayName": "Drop-down Selector",
   "parameterLoadingValues": {

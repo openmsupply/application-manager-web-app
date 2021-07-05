@@ -2,6 +2,9 @@ const commonPaths = require('./common-paths')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const { createPluginManifest } = require('./buildPluginManifest.js')
+
+createPluginManifest()
 
 const config = {
   entry: {

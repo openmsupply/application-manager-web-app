@@ -1,5 +1,4 @@
 {
-  "isCore": true,
   "code": "password",
   "displayName": "Secure Password Input",
   "parameterLoadingValues": {

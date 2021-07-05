@@ -1,5 +1,6 @@
 import React from 'react'
 import { PluginManifest, PluginComponents, Plugins } from './types'
+import coreManifest from './pluginManifest.json'
 
 type ComponentKeys = 'ApplicationView' | 'TemplateView' | 'SummaryView'
 
@@ -15,6 +16,7 @@ class pluginProvider {
   // Have to add ! since constructor may not declare = {}, due to if statement with return
   plugins!: Plugins
   pluginManifest!: PluginManifest
+  remotePlugins!: PluginManifest
 
   constructor() {
     if (pluginProviderInstance) return pluginProviderInstance
@@ -23,104 +25,51 @@ class pluginProvider {
     this.plugins = {}
     // Needs to be called when app loads (REST call to back end)
     // TODO
-    this.pluginManifest = {
-      shortText: {
-        code: 'shortText',
-        displayName: 'Basic Text Input',
-        isCore: true,
-        folderName: 'shortText',
-        category: 'Input',
-      },
-      longText: {
-        code: 'longText',
-        displayName: 'Multi-line Text Input',
-        isCore: true,
-        folderName: 'longText',
-        category: 'Input',
-      },
-      textInfo: {
-        code: 'textInfo',
-        isCore: true,
-        displayName: 'Static Text',
-        folderName: 'textInfo',
-        category: 'Informative',
-      },
-      imageDisplay: {
-        code: 'imageDisplay',
-        isCore: true,
-        displayName: 'Image Display',
-        folderName: 'imageDisplay',
-        category: 'Informative',
-      },
-      dropdownChoice: {
-        code: 'dropdownChoice',
-        isCore: true,
-        displayName: 'Drop-down Selector',
-        folderName: 'dropdownChoice',
-        category: 'Input',
-      },
-      radioChoice: {
-        code: 'radioChoice',
-        isCore: true,
-        displayName: 'Radio Button Selector',
-        folderName: 'radioChoice',
-        category: 'Input',
-      },
-      checkbox: {
-        code: 'checkbox',
-        isCore: true,
-        displayName: 'Checkbox selectors',
-        folderName: 'checkbox',
-        category: 'Input',
-      },
-      password: {
-        code: 'password',
-        displayName: 'Secure Password Input',
-        isCore: true,
-        folderName: 'password',
-        category: 'Input',
-      },
-      fileUpload: {
-        code: 'fileUpload',
-        displayName: 'File Upload',
-        isCore: true,
-        folderName: 'fileUpload',
-        category: 'Input',
-      },
-      listBuilder: {
-        code: 'listBuilder',
-        displayName: 'List Builder',
-        isCore: true,
-        folderName: 'listBuilder',
-        category: 'Input',
-      },
-      search: {
-        code: 'search',
-        displayName: 'Search',
-        isCore: true,
-        folderName: 'search',
-        category: 'Input',
-      },
-    }
+    this.pluginManifest = coreManifest as PluginManifest
   }
 
   getPluginElement(code: string) {
     if (Object.values(this.pluginManifest).length == 0)
       return returnWithError(new Error(PLUGIN_ERRORS.PLUGINS_NOT_LOADED))
 
+    // Bundled plugins
     const { [code]: pluginConfig } = this.pluginManifest
-    if (!pluginConfig) return returnWithError(new Error(PLUGIN_ERRORS.PLUGIN_NOT_IN_MANIFEST))
+    if (!pluginConfig) return this.getRemoteElementPlugin(code)
 
     if (this.plugins[code]) return this.plugins[code]
 
-    if (process.env.development || pluginConfig.isCore) {
-      this.plugins[code] = getLocalElementPlugin(pluginConfig.folderName)
-    } else {
-      this.plugins[code] = getRemoteElementPlugin(pluginConfig.folderName)
-    }
+    this.plugins[code] = getLocalElementPlugin(pluginConfig.folderName)
+
     return this.plugins[code]
   }
+
+  getRemoteElementPlugin(code: string) {
+    return getRemotePlugin()
+  }
 }
+
+const getRemotePlugin = (pluginUrl?: string, scope?: string) =>
+  new Promise((resolve, reject) => {
+    // const element = document.createElement("script");
+    // element.src = pluginUrl;
+    // element.type = "text/javascript";
+    // element.async = true;
+    // element.onload = async() => {
+    //   // Initializes the share scope. This fills it with known provided modules from this build and all remotes
+    //   await __webpack_init_sharing__("default");
+    //   const container = window[scope]; // or get the container somewhere else
+    //   // Initialize the container, it may provide shared modules
+    //   await container.init(__webpack_share_scopes__.default);
+    //   const factory = await window[scope].get('./plugin');
+    //   const Module = factory();
+    //   resolve(Module);
+    // };
+    // element.onerror = () => {
+    //   console.log('error')
+    //   reject();
+    // };
+    // document.head.appendChild(element);
+  })
 
 function getLocalElementPlugin(folderName: string) {
   const result: PluginComponents = {} as PluginComponents
@@ -149,15 +98,6 @@ function returnWithError(error: Error) {
       }))
   )
 
-  return result
-}
-
-function getRemoteElementPlugin(code: string) {
-  const result: PluginComponents = {} as PluginComponents
-  PLUGIN_COMPONENTS.forEach((componentName) => {
-    // TODO will be added in another PR
-    result[componentName] = () => <div>Not Implemented</div>
-  })
   return result
 }
 

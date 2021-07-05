@@ -1,5 +1,4 @@
 {
-  "isCore": true,
   "code": "fileUpload",
   "displayName": "File Upload interface",
   "parameterLoadingValues": {

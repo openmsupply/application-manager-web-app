@@ -75,7 +75,6 @@ interface TemplateViewProps {
 }
 
 interface PluginConfig {
-  isCore?: boolean
   code: string
   folderName: string
   displayName: string

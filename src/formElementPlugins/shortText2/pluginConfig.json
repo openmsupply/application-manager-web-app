@@ -1,10 +1,10 @@
 {
-  "code": "radioChoice",
-  "displayName": "Radio Button Selector",
+  "code": "shortText2",
+  "displayName": "Basic Text Input2",
   "parameterLoadingValues": {
     "label": "Loading...",
-    "description": "",
-    "options": ["Loading..."]
+    "default": "",
+    "description": ""
   },
   "//": "categories types: 'Input'|'Informative'",
   "category": "Input"
