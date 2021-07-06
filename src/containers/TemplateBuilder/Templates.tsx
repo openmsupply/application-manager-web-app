@@ -1,206 +1,69 @@
-import { DateTime } from 'luxon'
 import React, { ReactNode, useRef } from 'react'
-import { useEffect, useState } from 'react'
-import { Button, Header, Icon, Label, Loader, Modal, Table } from 'semantic-ui-react'
-import config from '../../config'
-import { TemplateStatus, useGetAllTemplatesQuery } from '../../utils/generated/graphql'
+import { useState } from 'react'
+import { Button, Header, Icon, Table } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
+import { TextIO } from './shared/components'
+import OperationContext, { snapshotFilesUrl, useOperationState } from './shared/OperationContext'
+import useGetTemplates, { Template } from './useGetTemplates'
 
-type Template = {
-  name: string
-  status: TemplateStatus
-  id: number
-  code: string
-  category: string
-  version: number
-  versionTimestamp: DateTime
-  applicationCount: number
-}
-type Templates = {
-  main: Template
-  applicationCount: number
-  numberOfTemplates: number
-  all: Template[]
-}[]
-
-const useGetTemplates = () => {
-  const [templates, setTemplates] = useState<Templates>([])
-
-  const { data, error, refetch } = useGetAllTemplatesQuery({ fetchPolicy: 'network-only' })
-
-  useEffect(() => {
-    if (data && !error) {
-      const templates: Templates = []
-
-      const templateNodes = data?.templates?.nodes || []
-      templateNodes.forEach((template) => {
-        if (
-          !template?.code ||
-          !template.name ||
-          !template.status ||
-          !template?.version ||
-          !template?.versionTimestamp
-        ) {
-          console.log('failed to load template', template)
-          return
-        }
-
-        const {
-          code,
-          name,
-          status,
-          id,
-          version,
-          versionTimestamp,
-          templateCategory,
-          applications,
-        } = template
-        const holder = templates.find(({ main }) => main.code === code)
-
-        const current = {
-          name,
-          status,
-          id,
-          code,
-          category: templateCategory?.title || '',
-          version,
-          versionTimestamp: DateTime.fromISO(versionTimestamp),
-          applicationCount: applications.totalCount || 0,
-        }
-
-        if (!holder)
-          return templates.push({
-            main: current,
-            applicationCount: current.applicationCount,
-            numberOfTemplates: 1,
-            all: [current],
-          })
-        const { main, all } = holder
-
-        all.push(current)
-        if (
-          status === TemplateStatus.Available ||
-          (main.status !== TemplateStatus.Available &&
-            main.versionTimestamp < current.versionTimestamp)
-        )
-          holder.main = current
-
-        holder.applicationCount += current.applicationCount
-        holder.numberOfTemplates = all.length
-      })
-
-      setTemplates(templates)
-    }
-  }, [data])
-
-  return {
-    error,
-    templates,
-    refetch,
-  }
-}
-
-const snapshotsBaseUrl = `${config.serverREST}/snapshot`
-const takeSnapshotUrl = `${snapshotsBaseUrl}/take`
-const snapshotFilesUrl = `${snapshotsBaseUrl}/files`
-const useSnapshotUrl = `${snapshotsBaseUrl}/use`
-const templateExportOptionName = 'templateExport'
-const uploadSnapshotUrl = `${snapshotsBaseUrl}/upload`
-
-type Error = { message: string; error: string }
-type SetError = (error: Error) => void
-type SetIsLoading = (value: boolean) => void
+type CellPropsTemplate = Template & { numberOfTemplates?: number }
+type CellProps = { template: CellPropsTemplate; refetch: () => void }
 
 type Columns = {
   title: string
-  render: (
-    template: Template & { numberOfTemplates?: number },
-    setError: SetError,
-    setIsLoading: SetIsLoading,
-    refetch: () => void
-  ) => ReactNode
+  render: (props: CellProps) => ReactNode
 }[]
 
 const columns: Columns = [
   {
     title: '',
-    render: ({ code }) => code,
+    render: ({ template: { code } }) => code,
   },
   {
     title: 'name',
-    render: ({ name }) => name,
+    render: ({ template: { name } }) => name,
   },
 
   {
     title: '',
-    render: ({ version, versionTimestamp }) => (
-      <div className="indicators-container">
-        <div key="version" className="indicator">
-          <Label className="key" key="key" content="version" />
-          <Label className="value" key="value" content={version} />
-        </div>
-        <div key="versionDate" className="indicator">
-          <Label className="key" key="key" content="date" />
-          <Label className="value" key="value" content={versionTimestamp.toFormat('dd MMM yy')} />
-        </div>
-      </div>
+    render: ({ template: { version, versionTimestamp } }) => (
+      <React.Fragment key="version">
+        <TextIO text={String(version)} title="version" />
+        <TextIO text={String(versionTimestamp.toFormat('dd MMM yy'))} title="date" />
+      </React.Fragment>
     ),
   },
   {
     title: 'category',
-    render: ({ category }) => category,
+    render: ({ template: { category } }) => category,
   },
   {
     title: 'status',
-    render: ({ status }) => status,
+    render: ({ template: { status } }) => status,
   },
   {
     title: '',
-    render: ({ applicationCount, numberOfTemplates }) => (
-      <div className="indicators-container">
-        <div key="appCount" className="indicator">
-          <Label className="key" key="key" content="# application" />
-          <Label className="value" key="value" content={applicationCount} />
-        </div>
-
-        {numberOfTemplates && (
-          <div key="tempCount" className="indicator">
-            <Label className="key" key="key" content="# templates" />
-            <Label className="value" key="value" content={numberOfTemplates} />
-          </div>
-        )}
-      </div>
+    render: ({ template: { applicationCount, numberOfTemplates } }) => (
+      <React.Fragment key="counts">
+        <TextIO text={String(applicationCount)} title="# application" />
+        {numberOfTemplates && <TextIO text={String(numberOfTemplates)} title="# templates" />}
+      </React.Fragment>
     ),
   },
 
   {
     title: '',
-    render: ({ code, version, id }, setError, setIsLoading, refetch) => (
+    render: (cellProps) => (
       <div key="buttons">
-        <ViewEditButton key="editButton" id={id} />
-        <ExportButton
-          code={code}
-          key="export"
-          version={version}
-          setError={setError}
-          id={id}
-          setIsLoading={setIsLoading}
-        />
-        <DuplicateButton
-          code={code}
-          key="duplicate"
-          version={version}
-          setError={setError}
-          id={id}
-          setIsLoading={setIsLoading}
-          refetch={refetch}
-        />
+        <ViewEditButton {...cellProps} />
+        <ExportButton {...cellProps} />
+        <DuplicateButton {...cellProps} />
       </div>
     ),
   },
 ]
 
-const ViewEditButton: React.FC<{ id: number }> = ({ id }) => {
+const ViewEditButton: React.FC<CellProps> = ({ template: { id } }) => {
   const { push } = useRouter()
 
   return (
@@ -217,17 +80,11 @@ const ViewEditButton: React.FC<{ id: number }> = ({ id }) => {
   )
 }
 
-const ExportButton: React.FC<{
-  code: string
-  version: number
-  id: number
-  setError: SetError
-  setIsLoading: SetIsLoading
-}> = ({ code, version, setError, setIsLoading, id }) => {
+const ExportButton: React.FC<CellProps> = ({ template: { code, version, id } }) => {
   const downloadLinkRef = useRef<HTMLAnchorElement>(null)
+  const { exportTemplate } = useOperationState()
   const snapshotName = `${code}-${version}`
-  const filter = { template: { id: { equalTo: id } } }
-  const body = JSON.stringify({ filters: filter })
+
   return (
     <div key="export">
       <a ref={downloadLinkRef} href={`${snapshotFilesUrl}/${snapshotName}.zip`} target="_blank"></a>
@@ -235,28 +92,7 @@ const ExportButton: React.FC<{
         className="clickable"
         onClick={async (e) => {
           e.stopPropagation()
-          setIsLoading(true)
-          try {
-            const resultRaw = await fetch(
-              `${takeSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body,
-              }
-            )
-            const resultJson = await resultRaw.json()
-
-            if (resultJson.success) {
-              downloadLinkRef?.current?.click()
-              return setIsLoading(false)
-            }
-            setError(resultJson)
-          } catch (error) {
-            setError({ message: 'Front end error while exporting', error })
-          }
+          if (await exportTemplate({ id, snapshotName })) downloadLinkRef?.current?.click()
         }}
       >
         <Icon className="clickable" key="export" name="sign-out" />
@@ -265,54 +101,17 @@ const ExportButton: React.FC<{
   )
 }
 
-const DuplicateButton: React.FC<{
-  code: string
-  version: number
-  id: number
-  setError: SetError
-  setIsLoading: SetIsLoading
-  refetch: () => void
-}> = ({ code, version, setError, setIsLoading, id, refetch }) => {
+const DuplicateButton: React.FC<CellProps> = ({ template: { code, version, id }, refetch }) => {
   const snapshotName = `${code}-${version}`
-  const filter = { template: { id: { equalTo: id } } }
-  const body = JSON.stringify({ filters: filter })
+  const { duplicateTemplate } = useOperationState()
 
   return (
-    <div key="dupicate">
+    <div key="duplicate">
       <div
         className="clickable"
         onClick={async (e) => {
           e.stopPropagation()
-          setIsLoading(true)
-          try {
-            let resultRaw = await fetch(
-              `${takeSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body,
-              }
-            )
-            let resultJson = await resultRaw.json()
-
-            if (!resultJson.success) return setError(resultJson)
-
-            resultRaw = await fetch(
-              `${useSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
-              {
-                method: 'POST',
-              }
-            )
-            resultJson = await resultRaw.json()
-
-            if (!resultJson.success) return setError(resultJson)
-            refetch()
-            return setIsLoading(false)
-          } catch (error) {
-            setError({ message: 'Front end error while duplicating', error })
-          }
+          if (await duplicateTemplate({ id, snapshotName })) refetch()
         }}
       >
         <Icon className="clickable" key="export" name="copy" />
@@ -321,178 +120,124 @@ const DuplicateButton: React.FC<{
   )
 }
 
+const TemplatesWrapper: React.FC = () => (
+  <OperationContext>
+    <Templates />
+  </OperationContext>
+)
+
 const Templates: React.FC = () => {
   const [selectedRow, setSelectedRow] = useState(-1)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { templates, refetch } = useGetTemplates()
+  const { importTemplate } = useOperationState()
 
-  const renderLoadingAndError = () => (
-    <Modal open={isLoading} onClick={resetLoading} onClose={resetLoading}>
-      {error ? (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Label size="large" color="red">
-            {error.message}
-            <Icon name="close" onClick={resetLoading} />
-          </Label>
-          <div style={{ margin: 20 }}>{error.error}</div>
-        </div>
-      ) : (
-        <Loader active>Loading</Loader>
-      )}
-    </Modal>
+  const renderHeader = () => (
+    <Table.Header key="header">
+      <Table.Row>
+        {columns.map(({ title }, index) => (
+          <Table.HeaderCell key={index} colSpan={1}>
+            {title}
+          </Table.HeaderCell>
+        ))}
+      </Table.Row>
+    </Table.Header>
   )
 
-  const resetLoading = () => {
-    setError(null)
-    setIsLoading(false)
+  const renderTemplate = (
+    template: CellPropsTemplate,
+    refetch: () => void,
+    rowIndex: number,
+    isInnerRender = false
+  ) => {
+    if (rowIndex === selectedRow && !isInnerRender) return null
+
+    return (
+      <Table.Row
+        key={`notselected${rowIndex}`}
+        className="clickable"
+        onClick={() => setSelectedRow(rowIndex)}
+      >
+        {columns.map(({ render }, cellIndex) => (
+          <Table.Cell key={`selectedcell${cellIndex}`}>{render({ template, refetch })}</Table.Cell>
+        ))}
+      </Table.Row>
+    )
   }
 
-  const importTemplate = async (e: any) => {
-    if (!e.target?.files) return
-
-    const file = e.target.files[0]
-    const snapshotName = file.name.replace('.zip', '')
-
-    setIsLoading(true)
-    try {
-      const data = new FormData()
-      data.append('file', file)
-
-      let resultRaw = await fetch(`${uploadSnapshotUrl}?name=${snapshotName}`, {
-        method: 'POST',
-        body: data,
-      })
-      let resultJson = await resultRaw.json()
-
-      if (!resultJson.success) return setError(resultJson)
-
-      resultRaw = await fetch(
-        `${useSnapshotUrl}?name=${snapshotName}&optionsName=${templateExportOptionName}`,
-        {
-          method: 'POST',
-        }
-      )
-      resultJson = await resultRaw.json()
-
-      if (!resultJson.success) return setError(resultJson)
-      refetch()
-      return setIsLoading(false)
-    } catch (error) {
-      setError({ message: 'Front end error while importing', error })
-    }
+  const renderInnerTemplates = (all: Template[], refetch: () => void, rowIndex: number) => {
+    if (rowIndex !== selectedRow) return null
+    return (
+      <>
+        <Table.Row
+          key={`selected_${rowIndex}`}
+          className="clickable collapsed-start-row"
+          onClick={() => setSelectedRow(-1)}
+        >
+          <td colSpan={columns.length}>
+            <Icon name="angle up" />
+          </td>
+        </Table.Row>
+        {all.map((template, innerRowIndex) =>
+          renderTemplate(template, refetch, innerRowIndex, true)
+        )}
+        <Table.Row className="collapsed-end-row" key={`${rowIndex}-end`}>
+          <td colSpan={columns.length}></td>
+        </Table.Row>
+      </>
+    )
   }
+
+  const renderImportButton = () => (
+    <>
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept=".zip"
+        hidden
+        name="file"
+        multiple={false}
+        onChange={async (e) => {
+          if (await importTemplate(e)) refetch()
+        }}
+      />
+      <Button inverted primary onClick={() => fileInputRef?.current?.click()}>
+        Import
+      </Button>
+    </>
+  )
 
   return (
     <div className="template-builder-templates">
-      <Header as="h3">Templates / Procedures</Header>
+      <div key="top-bar" className="top-bar">
+        <Header as="h3">Templates / Procedures</Header>
 
-      <div key="topBar" className="topbar">
-        <div className="indicators-container">
-          <div key="tooltipEdit" className="indicator">
-            <Label className="key">
-              <Icon name="edit outline" />
-            </Label>
-            <Label className="value" key="value" content="edit" />
-          </div>
-          <div key="tooltipExoirt" className="indicator">
-            <Label className="key">
-              <Icon name="sign-out" />
-            </Label>
-            <Label className="value" key="value" content="export" />
-          </div>
-          <div key="tooltipDuplicate" className="indicator">
-            <Label className="key">
-              <Icon name="copy" />
-            </Label>
-            <Label className="value" key="value" content="duplicate" />
-          </div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept=".zip"
-            hidden
-            name="file"
-            multiple={false}
-            onChange={importTemplate}
-          />
-          <Button inverted primary onClick={() => fileInputRef?.current?.click()}>
-            Import
-          </Button>
-        </div>
+        <div className="flex-grow-1" />
+        <TextIO icon="edit" text="edit" />
+        <TextIO icon="sign-out" text="export" />
+        <TextIO icon="copy" text="duplicate" />
+        {renderImportButton()}
       </div>
 
       <div key="listContainer" id="list-container" className="outcome-table-container">
         <Table sortable stackable selectable>
-          <Table.Header key="header">
-            <Table.Row>
-              {columns.map(({ title }, index) => (
-                <Table.HeaderCell key={index} colSpan={1}>
-                  {title}
-                </Table.HeaderCell>
-              ))}
-            </Table.Row>
-          </Table.Header>
+          {renderHeader()}
           <Table.Body key="body">
-            {templates.map(({ main, applicationCount, numberOfTemplates, all }, rowIndex) => {
-              return (
-                <React.Fragment key={`fragment_${rowIndex}`}>
-                  {rowIndex !== selectedRow && (
-                    <Table.Row
-                      key={`notselected${rowIndex}`}
-                      className="clickable"
-                      onClick={() => setSelectedRow(rowIndex)}
-                    >
-                      {columns.map(({ render }, cellIndex) => (
-                        <Table.Cell key={`selectedcell${cellIndex}`}>
-                          {render(
-                            { ...main, applicationCount, numberOfTemplates },
-                            setError,
-                            setIsLoading,
-                            refetch
-                          )}
-                        </Table.Cell>
-                      ))}
-                    </Table.Row>
-                  )}
-                  {rowIndex === selectedRow && (
-                    <React.Fragment key={`fragment_${rowIndex}`}>
-                      <Table.Row
-                        key={`selected_${rowIndex}`}
-                        className="clickable"
-                        onClick={() => setSelectedRow(-1)}
-                        style={{
-                          height: 10,
-                        }}
-                      >
-                        <td style={{ textAlign: 'center' }} colSpan={columns.length}>
-                          <Icon name="angle up" />
-                        </td>
-                      </Table.Row>
-                      {all.map((row, innerRowIndex) => (
-                        <Table.Row key={`${rowIndex}_${innerRowIndex}`}>
-                          {columns.map(({ render }, cellIndex) => (
-                            <Table.Cell key={cellIndex}>
-                              {render(row, setError, setIsLoading, refetch)}
-                            </Table.Cell>
-                          ))}
-                        </Table.Row>
-                      ))}
-                      <Table.Row style={{ height: 2 }} key={`${rowIndex}-end`}>
-                        <td colSpan={columns.length}></td>
-                      </Table.Row>
-                    </React.Fragment>
-                  )}
-                </React.Fragment>
-              )
-            })}
+            {templates.map(({ all, main, applicationCount, numberOfTemplates }, rowIndex) => (
+              <React.Fragment key={`fragment_${rowIndex}`}>
+                {renderTemplate(
+                  { ...main, applicationCount, numberOfTemplates },
+                  refetch,
+                  rowIndex
+                )}
+                {renderInnerTemplates(all, refetch, rowIndex)}
+              </React.Fragment>
+            ))}
           </Table.Body>
         </Table>
       </div>
-      {renderLoadingAndError()}
     </div>
   )
 }
 
-export default Templates
+export default TemplatesWrapper

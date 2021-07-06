@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { matchPath } from 'react-router'
-import { Header, Label, Message } from 'semantic-ui-react'
+import { Header, Message } from 'semantic-ui-react'
 import { Loading, NoMatch } from '../../../components'
 import strings from '../../../utils/constants'
 
 import {
+  FullTemplateFragment,
   GetFullTemplateInfoQuery,
+  TemplateCategory,
+  TemplateFilterJoin,
+  TemplateStatus,
   useGetFullTemplateInfoQuery,
 } from '../../../utils/generated/graphql'
 import { useRouter } from '../../../utils/hooks/useRouter'
+import { TextIO } from '../shared/components'
+import OperationContext from '../shared/OperationContext'
 
 import Actions from './Actions'
 import Form from './Form'
@@ -21,7 +27,7 @@ const tabs = [
   {
     route: 'general',
     title: 'General',
-    render: (templateInfo: TemplateInfo) => <General templateInfo={templateInfo} />,
+    render: () => <General />,
   },
   {
     route: 'form',
@@ -40,67 +46,122 @@ const tabs = [
   },
 ]
 
-const TemplateWrapper: React.FC = () => {
+const TemplateContainer: React.FC = () => {
   const {
     match: { path },
     push,
     location,
-    query: { templateId },
   } = useRouter()
-
-  const { data, error } = useGetFullTemplateInfoQuery({
-    fetchPolicy: 'network-only',
-    variables: { id: Number(templateId) },
-  })
+  const {
+    template: { version, name, code, status, applicationCount, id },
+    fromQuery: templateInfo,
+  } = useTemplateContext()
 
   const selected = tabs.find(({ route }) =>
     matchPath(location.pathname, { path: `${path}/${route}`, exact: true, strict: false })
   )
 
   if (!selected) return <NoMatch />
-  if (error) return <Message error title={strings.ERROR_GENERIC} />
-  if (!data) return <Loading />
-
-  const templateInfo = data.template
 
   return (
-    <div className="template-config">
-      <div className="indicators-container as-row">
-        <div key="version" className="indicator">
-          <Label className="key" content="version" />
-          <Label className="value" content={templateInfo?.version} />
+    <OperationContext>
+      <div className="template-builder-wrapper">
+        <div className="template-builder-info-bar">
+          <TextIO title="version" text={String(version)} />
+          <TextIO title="name" text={name} />
+          <TextIO title="code" text={code} />
+          <TextIO title="status" text={status} />
+          <TextIO title="# applications" text={String(applicationCount)} />
         </div>
-        <div key="name" className="indicator">
-          <Label className="key" content="name" />
-          <Label className="value" content={templateInfo?.name} />
+        <div className="template-builder-tabs">
+          {tabs.map(({ route, title }) => (
+            <div
+              key={title}
+              onClick={() => push(`/admin/template/${id}/${route}`)}
+              className={selected.route === route ? 'selected' : ''}
+            >
+              <Header as="h4">{title}</Header>
+            </div>
+          ))}
         </div>
-        <div key="code" className="indicator">
-          <Label className="key" content="code" />
-          <Label className="value" content={templateInfo?.code} />
-        </div>
-        <div key="status" className="indicator">
-          <Label className="key" content="status" />
-          <Label className="value" content={templateInfo?.status} />
-        </div>
-        <div key="applicationCount" className="indicator">
-          <Label className="key" content="# applications" />
-          <Label className="value" content={templateInfo?.applications.totalCount} />
-        </div>
+        {selected.render(templateInfo)}
       </div>
-      <div key="tabs" className="template-config-tabs">
-        {tabs.map(({ route, title }) => (
-          <div
-            key={title}
-            onClick={() => push(`/admin/template/${templateId}/${route}`)}
-            className={selected.route === route ? 'selected' : ''}
-          >
-            <Header as="h4">{title}</Header>
-          </div>
-        ))}
-      </div>
-      {selected.render(templateInfo)}
-    </div>
+    </OperationContext>
   )
 }
 
+type TemplateContextState = {
+  template: {
+    id: number
+    isDraft: boolean
+    version: number
+    name: string
+    code: string
+    status: string
+    applicationCount: number
+  }
+  category?: TemplateCategory
+  templateFilterJoins: TemplateFilterJoin[]
+  fromQuery?: FullTemplateFragment
+}
+
+const defaultTemplateContextState: TemplateContextState = {
+  template: {
+    id: 0,
+    isDraft: false,
+    version: 0,
+    name: '',
+    code: '',
+    status: '',
+    applicationCount: 0,
+  },
+  templateFilterJoins: [],
+}
+
+const Context = createContext<TemplateContextState>(defaultTemplateContextState)
+
+const TemplateWrapper: React.FC = () => {
+  const {
+    query: { templateId },
+  } = useRouter()
+
+  const [state, setState] = useState<TemplateContextState>(defaultTemplateContextState)
+  const [firstLoaded, setFirstLoaded] = useState(false)
+  const { data, error } = useGetFullTemplateInfoQuery({
+    fetchPolicy: 'network-only',
+    variables: { id: Number(templateId) },
+  })
+
+  useEffect(() => {
+    const template = data?.template
+    if (template) {
+      setState({
+        template: {
+          id: template.id || 0,
+          version: template?.version || 0,
+          name: template?.name || '',
+          code: template?.code || '',
+          status: template?.status || TemplateStatus.Disabled,
+          applicationCount: template?.applications?.totalCount || 0,
+          isDraft: template.status === TemplateStatus.Draft,
+        },
+        category: (template?.templateCategory as TemplateCategory) || undefined,
+        fromQuery: template,
+        templateFilterJoins: (template?.templateFilterJoins?.nodes || []) as TemplateFilterJoin[],
+      })
+      setFirstLoaded(true)
+    }
+  }, [data])
+
+  if (error) return <Message error title={strings.ERROR_GENERIC} list={[error]} />
+
+  if (!firstLoaded) return <Loading />
+  return (
+    <Context.Provider value={state}>
+      <TemplateContainer />
+    </Context.Provider>
+  )
+}
+
+export const useTemplateContext = () => useContext(Context)
 export default TemplateWrapper
