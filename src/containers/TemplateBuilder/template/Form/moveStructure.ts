@@ -24,6 +24,7 @@ type MoveSection = {
   pages: { [pageNumber: number]: MovePage }
   isFirst: boolean
   isLast: boolean
+  lastElementIndex: number
   index: number
   elements: MoveElement[]
   nextSection: MoveSection | null
@@ -31,12 +32,19 @@ type MoveSection = {
 }
 
 type MoveStructure = {
-  sections: { [code: string]: MoveSection }
+  firstSectionIndex: number
+  lastSectionIndex: number
+  sections: { [id: number]: MoveSection }
   elements: { [id: number]: MoveElement }
 }
 
 const getMoveStructure = (templateInfo: FullTemplateFragment) => {
-  const result: MoveStructure = { sections: {}, elements: {} }
+  const result: MoveStructure = {
+    sections: {},
+    elements: {},
+    lastSectionIndex: 0,
+    firstSectionIndex: 0,
+  }
 
   const templateSections = templateInfo?.templateSections?.nodes || []
   let previousSection: MoveSection | null = null
@@ -51,13 +59,16 @@ const getMoveStructure = (templateInfo: FullTemplateFragment) => {
       elements: [],
       nextSection: null,
       isLast: templateSections.length - 1 === index,
+      lastElementIndex: 0,
     }
     if (previousSection) previousSection.nextSection = section
     previousSection = section
 
     let pageNumber = 0
 
-    result.sections[templateSection?.code || ''] = section
+    result.sections[templateSection?.id || 0] = section
+    result.lastSectionIndex = section.index
+    if (index === 0) result.firstSectionIndex = section.index
 
     let previousElement: MoveElement | null = null
 
@@ -110,6 +121,7 @@ const getMoveStructure = (templateInfo: FullTemplateFragment) => {
       }
 
       if (isLastInSection) {
+        section.lastElementIndex = element.index
         if (pageExists) section.pages[pageNumber].isLast = isLastInSection
         if (!isPageBreak) element.isLastInPage = true
       }
@@ -117,6 +129,7 @@ const getMoveStructure = (templateInfo: FullTemplateFragment) => {
       previousElementIsPageBreak = isPageBreak
     })
   })
+
   return result
 }
 

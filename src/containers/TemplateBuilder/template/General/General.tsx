@@ -29,6 +29,7 @@ const General: React.FC = () => {
   return (
     <div className="flex-column-center-start">
       <div className="flex-row">
+        <div className="spacer-10" />
         <ButtonWithFallback
           title="Make Available"
           disabledMessage="At least one template with the same code is already available, or this template already available"
@@ -56,7 +57,7 @@ const General: React.FC = () => {
           }}
         />
       </div>
-
+      <div className="spacer-10" />
       <div className="longer">
         <TextIO
           text={String(template.name)}

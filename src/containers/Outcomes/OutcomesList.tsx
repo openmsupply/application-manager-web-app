@@ -43,13 +43,7 @@ const Outcome: React.FC<{ code: string; title: string; outcomeCountQuery: Outcom
   return (
     <Link className="clickable" to={`/outcomes/${code}`}>
       <div className="outcome">
-        <Header
-          as="h3"
-          className="clickable"
-          onClick={() => {
-            console.log('yow')
-          }}
-        >
+        <Header as="h3" className="clickable" onClick={() => {}}>
           {`${title} (${count})`}
         </Header>
       </div>

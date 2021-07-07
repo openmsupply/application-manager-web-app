@@ -1,6 +1,26 @@
+import { truncate } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { Label, Input, Icon, Popup, Button, Form, TextArea, Dropdown } from 'semantic-ui-react'
+import ReactJson from 'react-json-view'
+import {
+  Label,
+  Input,
+  Icon,
+  Popup,
+  Button,
+  Form,
+  TextArea,
+  Dropdown,
+  Accordion,
+  Checkbox,
+  Header,
+} from 'semantic-ui-react'
 import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic'
+import config from '../../../config'
+import { useUserState } from '../../../contexts/UserState'
+import { EvaluatorNode, FullStructure } from '../../../utils/types'
+import { parseAndRenderEvaluation } from '../evaluatorGui/renderEvaluation'
+import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
+import { getTypedEvaluation, getTypedEvaluationAsString } from '../evaluatorGui/typeHelpers'
 
 type TextIOprops = {
   text?: string
@@ -367,5 +387,303 @@ export const OnBlurInput: React.FC<{
     </div>
   )
 }
+
+export const Parameters: React.FC<{
+  parameters: any
+  currentElementCode: string
+  setParameters: (evaluation: object) => void
+  fullStructure?: FullStructure
+}> = ({ parameters, setParameters, currentElementCode, fullStructure }) => {
+  const [asGui, setAsGui] = useState(true)
+  const [isActive, setIsActive] = useState(false)
+
+  return (
+    <Accordion style={{ borderRadius: 7, border: '2px solid black', padding: 2, margin: 5 }}>
+      <Accordion.Title
+        className="evaluation-container-title"
+        style={{ padding: 2, justifyContent: 'center', alignItems: 'center' }}
+        active={isActive}
+        onClick={() => setIsActive(!isActive)}
+      >
+        <Header as="h3" style={{ margin: 0 }}>
+          {`Parameters (${parameters ? Object.values(parameters).length : 0})`}
+        </Header>
+        <Icon size="large" style={{ margin: 0 }} name={isActive ? 'angle up' : 'angle down'} />
+      </Accordion.Title>
+      <Accordion.Content active={isActive}>
+        <div className="flex-column" style={{ alignItems: 'center' }}>
+          <div className="flex-row">
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 7,
+                padding: 3,
+                margin: 3,
+                background: '#E8E8E8',
+              }}
+            >
+              <Label style={{ whiteSpace: 'nowrap', margin: 3, marginRight: 2 }}>Show As GUI</Label>
+
+              <Checkbox
+                checked={asGui}
+                toggle
+                size="small"
+                onChange={() => {
+                  setAsGui(!asGui)
+                }}
+              />
+            </div>
+            {asGui && (
+              <Button
+                primary
+                inverted
+                onClick={() => {
+                  setParameters({ ...parameters, newParameter: null })
+                }}
+              >
+                Add Parameter
+              </Button>
+            )}
+          </div>
+          {!asGui && (
+            <JsonIO
+              key="elementParameters"
+              isPropUpdated={true}
+              initialValue={parameters}
+              label=""
+              update={(value: object) => setParameters(value)}
+            />
+          )}
+
+          {asGui &&
+            Object.entries(parameters)
+              .sort(([key1], [key2]) => (key1 > key2 ? -1 : key1 === key2 ? 0 : 1))
+              .map(([key, value]) => (
+                <EvaluationContainer
+                  setEvaluation={(value: any) =>
+                    setParameters({ ...parameters, [key]: value?.value || value })
+                  }
+                  updateKey={(newKey) => {
+                    const newParameters = { ...parameters }
+                    delete newParameters[key]
+                    setParameters({ ...newParameters, [newKey]: value })
+                  }}
+                  deleteKey={() => {
+                    const newParameters = { ...parameters }
+                    delete newParameters[key]
+                    setParameters(newParameters)
+                  }}
+                  key={key}
+                  evaluation={value}
+                  currentElementCode={currentElementCode}
+                  fullStructure={fullStructure}
+                  label={key}
+                />
+              ))}
+        </div>
+      </Accordion.Content>
+    </Accordion>
+  )
+}
+
+type IconButtonProps = {
+  disabledMessage?: string
+  disabled?: boolean
+  name: SemanticICONS
+  onClick: () => void
+}
+
+export const IconButton: React.FC<IconButtonProps> = ({
+  name,
+  onClick,
+  disabledMessage,
+  disabled = false,
+}) => (
+  <Popup
+    content={disabledMessage}
+    disabled={!disabled || !disabledMessage}
+    trigger={
+      <Icon
+        className={`icon-button ${disabled ? '' : 'clickable'}`}
+        name={name}
+        onClick={() => (disabled ? console.log('action disable') : onClick())}
+      />
+    }
+  />
+)
+
+export const EvaluationContainer: React.FC<{
+  evaluation: any
+  currentElementCode: string
+  setEvaluation: (evaluation: object) => void
+  fullStructure?: FullStructure
+  label: string
+  updateKey?: (key: string) => void
+  deleteKey?: () => void
+}> = ({
+  evaluation,
+  setEvaluation,
+  label,
+  currentElementCode,
+  fullStructure,
+  updateKey,
+  deleteKey,
+}) => {
+  const {
+    userState: { currentUser },
+  } = useUserState()
+  const [isActive, setIsActive] = useState(false)
+  const [asGui, setAsGui] = useState(true)
+  const objects = {
+    responses: {
+      ...fullStructure?.responsesByCode,
+      thisResponse: fullStructure?.responsesByCode?.[currentElementCode]?.text,
+    },
+    currentUser,
+    applicationData: fullStructure?.info,
+  }
+
+  const typedEvaluation = getTypedEvaluation(evaluation)
+
+  return (
+    <Accordion style={{ borderRadius: 7, border: '1px solid black', padding: 2, margin: 5 }}>
+      <Accordion.Title
+        className="evaluation-container-title"
+        style={{ justifyContent: 'center', padding: 2 }}
+        active={isActive}
+      >
+        {!updateKey && <Label>{label}</Label>}
+        {deleteKey && <Icon className="clickable" onClick={deleteKey} />}
+        <div className="config-reduced-width-input">
+          {updateKey &&
+            semanticComponentLibrary.TextInput({
+              text: label,
+              setText: updateKey,
+              title: 'Parameter Name',
+            })}
+        </div>
+        <div className="indicators-container as-row">
+          <div key="type" className="indicator">
+            <Label className="key" content="type" />
+            <Label className="value" content={typedEvaluation.type} />
+          </div>
+          {typedEvaluation.type === 'operator' && (
+            <div key="operator" className="indicator">
+              <Label className="key" content="operator" />
+              <Label className="value" content={typedEvaluation.asOperator.operator} />
+            </div>
+          )}
+
+          {typedEvaluation.type !== 'operator' && (
+            <div key="value" className="indicator">
+              <Label className="key" content="value" />
+              <Label
+                className="value"
+                content={truncate(getTypedEvaluationAsString(typedEvaluation), { length: 80 })}
+              />
+            </div>
+          )}
+        </div>
+        <Icon
+          size="large"
+          name={isActive ? 'angle up' : 'angle down'}
+          onClick={() => setIsActive(!isActive)}
+        />
+      </Accordion.Title>
+      <Accordion.Content active={isActive}>
+        {isActive && (
+          <div
+            className="flex-row"
+            style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 7,
+                  padding: 3,
+                  margin: 3,
+                  background: '#E8E8E8',
+                }}
+              >
+                <Label style={{ whiteSpace: 'nowrap', margin: 3, marginRight: 2 }}>
+                  Show As GUI
+                </Label>
+
+                <Checkbox
+                  checked={asGui}
+                  toggle
+                  size="small"
+                  onChange={() => {
+                    setAsGui(!asGui)
+                  }}
+                />
+              </div>
+              {!asGui && (
+                <JsonIO
+                  key="elementParameters"
+                  isPropUpdated={true}
+                  initialValue={evaluation}
+                  label="Plugin Parameters"
+                  update={(value: object) => setEvaluation(value)}
+                />
+              )}
+              {asGui &&
+                parseAndRenderEvaluation(
+                  evaluation,
+                  (evaltionAsString: string) => setEvaluation(asObjectOrValue(evaltionAsString)),
+                  semanticComponentLibrary,
+                  {
+                    objects,
+
+                    APIfetch: fetch,
+                    graphQLConnection: {
+                      fetch: fetch.bind(window),
+                      endpoint: config.serverGraphQL,
+                    },
+                  }
+                )}
+            </div>
+            {fullStructure && (
+              <div
+                style={{
+                  marginLeft: 10,
+                  borderRadius: 7,
+                  border: '2px solid #E8E8E8',
+                  overflow: 'auto',
+                  maxHeight: '600px',
+                  minHeight: 200,
+                  maxWidth: '50%',
+                }}
+              >
+                <Label>Object Properties</Label>
+
+                <ReactJson src={objects} collapsed={2} />
+              </div>
+            )}
+          </div>
+        )}
+      </Accordion.Content>
+    </Accordion>
+  )
+}
+const asObjectOrValue = (value: string) => {
+  try {
+    return JSON.parse(value)
+  } catch (e) {
+    return { value: value }
+  }
+}
+
+export const asObject = (value: EvaluatorNode) =>
+  typeof value === 'object' && value !== null
+    ? value
+    : { value: value || (value === false ? false : null) }
 
 export { iconLink, TextIO, ButtonWithFallback, JsonIO, DropdownIO }

@@ -7,7 +7,8 @@ import {
   useGetAllFiltersQuery,
 } from '../../../../utils/generated/graphql'
 import { TextIO, JsonIO, iconLink, DropdownIO, ButtonWithFallback } from '../../shared/components'
-import { getRandomNumber, useOperationState } from '../../shared/OperationContext'
+import { useOperationState } from '../../shared/OperationContext'
+import { getRandomNumber } from '../../shared/OperationContextHelpers'
 import { useTemplateState } from '../TemplateWrapper'
 
 type UpdateFilter = {
@@ -42,11 +43,11 @@ const Filters: React.FC = () => {
 
   const [updateState, setUpdateState] = useState<UpdateFilter | null>(null)
   const { data: allFiltersData, refetch: refetchFilters } = useGetAllFiltersQuery()
+  const { template, templateFilterJoins: filterJoins } = useTemplateState()
+  const { updateTemplate, updateTemplateFilterJoin } = useOperationState()
 
   if (!allFiltersData?.filters?.nodes) return <Loading />
 
-  const { template, templateFilterJoins: filterJoins } = useTemplateState()
-  const { updateTemplate, updateTemplateFilterJoin } = useOperationState()
   const allFilters = [...(allFiltersData?.filters?.nodes || []), newFilter]
 
   const selectFilterJoin = (filterJoin: TemplateFilterJoin | null) => {

@@ -119,7 +119,6 @@ const useGetApplicationStructure = ({
 
       setLastProcessedTimestamp(Date.now())
       setFirstRunProcessValidation(false)
-
       setFullStructure(newStructure)
     })
   }, [

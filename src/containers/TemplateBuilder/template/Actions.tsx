@@ -21,7 +21,7 @@ import {
   useUpdateTemplateMutation,
 } from '../../../utils/generated/graphql'
 import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
-import { asObject, EvaluationContainer, Parameters } from './Form'
+import { asObject, EvaluationContainer, Parameters } from '../shared/components'
 import { mutate } from './Permissions'
 import { TemplateInfo } from './TemplateWrapper'
 

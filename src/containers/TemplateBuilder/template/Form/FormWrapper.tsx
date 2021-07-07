@@ -16,7 +16,7 @@ type FormStructureContextState = {
 const defaultFomrStructureContextState: FormStructureContextState = {
   configApplicationSerial: '',
   configApplicationId: 0,
-  moveStructure: { sections: {}, elements: {} },
+  moveStructure: { sections: {}, elements: {}, lastSectionIndex: 0, firstSectionIndex: 0 },
 }
 
 const Context = createContext<FormStructureContextState>(defaultFomrStructureContextState)

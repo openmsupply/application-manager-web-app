@@ -82,6 +82,20 @@ a:hover {
   align-items: center;
 }
 
+.flex-row-center-center {
+  .flex-row-center();
+  align-items: center;
+}
+
+.flex-row-center-center-wrap {
+  .flex-row-center-center();
+  flex-wrap: wrap;
+}
+
+.flex-row-start-center-wrap {
+  .flex-row-start-center;
+  flex-wrap: wrap;
+}
 .flex-column {
   display: flex;
   flex-direction: column;
@@ -100,6 +114,15 @@ a:hover {
 
 .spacer-20 { 
   height: 20px
+}
+
+.spacer-10 { 
+  height: 10px
+}
+
+.no-margin-no-padding {
+  padding:0px !important;
+  margin:0px !important;
 }
 
 /*--------------------------------
@@ -1349,9 +1372,6 @@ a:hover {
 
 @indicatorColor: #E8E8E8;
 
-
-
-
 .text-io-wrapper {
   .flex-row();
   align-items: stretch;
@@ -1394,6 +1414,13 @@ a:hover {
     background-color: @surfacesWhite;
   }
 
+}
+
+.icon-button {
+  padding: 0px !important;
+  margin: 0px !important;
+  margin-right: 5px !important;
+  margin-left: 5px !important;
 }
 
 .very-long {
@@ -1446,20 +1473,14 @@ a:hover {
 
     div {
       .clickable();
-      padding: 10px;
+      padding: 5px;
       flex-grow: 1;
       text-align: center;
       border-radius: @borderRadius;
     }
-
-    .selected {
-      background-color: @darkGrey;
-      .header {
-        color: @surfacesWhite;
-      }
-    }
   }
 }
+
 
 .template-buider-category-input {
   .flex-column-center-start();
@@ -1473,6 +1494,13 @@ a:hover {
   .template-buider-category-input();
 }
 
+.builder-selected {
+  background-color: @darkGrey !important;
+  color: @surfacesWhite !important;
+  .header {
+    color: @surfacesWhite !important;
+  }
+}
 
 // end new
 

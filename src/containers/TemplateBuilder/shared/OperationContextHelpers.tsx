@@ -4,6 +4,7 @@ import {
   useUpdateTemplateFilterJoinMutation,
   useUpdateTemplateSectionMutation,
   useDeleteWholeApplicationMutation,
+  useRestartApplicationMutation,
 } from '../../../utils/generated/graphql'
 import useCreateApplication from '../../../utils/hooks/useCreateApplication'
 import {
@@ -14,6 +15,7 @@ import {
   CreateApplication,
   TemplatesOperationProps,
   ErrorAndLoadingState,
+  UpdateApplication,
 } from './OperationContext'
 
 const snapshotsBaseUrl = `${config.serverREST}/snapshot`
@@ -56,6 +58,11 @@ type CreateApplicationHelper = (
   setErrorAndLoadingState: SetErrorAndLoadingState,
   create: ReturnType<typeof useCreateApplication>['create']
 ) => CreateApplication
+
+type UpdateApplicationHelper = (
+  setErrorAndLoadingState: SetErrorAndLoadingState,
+  create: ReturnType<typeof useRestartApplicationMutation>[0]
+) => UpdateApplication
 
 const checkMutationResult = async (
   result: any,
@@ -103,6 +110,20 @@ export const updateTemplateSection: UpdateTemplateSectionHelper =
     try {
       const result = await updatateTemplateSectionMutation({
         variables: { id, sectionPatch: patch },
+      })
+      return checkMutationResult(result, setErrorAndLoadingState)
+    } catch (e) {
+      setErrorAndLoadingState({ isLoading: false, error: { error: 'error', message: e.message } })
+      return false
+    }
+  }
+
+export const updateApplication: UpdateApplicationHelper =
+  (setErrorAndLoadingState: SetErrorAndLoadingState, updateApplicationMutation) =>
+  async (serial, patch) => {
+    try {
+      const result = await updateApplicationMutation({
+        variables: { serial, applicationPatch: patch },
       })
       return checkMutationResult(result, setErrorAndLoadingState)
     } catch (e) {
@@ -208,6 +229,7 @@ const safeFetch = async (
   try {
     const resultRaw = await fetch(url, {
       method: 'POST',
+      headers: typeof body === 'string' ? { 'Content-Type': 'application/json' } : {},
       body,
     })
     const resultJson = await resultRaw.json()

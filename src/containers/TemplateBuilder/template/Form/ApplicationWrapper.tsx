@@ -28,7 +28,7 @@ const CreateApplicationWrapper: React.FC = ({ children }) => {
   const [state, setState] = useState<ApplicationOperationContextState | null>(null)
   const { deleteApplication, createApplication } = useOperationState()
   const {
-    template: { isDraft, code, id: templateId },
+    template: { id: templateId },
     allElements,
     refetch: refetchFullTemplate,
   } = useTemplateState()
@@ -59,9 +59,12 @@ const CreateApplicationWrapper: React.FC = ({ children }) => {
       name: 'Config Application',
       serial,
       templateId,
-      templateResponses: allElements.map((element, index) => {
-        return { templateElementId: element?.id || 0, value: defaultValues[index] }
-      }),
+      isConfig: true,
+      templateResponses: allElements
+        .filter((element) => element.elementTypePluginCode !== 'pageBreak')
+        .map((element, index) => {
+          return { templateElementId: element?.id || 0, value: defaultValues[index] }
+        }),
     })
     refetchFullTemplate()
   }
@@ -85,9 +88,7 @@ const ApplicationWrapper: React.FC = ({ children }) => {
   const {
     userState: { currentUser },
   } = useUserState()
-
-  const [state, setState] = useState<ApplicationContextState | null>()
-
+  const [state, setState] = useState<ApplicationContextState | null>(null)
   const { configApplicationSerial } = useFormStructureState()
 
   const { structure } = useLoadApplication({
@@ -137,13 +138,13 @@ const FullAppllicationWrapper: React.FC = ({ children }) => {
 }
 
 const useApplicationOperationState = () => useContext(ApplicationOperationContext)
-const useFullApplicationContext = () => useContext(FullApplicationContext)
+const useFullApplicationState = () => useContext(FullApplicationContext)
 const useApplicationContext = () => useContext(AppicationContext)
 export {
   CreateApplicationWrapper,
   ApplicationWrapper,
   FullAppllicationWrapper,
   useApplicationOperationState,
-  useFullApplicationContext,
+  useFullApplicationState,
   useApplicationContext,
 }

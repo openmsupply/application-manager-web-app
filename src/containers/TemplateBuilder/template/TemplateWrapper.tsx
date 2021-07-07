@@ -19,7 +19,7 @@ import { TextIO } from '../shared/components'
 import OperationContext from '../shared/OperationContext'
 
 import Actions from './Actions'
-import Form from './Form'
+import Form from './Form/Form'
 import General from './General/General'
 import Permissions from './Permissions'
 
@@ -34,7 +34,7 @@ const tabs = [
   {
     route: 'form',
     title: 'Form',
-    render: (templateInfo: TemplateInfo) => <Form templateInfo={templateInfo} />,
+    render: () => <Form />,
   },
   {
     route: 'permissions',
@@ -80,7 +80,7 @@ const TemplateContainer: React.FC = () => {
             <div
               key={title}
               onClick={() => push(`/admin/template/${id}/${route}`)}
-              className={selected.route === route ? 'selected' : ''}
+              className={selected.route === route ? 'builder-selected ' : ''}
             >
               <Header as="h4">{title}</Header>
             </div>

@@ -1,10 +1,12 @@
 import React, { useState, useContext, createContext } from 'react'
 import { Modal, Label, Icon, Loader } from 'semantic-ui-react'
 import {
+  ApplicationPatch,
   TemplateFilterJoinPatch,
   TemplatePatch,
   TemplateSectionPatch,
   useDeleteWholeApplicationMutation,
+  useRestartApplicationMutation,
   useUpdateTemplateFilterJoinMutation,
   useUpdateTemplateMutation,
   useUpdateTemplateSectionMutation,
@@ -21,6 +23,7 @@ import {
   updateTemplateSection,
   deleteApplication,
   createApplication,
+  updateApplication,
 } from './OperationContextHelpers'
 
 type Error = { message: string; error: string }
@@ -40,6 +43,7 @@ export type UpdateTemplateFilterJoin = (
 export type UpdateTemplateSection = (id: number, patch: TemplateSectionPatch) => Promise<boolean>
 export type DeleteApplication = (id: number) => Promise<boolean>
 export type CreateApplication = (props: CreateApplicationProps) => Promise<boolean>
+export type UpdateApplication = (serial: string, patch: ApplicationPatch) => Promise<boolean>
 
 type OperationContextState = {
   fetch: (something: any) => any
@@ -51,6 +55,7 @@ type OperationContextState = {
   updateTemplateSection: UpdateTemplateSection
   deleteApplication: DeleteApplication
   createApplication: CreateApplication
+  updateApplication: UpdateApplication
 }
 
 const contextNotPresentError = () => {
@@ -67,6 +72,7 @@ const defaultOperationContext: OperationContextState = {
   updateTemplateSection: contextNotPresentError,
   deleteApplication: contextNotPresentError,
   createApplication: contextNotPresentError,
+  updateApplication: contextNotPresentError,
 }
 
 const Context = createContext(defaultOperationContext)
@@ -76,6 +82,7 @@ const OperationContext: React.FC = ({ children }) => {
   const [updateTemplateFilterJoinMutation] = useUpdateTemplateFilterJoinMutation()
   const [updateTemplateSectionMutation] = useUpdateTemplateSectionMutation()
   const [deleteApplicationMutation] = useDeleteWholeApplicationMutation()
+  const [updateApplicationMutation] = useRestartApplicationMutation()
   const [innerState, setInnerState] = useState<ErrorAndLoadingState>({ isLoading: false })
   const { create } = useCreateApplication({
     onCompleted: () => {},
@@ -93,6 +100,7 @@ const OperationContext: React.FC = ({ children }) => {
     updateTemplateSection: updateTemplateSection(setInnerState, updateTemplateSectionMutation),
     deleteApplication: deleteApplication(setInnerState, deleteApplicationMutation),
     createApplication: createApplication(setInnerState, create),
+    updateApplication: updateApplication(setInnerState, updateApplicationMutation),
   })
 
   const { isLoading, error } = innerState

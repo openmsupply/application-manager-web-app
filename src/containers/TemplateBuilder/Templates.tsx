@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { Button, Header, Icon, Table } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { TextIO } from './shared/components'
-import OperationContext, { snapshotFilesUrl, useOperationState } from './shared/OperationContext'
+import OperationContext, { useOperationState } from './shared/OperationContext'
+import { snapshotFilesUrl } from './shared/OperationContextHelpers'
 import useGetTemplates, { Template } from './useGetTemplates'
 
 type CellPropsTemplate = Template & { numberOfTemplates?: number }

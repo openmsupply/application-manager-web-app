@@ -29,7 +29,7 @@ import {
 } from '../../../utils/generated/graphql'
 
 import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
-import { asObject, EvaluationContainer, Parameters } from './Form'
+import { asObject, EvaluationContainer, Parameters } from '../shared/components'
 
 import { TemplateInfo } from './TemplateWrapper'
 type Error = { message: string; error: string }
@@ -1324,7 +1324,6 @@ const SectionRestriction: React.FC<{
   templateId,
   isEditable,
 }) => {
-  console.log('yow', permissionName.templatePermission?.allowedSections || [])
   const [updateTemplate] = useUpdateTemplateMutation()
 
   let checked =
