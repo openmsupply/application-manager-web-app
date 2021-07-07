@@ -76,6 +76,12 @@ a:hover {
   justify-content: center;
 }
 
+.flex-row-start-center {
+  .flex-row();
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .flex-column {
   display: flex;
   flex-direction: column;
@@ -84,6 +90,16 @@ a:hover {
 .flex-column-center {
   .flex-column();
   justify-content: center;
+}
+
+.flex-column-center-start {
+  .flex-column();
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.spacer-20 { 
+  height: 20px
 }
 
 /*--------------------------------
@@ -1333,6 +1349,9 @@ a:hover {
 
 @indicatorColor: #E8E8E8;
 
+
+
+
 .text-io-wrapper {
   .flex-row();
   align-items: stretch;
@@ -1350,11 +1369,14 @@ a:hover {
     padding-right:10px;
   }
 
-  input {
+  input,
+  textarea {
     border: none !important;
     margin: 0px !important;
     padding: 0px !important;
-    text-decoration: underline;
+    font-size: 12px !important;
+    width: none  !important;
+    min-width: 200px;
   }
 
   .key {
@@ -1371,8 +1393,28 @@ a:hover {
     border-end-start-radius: 0px;
     background-color: @surfacesWhite;
   }
+
 }
 
+.very-long {
+  input,
+  textarea {
+    min-width: 800px !important;
+  }
+}
+
+.longer {
+  input,
+  textarea {
+    min-width: 600px !important;
+  }
+}
+.long {
+  input,
+  textarea {
+    min-width: 400px !important;
+  }
+}
 .template-builder-templates {
   width: 100%;
   .top-bar {
@@ -1418,6 +1460,19 @@ a:hover {
     }
   }
 }
+
+.template-buider-category-input {
+  .flex-column-center-start();
+  margin: 3px;
+  padding: 20px;
+  border-radius: @borderRadius;
+  background: @surfacesWhite;
+}
+
+.template-bulder-filter-input {
+  .template-buider-category-input();
+}
+
 
 // end new
 

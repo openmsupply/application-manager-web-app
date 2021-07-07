@@ -8,349 +8,40 @@ import {
   Dropdown,
   Header,
   Icon,
-  Input,
   Label,
   Modal,
   Popup,
 } from 'semantic-ui-react'
 
 import { Loading, PageElements } from '../../../components'
-import ConsolidateReviewDecision from '../../../components/PageElements/Elements/ConsolidateReviewDecision'
 import config from '../../../config'
 import { useUserState } from '../../../contexts/UserState'
 import pluginProvider from '../../../formElementPlugins/pluginProvider'
 import {
   TemplateElementCategory,
-  TemplateStatus,
   useCreateSectionMutation,
-  useDeleteWholeApplicationMutation,
   useGetTemplateElementsByPluginQuery,
   useRestartApplicationMutation,
   useUpdateTemplateElementMutation,
   useUpdateTemplateMutation,
   useUpdateTemplateSectionMutation,
 } from '../../../utils/generated/graphql'
-import useCreateApplication from '../../../utils/hooks/useCreateApplication'
+
 import useGetApplicationStructure from '../../../utils/hooks/useGetApplicationStructure'
-import useLoadApplication from '../../../utils/hooks/useLoadApplication'
-import { calculateTemplateDetails } from '../../../utils/hooks/useLoadTemplate'
-import { ElementState, EvaluatorNode, FullStructure, User } from '../../../utils/types'
-import { handleCreate } from '../../Application/ApplicationCreate'
-import { parseAndRenderEvaluation, renderEvaluationElement } from '../evaluatorGui/renderEvaluation'
+
+import { ElementState, EvaluatorNode, FullStructure } from '../../../utils/types'
+import { ApplicationWrapper } from '../../Application'
+
+import { parseAndRenderEvaluation } from '../evaluatorGui/renderEvaluation'
 import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
 import { getTypedEvaluation, getTypedEvaluationAsString } from '../evaluatorGui/typeHelpers'
-import { OnBlurInput, JsonTextBox } from '../shared/components'
+import { OnBlurInput, JsonIO } from '../shared/components'
+
+import { CreateApplicationWrapper, FullAppllicationWrapper } from './Form/ApplicationWrapper'
+import FormWrapper from './Form/FormWrapper'
+import moveStructure from './Form/moveStructure'
+import { MoveElement, MoveSection, MoveStructure } from './Form/moveStructure'
 import { TemplateInfo } from './TemplateWrapper'
-
-type MoveElement = {
-  id: number
-  index: number
-  page: MovePage
-  section: MoveSection
-  isLastInPage: boolean
-  isFirstInPage: boolean
-  nextElement: MoveElement | null
-  previousElement: MoveElement | null
-}
-type MovePage = {
-  pageNumber: number
-  isFirst: boolean
-  isLast: boolean
-  section: MoveSection
-  elements: MoveElement[]
-  startPageBreaks: MoveElement[]
-  endPageBreaks: MoveElement[]
-}
-type MoveSection = {
-  id: number
-  pages: { [pageNumber: number]: MovePage }
-  isFirst: boolean
-  isLast: boolean
-  index: number
-  elements: MoveElement[]
-  nextSection: MoveSection | null
-  previousSection: MoveSection | null
-}
-
-type MoveStructure = {
-  sections: { [code: string]: MoveSection }
-  elements: { [id: number]: MoveElement }
-}
-
-const getMoveStructure = (templateInfo: TemplateInfo) => {
-  const result: MoveStructure = { sections: {}, elements: {} }
-
-  const templateSections = templateInfo?.templateSections?.nodes || []
-  let previousSection: MoveSection | null = null
-  templateSections.forEach((templateSection, index) => {
-    const templateElements = templateSection?.templateElementsBySectionId?.nodes || []
-    const section: MoveSection = {
-      id: templateSection?.id || 0,
-      pages: {},
-      index: templateSection?.index || 0,
-      isFirst: index === 0,
-      previousSection,
-      elements: [],
-      nextSection: null,
-      isLast: templateSections.length - 1 === index,
-    }
-    if (previousSection) previousSection.nextSection = section
-    previousSection = section
-
-    let pageNumber = 0
-
-    result.sections[templateSection?.code || ''] = section
-
-    let previousElement: MoveElement | null = null
-
-    let previousElementIsPageBreak = true
-    let isFirstPage = true
-
-    templateElements.forEach((templateElement, index) => {
-      const isLastInSection = index === templateElements.length - 1
-      const isPageBreak = templateElement?.elementTypePluginCode === 'pageBreak'
-
-      const isFirstElementAfterPageBreak = !isPageBreak && previousElementIsPageBreak
-
-      if (isFirstElementAfterPageBreak) {
-        pageNumber++
-        const previousPage = section.pages[pageNumber - 1] || null
-        section.pages[pageNumber] = {
-          pageNumber,
-          section,
-          isFirst: isFirstPage,
-          isLast: isLastInSection,
-          startPageBreaks: previousPage ? previousPage.endPageBreaks : [],
-          endPageBreaks: [],
-          elements: [],
-        }
-        isFirstPage = false
-      }
-
-      const pageExists = section.pages[pageNumber]
-
-      const element: MoveElement = {
-        id: templateElement?.id || 0,
-        index: templateElement?.index || 0,
-        page: section.pages[pageNumber],
-        isFirstInPage: !pageExists || section.pages[pageNumber].elements.length === 0,
-        isLastInPage: false,
-        previousElement,
-        nextElement: null,
-        section,
-      }
-
-      if (isPageBreak) {
-        if (previousElement) previousElement.isLastInPage = true
-        if (pageExists) section.pages[pageNumber].endPageBreaks.push(element)
-      } else {
-        result.elements[templateElement?.id || 0] = element
-        section.pages[pageNumber].elements.push(element)
-        section.elements.push(element)
-        if (previousElement) previousElement.nextElement = element
-        previousElement = element
-      }
-
-      if (isLastInSection) {
-        if (pageExists) section.pages[pageNumber].isLast = isLastInSection
-        if (!isPageBreak) element.isLastInPage = true
-      }
-
-      previousElementIsPageBreak = isPageBreak
-    })
-  })
-  return result
-}
-
-const CreateApplicationWrapper: React.FC<{
-  templateInfo: TemplateInfo
-  moveStructure: MoveStructure
-}> = ({ templateInfo, moveStructure }) => {
-  const [serial, setSerial] = useState(templateInfo?.configApplications?.nodes?.[0]?.serial || '')
-  const isEditable = templateInfo?.status === TemplateStatus.Draft
-  const { create } = useCreateApplication({
-    onCompleted: () => {},
-  })
-  const [error, setError] = useState<Error | null>(null)
-  const [deleteApplication] = useDeleteWholeApplicationMutation()
-  const {
-    userState: { currentUser },
-  } = useUserState()
-
-  useEffect(() => {
-    if (!serial) {
-      resetApplication()
-    }
-  }, [serial])
-
-  const resetApplication = async () => {
-    if (!templateInfo) return
-    const existingId = templateInfo?.configApplications?.nodes?.[0]?.id
-    if (existingId) {
-      const result = await mutate(
-        () => deleteApplication({ variables: { id: existingId } }),
-        setError
-      )
-      if (!result) return
-    }
-
-    const templateDetails = await calculateTemplateDetails({
-      currentUser,
-      template: templateInfo as any,
-    })
-
-    const newSerial = await mutate(
-      async () =>
-        handleCreate({
-          create,
-          currentUser,
-          template: templateDetails,
-          isConfig: true,
-        }),
-      setError
-    )
-
-    if (!newSerial) {
-      setError({ message: 'problem loading application', error: 'check your permissions' })
-      return
-    }
-
-    setSerial(newSerial?.data?.createApplication?.application?.serial || '')
-  }
-
-  return (
-    <>
-      {!serial && <Loading />}
-      {serial && (
-        <ApplicationWrapper
-          moveStructure={moveStructure}
-          setError={setError}
-          templateInfo={templateInfo}
-          isEditable={isEditable}
-          key={serial}
-          serialNumber={serial}
-          resetApplication={resetApplication}
-        />
-      )}
-      <Modal open={!!error} onClick={() => setError(null)} onClose={() => setError(null)}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Label size="large" color="red">
-            {String(error?.message)}
-            <Icon name="close" onClick={() => setError(null)} />
-          </Label>
-          <div style={{ margin: 20 }}>{String(error?.error)}</div>
-        </div>
-      </Modal>
-    </>
-  )
-}
-
-const Form: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo }) => {
-  const [updateTemplateSection] = useUpdateTemplateSectionMutation()
-
-  const [ready, setIsReady] = useState(false)
-
-  const trimPageBreaks = async (pageBreaksToTrim: { [sectionId: number]: number[] }) => {
-    const sectionAndElementIds = Object.entries(pageBreaksToTrim)
-
-    if (sectionAndElementIds.length === 0) {
-      setIsReady(true)
-      return
-    }
-
-    for (const [sectionId, elementIds] of sectionAndElementIds) {
-      await updateTemplateSection({
-        variables: {
-          id: Number(sectionId),
-          sectionPatch: {
-            templateElementsUsingId: {
-              deleteById: elementIds.map((id) => ({ id })),
-            },
-          },
-        },
-      })
-    }
-
-    setIsReady(true)
-  }
-
-  useEffect(() => {
-    if (templateInfo?.status !== TemplateStatus.Draft) {
-      setIsReady(true)
-      return
-    }
-
-    const pageBreaksToTrim: { [sectionId: number]: number[] } = {}
-    const addToPageBreaksToTrim = (secitonId: number, elementIds: number[]) => {
-      if (!pageBreaksToTrim[secitonId]) pageBreaksToTrim[secitonId] = []
-      pageBreaksToTrim[secitonId] = [...pageBreaksToTrim[secitonId], ...elementIds]
-    }
-    const templateSection = templateInfo?.templateSections?.nodes || []
-    let currentSectionId = 0
-    templateSection.forEach((templateSection, index) => {
-      currentSectionId = templateSection?.id || 0
-      const templateElements = templateSection?.templateElementsBySectionId?.nodes || []
-
-      let consequitivePageBreaks: number[] = []
-      templateElements.forEach((templateElement, index) => {
-        const isPageBreak = templateElement?.elementTypePluginCode === 'pageBreak'
-        const isStartOfSection = index == 0
-        const isEndOfSection = index === templateElements.length - 1
-        if (isPageBreak) {
-          if (isStartOfSection || isEndOfSection)
-            addToPageBreaksToTrim(currentSectionId, [templateElement?.id || 0])
-          consequitivePageBreaks.push(templateElement?.id || 0)
-        } else {
-          if (consequitivePageBreaks.length > 1)
-            addToPageBreaksToTrim(currentSectionId, consequitivePageBreaks)
-          consequitivePageBreaks = []
-        }
-      })
-      if (consequitivePageBreaks.length > 1)
-        addToPageBreaksToTrim(currentSectionId, consequitivePageBreaks)
-    })
-
-    trimPageBreaks(pageBreaksToTrim)
-  }, [templateInfo])
-
-  if (!ready) return <Loading />
-
-  const moveStructure = getMoveStructure(templateInfo)
-
-  return <CreateApplicationWrapper moveStructure={moveStructure} templateInfo={templateInfo} />
-}
-type Error = { message: string; error: string }
-const ApplicationWrapper: React.FC<{
-  serialNumber: string
-  resetApplication: () => void
-  isEditable: boolean
-  templateInfo: TemplateInfo
-  moveStructure: MoveStructure
-  setError: (error: Error) => void
-}> = ({ serialNumber, resetApplication, isEditable, setError, templateInfo, moveStructure }) => {
-  const {
-    userState: { currentUser },
-  } = useUserState()
-
-  const { structure } = useLoadApplication({
-    serialNumber,
-    currentUser: currentUser as User,
-    networkFetch: true,
-  })
-
-  if (!structure) return <Loading />
-
-  return (
-    <Application
-      moveStructure={moveStructure}
-      isEditable={isEditable}
-      templateInfo={templateInfo}
-      setError={setError}
-      structure={structure}
-      resetApplication={resetApplication}
-    />
-  )
-}
 
 type SectionUpdateState = {
   code: string
@@ -1005,14 +696,19 @@ type ElementUpdateState = {
   id: number
 }
 
-const Application: React.FC<{
-  structure: FullStructure
-  resetApplication: () => void
-  isEditable: boolean
-  setError: (error: Error) => void
-  templateInfo: TemplateInfo
-  moveStructure: MoveStructure
-}> = ({ structure, resetApplication, isEditable, setError, templateInfo, moveStructure }) => {
+const FormWithWrappers: React.FC = () => (
+  <FormWrapper>
+    <CreateApplicationWrapper>
+      <ApplicationWrapper>
+        <FullAppllicationWrapper>
+          <Form />
+        </FullAppllicationWrapper>
+      </ApplicationWrapper>
+    </CreateApplicationWrapper>
+  </FormWrapper>
+)
+
+const Form: React.FC = () => {
   const { fullStructure } = useGetApplicationStructure({
     structure,
     shouldRevalidate: false,
@@ -1758,7 +1454,7 @@ export const Parameters: React.FC<{
             )}
           </div>
           {!asGui && (
-            <JsonTextBox
+            <JsonIO
               key="elementParameters"
               isPropUpdated={true}
               initialValue={parameters}
@@ -1909,7 +1605,7 @@ export const EvaluationContainer: React.FC<{
                 />
               </div>
               {!asGui && (
-                <JsonTextBox
+                <JsonIO
                   key="elementParameters"
                   isPropUpdated={true}
                   initialValue={evaluation}
@@ -1987,4 +1683,4 @@ export const asObject = (value: EvaluatorNode) =>
 const getCurrentPageElements = (structure: FullStructure, section: string, page: number) => {
   return structure?.sections[section]?.pages[page]?.state || []
 }
-export default Form
+export default FullAppllicationWrapper

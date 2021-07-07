@@ -8,7 +8,9 @@ import {
   FullTemplateFragment,
   GetFullTemplateInfoQuery,
   TemplateCategory,
+  TemplateElement,
   TemplateFilterJoin,
+  TemplateSection,
   TemplateStatus,
   useGetFullTemplateInfoQuery,
 } from '../../../utils/generated/graphql'
@@ -100,8 +102,11 @@ type TemplateContextState = {
     status: string
     applicationCount: number
   }
+  refetch: () => void
   category?: TemplateCategory
+  sections: TemplateSection[]
   templateFilterJoins: TemplateFilterJoin[]
+  allElements: TemplateElement[]
   fromQuery?: FullTemplateFragment
 }
 
@@ -115,6 +120,9 @@ const defaultTemplateContextState: TemplateContextState = {
     status: '',
     applicationCount: 0,
   },
+  refetch: () => {},
+  sections: [],
+  allElements: [],
   templateFilterJoins: [],
 }
 
@@ -127,13 +135,17 @@ const TemplateWrapper: React.FC = () => {
 
   const [state, setState] = useState<TemplateContextState>(defaultTemplateContextState)
   const [firstLoaded, setFirstLoaded] = useState(false)
-  const { data, error } = useGetFullTemplateInfoQuery({
+  const { data, error, refetch } = useGetFullTemplateInfoQuery({
     fetchPolicy: 'network-only',
     variables: { id: Number(templateId) },
   })
 
   useEffect(() => {
     const template = data?.template
+    const sections = (template?.templateSections?.nodes as TemplateSection[]) || []
+    const allElements = sections
+      .map((section) => (section.templateElementsBySectionId?.nodes as TemplateElement[]) || [])
+      .flat()
     if (template) {
       setState({
         template: {
@@ -147,6 +159,9 @@ const TemplateWrapper: React.FC = () => {
         },
         category: (template?.templateCategory as TemplateCategory) || undefined,
         fromQuery: template,
+        sections,
+        allElements,
+        refetch,
         templateFilterJoins: (template?.templateFilterJoins?.nodes || []) as TemplateFilterJoin[],
       })
       setFirstLoaded(true)

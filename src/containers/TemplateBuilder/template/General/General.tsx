@@ -27,8 +27,8 @@ const General: React.FC = () => {
   const canSetDisabled = template.status !== TemplateStatus.Disabled
 
   return (
-    <div className="template-inner-config">
-      <div key="actionButtons" className="flex-row">
+    <div className="flex-column-center-start">
+      <div className="flex-row">
         <ButtonWithFallback
           title="Make Available"
           disabledMessage="At least one template with the same code is already available, or this template already available"
@@ -56,12 +56,14 @@ const General: React.FC = () => {
           }}
         />
       </div>
-      <TextIO
-        text={String(template.name)}
-        title="Name"
-        setText={(text) => updateTemplate(template.id, { name: text })}
-      />
 
+      <div className="longer">
+        <TextIO
+          text={String(template.name)}
+          title="Name"
+          setText={(text) => updateTemplate(template.id, { name: text })}
+        />
+      </div>
       <TextIO
         text={String(template.code)}
         disabled={!template.isDraft}

@@ -1,15 +1,13 @@
 import { ApolloError } from '@apollo/client'
 import { useState } from 'react'
+import { useUserState } from '../../contexts/UserState'
 import { useCreateApplicationMutation } from '../../utils/generated/graphql'
 
 export interface CreateApplicationProps {
   serial: string
   name: string
   templateId: number
-  userId?: number
-  orgId?: number
-  sessionId: string
-  isConfig: boolean
+  isConfig?: boolean
   templateResponses: { templateElementId: number; value: any }[]
 }
 
@@ -23,6 +21,9 @@ interface UseCreateApplicationProps {
 const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<ApolloError | undefined>()
+  const {
+    userState: { currentUser },
+  } = useUserState()
 
   const [applicationMutation] = useCreateApplicationMutation({
     onCompleted: () => {
@@ -35,15 +36,16 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
     },
   })
 
+  const userId = currentUser?.userId
+  const orgId = currentUser?.organisation?.orgId
+  const sessionId = currentUser?.sessionId || ''
+
   const createApplication = async ({
     serial,
     name,
     templateId,
-    userId,
-    orgId,
-    sessionId,
     templateResponses,
-    isConfig,
+    isConfig = false,
   }: CreateApplicationProps) => {
     setProcessing(true)
     const result = await applicationMutation({

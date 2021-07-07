@@ -1,9 +1,23 @@
 import React, { useState } from 'react'
-import { Icon, Label, Dropdown, Header } from 'semantic-ui-react'
+import { Icon, Header } from 'semantic-ui-react'
+import { Loading } from '../../../../components'
 import { useGetTemplateCategoriesQuery } from '../../../../utils/generated/graphql'
-import { TextIO, ButtonWithFallback, iconLink } from '../../shared/components'
+import { TextIO, ButtonWithFallback, iconLink, DropdownIO } from '../../shared/components'
 import { useOperationState } from '../../shared/OperationContext'
 import { useTemplateState } from '../TemplateWrapper'
+
+const noCategory = {
+  title: 'no category',
+  id: -1,
+  code: '',
+  icon: '',
+}
+
+const newCategory = {
+  code: 'new code',
+  icon: 'globe',
+  title: 'new title',
+}
 
 type CategoryUpdate = {
   code: string
@@ -19,47 +33,30 @@ const Category: React.FC<{}> = () => {
   const { data: templateCategoriesData, refetch: refetchCategories } =
     useGetTemplateCategoriesQuery()
 
+  if (!templateCategoriesData?.templateCategories?.nodes) return <Loading />
+
   const categories = templateCategoriesData?.templateCategories?.nodes || []
-  const selectedCategoryId = category?.id
-    ? categories.find((category) => category?.id === category?.id)?.id
-    : -1
+  const selectedCategory =
+    categories.find((_category) => _category?.id === category?.id) || noCategory
 
-  const categoryOptions = categories.map((category) => ({
-    key: category?.title,
-    text: category?.title,
-    value: category?.id,
-    icon: category?.icon,
-  }))
-
-  categoryOptions.push({ key: 'no category', value: -1, text: 'no category', icon: '' })
+  const categoryOptions = [...categories, noCategory]
 
   const renderAddEdit = () => {
     if (updateState) return null
-    const canRenderEdit = selectedCategoryId !== -1
+    const canRenderEdit = selectedCategory.id !== noCategory.id
     return (
       <>
-        <Icon
-          name="add"
-          onClick={() =>
-            setUpdateState({
-              code: 'new code',
-              icon: 'globe',
-              title: 'new title',
-            })
-          }
-        />
+        <Icon className="clickable" name="add" onClick={() => setUpdateState(newCategory)} />
         {canRenderEdit && (
           <Icon
+            className="clickable"
             name="edit"
             onClick={() => {
-              const selectedCateogry = categories.find(
-                (category) => category?.id === selectedCategoryId
-              )
               setUpdateState({
-                code: selectedCateogry?.code || '',
-                icon: selectedCateogry?.icon || '',
-                id: selectedCateogry?.id,
-                title: selectedCateogry?.title || '',
+                code: selectedCategory?.code || '',
+                icon: selectedCategory?.icon || '',
+                id: selectedCategory?.id,
+                title: selectedCategory?.title || '',
               })
             }}
           />
@@ -96,14 +93,16 @@ const Category: React.FC<{}> = () => {
 
   return (
     <>
-      <div className="categories-input">
-        <Label content="Categories" />
-        <Dropdown
-          value={selectedCategoryId}
+      <div className="flex-row-start-center">
+        <DropdownIO
+          value={selectedCategory.id}
+          title="Categories"
           options={categoryOptions}
           disabled={!!updateState}
-          selection
-          onChange={(_, { value }) => {
+          getKey={'id'}
+          getValue={'id'}
+          getText={'title'}
+          setValue={(value) => {
             updateTemplate(template.id, { templateCategoryId: value === -1 ? null : Number(value) })
           }}
         />
@@ -111,7 +110,7 @@ const Category: React.FC<{}> = () => {
         {renderAddEdit()}
       </div>
       {updateState && (
-        <div className="category-add-edit" key="categoryEdit">
+        <div className="template-buider-category-input">
           <Header as="h5">{`${updateState.id ? 'Edit' : 'Add'} Category`}</Header>
           <TextIO
             text={updateState.code}
@@ -130,8 +129,9 @@ const Category: React.FC<{}> = () => {
             icon={updateState.icon}
             setText={(value: string) => setUpdateState({ ...updateState, icon: value })}
           />
+          <div className="spacer-20" />
 
-          <div className="add-edit-category-buttons">
+          <div className="flex-row">
             <ButtonWithFallback
               title={updateState.id ? 'Save' : 'Add'}
               onClick={updateState.id ? editCategory : addCategory}

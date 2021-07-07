@@ -13,6 +13,12 @@ type TextIOprops = {
   link?: string
   isTextArea?: boolean
   isPropUpdated?: boolean
+  textAreaDefaulRows?: number
+}
+
+const getDefaultRows = (text: string, textAreaDefaulRows: number) => {
+  const rowsInText = text.match(/[\n]/g)?.length || 0
+  return rowsInText === 0 ? textAreaDefaulRows : rowsInText + 2
 }
 
 const TextIO: React.FC<TextIOprops> = ({
@@ -25,8 +31,10 @@ const TextIO: React.FC<TextIOprops> = ({
   color,
   link,
   isTextArea = false,
+  textAreaDefaulRows = 4,
   isPropUpdated = false,
 }) => {
+  const [defaultRows] = useState(getDefaultRows(text, textAreaDefaulRows))
   const [innerValue, setInnerValue] = useState(text)
   const style = color ? { color } : {}
 
@@ -39,19 +47,21 @@ const TextIO: React.FC<TextIOprops> = ({
   const renderInput = () => {
     if (!setText) return null
 
-    if (Array.isArray(options)) {
+    if (isTextArea) {
       return (
-        <Dropdown
-          value={innerValue}
-          disabled={disabled}
-          className="text-io-component value"
-          options={options.map((value) => ({ text: value, key: value, value }))}
-          size="small"
-          onChange={(_, { value }) => {
-            setInnerValue(String(value))
-            setText(String(value), setInnerValue)
-          }}
-        />
+        <div className="text-io-component value">
+          <Form>
+            <TextArea
+              disabled={disabled}
+              value={innerValue}
+              rows={defaultRows}
+              onBlur={() => setText(innerValue, setInnerValue)}
+              onChange={(_, { value }) => {
+                setInnerValue(String(value))
+              }}
+            />
+          </Form>
+        </div>
       )
     }
 
@@ -102,21 +112,38 @@ const TextIO: React.FC<TextIOprops> = ({
   )
 }
 
+type StringOrNumber = number | string
+type GetterOrKey = ((row: any) => StringOrNumber) | string
+
 type DropdownIOprops = {
-  value: number | string
+  value: StringOrNumber
   title?: string
-  setValue?: (text: number | string, resetValue: (text: number | string) => void) => void
+  setValue?: (
+    value: StringOrNumber,
+    fullValue: any,
+    resetValue: (value: StringOrNumber) => void
+  ) => void
   disabled?: boolean
   disabledMessage?: string
   link?: string
   isPropUpdated?: boolean
   options?: any[]
-  getKey: ((row: any) => string) | string
-  getValue: ((row: any) => string | number) | string
-  getText: ((row: any) => string) | string
+  getKey: GetterOrKey
+  getValue: GetterOrKey
+  getText: GetterOrKey
 }
 
-const defaultGetters = (row: string) => row
+const defaultGetters: GetterOrKey = (row) => String(row)
+
+const getterOrKeyHelper = (getterOrKey: GetterOrKey, value: any) => {
+  try {
+    if (typeof getterOrKey === 'function') return getterOrKey(value)
+    if (typeof getterOrKey === 'string') return value[getterOrKey]
+  } catch (e) {
+    console.log(e)
+    return 'cant resolve row'
+  }
+}
 
 const DropdownIO: React.FC<DropdownIOprops> = ({
   value,
@@ -147,11 +174,17 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
         value={innerValue}
         disabled={disabled}
         className="text-io-component value"
-        options={options.map((value) => ({ text: value, key: value, value }))}
+        options={options.map((value) => ({
+          text: getterOrKeyHelper(getText, value),
+          key: getterOrKeyHelper(getKey, value),
+          value: getterOrKeyHelper(getValue, value),
+        }))}
         size="small"
         onChange={(_, { value }) => {
-          setInnerValue(String(value))
-          setText(String(value), setInnerValue)
+          if (typeof value !== 'string' && typeof value !== 'number') return
+          setInnerValue(value)
+          const fullValue = options.find((_value) => value === getterOrKeyHelper(getValue, _value))
+          setValue(value, fullValue, setInnerValue)
         }}
       />
     )
@@ -160,18 +193,14 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
   const renderLabel = () => {
     if (link) {
       return (
-        <div style={style} className="text-io-component key">
-          <a style={style} target="_blank" href={link}>
-            {title} {icon && <Icon style={style} name={icon as SemanticICONS} />}
+        <div className="text-io-component key">
+          <a target="_blank" href={link}>
+            {title}
           </a>
         </div>
       )
     }
-    return (
-      <div style={style} className="text-io-component key">
-        {title} {icon && <Icon style={style} name={icon as SemanticICONS} />}
-      </div>
-    )
+    return <div className="text-io-component key">{title}</div>
   }
 
   return (
@@ -182,7 +211,7 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
         <div className="text-io-wrapper">
           {renderLabel()}
           {renderText()}
-          {renderInput()}
+          {renderDropdown()}
         </div>
       }
     />
@@ -215,7 +244,7 @@ const ButtonWithFallback: React.FC<ButtonWithFallbackProps> = ({
   />
 )
 
-const JsonTextBox: React.FC<{
+const JsonIO: React.FC<{
   initialValue: object
   label: string
   update: (value: object) => void
@@ -253,13 +282,13 @@ const JsonTextBox: React.FC<{
 
   return (
     <>
-      <OnBlurInput
+      <TextIO
         key="categoryCode"
-        initialValue={value}
-        label={label}
+        text={value}
+        title={label}
         isPropUpdated={isPropUpdated}
         isTextArea={true}
-        update={(value, resetValue) => resetValue(tryToSetValue(value))}
+        setText={(value, resetValue) => resetValue(tryToSetValue(value))}
       />
       {isError && (
         <Label basic color="red" pointing="above">
@@ -339,4 +368,4 @@ export const OnBlurInput: React.FC<{
   )
 }
 
-export { iconLink, TextIO, ButtonWithFallback, JsonTextBox }
+export { iconLink, TextIO, ButtonWithFallback, JsonIO, DropdownIO }

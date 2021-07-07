@@ -1,61 +1,17 @@
 import React, { useEffect } from 'react'
 import { Button, Message, Segment } from 'semantic-ui-react'
 import { ApplicationContainer, Loading } from '../../components'
-import { ApplicationActions, useApplicationState } from '../../contexts/ApplicationState'
+import { useApplicationState } from '../../contexts/ApplicationState'
 import { useUserState } from '../../contexts/UserState'
-import useCreateApplication, {
-  CreateApplicationProps,
-  CreateApplicationReturnType,
-} from '../../utils/hooks/useCreateApplication'
+import useCreateApplication from '../../utils/hooks/useCreateApplication'
 import useLoadTemplate from '../../utils/hooks/useLoadTemplate'
 import { useRouter } from '../../utils/hooks/useRouter'
 import usePageTitle from '../../utils/hooks/usePageTitle'
 import strings from '../../utils/constants'
 import { SectionsList } from '../../components/Sections'
 import ApplicationHomeWrapper from '../../components/Application/ApplicationHomeWrapper'
-import { ElementForEvaluation, EvaluatorNode, TemplateDetails, User } from '../../utils/types'
+import { ElementForEvaluation, EvaluatorNode, User } from '../../utils/types'
 import { evaluateElements } from '../../utils/helpers/evaluateElements'
-
-type HandlerCreate = (props: {
-  template?: TemplateDetails
-  currentUser: User | null
-  create: (props: CreateApplicationProps) => CreateApplicationReturnType
-  setApplicationState?: React.Dispatch<ApplicationActions>
-  isConfig?: boolean
-}) => CreateApplicationReturnType
-
-export const handleCreate: HandlerCreate = async ({
-  setApplicationState,
-  create,
-  currentUser,
-  template,
-  isConfig = false,
-}) => {
-  if (setApplicationState) setApplicationState({ type: 'reset' })
-
-  // TODO: New issue to generate serial - should be done in server?
-  const serialNumber = Math.round(Math.random() * 10000).toString()
-  if (setApplicationState) setApplicationState({ type: 'setSerialNumber', serialNumber })
-
-  const { name = 'no name', elementsIds = [], elementsDefaults = [], id = 0 } = template || {}
-  const defaultValues = await getDefaults(elementsDefaults, currentUser)
-
-  const result = await create({
-    name,
-    serial: serialNumber,
-    templateId: id,
-    isConfig,
-    userId: currentUser?.userId,
-    orgId: currentUser?.organisation?.orgId,
-    sessionId: currentUser?.sessionId as string,
-    templateResponses: (elementsIds as number[]).map((id, index) => {
-      return { templateElementId: id, value: defaultValues[index] }
-    }),
-  })
-
-  console.log(result)
-  return result
-}
 
 const ApplicationCreate: React.FC = () => {
   const {
@@ -66,6 +22,9 @@ const ApplicationCreate: React.FC = () => {
     push,
     query: { type },
   } = useRouter()
+  const {
+    userState: { currentUser },
+  } = useUserState()
 
   const { error, loading, template } = useLoadTemplate({
     templateCode: type,
@@ -73,14 +32,9 @@ const ApplicationCreate: React.FC = () => {
 
   usePageTitle(strings.PAGE_TITLE_CREATE)
 
-  const {
-    userState: { currentUser },
-  } = useUserState()
-
   // If template has no start message, go straight to first page of new application
   useEffect(() => {
-    if (template && !template.startMessage)
-      handleCreate({ template, create, setApplicationState, currentUser })
+    if (template && !template.startMessage) handleCreate()
   }, [template])
 
   const {
@@ -98,6 +52,30 @@ const ApplicationCreate: React.FC = () => {
     },
   })
 
+  const handleCreate = async (_?: any) => {
+    setApplicationState({ type: 'reset' })
+
+    if (!template?.sections) {
+      console.log('Problem to create application - unexpected parameters')
+      return
+    }
+    // TODO: New issue to generate serial - should be done in server?
+    const serialNumber = Math.round(Math.random() * 10000).toString()
+    setApplicationState({ type: 'setSerialNumber', serialNumber })
+
+    const { name, elementsIds, elementsDefaults } = template
+    const defaultValues = await getDefaultValues(elementsDefaults || [], currentUser)
+
+    create({
+      name,
+      serial: serialNumber,
+      templateId: template.id,
+      templateResponses: (elementsIds as number[]).map((id, index) => {
+        return { templateElementId: id, value: defaultValues[index] }
+      }),
+    })
+  }
+
   if (error || creationError)
     return (
       <Message
@@ -114,12 +92,7 @@ const ApplicationCreate: React.FC = () => {
   const StartButtonSegment: React.FC = () => {
     return (
       <Segment basic className="padding-zero">
-        <Button
-          color="blue"
-          className="button-wide"
-          loading={processing}
-          onClick={() => handleCreate({ template, create, setApplicationState, currentUser })}
-        >
+        <Button color="blue" className="button-wide" loading={processing} onClick={handleCreate}>
           {strings.BUTTON_APPLICATION_START}
         </Button>
       </Segment>
@@ -141,7 +114,10 @@ const ApplicationCreate: React.FC = () => {
   ) : null
 }
 
-const getDefaults = async (defaultValueExpressions: EvaluatorNode[], currentUser: User | null) => {
+const getDefaultValues = async (
+  defaultValueExpressions: EvaluatorNode[],
+  currentUser: User | null
+) => {
   const evaluationElements: ElementForEvaluation[] = defaultValueExpressions.map(
     (defaultValueExpression) => ({ defaultValueExpression, code: '' })
   )
@@ -152,4 +128,5 @@ const getDefaults = async (defaultValueExpressions: EvaluatorNode[], currentUser
   return evaluatedElements.map(({ defaultValue }) => defaultValue)
 }
 
+export { getDefaultValues }
 export default ApplicationCreate

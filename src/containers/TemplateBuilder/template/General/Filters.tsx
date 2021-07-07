@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
-import { Button, Dropdown, Header, Icon, Label } from 'semantic-ui-react'
-import { PermissionPolicyType, useGetAllFiltersQuery } from '../../../../utils/generated/graphql'
-import { TextIO, JsonTextBox, iconLink } from '../../shared/components'
-import { useOperationState } from '../../shared/OperationContext'
+import { Dropdown, Header, Icon, Label } from 'semantic-ui-react'
+import { Loading } from '../../../../components'
+import {
+  PermissionPolicyType,
+  TemplateFilterJoin,
+  useGetAllFiltersQuery,
+} from '../../../../utils/generated/graphql'
+import { TextIO, JsonIO, iconLink, DropdownIO, ButtonWithFallback } from '../../shared/components'
+import { getRandomNumber, useOperationState } from '../../shared/OperationContext'
 import { useTemplateState } from '../TemplateWrapper'
 
 type UpdateFilter = {
@@ -15,81 +20,66 @@ type UpdateFilter = {
   query: object
 }
 
+const userRoleOptions = [
+  { type: 'APPLY', text: 'Applicant' },
+  { type: 'ASSIGN', text: 'Assigner' },
+  { type: 'REVIEW', text: 'Reviewer' },
+]
+
+const newFilter = {
+  id: -1,
+  code: 'new code',
+  title: 'new filter',
+  icon: 'globe',
+  iconColor: 'blue',
+  userRole: PermissionPolicyType.Apply,
+  query: { status: 'SUBMITTED' },
+}
+
 const Filters: React.FC = () => {
-  const [selectedFilterJoinId, setSelectedFilterJoinId] = useState(-1)
+  const [selectedFilterJoin, setSelectedFilterJoin] = useState<TemplateFilterJoin | null>(null)
+  const [selectedFilter, setSelectedFilter] = useState(newFilter)
+
   const [updateState, setUpdateState] = useState<UpdateFilter | null>(null)
   const { data: allFiltersData, refetch: refetchFilters } = useGetAllFiltersQuery()
 
+  if (!allFiltersData?.filters?.nodes) return <Loading />
+
   const { template, templateFilterJoins: filterJoins } = useTemplateState()
   const { updateTemplate, updateTemplateFilterJoin } = useOperationState()
-  const allFilters = allFiltersData?.filters?.nodes || []
-  const selectedFilterJoin = filterJoins.find(
-    (filterJoin) => filterJoin?.id === selectedFilterJoinId
-  )
+  const allFilters = [...(allFiltersData?.filters?.nodes || []), newFilter]
 
-  const selectedFilter = selectedFilterJoin?.filter
-  const selectedFilterId = selectedFilter?.id
-
-  const setAddFilterState = () => {
-    setUpdateState({
-      code: 'new code',
-      title: 'new title',
-      icon: 'globe',
-      iconColor: 'blue',
-      userRole: PermissionPolicyType.Apply,
-      query: { status: 'SUBMITTED' },
-    })
+  const selectFilterJoin = (filterJoin: TemplateFilterJoin | null) => {
+    setSelectedFilterJoin(filterJoin)
+    if (filterJoin) {
+      const filter = filterJoin?.filter
+      setUpdateState({
+        code: filter?.code || '',
+        title: filter?.title || '',
+        id: filter?.id || 0,
+        icon: filter?.icon || '',
+        iconColor: filter?.iconColor || '',
+        userRole: filter?.userRole || PermissionPolicyType.Apply,
+        query: filter?.query,
+      })
+    } else setUpdateState(null)
   }
 
-  const renderAddEditDelete = () => {
-    if (updateState) return null
-    return (
-      <>
-        <Icon name="add" onClick={setAddFilterState} />
-        <Icon
-          name="edit"
-          onClick={() => {
-            setUpdateState({
-              code: selectedFilter?.code || '',
-              title: selectedFilter?.title || '',
-              id: selectedFilterId,
-              icon: selectedFilter?.icon || '',
-              iconColor: selectedFilter?.iconColor || '',
-              userRole: selectedFilter?.userRole || PermissionPolicyType.Apply,
-              query: selectedFilter?.query,
-            })
-          }}
-        />
-
-        <Icon
-          name="close"
-          onClick={async () => {
-            if (
-              await updateTemplate(template.id, {
-                templateFilterJoinsUsingId: { deleteById: [{ id: selectedFilterJoinId || 0 }] },
-              })
-            ) {
-              setUpdateState(null)
-              setSelectedFilterJoinId(-1)
-            }
-          }}
-        />
-      </>
-    )
+  const deleteFilterJoin = async () => {
+    if (
+      await updateTemplate(template.id, {
+        templateFilterJoinsUsingId: { deleteById: [{ id: selectedFilterJoin?.id || 0 }] },
+      })
+    ) {
+      selectFilterJoin(null)
+    }
   }
-
-  const filterOptions = allFilters.map((filter) => ({
-    value: filter?.id,
-    key: filter?.id,
-    text: filter?.code,
-    icon: filter?.icon,
-  }))
 
   const editFilter = async () => {
     if (!updateState) return
 
     if (
-      await updateTemplateFilterJoin(selectedFilterJoinId, {
+      await updateTemplateFilterJoin(selectedFilterJoin?.id || 0, {
         filterToFilterId: {
           updateById: {
             patch: updateState,
@@ -99,76 +89,65 @@ const Filters: React.FC = () => {
       })
     ) {
       refetchFilters()
-      setUpdateState(null)
-      setSelectedFilterJoinId(-1)
+      selectFilterJoin(null)
     }
   }
 
-  const addFilter = async () => {
-    if (!updateState) return
-
-    let result = false
-    if (selectedFilterJoinId === -1) {
-      result = await updateTemplate(template.id, {
+  const addFilterJoin = async () => {
+    if (selectedFilter?.id !== -1) {
+      updateTemplate(template.id, {
         templateFilterJoinsUsingId: {
-          create: [{ filterToFilterId: { create: updateState } }],
+          create: [{ filterId: selectedFilter?.id || 0 }],
         },
       })
     } else {
-      result = await updateTemplateFilterJoin(selectedFilterJoinId, {
-        filterToFilterId: {
-          create: updateState,
+      const { id, code, ...newPartial } = newFilter
+      updateTemplate(template.id, {
+        templateFilterJoinsUsingId: {
+          create: [
+            {
+              filterToFilterId: { create: { ...newPartial, code: `newCode_${getRandomNumber()}` } },
+            },
+          ],
         },
       })
-    }
-    if (result) {
-      refetchFilters()
-      setUpdateState(null)
-      setSelectedFilterJoinId(-1)
     }
   }
 
   return (
-    <div className="flex-column" key="editFilters">
-      <div
-        className="filters-header"
-        onClick={() => {
-          setSelectedFilterJoinId(-1)
-          setAddFilterState()
-        }}
-      >
-        <Header as="h3">Dashboard Filters</Header> <Icon name="add" />
+    <>
+      <Header as="h3">Dashboard Filters</Header>
+      <div className="flex-row-start-center">
+        <DropdownIO
+          value={selectedFilter.id}
+          title="Categories"
+          options={allFilters}
+          getKey={'id'}
+          getValue={'id'}
+          getText={'title'}
+          setValue={(_, fullValue) => {
+            setSelectedFilter(fullValue)
+          }}
+        />
+        <Icon className="clickable" name="add" onClick={addFilterJoin} />
       </div>
       <div className="filter-joins">
         {filterJoins.map((filterJoin) => (
           <Label
             key={filterJoin.id}
             onClick={() => {
-              setSelectedFilterJoinId(filterJoin?.id || -1)
-              setUpdateState(null)
+              selectFilterJoin(filterJoin)
             }}
-            className={`${filterJoin?.id === selectedFilterJoinId ? 'selected' : ''}`}
+            className={`${filterJoin?.id === selectedFilterJoin?.id ? 'selected' : ''}`}
           >
             {filterJoin?.filter?.code}
           </Label>
         ))}
       </div>
 
-      {selectedFilterJoinId !== -1 && (
-        <div className="filter-selection">
-          <Label content="Selected Filter" />
-          <Dropdown
-            disabled={!!updateState}
-            value={selectedFilterId}
-            selection
-            options={filterOptions}
-          />
-          {renderAddEditDelete()}
-        </div>
-      )}
       {updateState && (
-        <div className="filter-add-edit">
-          <Header as="h5">{`${updateState.id ? 'Edit' : 'Add'} Filter`}</Header>
+        <div key={selectedFilterJoin?.id} className="template-bulder-filter-input ">
+          <Header as="h5">{`Edit Filter`}</Header>
           <TextIO
             text={updateState.code}
             title="Code"
@@ -194,37 +173,34 @@ const Filters: React.FC = () => {
             setText={(value: string) => setUpdateState({ ...updateState, iconColor: value })}
           />
 
-          <Dropdown
-            key="filterRole"
+          <DropdownIO
             value={updateState.userRole}
-            selection
-            options={[
-              { key: 'APPLY', value: 'APPLY', text: 'Applicant' },
-              { key: 'ASSIGN', value: 'ASSIGN', text: 'Assigner' },
-              { key: 'REVIEW', value: 'REVIEW', text: 'Reviewer' },
-            ]}
-            label="User Role"
-            onChange={(_, { value }) =>
+            options={userRoleOptions}
+            getKey="type"
+            getValue="type"
+            getText="text"
+            title="User Role"
+            setValue={(value) => {
               setUpdateState({ ...updateState, userRole: value as PermissionPolicyType })
-            }
+            }}
           />
-          <JsonTextBox
-            key="filterQuery"
-            initialValue={updateState.query}
-            label="query"
-            update={(value: object) => setUpdateState({ ...updateState, query: value })}
-          />
-          <div className="add-edit-filter-buttons">
-            <Button inverted primary onClick={updateState.id ? editFilter : addFilter}>
-              {updateState.id ? 'Save' : 'Add'}
-            </Button>
-            <Button inverted primary onClick={() => setUpdateState(null)}>
-              Cancel
-            </Button>
+          <div className="longer">
+            <JsonIO
+              key="filterQuery"
+              initialValue={updateState.query}
+              label="query"
+              update={(value: object) => setUpdateState({ ...updateState, query: value })}
+            />
+          </div>
+          <div className="spacer-20" />
+          <div className="flex-row">
+            <ButtonWithFallback title="Save" onClick={editFilter} />
+            <ButtonWithFallback title="Unlink" onClick={() => deleteFilterJoin()} />
+            <ButtonWithFallback title="Cancel" onClick={() => selectFilterJoin(null)} />
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
 
