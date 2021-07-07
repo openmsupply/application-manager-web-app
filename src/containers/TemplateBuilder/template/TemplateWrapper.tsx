@@ -18,7 +18,7 @@ import OperationContext from '../shared/OperationContext'
 
 import Actions from './Actions'
 import Form from './Form'
-import General from './General'
+import General from './General/General'
 import Permissions from './Permissions'
 
 export type TemplateInfo = GetFullTemplateInfoQuery['template']
@@ -55,7 +55,7 @@ const TemplateContainer: React.FC = () => {
   const {
     template: { version, name, code, status, applicationCount, id },
     fromQuery: templateInfo,
-  } = useTemplateContext()
+  } = useTemplateState()
 
   const selected = tabs.find(({ route }) =>
     matchPath(location.pathname, { path: `${path}/${route}`, exact: true, strict: false })
@@ -163,5 +163,5 @@ const TemplateWrapper: React.FC = () => {
   )
 }
 
-export const useTemplateContext = () => useContext(Context)
+export const useTemplateState = () => useContext(Context)
 export default TemplateWrapper

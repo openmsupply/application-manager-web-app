@@ -6,12 +6,13 @@ import {
 } from '../../../../utils/generated/graphql'
 import { ButtonWithFallback, TextIO } from '../../shared/components'
 import { useOperationState } from '../../shared/OperationContext'
-import { useTemplateContext } from '../TemplateWrapper'
+import { useTemplateState } from '../TemplateWrapper'
 import Category from './Categories'
+import Filters from './Filters'
 
 const General: React.FC = () => {
   const { updateTemplate } = useOperationState()
-  const { template } = useTemplateContext()
+  const { template } = useTemplateState()
   const { data: availableTemplatesData, refetch: refetchAvailable } =
     useGetTeplatesAvailableForCodeQuery({
       variables: { code: template.code },
@@ -71,9 +72,7 @@ const General: React.FC = () => {
 
       <Category />
 
-      {/* <Filters
-  
-      /> */}
+      <Filters />
     </div>
   )
 }

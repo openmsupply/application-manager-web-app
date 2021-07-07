@@ -39,7 +39,7 @@ import { handleCreate } from '../../Application/ApplicationCreate'
 import { parseAndRenderEvaluation, renderEvaluationElement } from '../evaluatorGui/renderEvaluation'
 import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
 import { getTypedEvaluation, getTypedEvaluationAsString } from '../evaluatorGui/typeHelpers'
-import { JsonTextBox, OnBlurInput } from './General'
+import { OnBlurInput, JsonTextBox } from '../shared/components'
 import { TemplateInfo } from './TemplateWrapper'
 
 type MoveElement = {
@@ -247,6 +247,7 @@ const CreateApplicationWrapper: React.FC<{
 
 const Form: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo }) => {
   const [updateTemplateSection] = useUpdateTemplateSectionMutation()
+
   const [ready, setIsReady] = useState(false)
 
   const trimPageBreaks = async (pageBreaksToTrim: { [sectionId: number]: number[] }) => {

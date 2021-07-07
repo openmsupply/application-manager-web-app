@@ -3,7 +3,7 @@ import { Icon, Label, Dropdown, Header } from 'semantic-ui-react'
 import { useGetTemplateCategoriesQuery } from '../../../../utils/generated/graphql'
 import { TextIO, ButtonWithFallback, iconLink } from '../../shared/components'
 import { useOperationState } from '../../shared/OperationContext'
-import { useTemplateContext } from '../TemplateWrapper'
+import { useTemplateState } from '../TemplateWrapper'
 
 type CategoryUpdate = {
   code: string
@@ -13,7 +13,7 @@ type CategoryUpdate = {
 }
 
 const Category: React.FC<{}> = () => {
-  const { category, template } = useTemplateContext()
+  const { category, template } = useTemplateState()
   const { updateTemplate } = useOperationState()
   const [updateState, setUpdateState] = useState<CategoryUpdate | null>(null)
   const { data: templateCategoriesData, refetch: refetchCategories } =

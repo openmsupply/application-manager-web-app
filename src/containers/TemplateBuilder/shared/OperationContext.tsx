@@ -1,7 +1,12 @@
 import React, { useState, useContext, createContext } from 'react'
 import { Modal, Label, Icon, Loader } from 'semantic-ui-react'
 import config from '../../../config'
-import { TemplatePatch, useUpdateTemplateMutation } from '../../../utils/generated/graphql'
+import {
+  TemplateFilterJoinPatch,
+  TemplatePatch,
+  useUpdateTemplateFilterJoinMutation,
+  useUpdateTemplateMutation,
+} from '../../../utils/generated/graphql'
 
 const snapshotsBaseUrl = `${config.serverREST}/snapshot`
 const takeSnapshotUrl = `${snapshotsBaseUrl}/take`
@@ -21,7 +26,8 @@ type SetErrorAndLoadingState = (props: ErrorAndLoadingState) => void
 type TemplatesOperationProps = { id: number; snapshotName: string }
 type TemplatesOperation = (props: TemplatesOperationProps) => Promise<boolean>
 type ImportTemplate = (e: any) => Promise<boolean>
-type UpdateTemplate = (id: number, path: TemplatePatch) => Promise<boolean>
+type UpdateTemplate = (id: number, patch: TemplatePatch) => Promise<boolean>
+type UpdateTemplateFilterJoin = (id: number, patch: TemplateFilterJoinPatch) => Promise<boolean>
 
 type OperationContextState = {
   fetch: (something: any) => any
@@ -29,6 +35,7 @@ type OperationContextState = {
   duplicateTemplate: TemplatesOperation
   importTemplate: ImportTemplate
   updateTemplate: UpdateTemplate
+  updateTemplateFilterJoin: UpdateTemplateFilterJoin
 }
 
 type TemplateOperationHelper = (
@@ -43,6 +50,11 @@ type UpdateTemplateHelper = (
   updateTemplateMutation: ReturnType<typeof useUpdateTemplateMutation>[0]
 ) => UpdateTemplate
 
+type UpdateTemplateFilterJoinHelper = (
+  setErrorAndLoadingState: SetErrorAndLoadingState,
+  updateTemplateMutation: ReturnType<typeof useUpdateTemplateFilterJoinMutation>[0]
+) => UpdateTemplateFilterJoin
+
 const contextNotPresentError = () => {
   throw new Error('context not present')
 }
@@ -53,12 +65,14 @@ const defaultOperationContext: OperationContextState = {
   duplicateTemplate: contextNotPresentError,
   importTemplate: contextNotPresentError,
   updateTemplate: contextNotPresentError,
+  updateTemplateFilterJoin: contextNotPresentError,
 }
 
 const Context = createContext(defaultOperationContext)
 
 const OperationContext: React.FC = ({ children }) => {
   const [updateTemplateMutation] = useUpdateTemplateMutation()
+  const [updateTemplateFilterJoinMutation] = useUpdateTemplateFilterJoinMutation()
   const [innerState, setInnerState] = useState<ErrorAndLoadingState>({ isLoading: false })
   const [contextState] = useState<OperationContextState>({
     fetch: () => {},
@@ -66,6 +80,10 @@ const OperationContext: React.FC = ({ children }) => {
     duplicateTemplate: (props) => duplicateTemplate(props, setInnerState),
     importTemplate: importTemplate(setInnerState),
     updateTemplate: updateTemplate(setInnerState, updateTemplateMutation),
+    updateTemplateFilterJoin: updateTemplateFilterJoin(
+      setInnerState,
+      updateTemplateFilterJoinMutation
+    ),
   })
 
   const { isLoading, error } = innerState
@@ -121,12 +139,22 @@ const updateTemplate: UpdateTemplateHelper =
       const result = await updateTemplateMutation({ variables: { id, templatePatch: patch } })
       return checkMutationResult(result, setErrorAndLoadingState)
     } catch (e) {
-      setErrorAndLoadingState({ isLoading: false, error: { error: 'error', message: e } })
-
+      setErrorAndLoadingState({ isLoading: false, error: { error: 'error', message: e.message } })
       return false
     }
   }
-
+const updateTemplateFilterJoin: UpdateTemplateFilterJoinHelper =
+  (setErrorAndLoadingState: SetErrorAndLoadingState, updateTemplateFilterJoin) =>
+  async (id, patch) => {
+    try {
+      const result = await updateTemplateFilterJoin({ variables: { id, filterJoinPatch: patch } })
+      return checkMutationResult(result, setErrorAndLoadingState)
+    } catch (e) {
+      setErrorAndLoadingState({ isLoading: false, error: { error: 'error', message: e.message } })
+      return false
+    }
+  }
+updateTemplateFilterJoin
 const exportTemplate: TemplateOperationHelper = async (
   { id, snapshotName },
   setErrorAndLoadingState
