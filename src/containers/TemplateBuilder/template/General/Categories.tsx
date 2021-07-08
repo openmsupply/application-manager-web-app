@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { Icon, Header } from 'semantic-ui-react'
 import { Loading } from '../../../../components'
 import { useGetTemplateCategoriesQuery } from '../../../../utils/generated/graphql'
-import { TextIO, ButtonWithFallback, iconLink, DropdownIO } from '../../shared/components'
+import ButtonWithFallback from '../../shared/ButtonWidthFallback'
+import DropdownIO from '../../shared/DropdownIO'
 import { useOperationState } from '../../shared/OperationContext'
+import TextIO, { iconLink } from '../../shared/TextIO'
 import { useTemplateState } from '../TemplateWrapper'
 
 const noCategory = {

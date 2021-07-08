@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import { Dropdown, Header, Icon, Label } from 'semantic-ui-react'
+import { Header, Icon, Label } from 'semantic-ui-react'
 import { Loading } from '../../../../components'
 import {
   PermissionPolicyType,
   TemplateFilterJoin,
   useGetAllFiltersQuery,
 } from '../../../../utils/generated/graphql'
-import { TextIO, JsonIO, iconLink, DropdownIO, ButtonWithFallback } from '../../shared/components'
+import ButtonWithFallback from '../../shared/ButtonWidthFallback'
+import DropdownIO from '../../shared/DropdownIO'
+import JsonIO from '../../shared/JsonIO'
 import { useOperationState } from '../../shared/OperationContext'
 import { getRandomNumber } from '../../shared/OperationContextHelpers'
+import TextIO, { iconLink } from '../../shared/TextIO'
 import { useTemplateState } from '../TemplateWrapper'
 
 type UpdateFilter = {
@@ -188,9 +191,9 @@ const Filters: React.FC = () => {
           <div className="longer">
             <JsonIO
               key="filterQuery"
-              initialValue={updateState.query}
+              object={updateState.query}
               label="query"
-              update={(value: object) => setUpdateState({ ...updateState, query: value })}
+              setObject={(value) => setUpdateState({ ...updateState, query: value })}
             />
           </div>
           <div className="spacer-20" />

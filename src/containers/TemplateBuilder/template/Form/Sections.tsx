@@ -1,9 +1,10 @@
 import React from 'react'
 import { Button, Header, Label } from 'semantic-ui-react'
+import { IconButton } from '../../shared/components'
 
-import { IconButton, TextIO } from '../../shared/components'
 import { useOperationState } from '../../shared/OperationContext'
 import { getRandomNumber } from '../../shared/OperationContextHelpers'
+import TextIO from '../../shared/TextIO'
 import { useTemplateState } from '../TemplateWrapper'
 
 import { useApplicationOperationState, useFullApplicationState } from './ApplicationWrapper'

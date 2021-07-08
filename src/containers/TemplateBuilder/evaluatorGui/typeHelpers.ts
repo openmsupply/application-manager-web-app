@@ -1,23 +1,38 @@
 import { EvaluatorNode } from '@openmsupply/expression-evaluator/lib/types'
+import { debug } from 'webpack'
 import {
   GetEvaluationType,
   EvaluationType,
   GetTypedEvaluationAsStringType,
   ConvertTypedEvaluationToBaseType,
   Operator,
+  NonGenericEvaluations,
+  NonGenericTypes,
 } from './types'
 
-const parseBuildObject = (evaluation: any, resultEvaluation: EvaluationType) => {
-  resultEvaluation.asBuildObject.properties = []
+const nonGenericEvaluations: NonGenericEvaluations = {
+  buildObject: {
+    toTyped: (evaluation: any, resultEvaluation: EvaluationType) => {
+      resultEvaluation.asBuildObjectOperator.properties = []
 
-  if (evaluation?.properties) {
-    resultEvaluation.asBuildObject.properties = evaluation?.properties.map((property: any) => ({
-      key: getTypedEvaluation(property?.key),
-      value: getTypedEvaluation(property?.value),
-    }))
-  }
+      if (evaluation?.properties) {
+        resultEvaluation.asBuildObjectOperator.properties = evaluation?.properties.map(
+          (property: any) => ({
+            key: getTypedEvaluation(property?.key),
+            value: getTypedEvaluation(property?.value),
+          })
+        )
+      }
 
-  return resultEvaluation
+      return resultEvaluation
+    },
+    toBaseType: (evaluation: EvaluationType) => ({
+      properties: evaluation.asBuildObjectOperator.properties.map((property) => ({
+        key: convertTypedEvaluationToBaseType(getTypedEvaluation(property.key)),
+        value: convertTypedEvaluationToBaseType(getTypedEvaluation(property.value)),
+      })),
+    }),
+  },
 }
 
 export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
@@ -31,7 +46,7 @@ export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
     asArray: [],
     asNull: null,
     asOperator: { operator: 'none', children: [] },
-    asBuildObject: { properties: [] },
+    asBuildObjectOperator: { properties: [] },
   }
 
   if (Array.isArray(evaluation)) {
@@ -64,11 +79,18 @@ export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
   if (evaluation.alreadyTyped) return evaluation as EvaluationType
 
   if (typeof evaluation.operator === 'string') {
+    const operator = String(evaluation.operator)
     resultEvaluation.type = 'operator'
     resultEvaluation.asOperator.operator = evaluation.operator
 
-    if (evaluation.operator === 'buildObject') {
-      return parseBuildObject(evaluation, resultEvaluation)
+    console.log(operator)
+    if (operator === 'buildObject') console.log('yow')
+
+    if (operator in nonGenericEvaluations) {
+      return nonGenericEvaluations[operator as NonGenericTypes].toTyped(
+        evaluation,
+        resultEvaluation
+      )
     }
 
     if (Array.isArray(evaluation.children)) {
@@ -122,13 +144,11 @@ export const convertTypedEvaluationToBaseType: ConvertTypedEvaluationToBaseType 
       })
       return arrayResult
     case 'operator':
-      if (evaluation.asOperator.operator === 'buildObject') {
+      const operator = evaluation.asOperator.operator
+      if (operator in nonGenericEvaluations) {
         return {
-          operator: 'buildObject',
-          properties: evaluation.asBuildObject.properties.map((property) => ({
-            key: convertTypedEvaluationToBaseType(getTypedEvaluation(property.key)),
-            value: convertTypedEvaluationToBaseType(getTypedEvaluation(property.value)),
-          })),
+          operator,
+          ...nonGenericEvaluations[operator as NonGenericTypes].toBaseType(evaluation),
         }
       }
       const operatorResult: {

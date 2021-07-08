@@ -6,6 +6,7 @@ import {
   FullAppllicationWrapper,
   ApplicationWrapper,
 } from './ApplicationWrapper'
+import Elements from './Elements'
 import FormWrapper from './FormWrapper'
 import Pages from './Pages'
 import Sections from './Sections'
@@ -66,8 +67,7 @@ const Form: React.FC = () => {
     <FormContext.Provider value={state}>
       <Sections />
       <Pages />
-      {/* <Pages/>
-    <Elements/> */}
+      <Elements />
     </FormContext.Provider>
   )
 }

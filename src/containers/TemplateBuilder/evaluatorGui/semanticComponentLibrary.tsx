@@ -1,88 +1,40 @@
-import React, { useEffect, useState } from 'react'
-import { Checkbox, Dropdown, Form, Icon, Input, Label, TextArea } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import { Header, Input } from 'semantic-ui-react'
+import CheckboxIO from '../shared/CheckboxIO'
+import { IconButton } from '../shared/components'
+import DropdownIO from '../shared/DropdownIO'
+import JsonIO from '../shared/JsonIO'
+import TextIO from '../shared/TextIO'
 import { ComponentLibraryType } from './types'
+
 // All 'sets' are done onBlur (loose focus), to avoid excessible evaluations (especially for api types)
 const ComponentLibrary: ComponentLibraryType = {
-  TextInput: ({ text, setText, title = '', disabled = false }) => {
-    const [innerValue, setInnerValue] = useState(text)
-
-    return (
-      <div className="evaluator-input ">
-        <Label className="key">{title}</Label>
-        <Input
-          value={innerValue}
-          disabled={disabled}
-          className="value"
-          size="small"
-          onChange={(_, { value }) => {
-            setInnerValue(value)
-          }}
-          // Dont' want to try and query api on every key change of query text
-          onBlur={() => setText(innerValue)}
-        />
-      </div>
-    )
-  },
-  ObjectInput: ({ object, setObject }) => {
-    const [innerValue, setInnerValue] = useState('')
-    const [errorMessage, setErrorMessage] = useState('')
-
-    console.log('here')
-    const checkAndUpdateState = (value: string) => {
-      try {
-        JSON.parse(value)
-        setErrorMessage('')
-      } catch (e) {
-        setErrorMessage('Invalid JSON')
-      }
-      setInnerValue(value)
-    }
-
-    const checkAndSetObject = (value: string) => {
-      try {
-        const object = JSON.parse(value)
-        setObject(object)
-        setErrorMessage('')
-        setInnerValue(JSON.stringify(object, null, '  '))
-      } catch (e) {
-        setErrorMessage('Invalid JSON')
-      }
-    }
-
-    useEffect(() => {
-      setInnerValue(JSON.stringify(object, null, ' '))
-    }, [])
-
-    return (
-      <Form className="evaluator-single-input ">
-        <TextArea
-          value={innerValue}
-          error={!!errorMessage}
-          helperText={errorMessage}
-          className="value"
-          rows={5}
-          onBlur={() => {
-            try {
-              checkAndSetObject(innerValue)
-            } catch (e) {}
-          }}
-          onChange={async (_, { value }) => {
-            checkAndUpdateState(String(value))
-          }}
-        />
-      </Form>
-    )
-  },
+  TextInput: ({ text, setText, title = '', disabled = false }) => (
+    <div className="long">
+      <TextIO
+        isPropUpdated={true}
+        title={title}
+        text={text}
+        setText={setText}
+        disabled={disabled}
+      />
+    </div>
+  ),
+  ObjectInput: ({ object, setObject }) => (
+    <div className="long">
+      <JsonIO label={''} object={object} isPropUpdated={true} setObject={setObject} />
+    </div>
+  ),
 
   NumberInput: ({ number, setNumber, title = '' }) => {
     const [innerValue, setInnerValue] = useState(String(number))
 
     return (
-      <div className="evaluator-input ">
-        <Label className="key">{title}</Label>
+      <div className="text-io-wrapper">
+        <div className="text-io-component key">{title}</div>
         <Input
           value={innerValue}
-          className="value"
+          className="text-io-component value"
           size="small"
           onChange={async (_, { value }) => {
             if (!value.match(/^[\d]+$/)) return
@@ -97,94 +49,20 @@ const ComponentLibrary: ComponentLibraryType = {
       </div>
     )
   },
-  Add: ({ onClick, title = '' }) => (
-    <div
-      className="clickable"
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderRadius: 7,
-        padding: 3,
-        background: '#E8E8E8',
-        margin: 3,
-      }}
-    >
-      {title && <Label style={{ whiteSpace: 'nowrap', margin: 0, marginRight: 2 }}>{title}</Label>}
-      <Icon name="add" onClick={onClick} />
-    </div>
+  Add: ({ onClick, title = '' }) => <IconButton name="add" title={title} onClick={onClick} />,
+  Remove: ({ onClick }) => <IconButton name="close" title="remove" onClick={onClick} />,
+  Selector: ({ selections, selected, setSelected, title }) => (
+    <DropdownIO
+      title={title}
+      isPropUpdated={true}
+      value={selected}
+      setValue={(selected) => setSelected(String(selected))}
+      options={selections}
+    />
   ),
-  Remove: ({ onClick }) => (
-    <div
-      className="clickable"
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderRadius: 7,
-        padding: 3,
-        background: '#E8E8E8',
-        margin: 3,
-      }}
-    >
-      <Label style={{ whiteSpace: 'nowrap', margin: 0, marginRight: 2 }}>Remove</Label>
-      <Icon name="delete" onClick={onClick} />
-    </div>
+  Checkbox: ({ checked, setChecked, title = '', disabled = false }) => (
+    <CheckboxIO title={title} value={checked} setValue={setChecked} disabled={disabled} />
   ),
-  Selector: ({ selections, selected, setSelected, title }) => {
-    const options = selections.map((selection, index) => ({
-      key: index,
-      value: selection,
-      text: selection,
-    }))
-
-    return (
-      <div className="evaluator-input">
-        <Label className="key">{title}</Label>
-        <Dropdown
-          className="value"
-          options={options}
-          selection
-          size="tiny"
-          value={selected}
-          onChange={(_, { value }) => {
-            setSelected(String(value))
-          }}
-        />
-      </div>
-    )
-  },
-  Checkbox: ({ checked, setChecked, title = '', disabled = false }) => {
-    const [innerValue, setInnerValue] = useState(checked)
-
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          borderRadius: 7,
-          padding: 3,
-          background: '#E8E8E8',
-        }}
-      >
-        {title && (
-          <Label style={{ whiteSpace: 'nowrap', margin: 0, marginRight: 2 }}>{title}</Label>
-        )}
-        <Checkbox
-          checked={innerValue}
-          toggle
-          disabled={disabled}
-          size="small"
-          onChange={() => {
-            const value = innerValue
-            setInnerValue(!value)
-            setChecked(!value)
-          }}
-        />
-      </div>
-    )
-  },
   Error: ({ error, info }) => (
     <div>
       {error}
@@ -192,51 +70,19 @@ const ComponentLibrary: ComponentLibraryType = {
     </div>
   ),
   Step: () => <div style={{ width: 20 }} />,
-  Label: ({ title }) => <Label style={{ margin: 3, padding: 10, fontSize: 14 }}>{title}</Label>,
+  Label: ({ title }) => (
+    <>
+      <div className="spacer-10" />
+      <Header as="h6" className="no-margin-no-padding">
+        {title}
+      </Header>
+    </>
+  ),
   OperatorContainer: ({ children }) => (
-    <div
-      className="evaluator-operator-container"
-      style={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        border: '2px solid rgba(0,0,0,0.2)',
-        borderRadius: 7,
-        margin: 2,
-        padding: 5,
-      }}
-    >
-      {children}
-    </div>
+    <div className="evaluator-operator-container">{children}</div>
   ),
-  FlexColumn: ({ children }) => (
-    <div
-      style={{
-        display: 'flex',
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-      }}
-    >
-      {children}
-    </div>
-  ),
-  FlexRow: ({ children }) => (
-    <div
-      style={{
-        display: 'flex',
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-      }}
-    >
-      {children}
-    </div>
-  ),
+  FlexColumn: ({ children }) => <div className="flex-column-start-start">{children}</div>,
+  FlexRow: ({ children }) => <div className="flex-row-start-center">{children}</div>,
 }
 
 export default ComponentLibrary

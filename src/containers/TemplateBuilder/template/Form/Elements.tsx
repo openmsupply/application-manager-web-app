@@ -1,311 +1,264 @@
-//   const [elementTemplateState, setElementTemplateState] = useState<{
-//     isSearching: boolean
-//     pluginCode: string
-//     options: {
-//       text: string
-//       key: number
-//       value?: number
-//       valueFull?: {
-//         category: TemplateElementCategory
-//         helpText: string
-//         parameters: object
-//         defaultValue: EvaluatorNode
-//         visibilityCondition: EvaluatorNode
-//         validationMessage: string
-//         isRequired: EvaluatorNode
-//         isEditable: EvaluatorNode
-//         validation: EvaluatorNode
-//       }
-//     }[]
-//   }>({
-//     isSearching: false,
-//     pluginCode: '',
-//     options: [],
-//   }
+import React, { useState } from 'react'
+import { Popup, Icon } from 'semantic-ui-react'
+import { PageElements } from '../../../../components'
+import { TemplateElement, TemplateElementCategory } from '../../../../utils/generated/graphql'
+import { ElementState } from '../../../../utils/types'
+import ButtonWithFallback from '../../shared/ButtonWidthFallback'
+import { IconButton } from '../../shared/components'
+import { useOperationState } from '../../shared/OperationContext'
+import { getRandomNumber } from '../../shared/OperationContextHelpers'
 
-//   const [updateState, setUpdateState] = useState<ElementUpdateState | null>(null)
+import { useTemplateState } from '../TemplateWrapper'
+import { useFullApplicationState } from './ApplicationWrapper'
+import ElementConfig from './ElementConfig'
+import { useFormState } from './Form'
+import { useFormStructureState } from './FormWrapper'
+import { MoveElement, MoveSection } from './moveStructure'
 
-//   const { data: elementSearchData } = useGetTemplateElementsByPluginQuery({
-//     skip: !elementTemplateState.isSearching,
-//     variables: { pluginCode: elementTemplateState.pluginCode },
-//   })
+const disabledMessage = 'Can only edit draft procedure, please make it draft or duplicate'
 
-//   useEffect(() => {
-//     const newState = { isSearching: false }
-//     if (
-//       elementTemplateState.isSearching &&
-//       (!elementSearchData?.templateElements?.nodes ||
-//         elementSearchData.templateElements?.nodes.length === 0)
-//     )
-//       return setElementTemplateState({
-//         ...elementTemplateState,
-//         ...newState,
-//         options: [{ text: 'No existing matching template elements found', key: -2 }],
-//       })
+type SetElementUpdateState = (elementUpdateState: TemplateElement | null) => void
 
-//     if (!elementSearchData?.templateElements?.nodes) return
+const Elements: React.FC = () => {
+  const { selectedPageNumber, selectedSectionId } = useFormState()
+  const { structure } = useFullApplicationState()
+  const {
+    template: { isDraft },
+  } = useTemplateState()
+  const { moveStructure } = useFormStructureState()
+  const { updateTemplateSection } = useOperationState()
+  const [elementUpdateState, setElementUpdateState] = useState<TemplateElement | null>(null)
 
-//     const newOptions = elementSearchData.templateElements?.nodes.map((templateElement) => ({
-//       text: `${templateElement?.templateCode} - ${templateElement?.code} - ${templateElement?.title}`,
-//       key: templateElement?.id || 0,
-//       value: templateElement?.id || 0,
-//       valueFull: {
-//         category: templateElement?.category as TemplateElementCategory,
-//         helpText: templateElement?.helpText || '',
-//         parameters: templateElement?.parameters || {},
-//         defaultValue: templateElement?.defaultValue || '',
-//         visibilityCondition: templateElement?.visibilityCondition || true,
-//         validationMessage: templateElement?.validationMessage || '',
-//         isRequired: templateElement?.isRequired || false,
-//         isEditable: templateElement?.isEditable || true,
-//         validation: templateElement?.validation || true,
-//       },
-//     }))
+  if (selectedPageNumber === -1 || selectedSectionId === -1) return null
+  const selectedSection = Object.values(structure.sections).find(
+    (section) => section.details.id === selectedSectionId
+  )
+  if (!selectedSection) return null
+  const selectedPage = selectedSection.pages[selectedPageNumber]
+  if (!selectedPage) return null
+  const currentSection = moveStructure.sections[selectedSectionId]
+  const currentPage = currentSection.pages[selectedPageNumber]
 
-//     setElementTemplateState({
-//       ...elementTemplateState,
-//       ...newState,
-//       options: newOptions,
-//     })
-//   }, [elementSearchData])
+  const createElement = () => {
+    const thisPageElements = currentPage.elements
+    const lastElementIndex = thisPageElements[thisPageElements.length - 1]?.index || 0
+    const elementsAfterLastIndex = currentSection.allElements.filter(
+      ({ index }) => index > lastElementIndex
+    )
 
-//   const newElement = {
-//     title: 'New Element',
-//     category: TemplateElementCategory.Question,
-//     elementTypePluginCode: 'shortText',
-//     visibilityCondition: true,
-//     isRequired: false,
-//     isEditable: true,
-//     validation: true,
-//     validationMessage: 'no validation',
-//     helpText: '',
-//     parameters: { label: 'New Element' },
-//     defaultValue: {},
-//   }
+    updateTemplateSection(currentSection.id, {
+      templateElementsUsingId: {
+        updateById: elementsAfterLastIndex.map(({ id, index }) => ({
+          id,
+          patch: { index: index + 1 },
+        })),
+        create: [getNewElement(structure.info.id, lastElementIndex + 1)],
+      },
+    })
+  }
 
-//   const getCurrentPageElements = (structure: FullStructure, section: string, page: number) => {
-//     return structure?.sections[section]?.pages[page]?.state || []
-//   }
+  return (
+    <div
+      key={`${selectedSectionId}_${selectedPageNumber}`}
+      className="builder-page-elements-wrapper"
+    >
+      <PageElements
+        canEdit={true}
+        renderConfigElement={(element: ElementState) => (
+          <ElementConfigOptions
+            elementId={element.id}
+            isVisible={element.isVisible}
+            setElementUpdatState={setElementUpdateState}
+          />
+        )}
+        elements={selectedPage.state}
+        responsesByCode={structure.responsesByCode || {}}
+        applicationData={structure.info}
+      />
+      <ButtonWithFallback
+        disabled={!isDraft}
+        disabledMessage={disabledMessage}
+        title="New Element"
+        onClick={createElement}
+      />
+      <ElementConfig element={elementUpdateState} setElement={setElementUpdateState} />
+    </div>
+  )
+}
 
-// const ElementMove: React.FC<{
-//   moveStructure: MoveStructure
-//   elementId: number
+const ElementConfigOptions: React.FC<{
+  elementId: number
+  isVisible: boolean
+  setElementUpdatState: SetElementUpdateState
+}> = ({ elementId, isVisible, setElementUpdatState }) => {
+  const {
+    sections,
+    template: { isDraft },
+  } = useTemplateState()
+  const currentElement =
+    sections
+      .map((section) => section.templateElementsBySectionId?.nodes || [])
+      .flat()
+      .find((element) => element?.id === elementId) || null
 
-//   templateId: number
-//   setError: (error: Error) => void
-//   pageNumber: number
-//   isEditable: boolean
-// }> = ({ elementId, moveStructure, isEditable, setError }) => {
-//   const [updateSection] = useUpdateTemplateSectionMutation()
+  if (!currentElement) return null
 
-//   const swapElement = async (nextElement: MoveElement | null) => {
-//     const thisElement = moveStructure.elements[elementId]
-//     if (!nextElement) return
-//     if (!thisElement) return
+  return (
+    <div className="element-config-options-container" key={elementId}>
+      <ElementMove elementId={elementId} />
+      <IconButton
+        disabled={!isDraft}
+        disabledMessage={disabledMessage}
+        name="setting"
+        onClick={() => setElementUpdatState(currentElement)}
+      />
+      {!isVisible && (
+        <Popup content="Visibility criteria did not match" trigger={<Icon name="eye slash" />} />
+      )}
+    </div>
+  )
+}
 
-//     await mutate(
-//       () =>
-//         updateSection({
-//           variables: {
-//             id: moveStructure.elements[elementId].section.id,
-//             sectionPatch: {
-//               templateElementsUsingId: {
-//                 updateById: [
-//                   { id: nextElement.id, patch: { index: thisElement.index } },
-//                   { id: thisElement.id, patch: { index: nextElement.index } },
-//                 ],
-//               },
-//             },
-//           },
-//         }),
-//       setError
-//     )
-//   }
+const ElementMove: React.FC<{ elementId: number }> = ({ elementId }) => {
+  const { updateTemplateSection } = useOperationState()
+  const { selectedSectionId, selectedPageNumber } = useFormState()
+  const { moveStructure } = useFormStructureState()
+  const {
+    template: { isDraft },
+  } = useTemplateState()
 
-//   const moveToSection = async (section: MoveSection | null) => {
-//     if (!section) return
-//     const currentElement = moveStructure.elements[elementId]
-//     const lastIndex =
-//       Object.values(section.pages)
-//         .find(({ isLast }) => isLast)
-//         ?.elements?.find(({ isLastInPage }) => isLastInPage)?.index || 0
+  const currentElement = moveStructure.elements[elementId]
+  if (selectedPageNumber === -1 || selectedSectionId === -1) return null
 
-//     const result = await mutate(
-//       () =>
-//         updateSection({
-//           variables: {
-//             id: moveStructure.elements[elementId].section.id,
-//             sectionPatch: {
-//               templateElementsUsingId: {
-//                 updateById: [{ id: currentElement.id, patch: { index: lastIndex + 1 } }],
-//               },
-//             },
-//           },
-//         }),
-//       setError
-//     )
+  const currentSection = moveStructure.sections[selectedSectionId]
+  const currentPage = currentSection.pages[selectedPageNumber]
 
-//     if (!result) return
+  if (!currentPage) return null
 
-//     await mutate(
-//       () =>
-//         updateSection({
-//           variables: {
-//             id: section.id,
-//             sectionPatch: {
-//               templateElementsUsingId: {
-//                 connectById: [{ id: currentElement.id }],
-//               },
-//             },
-//           },
-//         }),
-//       setError
-//     )
-//     if (moveStructure.elements[elementId].page.isLast) {
-//     }
-//   }
+  const swapElement = async (nextElement: MoveElement | null) => {
+    if (!nextElement) return
+    if (!currentElement) return
 
-//   if (!moveStructure?.elements[elementId]?.section) return null
+    updateTemplateSection(selectedSectionId, {
+      templateElementsUsingId: {
+        updateById: [
+          { id: nextElement.id, patch: { index: currentElement.index } },
+          { id: elementId, patch: { index: nextElement.index } },
+        ],
+      },
+    })
+  }
 
-//   return (
-//     <>
-//       {(!moveStructure.elements[elementId].section.isLast ||
-//         !moveStructure.elements[elementId].page.isLast) && (
-//         <Icon
-//           name="angle double down"
-//           onClick={async () => {
-//             if (!isEditable) return
+  const moveToSection = async (section: MoveSection | null) => {
+    if (!section) return
 
-//             if (moveStructure.elements[elementId].page.isLast) {
-//               moveToSection(moveStructure.elements[elementId].section.nextSection)
-//             } else {
-//               const thisPageNumber = moveStructure.elements[elementId].page.pageNumber
-//               const nextPage = moveStructure.elements[elementId].section.pages[thisPageNumber + 1]
-//               const pageBreak = nextPage.startPageBreaks[0]
-//               const pageBreakIndex = pageBreak.index
+    const lastIndex =
+      Object.values(section.pages)
+        .find(({ isLast }) => isLast)
+        ?.elements?.find(({ isLastInPage }) => isLastInPage)?.index || 0
 
-//               const currentElement = moveStructure.elements[elementId]
-//               const currentIndex = currentElement.index
-//               const elementsBetweenPageBreak = moveStructure.elements[
-//                 elementId
-//               ].section.elements.filter(
-//                 ({ index }) => index < pageBreakIndex && index > currentIndex
-//               )
+    const result = await updateTemplateSection(selectedSectionId, {
+      templateElementsUsingId: {
+        updateById: [{ id: elementId, patch: { index: lastIndex + 1 } }],
+      },
+    })
 
-//               await mutate(
-//                 () =>
-//                   updateSection({
-//                     variables: {
-//                       id: moveStructure.elements[elementId].section.id,
-//                       sectionPatch: {
-//                         templateElementsUsingId: {
-//                           updateById: [
-//                             { id: currentElement.id, patch: { index: pageBreakIndex } },
-//                             { id: pageBreak.id, patch: { index: pageBreakIndex - 1 } },
-//                             ...elementsBetweenPageBreak.map(({ id, index }) => ({
-//                               id,
-//                               patch: { index: index - 1 },
-//                             })),
-//                           ],
-//                         },
-//                       },
-//                     },
-//                   }),
-//                 setError
-//               )
-//             }
-//           }}
-//         />
-//       )}
-//       {(!moveStructure.elements[elementId].section.isFirst ||
-//         !moveStructure.elements[elementId].page.isFirst) && (
-//         <Icon
-//           name="angle double up"
-//           onClick={async () => {
-//             if (!isEditable) return
+    if (!result) return
 
-//             if (moveStructure.elements[elementId].page.isFirst) {
-//               moveToSection(moveStructure.elements[elementId].section.previousSection)
-//             } else {
-//               const thisPageNumber = moveStructure.elements[elementId].page.pageNumber
-//               const previousPage =
-//                 moveStructure.elements[elementId].section.pages[thisPageNumber - 1]
-//               const pageBreak = previousPage.endPageBreaks[0]
-//               const pageBreakIndex = pageBreak.index
+    updateTemplateSection(section.id, {
+      templateElementsUsingId: {
+        connectById: [{ id: elementId }],
+      },
+    })
+  }
 
-//               const currentElement = moveStructure.elements[elementId]
-//               const currentIndex = currentElement.index
-//               const elementsBetweenPageBreak = moveStructure.elements[
-//                 elementId
-//               ].section.elements.filter(
-//                 ({ index }) => index > pageBreakIndex && index < currentIndex
-//               )
+  const doubleMove = (forward = true) => {
+    console.log('yow')
+    if ((!forward && currentPage.isLast) || (forward && currentPage.isFirst)) {
+      moveToSection(forward ? currentSection.previousSection : currentSection.nextSection)
+    } else {
+      const toIndex = forward
+        ? currentPage.startPageBreaks[0]?.index || 1
+        : currentPage.endPageBreaks[currentPage.endPageBreaks.length - 1].index + 1
 
-//               await mutate(
-//                 () =>
-//                   updateSection({
-//                     variables: {
-//                       id: moveStructure.elements[elementId].section.id,
-//                       sectionPatch: {
-//                         templateElementsUsingId: {
-//                           updateById: [
-//                             { id: currentElement.id, patch: { index: pageBreakIndex } },
-//                             { id: pageBreak.id, patch: { index: pageBreakIndex + 1 } },
-//                             ...elementsBetweenPageBreak.map(({ id, index }) => ({
-//                               id,
-//                               patch: { index: index + 1 },
-//                             })),
-//                           ],
-//                         },
-//                       },
-//                     },
-//                   }),
-//                 setError
-//               )
-//             }
-//           }}
-//         />
-//       )}
-//       {!moveStructure.elements[elementId].isFirstInPage && (
-//         <Icon
-//           name="angle up"
-//           onClick={async () => {
-//             if (!isEditable) return
+      const elementsToMove = currentSection.allElements.filter(
+        ({ id, index }) => id !== elementId && toIndex <= index
+      )
 
-//             swapElement(moveStructure.elements[elementId].previousElement)
-//           }}
-//         />
-//       )}
-//       {!moveStructure.elements[elementId].isLastInPage && (
-//         <Icon
-//           name="angle down"
-//           onClick={
-//             async () => {
-//               if (!isEditable) return
+      updateTemplateSection(selectedSectionId, {
+        templateElementsUsingId: {
+          updateById: [
+            { id: elementId, patch: { index: toIndex } },
+            ...elementsToMove.map(({ id, index }) => ({
+              id,
+              patch: { index: index + 1 },
+            })),
+          ],
+        },
+      })
+    }
+  }
 
-//               swapElement(moveStructure.elements[elementId].nextElement)
-//             }
-//             // movePageInSection(pageNumber + 1, pageNumber)
-//           }
-//         />
-//       )}
-//     </>
-//   )
-// }
+  return (
+    <>
+      {!(currentSection.isFirst && currentPage.isFirst) && (
+        <IconButton
+          disabled={!isDraft}
+          disabledMessage={disabledMessage}
+          name="angle double up"
+          onClick={() => doubleMove(true)}
+        />
+      )}
+      {!(currentSection.isLast && currentPage.isLast) && (
+        <IconButton
+          disabled={!isDraft}
+          disabledMessage={disabledMessage}
+          name="angle double down"
+          onClick={() => doubleMove(false)}
+        />
+      )}
 
-// type ElementUpdateState = {
-//   code: string
-//   index: number
-//   title: string
-//   category: TemplateElementCategory
-//   elementTypePluginCode: string
-//   visibilityCondition: EvaluatorNode
-//   isRequired: EvaluatorNode
-//   isEditable: EvaluatorNode
-//   validation: EvaluatorNode
-//   validationMessage: string
-//   helpText: string
-//   parameters: object
-//   defaultValue: EvaluatorNode
-//   id: number
-// }
+      {!currentElement.isFirstInPage && (
+        <IconButton
+          disabled={!isDraft}
+          disabledMessage={disabledMessage}
+          name="angle up"
+          onClick={() => {
+            swapElement(moveStructure.elements[elementId].previousElement)
+          }}
+        />
+      )}
+      {!currentElement.isLastInPage && (
+        <IconButton
+          disabled={!isDraft}
+          disabledMessage={disabledMessage}
+          name="angle down"
+          onClick={async () => {
+            swapElement(moveStructure.elements[elementId].nextElement)
+          }}
+        />
+      )}
+    </>
+  )
+}
+
+const getNewElement = (applicationId: number, index: number) => ({
+  title: 'New Element',
+  category: TemplateElementCategory.Question,
+  elementTypePluginCode: 'shortText',
+  visibilityCondition: true,
+  code: `newElementCode_${getRandomNumber()}`,
+  isRequired: false,
+  isEditable: true,
+  validation: true,
+  index,
+  validationMessage: 'no validation',
+  helpText: '',
+  parameters: { label: 'New Element' },
+  defaultValue: null,
+  applicationResponsesUsingId: {
+    create: [{ applicationId }],
+  },
+})
+
+export default Elements

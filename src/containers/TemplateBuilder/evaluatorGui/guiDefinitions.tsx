@@ -406,7 +406,7 @@ export const guis: GuisType = [
     }),
     match: (typedEvaluation) => typedEvaluation.asOperator.operator === 'buildObject',
     render: (evaluation, setEvaluation, ComponentLibrary, evaluatorParameters) => {
-      const propertiesToBuild = evaluation.asBuildObject.properties
+      const propertiesToBuild = evaluation.asBuildObjectOperator.properties
       const newProperty = {
         key: getTypedEvaluation('keyToBuild'),
         value: getTypedEvaluation('valueToBuild'),

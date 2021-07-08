@@ -2,9 +2,9 @@ import React, { ReactNode, useRef } from 'react'
 import { useState } from 'react'
 import { Button, Header, Icon, Table } from 'semantic-ui-react'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { TextIO } from './shared/components'
 import OperationContext, { useOperationState } from './shared/OperationContext'
 import { snapshotFilesUrl } from './shared/OperationContextHelpers'
+import TextIO from './shared/TextIO'
 import useGetTemplates, { Template } from './useGetTemplates'
 
 type CellPropsTemplate = Template & { numberOfTemplates?: number }

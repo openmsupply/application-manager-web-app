@@ -11,22 +11,16 @@ import {
 } from './typeHelpers'
 import { EvaluationType, ParseAndRenderEvaluationType, RenderEvaluationElementType } from './types'
 
-export const parseAndRenderEvaluation: ParseAndRenderEvaluationType = (
+export const renderEvaluation: ParseAndRenderEvaluationType = (
   evaluation,
   setEvaluation,
   ComponentLibrary,
   evaluatorParamers
 ) => {
-  let _evaluation = evaluation
-
-  try {
-    _evaluation = JSON.parse(_evaluation)
-  } catch (e) {}
-
   const _setEvaluation = (typedEvaluation: EvaluationType) =>
-    setEvaluation(getTypedEvaluationAsString(typedEvaluation))
+    setEvaluation(convertTypedEvaluationToBaseType(typedEvaluation))
 
-  return renderEvaluationElement(_evaluation, _setEvaluation, ComponentLibrary, evaluatorParamers)
+  return renderEvaluationElement(evaluation, _setEvaluation, ComponentLibrary, evaluatorParamers)
 }
 
 const Evaluate: React.FC<{ typedEvaluation: EvaluationType; evaluatorParamers?: IParameters }> = ({

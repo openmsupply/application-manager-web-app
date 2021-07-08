@@ -76,10 +76,19 @@ a:hover {
   justify-content: center;
 }
 
-.flex-row-start-center {
+.flex-row-start {
   .flex-row();
   justify-content: flex-start;
+}
+
+.flex-row-start-center {
+  .flex-row-start();
   align-items: center;
+}
+
+.flex-row-start-start {
+  .flex-row-start();
+  align-items: flex-start;
 }
 
 .flex-row-center-center {
@@ -106,9 +115,28 @@ a:hover {
   justify-content: center;
 }
 
-.flex-column-center-start {
+.flex-column-start {
   .flex-column();
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+.flex-column-center-start {
+  .flex-column-center();
+  align-items: flex-start;
+}
+
+.flex-column-start-center {
+  .flex-column-center();
+  align-items: flex-start;
+}
+
+.flex-column-center-center {
+  .flex-column-center();
+  align-items: center;
+}
+
+.flex-column-start-start {
+  .flex-column-start();
   align-items: flex-start;
 }
 
@@ -1389,6 +1417,11 @@ a:hover {
     padding-right:10px;
   }
 
+  &.checkbox {
+    border-radius: @borderRadius;
+    background-color: @indicatorColor;
+  }
+
   input,
   textarea {
     border: none !important;
@@ -1409,11 +1442,17 @@ a:hover {
   }
 
   .value {
-    border-start-start-radius: 0px;
-    border-end-start-radius: 0px;
-    background-color: @surfacesWhite;
+    border-start-start-radius: 0px !important;
+    border-end-start-radius: 0px !important;
+    background-color: @surfacesWhite !important;
   }
+}
 
+.from-existing-dropdown {
+  font-size: 12px !important;
+  border: 2px solid @indicatorColor !important;
+  border-radius: @borderRadius !important;
+  margin: 2px !important;
 }
 
 .icon-button {
@@ -1500,6 +1539,66 @@ a:hover {
   .header {
     color: @surfacesWhite !important;
   }
+}
+
+.builder-page-elements-wrapper {
+  background: white;
+  padding: 10px;
+  margin: 10px;
+  .element-config-options-container {
+    .flex-row();
+    align-items: flex-start;
+    justify-content: flex-end;
+    width:100px;
+    margin-right:30px;
+    margin: 5px;
+  }
+  .form-element-wrapper {
+    justify-content: flex-start !important;
+  }
+}
+
+.evaluation-container {
+  border-radius: @borderRadius;
+  border: 1px solid @indicatorColor;
+  padding: 2px;
+  padding-left:5px;
+  padding-right:5px;
+  margin: 2px;
+  .evaluation-container-title {
+      .flex-row-center-center();
+  }
+  .evaluation-container-content {
+    .flex-row() !important;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+.element-edit {
+  width: 90% !important;
+
+  .element-edit-container {
+    .flex-column-center-center();
+    padding: 10px;
+  } 
+  .element-edit-info {
+    background-color: @surfacesWhite !important;
+  }
+}
+
+.object-properties-container {
+  .flex-column-start-center();
+  margin-left:30px;
+}
+
+.evaluator-operator-container {
+  .flex-column-start-start();
+  padding: 5px;
+  margin:2px;
+  border-radius: @borderRadius;
+  border: 2px solid rgba(0,0,0,0.2);
+  background-color: rgba(50, 252, 50, 0.01);
 }
 
 // end new
@@ -1607,9 +1706,7 @@ a:hover {
     }
 }
 
-.evaluator-operator-container {
-  background-color: rgba(50, 252, 50, 0.01);
-}
+
 
 .evaluator-input {
   .flex-row();
@@ -1687,10 +1784,7 @@ a:hover {
 .element-edit-text-input {
   .flex-row();
 }
-.evaluation-container-title {
-  .flex-row();
-  align-items: center;
-}
+
 .filter-selection {
   .flex-row();
   align-items: center;
@@ -1764,9 +1858,7 @@ a:hover {
     margin: 5px;
   }
 }
-.element-edit-modal {
-  width: 90% !important;
-}
+
 .element-code-edit {
   .input {
     width: 300px !important;
@@ -1786,17 +1878,7 @@ a:hover {
   align-items: center;
 }
 
-.element-update-container {
-  .flex-column();
-  align-items: center;
-  padding: 5px;
-  input {
-    width: 500px !important;
-  }
-  textarea {
-    width: 500px !important;
-  }
-}
+
 
 .section-edit {
  .flex-row();
@@ -1867,25 +1949,7 @@ a:hover {
     width: 200px !important;
   }
 }
-.config-wrapper {
-  background: white;
-  padding: 10px;
-  margin: 10px;
-  .config-container {
-    .flex-row();
-    align-items: flex-start;
-    justify-content: flex-end;
-    width:100px;
-    margin-right:30px;
 
-    .icon {
-      .clickable();
-    }
-  }
-  .form-element-wrapper {
-    justify-content: flex-start !important;
-  }
-}
 
 .template-elment-settings {
   .clickable();

@@ -26,6 +26,7 @@ type MoveSection = {
   isLast: boolean
   lastElementIndex: number
   index: number
+  allElements: MoveElement[]
   elements: MoveElement[]
   nextSection: MoveSection | null
   previousSection: MoveSection | null
@@ -58,6 +59,7 @@ const getMoveStructure = (templateInfo: FullTemplateFragment) => {
       previousSection,
       elements: [],
       nextSection: null,
+      allElements: [],
       isLast: templateSections.length - 1 === index,
       lastElementIndex: 0,
     }
@@ -108,6 +110,8 @@ const getMoveStructure = (templateInfo: FullTemplateFragment) => {
         nextElement: null,
         section,
       }
+
+      section.allElements.push(element)
 
       if (isPageBreak) {
         if (previousElement) previousElement.isLastInPage = true

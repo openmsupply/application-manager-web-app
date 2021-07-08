@@ -4,8 +4,9 @@ import {
   TemplateStatus,
   useGetTeplatesAvailableForCodeQuery,
 } from '../../../../utils/generated/graphql'
-import { ButtonWithFallback, TextIO } from '../../shared/components'
+import ButtonWithFallback from '../../shared/ButtonWidthFallback'
 import { useOperationState } from '../../shared/OperationContext'
+import TextIO from '../../shared/TextIO'
 import { useTemplateState } from '../TemplateWrapper'
 import Category from './Categories'
 import Filters from './Filters'

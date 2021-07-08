@@ -15,13 +15,13 @@ import {
   useGetFullTemplateInfoQuery,
 } from '../../../utils/generated/graphql'
 import { useRouter } from '../../../utils/hooks/useRouter'
-import { TextIO } from '../shared/components'
 import OperationContext from '../shared/OperationContext'
+import TextIO from '../shared/TextIO'
 
-import Actions from './Actions'
+// import Actions from './Actions'
 import Form from './Form/Form'
 import General from './General/General'
-import Permissions from './Permissions'
+// import Permissions from './Permissions'
 
 export type TemplateInfo = GetFullTemplateInfoQuery['template']
 
@@ -36,16 +36,16 @@ const tabs = [
     title: 'Form',
     render: () => <Form />,
   },
-  {
-    route: 'permissions',
-    title: 'Permissions',
-    render: (templateInfo: TemplateInfo) => <Permissions templateInfo={templateInfo} />,
-  },
-  {
-    route: 'actions',
-    title: 'Actions',
-    render: (templateInfo: TemplateInfo) => <Actions templateInfo={templateInfo} />,
-  },
+  // {
+  //   route: 'permissions',
+  //   title: 'Permissions',
+  //   render: () => <Permissions templateInfo={templateInfo} />,
+  // },
+  // {
+  //   route: 'actions',
+  //   title: 'Actions',
+  //   render: () => <Actions templateInfo={templateInfo} />,
+  // },
 ]
 
 const TemplateContainer: React.FC = () => {
@@ -86,7 +86,7 @@ const TemplateContainer: React.FC = () => {
             </div>
           ))}
         </div>
-        {selected.render(templateInfo)}
+        {selected.render()}
       </div>
     </OperationContext>
   )

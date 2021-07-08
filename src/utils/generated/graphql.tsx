@@ -27414,31 +27414,6 @@ export type UpdateTemplateMutation = (
   )> }
 );
 
-export type UpdateTemplateElementMutationVariables = Exact<{
-  id: Scalars['Int'];
-  templateElementPatch: TemplateElementPatch;
-}>;
-
-
-export type UpdateTemplateElementMutation = (
-  { __typename: 'Mutation' }
-  & { updateTemplateElement?: Maybe<(
-    { __typename?: 'UpdateTemplateElementPayload' }
-    & { templateElement?: Maybe<(
-      { __typename?: 'TemplateElement' }
-      & Pick<TemplateElement, 'id' | 'category' | 'code' | 'defaultValue' | 'elementTypePluginCode' | 'helpText' | 'index' | 'isEditable' | 'isRequired' | 'parameters' | 'sectionId' | 'templateCode' | 'templateVersion' | 'title' | 'validation' | 'validationMessage' | 'visibilityCondition'>
-      & { section?: Maybe<(
-        { __typename?: 'TemplateSection' }
-        & Pick<TemplateSection, 'id'>
-        & { template?: Maybe<(
-          { __typename?: 'Template' }
-          & Pick<Template, 'id'>
-        )> }
-      )> }
-    )> }
-  )> }
-);
-
 export type UpdateTemplateFilterJoinMutationVariables = Exact<{
   id: Scalars['Int'];
   filterJoinPatch: TemplateFilterJoinPatch;
@@ -28878,64 +28853,6 @@ export function useUpdateTemplateMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateTemplateMutationHookResult = ReturnType<typeof useUpdateTemplateMutation>;
 export type UpdateTemplateMutationResult = Apollo.MutationResult<UpdateTemplateMutation>;
 export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateMutation, UpdateTemplateMutationVariables>;
-export const UpdateTemplateElementDocument = gql`
-    mutation updateTemplateElement($id: Int!, $templateElementPatch: TemplateElementPatch!) {
-  __typename
-  updateTemplateElement(input: {patch: $templateElementPatch, id: $id}) {
-    templateElement {
-      id
-      category
-      code
-      defaultValue
-      elementTypePluginCode
-      helpText
-      index
-      isEditable
-      isRequired
-      parameters
-      sectionId
-      templateCode
-      templateVersion
-      title
-      validation
-      validationMessage
-      visibilityCondition
-      section {
-        id
-        template {
-          id
-        }
-      }
-    }
-  }
-}
-    `;
-export type UpdateTemplateElementMutationFn = Apollo.MutationFunction<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>;
-
-/**
- * __useUpdateTemplateElementMutation__
- *
- * To run a mutation, you first call `useUpdateTemplateElementMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateTemplateElementMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateTemplateElementMutation, { data, loading, error }] = useUpdateTemplateElementMutation({
- *   variables: {
- *      id: // value for 'id'
- *      templateElementPatch: // value for 'templateElementPatch'
- *   },
- * });
- */
-export function useUpdateTemplateElementMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>) {
-        return Apollo.useMutation<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>(UpdateTemplateElementDocument, baseOptions);
-      }
-export type UpdateTemplateElementMutationHookResult = ReturnType<typeof useUpdateTemplateElementMutation>;
-export type UpdateTemplateElementMutationResult = Apollo.MutationResult<UpdateTemplateElementMutation>;
-export type UpdateTemplateElementMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateElementMutation, UpdateTemplateElementMutationVariables>;
 export const UpdateTemplateFilterJoinDocument = gql`
     mutation updateTemplateFilterJoin($id: Int!, $filterJoinPatch: TemplateFilterJoinPatch!) {
   updateTemplateFilterJoin(input: {patch: $filterJoinPatch, id: $id}) {

@@ -90,8 +90,17 @@ export type EvaluationType = {
   asArray: EvaluationType[]
   asNull: null
   asOperator: OperatorType
-  asBuildObject: {
+  asBuildObjectOperator: {
     properties: { key: EvaluationType; value: EvaluationType }[]
+  }
+}
+
+export type NonGenericTypes = 'buildObject'
+
+export type NonGenericEvaluations = {
+  [operator in NonGenericTypes]: {
+    toTyped: (evaluation: any, resultEvaluation: EvaluationType) => EvaluationType
+    toBaseType: (evaluation: EvaluationType) => object
   }
 }
 
@@ -105,8 +114,8 @@ export type RenderEvaluationElementType = (
 ) => React.ReactNode
 
 export type ParseAndRenderEvaluationType = (
-  evaluation: string,
-  setEvaluation: (evaluation: string) => void,
+  evaluation: EvaluatorNode,
+  setEvaluation: (evaluation: EvaluatorNode) => void,
   ComponentLibrary: ComponentLibraryType,
   evaluatorParameters: IParameters
 ) => React.ReactNode
