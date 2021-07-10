@@ -48,7 +48,7 @@ const Category: React.FC<{}> = () => {
     const canRenderEdit = selectedCategory.id !== noCategory.id
     return (
       <>
-        <Icon className="clickable" name="add" onClick={() => setUpdateState(newCategory)} />
+        <Icon className="clickable" name="add square" onClick={() => setUpdateState(newCategory)} />
         {canRenderEdit && (
           <Icon
             className="clickable"

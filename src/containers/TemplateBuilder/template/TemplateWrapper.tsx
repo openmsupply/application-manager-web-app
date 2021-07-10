@@ -10,7 +10,9 @@ import {
   TemplateCategory,
   TemplateElement,
   TemplateFilterJoin,
+  TemplatePermission,
   TemplateSection,
+  TemplateStage,
   TemplateStatus,
   useGetFullTemplateInfoQuery,
 } from '../../../utils/generated/graphql'
@@ -21,7 +23,7 @@ import TextIO from '../shared/TextIO'
 // import Actions from './Actions'
 import Form from './Form/Form'
 import General from './General/General'
-// import Permissions from './Permissions'
+import Permissions from './Permissions/Permissions'
 
 export type TemplateInfo = GetFullTemplateInfoQuery['template']
 
@@ -36,17 +38,19 @@ const tabs = [
     title: 'Form',
     render: () => <Form />,
   },
-  // {
-  //   route: 'permissions',
-  //   title: 'Permissions',
-  //   render: () => <Permissions templateInfo={templateInfo} />,
-  // },
+  {
+    route: 'permissions',
+    title: 'Permissions',
+    render: () => <Permissions />,
+  },
   // {
   //   route: 'actions',
   //   title: 'Actions',
   //   render: () => <Actions templateInfo={templateInfo} />,
   // },
 ]
+
+export const disabledMessage = 'Can only edit draft procedure, please make it draft or duplicate'
 
 const TemplateContainer: React.FC = () => {
   const {
@@ -108,6 +112,8 @@ type TemplateContextState = {
   templateFilterJoins: TemplateFilterJoin[]
   allElements: TemplateElement[]
   fromQuery?: FullTemplateFragment
+  templatePermissions: TemplatePermission[]
+  templateStages: TemplateStage[]
 }
 
 const defaultTemplateContextState: TemplateContextState = {
@@ -124,6 +130,8 @@ const defaultTemplateContextState: TemplateContextState = {
   sections: [],
   allElements: [],
   templateFilterJoins: [],
+  templatePermissions: [],
+  templateStages: [],
 }
 
 const Context = createContext<TemplateContextState>(defaultTemplateContextState)
@@ -163,6 +171,8 @@ const TemplateWrapper: React.FC = () => {
         allElements,
         refetch,
         templateFilterJoins: (template?.templateFilterJoins?.nodes || []) as TemplateFilterJoin[],
+        templatePermissions: (template?.templatePermissions?.nodes || []) as TemplatePermission[],
+        templateStages: (template?.templateStages?.nodes || []) as TemplateStage[],
       })
       setFirstLoaded(true)
     }

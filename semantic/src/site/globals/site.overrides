@@ -153,6 +153,8 @@ a:hover {
   margin:0px !important;
 }
 
+
+
 /*--------------------------------
    Login page
 ---------------------------------*/
@@ -1400,11 +1402,11 @@ a:hover {
 
 @indicatorColor: #E8E8E8;
 
-.text-io-wrapper {
+.io-wrapper {
   .flex-row();
   align-items: stretch;
   margin: 2px;
-  .text-io-component  {
+  .io-component  {
     flex-grow: 1;
     margin: 0px;
     text-align: center;
@@ -1594,11 +1596,34 @@ a:hover {
 
 .evaluator-operator-container {
   .flex-column-start-start();
+  background: rgba(0,0,0, 0.03);
   padding: 5px;
   margin:2px;
   border-radius: @borderRadius;
   border: 2px solid rgba(0,0,0,0.2);
   background-color: rgba(50, 252, 50, 0.01);
+}
+
+.config-container {
+  .flex-column-start-start();
+  padding: 10px;
+  border-radius: @borderRadius;
+  margin: 5px;
+}
+
+.stage-config-container {
+  .config-container();
+  background-color: @surfacesWhite;
+}
+
+.review-level-config-container {
+  .config-container();
+  background-color: rgba(0,0,0, 0.03);
+}
+
+.permission-config-container {
+  .config-container();
+  background-color: @surfacesWhite
 }
 
 // end new

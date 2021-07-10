@@ -9,7 +9,7 @@ import Evaluation from '../../shared/Evaluation'
 import { useOperationState } from '../../shared/OperationContext'
 import { ParametersType, Parameters } from '../../shared/Parameters'
 import TextIO from '../../shared/TextIO'
-import { useTemplateState } from '../TemplateWrapper'
+import { disabledMessage, useTemplateState } from '../TemplateWrapper'
 import { useFullApplicationState } from './ApplicationWrapper'
 import { useFormState } from './Form'
 import FromExistingElement from './FromExistingElement'
@@ -64,8 +64,6 @@ const evaluations: Evaluations = [
   { key: 'visibilityCondition', title: 'Is Visible' },
   { key: 'defaultValue', title: 'Default Value' },
 ]
-
-const disabledMessage = 'Cannot edit draft template'
 
 const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) => {
   const { structure } = useFullApplicationState()
@@ -202,17 +200,18 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
             />
           </div>
         </div>
-        {evaluations.map(({ key, title }) => (
-          <Evaluation
-            label={title}
-            key={key}
-            currentElementCode={state.code}
-            fullStructure={structure}
-            evaluation={state[key]}
-            setEvaluation={(evaluation) => setState({ ...state, [key]: evaluation })}
-          />
-        ))}
-
+        <div className="flex-column-start-start">
+          {evaluations.map(({ key, title }) => (
+            <Evaluation
+              label={title}
+              key={key}
+              currentElementCode={state.code}
+              fullStructure={structure}
+              evaluation={state[key]}
+              setEvaluation={(evaluation) => setState({ ...state, [key]: evaluation })}
+            />
+          ))}
+        </div>
         <Parameters
           key="parametersElement"
           currentElementCode={state.code}
@@ -229,7 +228,12 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
             onClick={updateElement}
           />
 
-          <ButtonWithFallback title="Remove" onClick={removeElement} />
+          <ButtonWithFallback
+            disabled={!isDraft}
+            disabledMessage={disabledMessage}
+            title="Remove"
+            onClick={removeElement}
+          />
           <ButtonWithFallback title="Cancel" onClick={() => setElement(null)} />
         </div>
       </div>

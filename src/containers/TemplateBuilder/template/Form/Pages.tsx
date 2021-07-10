@@ -1,16 +1,14 @@
 import React from 'react'
 import { Header, Icon, Label } from 'semantic-ui-react'
 import { TemplateElementCategory } from '../../../../utils/generated/graphql'
-import { IconButton } from '../../shared/components'
+import { IconButton } from '../../shared/IconButton'
 import { useOperationState } from '../../shared/OperationContext'
 import { getRandomNumber } from '../../shared/OperationContextHelpers'
-import { useTemplateState } from '../TemplateWrapper'
+import { disabledMessage, useTemplateState } from '../TemplateWrapper'
 import { useFullApplicationState } from './ApplicationWrapper'
 import { useFormState } from './Form'
 import { useFormStructureState } from './FormWrapper'
 import { MoveSection } from './moveStructure'
-
-const disabledMessage = 'Can only edit draft procedure, please make it draft or duplicate'
 
 const Pages: React.FC = () => {
   const { selectedPageNumber, selectedSectionId, setSelectedPageNumber } = useFormState()
@@ -61,7 +59,7 @@ const Pages: React.FC = () => {
         <IconButton
           disabled={!isDraft}
           disabledMessage={disabledMessage}
-          name="add"
+          name="add square"
           onClick={createNewPage}
         />
 
@@ -136,7 +134,7 @@ const Page: React.FC = () => {
         <IconButton
           disabled={!isDraft}
           disabledMessage={disabledMessage}
-          name="close"
+          name="window close"
           onClick={deletePage}
         />
       </div>

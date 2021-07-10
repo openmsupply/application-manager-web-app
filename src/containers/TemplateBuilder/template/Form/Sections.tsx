@@ -1,17 +1,15 @@
 import React from 'react'
 import { Button, Header, Label } from 'semantic-ui-react'
-import { IconButton } from '../../shared/components'
+import { IconButton } from '../../shared/IconButton'
 
 import { useOperationState } from '../../shared/OperationContext'
 import { getRandomNumber } from '../../shared/OperationContextHelpers'
 import TextIO from '../../shared/TextIO'
-import { useTemplateState } from '../TemplateWrapper'
+import { disabledMessage, useTemplateState } from '../TemplateWrapper'
 
 import { useApplicationOperationState, useFullApplicationState } from './ApplicationWrapper'
 import { useFormState } from './Form'
 import { useFormStructureState } from './FormWrapper'
-
-const disabledMessage = 'Can only edit draft procedure, please make it draft or duplicate'
 
 const Sections: React.FC = () => {
   const { resetApplication } = useApplicationOperationState()
@@ -45,7 +43,7 @@ const Sections: React.FC = () => {
         <IconButton
           disabled={!isDraft}
           disabledMessage={disabledMessage}
-          name="add"
+          name="add square"
           onClick={createNewSection}
         />
         <div className="flex-row-start-center-wrap flex-grow-1">
@@ -221,7 +219,7 @@ const Section: React.FC = () => {
       <IconButton
         disabled={!isDraft}
         disabledMessage={disabledMessage}
-        name="close"
+        name="window close"
         onClick={deleteSection}
       />
     </div>

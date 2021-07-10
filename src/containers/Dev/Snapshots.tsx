@@ -24,8 +24,9 @@ const Snapshots: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [compareFrom, setCompareFrom] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [snapshotError, setSnapshotError] =
-    useState<{ message: string; error: string } | null>(null)
+  const [snapshotError, setSnapshotError] = useState<{ message: string; error: string } | null>(
+    null
+  )
 
   const [data, setData] = useState<string[] | null>(null)
 

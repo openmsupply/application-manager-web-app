@@ -133,7 +133,7 @@ const Filters: React.FC = () => {
             setSelectedFilter(fullValue)
           }}
         />
-        <Icon className="clickable" name="add" onClick={addFilterJoin} />
+        <Icon className="clickable" name="add square" onClick={addFilterJoin} />
       </div>
       <div className="filter-joins">
         {filterJoins.map((filterJoin) => (

@@ -4,18 +4,16 @@ import { PageElements } from '../../../../components'
 import { TemplateElement, TemplateElementCategory } from '../../../../utils/generated/graphql'
 import { ElementState } from '../../../../utils/types'
 import ButtonWithFallback from '../../shared/ButtonWidthFallback'
-import { IconButton } from '../../shared/components'
+import { IconButton } from '../../shared/IconButton'
 import { useOperationState } from '../../shared/OperationContext'
 import { getRandomNumber } from '../../shared/OperationContextHelpers'
 
-import { useTemplateState } from '../TemplateWrapper'
+import { disabledMessage, useTemplateState } from '../TemplateWrapper'
 import { useFullApplicationState } from './ApplicationWrapper'
 import ElementConfig from './ElementConfig'
 import { useFormState } from './Form'
 import { useFormStructureState } from './FormWrapper'
 import { MoveElement, MoveSection } from './moveStructure'
-
-const disabledMessage = 'Can only edit draft procedure, please make it draft or duplicate'
 
 type SetElementUpdateState = (elementUpdateState: TemplateElement | null) => void
 
@@ -106,12 +104,7 @@ const ElementConfigOptions: React.FC<{
   return (
     <div className="element-config-options-container" key={elementId}>
       <ElementMove elementId={elementId} />
-      <IconButton
-        disabled={!isDraft}
-        disabledMessage={disabledMessage}
-        name="setting"
-        onClick={() => setElementUpdatState(currentElement)}
-      />
+      <IconButton name="setting" onClick={() => setElementUpdatState(currentElement)} />
       {!isVisible && (
         <Popup content="Visibility criteria did not match" trigger={<Icon name="eye slash" />} />
       )}

@@ -5,11 +5,13 @@ import {
   TemplateFilterJoinPatch,
   TemplatePatch,
   TemplateSectionPatch,
+  TemplateStagePatch,
   useDeleteWholeApplicationMutation,
   useRestartApplicationMutation,
   useUpdateTemplateFilterJoinMutation,
   useUpdateTemplateMutation,
   useUpdateTemplateSectionMutation,
+  useUpdateTemplateStageMutation,
 } from '../../../utils/generated/graphql'
 import useCreateApplication, {
   CreateApplicationProps,
@@ -24,6 +26,7 @@ import {
   deleteApplication,
   createApplication,
   updateApplication,
+  updateTemplateStage,
 } from './OperationContextHelpers'
 
 type Error = { message: string; error: string }
@@ -44,6 +47,7 @@ export type UpdateTemplateSection = (id: number, patch: TemplateSectionPatch) =>
 export type DeleteApplication = (id: number) => Promise<boolean>
 export type CreateApplication = (props: CreateApplicationProps) => Promise<boolean>
 export type UpdateApplication = (serial: string, patch: ApplicationPatch) => Promise<boolean>
+export type UpdateTemplateStage = (id: number, patch: TemplateStagePatch) => Promise<boolean>
 
 type OperationContextState = {
   fetch: (something: any) => any
@@ -56,6 +60,7 @@ type OperationContextState = {
   deleteApplication: DeleteApplication
   createApplication: CreateApplication
   updateApplication: UpdateApplication
+  updateTemplateStage: UpdateTemplateStage
 }
 
 const contextNotPresentError = () => {
@@ -73,6 +78,7 @@ const defaultOperationContext: OperationContextState = {
   deleteApplication: contextNotPresentError,
   createApplication: contextNotPresentError,
   updateApplication: contextNotPresentError,
+  updateTemplateStage: contextNotPresentError,
 }
 
 const Context = createContext(defaultOperationContext)
@@ -83,6 +89,7 @@ const OperationContext: React.FC = ({ children }) => {
   const [updateTemplateSectionMutation] = useUpdateTemplateSectionMutation()
   const [deleteApplicationMutation] = useDeleteWholeApplicationMutation()
   const [updateApplicationMutation] = useRestartApplicationMutation()
+  const [updateTemplateStageMutation] = useUpdateTemplateStageMutation()
   const [innerState, setInnerState] = useState<ErrorAndLoadingState>({ isLoading: false })
   const { create } = useCreateApplication({
     onCompleted: () => {},
@@ -101,6 +108,7 @@ const OperationContext: React.FC = ({ children }) => {
     deleteApplication: deleteApplication(setInnerState, deleteApplicationMutation),
     createApplication: createApplication(setInnerState, create),
     updateApplication: updateApplication(setInnerState, updateApplicationMutation),
+    updateTemplateStage: updateTemplateStage(setInnerState, updateTemplateStageMutation),
   })
 
   const { isLoading, error } = innerState

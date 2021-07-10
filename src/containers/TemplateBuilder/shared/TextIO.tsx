@@ -46,7 +46,7 @@ const TextIO: React.FC<TextIOprops> = ({
   const renderText = () => {
     if (setText) return null
 
-    return <div className="text-io-component value">{text}</div>
+    return <div className="io-component value">{text}</div>
   }
 
   const renderInput = () => {
@@ -54,7 +54,7 @@ const TextIO: React.FC<TextIOprops> = ({
 
     if (isTextArea) {
       return (
-        <div className="text-io-component value">
+        <div className="io-component value">
           <Form>
             <TextArea
               disabled={disabled}
@@ -74,7 +74,7 @@ const TextIO: React.FC<TextIOprops> = ({
       <Input
         value={innerValue}
         disabled={disabled}
-        className="text-io-component value"
+        className="io-component value"
         size="small"
         onChange={(_, { value }) => {
           setInnerValue(value)
@@ -88,7 +88,7 @@ const TextIO: React.FC<TextIOprops> = ({
   const renderLabel = () => {
     if (link) {
       return (
-        <div style={style} className="text-io-component key">
+        <div style={style} className="io-component key">
           <a style={style} target="_blank" href={link}>
             {title} {icon && <Icon style={style} name={icon as SemanticICONS} />}
           </a>
@@ -96,7 +96,7 @@ const TextIO: React.FC<TextIOprops> = ({
       )
     }
     return (
-      <div style={style} className="text-io-component key">
+      <div style={style} className="io-component key">
         {title} {icon && <Icon style={style} name={icon as SemanticICONS} />}
       </div>
     )
@@ -107,7 +107,7 @@ const TextIO: React.FC<TextIOprops> = ({
       content={disabledMessage}
       disabled={!disabled || !disabledMessage}
       trigger={
-        <div className="text-io-wrapper">
+        <div className="io-wrapper">
           {renderLabel()}
           {renderText()}
           {renderInput()}

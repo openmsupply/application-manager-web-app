@@ -1,335 +1,378 @@
-// import React, { useEffect, useState } from 'react'
-// import ReactJson from 'react-json-view'
-// import {
-//   Accordion,
-//   Button,
-//   Checkbox,
-//   Dropdown,
-//   Header,
-//   Icon,
-//   Label,
-//   Modal,
-//   Popup,
-// } from 'semantic-ui-react'
-// import { Loading } from '../../../components'
-// import { Stage } from '../../../components/Review'
-// import config from '../../../config'
-// import {
-//   PermissionPolicyType,
-//   TemplateStatus,
-//   PermissionName,
-//   useGetAllPermissionNamesQuery,
-//   useUpdateTemplateMutation,
-//   TemplateStage,
-//   TemplatePermission,
-//   TemplateStageReviewLevel,
-//   useUpdateTemplateStageMutation,
-//   TemplateSection,
-//   useGetPermissionStatisticsQuery,
-// } from '../../../utils/generated/graphql'
+import React, { useEffect, useState } from 'react'
+import ReactJson from 'react-json-view'
+import {
+  Popup,
+  Header,
+  Dropdown,
+  Icon,
+  Label,
+  Modal,
+  Accordion,
+  Button,
+  Checkbox,
+} from 'semantic-ui-react'
+import { Loading } from '../../../../components'
+import { Stage } from '../../../../components/Review'
+import {
+  PermissionPolicyType,
+  TemplatePermission,
+  TemplateSection,
+  TemplateStage,
+  TemplateStagePatch,
+  TemplateStageReviewLevel,
+  TemplateStatus,
+  useGetPermissionStatisticsQuery,
+  useUpdateTemplateMutation,
+  useUpdateTemplateStageMutation,
+} from '../../../../utils/generated/graphql'
+import semanticComponentLibrary from '../../evaluatorGui/semanticComponentLibrary'
+import DropdownIO from '../../shared/DropdownIO'
+import { asObject } from '../../shared/Evaluation'
+import { IconButton } from '../../shared/IconButton'
+import { useOperationState } from '../../shared/OperationContext'
+import { updateTemplate } from '../../shared/OperationContextHelpers'
+import { Parameters } from '../../shared/Parameters'
+import TextIO, { iconLink } from '../../shared/TextIO'
+import { disabledMessage, TemplateInfo, useTemplateState } from '../TemplateWrapper'
+import PermissionNameList from './PermissionNameList'
+import PermissionNamesContext, { usePermissionNameState } from './PermissionNamesContext'
+import PermissionReviewLevel from './PermissionReviewLevels'
+import PermissionsHeader, { getMatchingTemplatePermission } from './PermissionsHeader'
 
-// import semanticComponentLibrary from '../evaluatorGui/semanticComponentLibrary'
-// import { asObject, EvaluationContainer, Parameters } from '../shared/components'
+const PermissionsWrapper: React.FC = () => (
+  <PermissionNamesContext>
+    <Permissions />
+  </PermissionNamesContext>
+)
 
-// import { TemplateInfo } from './TemplateWrapper'
-// type Error = { message: string; error: string }
-// type Mutate = (doMutation: () => Promise<any>, setError: (error: Error) => void) => Promise<any>
+const newStage = {
+  title: 'New Stage',
+  description: 'new stage description',
+  colour: '#24B5DF',
+}
 
-// export const mutate: Mutate = async (doMutation, setError) => {
-//   try {
-//     const result = await doMutation()
-//     if (result?.errors) {
-//       setError({
-//         message: 'error',
-//         error: JSON.stringify(result.errors),
-//       })
-//       return null
-//     }
-//     return result
-//   } catch (e) {
-//     setError({ message: 'error', error: e })
-//     return null
-//   }
-// }
-// const Permissions: React.FC<{ templateInfo: TemplateInfo }> = ({ templateInfo }) => {
-//   const { data: permissionNamesData } = useGetAllPermissionNamesQuery()
-//   const [updateTemplate] = useUpdateTemplateMutation()
-//   const [selectedApplyNameId, setSelectedApplyNameId] = useState(-1)
-//   const [error, setError] = useState<Error | null>(null)
-//   const [permissionSatistics, setPermissionSatistics] = useState<{
-//     id: number
-//     name: string
-//     permissionPolicyId: number
-//   } | null>(null)
+type UpdateStage = (id: number, patch: TemplateStagePatch) => void
+type CanRemoveStage = (stage: TemplateStage) => boolean
+type RemoveStage = (id: number) => void
 
-//   const isEditable = templateInfo?.status === TemplateStatus.Draft
-//   const templateId = templateInfo?.id || 0
-//   const allPermissionNames = permissionNamesData?.permissionNames?.nodes
-//   if (!allPermissionNames) return <Loading />
+const Permissions: React.FC = () => {
+  //   const [selectedApplyNameId, setSelectedApplyNameId] = useState(-1)
+  //   const [error, setError] = useState<Error | null>(null)
+  //   const [permissionSatistics, setPermissionSatistics] = useState<{
+  //     id: number
+  //     name: string
+  //     permissionPolicyId: number
+  //   } | null>(null)
 
-//   const names = (templateInfo?.templatePermissions?.nodes || []).map((templatePermission) => ({
-//     ...(templatePermission?.permissionName as PermissionName),
-//     templatePermissionId: templatePermission?.id || 0,
-//     templatePermission: templatePermission,
-//   }))
+  //   const isEditable = templateInfo?.status === TemplateStatus.Draft
+  //   const templateId = templateInfo?.id || 0
+  //   const allPermissionNames = permissionNamesData?.permissionNames?.nodes
+  //   if (!allPermissionNames) return <Loading />
 
-//   const applyNames = names.filter(
-//     (permissionName) => permissionName?.permissionPolicy?.type === PermissionPolicyType.Apply
-//   )
-//   const allApplyNames = allPermissionNames.filter(
-//     (permissionName) => permissionName?.permissionPolicy?.type === PermissionPolicyType.Apply
-//   )
+  //   const names = (templateInfo?.templatePermissions?.nodes || []).map((templatePermission) => ({
+  //     ...(templatePermission?.permissionName as PermissionName),
+  //     templatePermissionId: templatePermission?.id || 0,
+  //     templatePermission: templatePermission,
+  //   }))
 
-//   const availableApplyNames = allApplyNames.filter(
-//     (name) => !applyNames.find((applyName) => name?.name === applyName?.name)
-//   )
+  //   const applyNames = names.filter(
+  //     (permissionName) => permissionName?.permissionPolicy?.type === PermissionPolicyType.Apply
+  //   )
+  //   const allApplyNames = allPermissionNames.filter(
+  //     (permissionName) => permissionName?.permissionPolicy?.type === PermissionPolicyType.Apply
+  //   )
 
-//   const canDeleteStage = (stage: TemplateStage) => {
-//     const maxStageNumber = (templateInfo?.templateStages?.nodes || []).reduce(
-//       (max, stage) => (max < Number(stage?.number) ? Number(stage?.number) : max),
-//       0
-//     )
+  //   const availableApplyNames = allApplyNames.filter(
+  //     (name) => !applyNames.find((applyName) => name?.name === applyName?.name)
+  //   )
 
-//     return maxStageNumber === stage?.number
-//   }
+  //   const canDeleteStage = (stage: TemplateStage) => {
+  //     const maxStageNumber = (templateInfo?.templateStages?.nodes || []).reduce(
+  //       (max, stage) => (max < Number(stage?.number) ? Number(stage?.number) : max),
+  //       0
+  //     )
 
-//   return (
-//     <div className="config-permission-wrapper">
-//       <div className="flex-row" style={{ justifyContent: 'flex-end' }}>
-//         <Popup
-//           header="Update row level policies"
-//           content="Permission name joins to templates determine how row level policies in database are set up, must rest row level policies when adding or removing permission policies"
-//           key="resetPolicies"
-//           disabled={isEditable}
-//           trigger={
-//             <Button
-//               primary
-//               inverted
-//               onClick={() => fetch(`${config.serverREST}/updateRowPolicies`)}
-//             >
-//               Update Row Level Security
-//             </Button>
-//           }
-//         />
-//       </div>
-//       <div className="config-permission-container">
-//         <Popup
-//           content="Template permissions only editable on draft templates"
-//           key="notDraftEdit"
-//           disabled={isEditable}
-//           trigger={
-//             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-//               <Header style={{ margin: 0, marginRight: 3 }} as="h5">
-//                 APPLY
-//               </Header>
-//               <Dropdown
-//                 value={selectedApplyNameId}
-//                 selection
-//                 disabled={!isEditable}
-//                 onChange={(_, { value }) => setSelectedApplyNameId(Number(value))}
-//                 options={availableApplyNames.map((name) => ({
-//                   key: name?.id,
-//                   text: name?.name,
-//                   value: name?.id,
-//                 }))}
-//               />
-//               <Icon
-//                 className="clickable"
-//                 name="add"
-//                 style={{ marginLeft: 5 }}
-//                 onClick={async () => {
-//                   if (!isEditable) return
-//                   if (selectedApplyNameId === -1)
-//                     return setError({
-//                       error: 'select permission name',
-//                       message: 'permission name not selected',
-//                     })
+  //     return maxStageNumber === stage?.number
+  //   }
 
-//                   setSelectedApplyNameId(-1)
-//                   await mutate(
-//                     () =>
-//                       updateTemplate({
-//                         variables: {
-//                           id: templateId,
-//                           templatePatch: {
-//                             templatePermissionsUsingId: {
-//                               create: [{ permissionNameId: selectedApplyNameId }],
-//                             },
-//                           },
-//                         },
-//                       }),
-//                     setError
-//                   )
-//                 }}
-//               />
-//             </div>
-//           }
-//         />
-//         {applyNames.map((permissionName) => (
-//           <div
-//             key={permissionName?.id || 0}
-//             className="indicators-container as-row"
-//             style={{ justifyContent: 'flex-start', margin: 3 }}
-//           >
-//             <div key="permissionName" className="indicator">
-//               <Label className="key" content="Permission Name" />
-//               <Label className="value" content={permissionName?.name} />
-//               <Icon
-//                 name="info circle"
-//                 className="clickable"
-//                 color="blue"
-//                 style={{ margin: 0, lineHeight: 'normal' }}
-//                 onClick={() =>
-//                   setPermissionSatistics({
-//                     id: permissionName?.id,
-//                     name: permissionName?.name || '',
-//                     permissionPolicyId: permissionName?.permissionPolicyId || 0,
-//                   })
-//                 }
-//               />
-//             </div>
+  const {
+    templateStages,
+    template: { isDraft, id: templateId },
+    templatePermissions,
+  } = useTemplateState()
+  const { updateTemplate } = useOperationState()
 
-//             <div key="policyName" className="indicator">
-//               <Label className="key" content="Policy Name" />
-//               <Label className="value" content={permissionName?.permissionPolicy?.name} />
-//             </div>
+  const latestStageNumber = templateStages.reduce(
+    (max, current) => (max > (current?.number || 0) ? max : current?.number || 0),
+    0
+  )
 
-//             <Popup
-//               content="Template permissions only editable on draft templates"
-//               key="notDraftEdit"
-//               disabled={isEditable}
-//               trigger={
-//                 <Icon
-//                   className="clickable"
-//                   style={{ alignSelf: 'center', margin: 0, marginLeft: 5 }}
-//                   name="delete"
-//                   onClick={async () => {
-//                     if (!isEditable) return
+  const canRemoveStage: CanRemoveStage = (stage) =>
+    stage?.number === latestStageNumber &&
+    getMatchingTemplatePermission({
+      templatePermissions,
+      type: PermissionPolicyType.Assign,
+      stageNumber: stage?.number || 0,
+    }).length === 0 &&
+    (stage?.templateStageReviewLevelsByStageId?.nodes || []).length == 0
 
-//                     setSelectedApplyNameId(-1)
-//                     await mutate(
-//                       () =>
-//                         updateTemplate({
-//                           variables: {
-//                             id: templateId,
-//                             templatePatch: {
-//                               templatePermissionsUsingId: {
-//                                 deleteById: [{ id: permissionName?.templatePermissionId }],
-//                               },
-//                             },
-//                           },
-//                         }),
-//                       setError
-//                     )
-//                   }}
-//                 />
-//               }
-//             />
-//           </div>
-//         ))}
-//       </div>
-//       <div
-//         className="clickable"
-//         style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
-//       >
-//         <Header style={{ margin: 0, marginRight: 3 }} as="h3">
-//           Stages
-//         </Header>
-//         <Icon
-//           style={{ marginLeft: 5 }}
-//           name="add"
-//           onClick={() => {
-//             if (!isEditable) return
+  const removeStage: RemoveStage = (id) => {
+    updateTemplate(templateId, {
+      templateStagesUsingId: { deleteById: [{ id }] },
+    })
+  }
 
-//             const maxStageNumber = (templateInfo?.templateStages?.nodes || []).reduce(
-//               (max, stage) => (max < Number(stage?.number) ? Number(stage?.number) : max),
-//               0
-//             )
-//             mutate(
-//               () =>
-//                 updateTemplate({
-//                   variables: {
-//                     id: templateId,
-//                     templatePatch: {
-//                       templateStagesUsingId: {
-//                         create: [
-//                           {
-//                             number: maxStageNumber + 1,
-//                             title: 'new stage',
-//                             description: 'new stage description',
-//                             colour: '#24B5DF',
-//                           },
-//                         ],
-//                       },
-//                     },
-//                   },
-//                 }),
-//               setError
-//             )
-//           }}
-//         />
-//       </div>
-//       {(templateInfo?.templateStages?.nodes || []).map((stage) => (
-//         <StageDisplay
-//           setPermissionSatistics={setPermissionSatistics}
-//           key={stage?.id}
-//           stage={stage as TemplateStage}
-//           templateId={templateId}
-//           names={names as any}
-//           allPermissionNames={allPermissionNames as any}
-//           isEditable={isEditable}
-//           setError={setError}
-//           canDeleteStage={canDeleteStage(stage as TemplateStage)}
-//           templateInfo={templateInfo}
-//         />
-//       ))}
-//       <Modal open={!!error} onClick={() => setError(null)} onClose={() => setError(null)}>
-//         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-//           <Label size="large" color="red">
-//             {String(error?.message)}
-//             <Icon name="close" onClick={() => setError(null)} />
-//           </Label>
-//           <div style={{ margin: 20 }}>{String(error?.error)}</div>
-//         </div>
-//       </Modal>
-//       <PermissionStatisticsWrapper
-//         id={permissionSatistics?.id}
-//         name={permissionSatistics?.name}
-//         permissionPolicyId={permissionSatistics?.permissionPolicyId}
-//         onClose={() => setPermissionSatistics(null)}
-//       />
-//     </div>
-//   )
-// }
+  const addStage = () =>
+    updateTemplate(templateId, {
+      templateStagesUsingId: { create: [{ number: latestStageNumber + 1, ...newStage }] },
+    })
 
-// const PermissionStatisticsWrapper: React.FC<{
-//   id?: number
-//   name?: string
-//   onClose: () => void
-//   permissionPolicyId?: number
-// }> = ({ id, name, onClose, permissionPolicyId }) => {
-//   const [isOpen, setIsOpen] = useState(false)
+  const updateStage: UpdateStage = (id, patch) => {
+    updateTemplate(templateId, {
+      templateStagesUsingId: { updateById: [{ id, patch }] },
+    })
+  }
+  return (
+    <div className="flex-column-start-start">
+      <PermissionsHeader type={PermissionPolicyType.Apply} header={'Apply'} />
+      <PermissionNameList type={PermissionPolicyType.Apply} />
+      <div className="spacer-20" />
+      <div className="flex-row-start-center">
+        <Header as="h3" className="no-margin-no-padding">
+          Stage
+        </Header>
+        <IconButton
+          name="add square"
+          disabled={!isDraft}
+          disabledMessage={disabledMessage}
+          onClick={addStage}
+        />
+      </div>
+      {templateStages.map((stage) => (
+        <div key={stage.id} className="stage-config-container">
+          <div className="flex-row-start-center">
+            <div className="flex-row-start-center-wrap">
+              <TextIO
+                title="Name"
+                text={stage?.title || ''}
+                setText={(title) => updateStage(stage.id, { title })}
+                disabled={!isDraft}
+                disabledMessage={disabledMessage}
+              />
+              <TextIO title="Number" text={String(stage?.number)} />
+              <TextIO
+                title="Color"
+                link={iconLink}
+                text={stage?.colour || ''}
+                color={stage?.colour || ''}
+                setText={(colour) => updateStage(stage.id, { colour })}
+                disabled={!isDraft}
+                disabledMessage={disabledMessage}
+              />
 
-//   useEffect(() => {
-//     if (id && name && permissionPolicyId) {
-//       setIsOpen(true)
-//     }
-//   }, [id, name])
+              <div className="longer">
+                <TextIO
+                  title="Description"
+                  text={stage?.description || ''}
+                  setText={(description) => updateStage(stage.id, { description })}
+                  disabled={!isDraft}
+                  disabledMessage={disabledMessage}
+                />
+              </div>
+            </div>
+            <div className="flex-grow-1" />
+            <Stage name={stage?.title || ''} colour={stage?.colour || 'grey'} />
+            {canRemoveStage(stage) && (
+              <IconButton
+                name="window close"
+                disabled={!isDraft}
+                disabledMessage={disabledMessage}
+                onClick={() => removeStage(stage?.id || 0)}
+              />
+            )}
+          </div>
+          <div className="spacer-10" />
+          <PermissionsHeader
+            type={PermissionPolicyType.Assign}
+            header={'Level 1 Assign'}
+            stageNumber={stage?.number || 0}
+          />
+          <PermissionNameList stageNumber={stage?.number || 0} type={PermissionPolicyType.Assign} />
+          <div className="spacer-10" />
+          <PermissionReviewLevel stage={stage} />
+        </div>
+      ))}
+    </div>
+  )
+}
 
-//   if (!id || !name || !isOpen || !permissionPolicyId) return null
+{
+  /* 
+{applyNames.map((permissionName) => (
+          <div
+            key={permissionName?.id || 0}
+            className="indicators-container as-row"
+            style={{ justifyContent: 'flex-start', margin: 3 }}
+          >
+            <div key="permissionName" className="indicator">
+              <Label className="key" content="Permission Name" />
+              <Label className="value" content={permissionName?.name} />
+              <Icon
+                name="info circle"
+                className="clickable"
+                color="blue"
+                style={{ margin: 0, lineHeight: 'normal' }}
+                onClick={() =>
+                  setPermissionSatistics({
+                    id: permissionName?.id,
+                    name: permissionName?.name || '',
+                    permissionPolicyId: permissionName?.permissionPolicyId || 0,
+                  })
+                }
+              />
+            </div>
 
-//   return (
-//     <PermissionStatistics
-//       id={id}
-//       name={name}
-//       permissionPolicyId={permissionPolicyId}
-//       setIsOpen={() => {
-//         onClose()
-//         setIsOpen(false)
-//       }}
-//     />
-//   )
-// }
+            <div key="policyName" className="indicator">
+              <Label className="key" content="Policy Name" />
+              <Label className="value" content={permissionName?.permissionPolicy?.name} />
+            </div>
+
+            <Popup
+              content="Template permissions only editable on draft templates"
+              key="notDraftEdit"
+              disabled={isEditable}
+              trigger={
+                <Icon
+                  className="clickable"
+                  style={{ alignSelf: 'center', margin: 0, marginLeft: 5 }}
+                  name="delete"
+                  onClick={async () => {
+                    if (!isEditable) return
+
+                    setSelectedApplyNameId(-1)
+                    await mutate(
+                      () =>
+                        updateTemplate({
+                          variables: {
+                            id: templateId,
+                            templatePatch: {
+                              templatePermissionsUsingId: {
+                                deleteById: [{ id: permissionName?.templatePermissionId }],
+                              },
+                            },
+                          },
+                        }),
+                      setError
+                    )
+                  }}
+                />
+              }
+            />
+          </div>
+        ))}
+      </div>
+      <div
+        className="clickable"
+        style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      >
+        <Header style={{ margin: 0, marginRight: 3 }} as="h3">
+          Stages
+        </Header>
+        <Icon
+          style={{ marginLeft: 5 }}
+          name="add"
+          onClick={() => {
+            if (!isEditable) return
+
+            const maxStageNumber = (templateInfo?.templateStages?.nodes || []).reduce(
+              (max, stage) => (max < Number(stage?.number) ? Number(stage?.number) : max),
+              0
+            )
+            mutate(
+              () =>
+                updateTemplate({
+                  variables: {
+                    id: templateId,
+                    templatePatch: {
+                      templateStagesUsingId: {
+                        create: [
+                          {
+                            number: maxStageNumber + 1,
+                            title: 'new stage',
+                            description: 'new stage description',
+                            colour: '#24B5DF',
+                          },
+                        ],
+                      },
+                    },
+                  },
+                }),
+              setError
+            )
+          }}
+        />
+      </div>
+      {(templateInfo?.templateStages?.nodes || []).map((stage) => (
+        <StageDisplay
+          setPermissionSatistics={setPermissionSatistics}
+          key={stage?.id}
+          stage={stage as TemplateStage}
+          templateId={templateId}
+          names={names as any}
+          allPermissionNames={allPermissionNames as any}
+          isEditable={isEditable}
+          setError={setError}
+          canDeleteStage={canDeleteStage(stage as TemplateStage)}
+          templateInfo={templateInfo}
+        />
+      ))}
+      <Modal open={!!error} onClick={() => setError(null)} onClose={() => setError(null)}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Label size="large" color="red">
+            {String(error?.message)}
+            <Icon name="close" onClick={() => setError(null)} />
+          </Label>
+          <div style={{ margin: 20 }}>{String(error?.error)}</div>
+        </div>
+      </Modal>
+      <PermissionStatisticsWrapper
+        id={permissionSatistics?.id}
+        name={permissionSatistics?.name}
+        permissionPolicyId={permissionSatistics?.permissionPolicyId}
+        onClose={() => setPermissionSatistics(null)}
+      />
+    </div>
+  )
+
+const PermissionStatisticsWrapper: React.FC<{
+  id?: number
+  name?: string
+  onClose: () => void
+  permissionPolicyId?: number
+}> = ({ id, name, onClose, permissionPolicyId }) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    if (id && name && permissionPolicyId) {
+      setIsOpen(true)
+    }
+  }, [id, name])
+
+  if (!id || !name || !isOpen || !permissionPolicyId) return null
+
+  return (
+    <PermissionStatistics
+      id={id}
+      name={name}
+      permissionPolicyId={permissionPolicyId}
+      setIsOpen={() => {
+        onClose()
+        setIsOpen(false)
+      }}
+    />
+  )
+} */
+}
 
 // const PermissionStatistics: React.FC<{
 //   id: number
@@ -1397,4 +1440,4 @@
 //   )
 // }
 
-// export default Permissions
+export default PermissionsWrapper

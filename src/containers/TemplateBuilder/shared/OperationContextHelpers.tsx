@@ -5,6 +5,7 @@ import {
   useUpdateTemplateSectionMutation,
   useDeleteWholeApplicationMutation,
   useRestartApplicationMutation,
+  useUpdateTemplateStageMutation,
 } from '../../../utils/generated/graphql'
 import useCreateApplication from '../../../utils/hooks/useCreateApplication'
 import {
@@ -16,6 +17,7 @@ import {
   TemplatesOperationProps,
   ErrorAndLoadingState,
   UpdateApplication,
+  UpdateTemplateStage,
 } from './OperationContext'
 
 const snapshotsBaseUrl = `${config.serverREST}/snapshot`
@@ -63,6 +65,11 @@ type UpdateApplicationHelper = (
   setErrorAndLoadingState: SetErrorAndLoadingState,
   create: ReturnType<typeof useRestartApplicationMutation>[0]
 ) => UpdateApplication
+
+type UpdateTemplateStageHelper = (
+  setErrorAndLoadingState: SetErrorAndLoadingState,
+  updateTemplateStageMutation: ReturnType<typeof useUpdateTemplateStageMutation>[0]
+) => UpdateTemplateStage
 
 const checkMutationResult = async (
   result: any,
@@ -124,6 +131,20 @@ export const updateApplication: UpdateApplicationHelper =
     try {
       const result = await updateApplicationMutation({
         variables: { serial, applicationPatch: patch },
+      })
+      return checkMutationResult(result, setErrorAndLoadingState)
+    } catch (e) {
+      setErrorAndLoadingState({ isLoading: false, error: { error: 'error', message: e.message } })
+      return false
+    }
+  }
+
+export const updateTemplateStage: UpdateTemplateStageHelper =
+  (setErrorAndLoadingState: SetErrorAndLoadingState, updateTemplateStageMutation) =>
+  async (id, patch) => {
+    try {
+      const result = await updateTemplateStageMutation({
+        variables: { id, templateStagePatch: patch },
       })
       return checkMutationResult(result, setErrorAndLoadingState)
     } catch (e) {

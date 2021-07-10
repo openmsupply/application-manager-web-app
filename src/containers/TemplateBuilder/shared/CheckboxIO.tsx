@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Checkbox, Popup } from 'semantic-ui-react'
 
 type CheckboxIOprops = {
   value: boolean
   title: string
-  setValue: (value: boolean, resetValue: (value: boolean) => void) => void
+  setValue: (value: boolean) => boolean | undefined | void
   disabled?: boolean
   disabledMessage?: string
+  isPropUpdated?: boolean
 }
 
 const CheckboxIO: React.FC<CheckboxIOprops> = ({
@@ -15,24 +16,33 @@ const CheckboxIO: React.FC<CheckboxIOprops> = ({
   disabled = false,
   title,
   disabledMessage,
+  isPropUpdated = false,
 }) => {
   const [innerValue, setInnerValue] = useState(value)
+
+  useEffect(() => {
+    console.log(value)
+    if (isPropUpdated) setInnerValue(() => value)
+  }, [value])
 
   return (
     <Popup
       content={disabledMessage}
       disabled={!disabled || !disabledMessage}
       trigger={
-        <div className="text-io-wrapper checkbox">
-          {title && <div className="text-io-component key">{title}</div>}
+        <div className="io-wrapper checkbox">
+          {title && <div className="io-component key">{title}</div>}
           <Checkbox
             checked={innerValue}
             toggle
+            disabled={disabled}
             size="small"
             onChange={() => {
+              console.log('yow')
               const newValue = !innerValue
-              setValue(newValue, setInnerValue)
-              setInnerValue(newValue)
+              const result = setValue(newValue)
+              if (typeof result === 'boolean') setInnerValue(result)
+              else setInnerValue(newValue)
             }}
           />
         </div>

@@ -83,9 +83,6 @@ export const getTypedEvaluation: GetEvaluationType = (evaluation) => {
     resultEvaluation.type = 'operator'
     resultEvaluation.asOperator.operator = evaluation.operator
 
-    console.log(operator)
-    if (operator === 'buildObject') console.log('yow')
-
     if (operator in nonGenericEvaluations) {
       return nonGenericEvaluations[operator as NonGenericTypes].toTyped(
         evaluation,

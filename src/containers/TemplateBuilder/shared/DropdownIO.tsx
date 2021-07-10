@@ -20,6 +20,7 @@ type DropdownIOprops = {
   getKey?: GetterOrKey
   getValue?: GetterOrKey
   getText?: GetterOrKey
+  placeholder?: string
 }
 
 const defaultGetters: GetterOrKey = (row) => String(row)
@@ -46,6 +47,7 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
   getKey = defaultGetters,
   getValue = defaultGetters,
   getText = defaultGetters,
+  placeholder,
 }) => {
   const [innerValue, setInnerValue] = useState(value)
 
@@ -55,7 +57,7 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
   const renderText = () => {
     if (setValue) return null
 
-    return <div className="text-io-component value">{value}</div>
+    return <div className="io-component value">{value}</div>
   }
 
   const renderDropdown = () => {
@@ -65,12 +67,13 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
       key: getterOrKeyHelper(getKey, value),
       value: getterOrKeyHelper(getValue, value),
     }))
-    console.log(calculatedOptions, options)
+
     return (
       <Dropdown
         value={innerValue}
         disabled={disabled}
-        className="text-io-component value"
+        placeholder={placeholder}
+        className="io-component value"
         options={calculatedOptions}
         size="small"
         onChange={(_, { value }) => {
@@ -86,14 +89,14 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
   const renderLabel = () => {
     if (link) {
       return (
-        <div className="text-io-component key">
+        <div className="io-component key">
           <a target="_blank" href={link}>
             {title}
           </a>
         </div>
       )
     }
-    return <div className="text-io-component key">{title}</div>
+    return <div className="io-component key">{title}</div>
   }
 
   return (
@@ -101,7 +104,7 @@ const DropdownIO: React.FC<DropdownIOprops> = ({
       content={disabledMessage}
       disabled={!disabled || !disabledMessage}
       trigger={
-        <div className="text-io-wrapper">
+        <div className="io-wrapper">
           {renderLabel()}
           {renderText()}
           {renderDropdown()}

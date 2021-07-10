@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Header, Input } from 'semantic-ui-react'
 import CheckboxIO from '../shared/CheckboxIO'
-import { IconButton } from '../shared/components'
+import { IconButton } from '../shared/IconButton'
 import DropdownIO from '../shared/DropdownIO'
 import JsonIO from '../shared/JsonIO'
 import TextIO from '../shared/TextIO'
@@ -30,11 +30,11 @@ const ComponentLibrary: ComponentLibraryType = {
     const [innerValue, setInnerValue] = useState(String(number))
 
     return (
-      <div className="text-io-wrapper">
-        <div className="text-io-component key">{title}</div>
+      <div className="io-wrapper">
+        <div className="io-component key">{title}</div>
         <Input
           value={innerValue}
-          className="text-io-component value"
+          className="io-component value"
           size="small"
           onChange={async (_, { value }) => {
             if (!value.match(/^[\d]+$/)) return
@@ -49,8 +49,10 @@ const ComponentLibrary: ComponentLibraryType = {
       </div>
     )
   },
-  Add: ({ onClick, title = '' }) => <IconButton name="add" title={title} onClick={onClick} />,
-  Remove: ({ onClick }) => <IconButton name="close" title="remove" onClick={onClick} />,
+  Add: ({ onClick, title = '' }) => (
+    <IconButton name="add square" title={title} onClick={onClick} />
+  ),
+  Remove: ({ onClick }) => <IconButton name="window close" title="remove" onClick={onClick} />,
   Selector: ({ selections, selected, setSelected, title }) => (
     <DropdownIO
       title={title}

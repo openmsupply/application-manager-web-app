@@ -61,7 +61,7 @@ const Evaluation: React.FC<EvaluationProps> = ({
     <Accordion className="evaluation-container">
       <Accordion.Title className="evaluation-container-title" active={isActive}>
         {!updateKey && <Label>{label}</Label>}
-        {deleteKey && <Icon className="clickable" name="close" onClick={deleteKey} />}
+        {deleteKey && <Icon className="clickable" name="window close" onClick={deleteKey} />}
 
         {updateKey && <TextIO title="Parameter Name" text={label} setText={updateKey} />}
 
