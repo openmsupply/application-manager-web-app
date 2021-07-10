@@ -77,7 +77,7 @@ const PermissionReviewLevel: React.FC<PemrmissionReviewLevelProps> = ({ stage })
       </div>
       <div className="spacer-10" />
       {reviewLevels.map((level) => (
-        <div key={level?.id} className="review-level-config-container">
+        <div key={level?.id} className="config-container-alternate">
           <div className="flex-row-start-center">
             <PermissionsHeader
               type={PermissionPolicyType.Review}

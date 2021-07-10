@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Icon, Input, Popup, SemanticICONS, TextArea } from 'semantic-ui-react'
+import { SemanticCOLORS } from 'semantic-ui-react/dist/commonjs/generic'
 
 const iconLink = 'https://react.semantic-ui.com/elements/icon/'
 
@@ -15,6 +16,8 @@ type TextIOprops = {
   isTextArea?: boolean
   isPropUpdated?: boolean
   textAreaDefaulRows?: number
+  iconColor?: SemanticCOLORS
+  onIconClick?: () => void
 }
 
 const getDefaultRows = (text: string, textAreaDefaulRows: number) => {
@@ -34,6 +37,8 @@ const TextIO: React.FC<TextIOprops> = ({
   isTextArea = false,
   textAreaDefaulRows = 4,
   isPropUpdated = false,
+  iconColor,
+  onIconClick,
 }) => {
   const [defaultRows] = useState(getDefaultRows(text, textAreaDefaulRows))
   const [innerValue, setInnerValue] = useState(text)
@@ -46,7 +51,11 @@ const TextIO: React.FC<TextIOprops> = ({
   const renderText = () => {
     if (setText) return null
 
-    return <div className="io-component value">{text}</div>
+    return (
+      <div className="io-component value" style={{ whiteSpace: isTextArea ? 'normal' : 'nowrap' }}>
+        {text}
+      </div>
+    )
   }
 
   const renderInput = () => {
@@ -85,19 +94,33 @@ const TextIO: React.FC<TextIOprops> = ({
     )
   }
 
+  const renderIcon = () => {
+    const color = iconColor
+    const className = !!onIconClick ? 'clickable' : ''
+    return (
+      <Icon
+        style={style}
+        color={color}
+        className={className}
+        onClick={onIconClick}
+        name={icon as SemanticICONS}
+      />
+    )
+  }
+
   const renderLabel = () => {
     if (link) {
       return (
         <div style={style} className="io-component key">
           <a style={style} target="_blank" href={link}>
-            {title} {icon && <Icon style={style} name={icon as SemanticICONS} />}
+            {title} {icon && renderIcon()}
           </a>
         </div>
       )
     }
     return (
       <div style={style} className="io-component key">
-        {title} {icon && <Icon style={style} name={icon as SemanticICONS} />}
+        {title} {icon && renderIcon()}
       </div>
     )
   }

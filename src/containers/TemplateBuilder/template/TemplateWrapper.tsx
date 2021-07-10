@@ -60,7 +60,6 @@ const TemplateContainer: React.FC = () => {
   } = useRouter()
   const {
     template: { version, name, code, status, applicationCount, id },
-    fromQuery: templateInfo,
   } = useTemplateState()
 
   const selected = tabs.find(({ route }) =>

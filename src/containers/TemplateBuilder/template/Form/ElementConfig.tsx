@@ -117,8 +117,8 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
   }
 
   return (
-    <Modal className="element-edit" open={true} onClose={() => setElement(null)}>
-      <div className="element-edit-container">
+    <Modal className="config-modal" open={true} onClose={() => setElement(null)}>
+      <div className="config-modal-container ">
         {!isDraft && <Label color="red">Template form only editable on draft templates</Label>}
         <Label className="element-edit-info" attached="top right">
           <a

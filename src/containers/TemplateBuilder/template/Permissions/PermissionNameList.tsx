@@ -1,11 +1,12 @@
-import React from 'react'
-import { PermissionPolicyType } from '../../../../utils/generated/graphql'
+import React, { useState } from 'react'
+import { PermissionName, PermissionPolicyType } from '../../../../utils/generated/graphql'
 
 import { IconButton } from '../../shared/IconButton'
 import { useOperationState } from '../../shared/OperationContext'
 
 import TextIO from '../../shared/TextIO'
 import { disabledMessage, useTemplateState } from '../TemplateWrapper'
+import PermissionNameInfo from './PermissionNameInfo/PermissionNameInfo'
 import { getMatchingTemplatePermission } from './PermissionsHeader'
 import ReviewTemplatePermission from './ReviewTemplatePermission'
 
@@ -25,6 +26,7 @@ const PermissionNameList: React.FC<PermissionNameListProps> = ({
     templatePermissions,
   } = useTemplateState()
   const { updateTemplate } = useOperationState()
+  const [permissionNameInfo, setPermissionNameInfo] = useState<PermissionName | null>(null)
 
   const removeTemplatePermission = (id: number) => {
     updateTemplate(templateId, { templatePermissionsUsingId: { deleteById: [{ id }] } })
@@ -33,12 +35,16 @@ const PermissionNameList: React.FC<PermissionNameListProps> = ({
     <div className="flex-column-start-start">
       {getMatchingTemplatePermission({ type, stageNumber, templatePermissions, levelNumber }).map(
         (templatePermission) => (
-          <div key={templatePermission?.id} className="permission-config-container">
+          <div key={templatePermission?.id} className="config-container">
             <div className="flex-row-start-center">
               <TextIO
                 title="Permission Name"
                 text={templatePermission?.permissionName?.name || ''}
                 icon="info circle"
+                iconColor="blue"
+                onIconClick={() =>
+                  setPermissionNameInfo(templatePermission?.permissionName as PermissionName)
+                }
               />
               <TextIO
                 title="Permission Policy"
@@ -60,6 +66,10 @@ const PermissionNameList: React.FC<PermissionNameListProps> = ({
           </div>
         )
       )}
+      <PermissionNameInfo
+        permissionName={permissionNameInfo}
+        onClose={() => setPermissionNameInfo(null)}
+      />
     </div>
   )
 }

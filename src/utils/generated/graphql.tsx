@@ -28241,6 +28241,7 @@ export type GetPermissionStatisticsQuery = (
       { __typename?: 'PermissionJoinsConnection' }
       & { nodes: Array<Maybe<(
         { __typename?: 'PermissionJoin' }
+        & Pick<PermissionJoin, 'id'>
         & { organisation?: Maybe<(
           { __typename?: 'Organisation' }
           & Pick<Organisation, 'name'>
@@ -28256,9 +28257,10 @@ export type GetPermissionStatisticsQuery = (
       { __typename?: 'TemplatePermissionsConnection' }
       & { nodes: Array<Maybe<(
         { __typename?: 'TemplatePermission' }
+        & Pick<TemplatePermission, 'id' | 'stageNumber' | 'levelNumber'>
         & { template?: Maybe<(
           { __typename?: 'Template' }
-          & Pick<Template, 'id' | 'name' | 'code' | 'version'>
+          & Pick<Template, 'id' | 'name' | 'code' | 'version' | 'status'>
         )> }
       )>> }
     ) }
@@ -28266,22 +28268,22 @@ export type GetPermissionStatisticsQuery = (
     { __typename?: 'TemplateActionsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'TemplateAction' }
-      & Pick<TemplateAction, 'actionCode' | 'condition' | 'parameterQueries' | 'trigger'>
+      & Pick<TemplateAction, 'id' | 'actionCode' | 'condition' | 'parameterQueries' | 'trigger'>
       & { template?: Maybe<(
         { __typename?: 'Template' }
-        & Pick<Template, 'code' | 'name'>
+        & Pick<Template, 'code' | 'name' | 'version' | 'status'>
       )> }
     )>> }
   )>, templateElements?: Maybe<(
     { __typename?: 'TemplateElementsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'TemplateElement' }
-      & Pick<TemplateElement, 'code' | 'parameters' | 'title'>
+      & Pick<TemplateElement, 'id' | 'code' | 'parameters' | 'title'>
       & { section?: Maybe<(
         { __typename?: 'TemplateSection' }
         & { template?: Maybe<(
           { __typename?: 'Template' }
-          & Pick<Template, 'code' | 'name'>
+          & Pick<Template, 'code' | 'name' | 'status' | 'version'>
         )> }
       )> }
     )>> }
@@ -30437,6 +30439,7 @@ export const GetPermissionStatisticsDocument = gql`
     name
     permissionJoins {
       nodes {
+        id
         organisation {
           name
         }
@@ -30456,17 +30459,22 @@ export const GetPermissionStatisticsDocument = gql`
     }
     templatePermissions {
       nodes {
+        id
+        stageNumber
+        levelNumber
         template {
           id
           name
           code
           version
+          status
         }
       }
     }
   }
   templateActions(filter: {parametersQueriesString: {includes: $name}}) {
     nodes {
+      id
       actionCode
       condition
       parameterQueries
@@ -30474,11 +30482,14 @@ export const GetPermissionStatisticsDocument = gql`
       template {
         code
         name
+        version
+        status
       }
     }
   }
   templateElements(filter: {parametersString: {includes: $name}}) {
     nodes {
+      id
       code
       parameters
       title
@@ -30486,6 +30497,8 @@ export const GetPermissionStatisticsDocument = gql`
         template {
           code
           name
+          status
+          version
         }
       }
     }

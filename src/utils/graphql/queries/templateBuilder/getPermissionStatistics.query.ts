@@ -6,6 +6,7 @@ export default gql`
       name
       permissionJoins {
         nodes {
+          id
           organisation {
             name
           }
@@ -25,17 +26,22 @@ export default gql`
       }
       templatePermissions {
         nodes {
+          id
+          stageNumber
+          levelNumber
           template {
             id
             name
             code
             version
+            status
           }
         }
       }
     }
     templateActions(filter: { parametersQueriesString: { includes: $name } }) {
       nodes {
+        id
         actionCode
         condition
         parameterQueries
@@ -43,11 +49,14 @@ export default gql`
         template {
           code
           name
+          version
+          status
         }
       }
     }
     templateElements(filter: { parametersString: { includes: $name } }) {
       nodes {
+        id
         code
         parameters
         title
@@ -55,6 +64,8 @@ export default gql`
           template {
             code
             name
+            status
+            version
           }
         }
       }
