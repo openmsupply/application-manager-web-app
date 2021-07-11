@@ -33,7 +33,7 @@ const PermissionNameInfoWrapper: React.FC<PermissionNameInfoProps> = (props) => 
   return <PermissionNameInfo {...props} />
 }
 
-const stringSort = (s1: string, s2: string) => (s1 === s2 ? 0 : s1 > s2 ? -1 : 1)
+export const stringSort = (s1: string, s2: string) => (s1 === s2 ? 0 : s1 > s2 ? 1 : -1)
 
 const PermissionNameInfo: React.FC<PermissionNameInfoProps> = ({ permissionName, onClose }) => {
   const name = permissionName?.name || ''

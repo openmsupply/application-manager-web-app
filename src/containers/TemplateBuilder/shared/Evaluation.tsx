@@ -23,6 +23,30 @@ type EvaluationProps = {
   deleteKey?: () => void
 }
 
+type EvaluationHeaderProps = {
+  evaluation: EvaluatorNode
+}
+
+export const EvaluationHeader: React.FC<EvaluationHeaderProps> = ({ evaluation }) => {
+  const typedEvaluation = getTypedEvaluation(evaluation)
+
+  return (
+    <div className="flex-row-start-center">
+      <TextIO title="Type" text={typedEvaluation.type} />
+      {typedEvaluation.type === 'operator' && (
+        <TextIO title="operator" text={typedEvaluation.asOperator.operator} />
+      )}
+
+      {typedEvaluation.type !== 'operator' && (
+        <TextIO
+          title="Value"
+          text={truncate(getTypedEvaluationAsString(typedEvaluation), { length: 80 })}
+        />
+      )}
+    </div>
+  )
+}
+
 const Evaluation: React.FC<EvaluationProps> = ({
   evaluation,
   setEvaluation,
@@ -55,8 +79,6 @@ const Evaluation: React.FC<EvaluationProps> = ({
     },
   }
 
-  const typedEvaluation = getTypedEvaluation(evaluation)
-
   return (
     <Accordion className="evaluation-container">
       <Accordion.Title className="evaluation-container-title" active={isActive}>
@@ -65,18 +87,8 @@ const Evaluation: React.FC<EvaluationProps> = ({
 
         {updateKey && <TextIO title="Parameter Name" text={label} setText={updateKey} />}
 
-        <TextIO title="Type" text={typedEvaluation.type} />
-        {typedEvaluation.type === 'operator' && (
-          <TextIO title="operator" text={typedEvaluation.asOperator.operator} />
-        )}
-        <TextIO title="Type" text={typedEvaluation.type} />
+        <EvaluationHeader evaluation={evaluation} />
 
-        {typedEvaluation.type !== 'operator' && (
-          <TextIO
-            title="Type"
-            text={truncate(getTypedEvaluationAsString(typedEvaluation), { length: 80 })}
-          />
-        )}
         <Icon
           size="large"
           name={isActive ? 'angle up' : 'angle down'}

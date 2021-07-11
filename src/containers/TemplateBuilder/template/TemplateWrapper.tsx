@@ -7,6 +7,7 @@ import strings from '../../../utils/constants'
 import {
   FullTemplateFragment,
   GetFullTemplateInfoQuery,
+  TemplateAction,
   TemplateCategory,
   TemplateElement,
   TemplateFilterJoin,
@@ -19,8 +20,8 @@ import {
 import { useRouter } from '../../../utils/hooks/useRouter'
 import OperationContext from '../shared/OperationContext'
 import TextIO from '../shared/TextIO'
+import Actions from './Actions/Actions'
 
-// import Actions from './Actions'
 import Form from './Form/Form'
 import General from './General/General'
 import Permissions from './Permissions/Permissions'
@@ -43,11 +44,11 @@ const tabs = [
     title: 'Permissions',
     render: () => <Permissions />,
   },
-  // {
-  //   route: 'actions',
-  //   title: 'Actions',
-  //   render: () => <Actions templateInfo={templateInfo} />,
-  // },
+  {
+    route: 'actions',
+    title: 'Actions',
+    render: () => <Actions />,
+  },
 ]
 
 export const disabledMessage = 'Can only edit draft procedure, please make it draft or duplicate'
@@ -113,6 +114,7 @@ type TemplateContextState = {
   fromQuery?: FullTemplateFragment
   templatePermissions: TemplatePermission[]
   templateStages: TemplateStage[]
+  actions: TemplateAction[]
 }
 
 const defaultTemplateContextState: TemplateContextState = {
@@ -131,6 +133,7 @@ const defaultTemplateContextState: TemplateContextState = {
   templateFilterJoins: [],
   templatePermissions: [],
   templateStages: [],
+  actions: [],
 }
 
 const Context = createContext<TemplateContextState>(defaultTemplateContextState)
@@ -172,6 +175,7 @@ const TemplateWrapper: React.FC = () => {
         templateFilterJoins: (template?.templateFilterJoins?.nodes || []) as TemplateFilterJoin[],
         templatePermissions: (template?.templatePermissions?.nodes || []) as TemplatePermission[],
         templateStages: (template?.templateStages?.nodes || []) as TemplateStage[],
+        actions: (template?.templateActions?.nodes || []) as TemplateAction[],
       })
       setFirstLoaded(true)
     }
