@@ -42,9 +42,6 @@ export const TextInfoElement: React.FC<TextInfoProps> = (props) => {
     const negative = style === 'negative'
     const error = style === 'error'
 
-    console.log('Title', title)
-    console.log('text', text)
-
     // Styled Message box
     return (
       <div className="text-info">
