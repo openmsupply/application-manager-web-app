@@ -99,7 +99,6 @@ const ImportCsvModal: React.FC<any> = ({
             <Dimmer active inverted>
               <Loader inverted>Submitting...</Loader>
             </Dimmer>
-            <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
           </Segment>
         ) : errors.length > 0 ? (
           <Message error header="Errors found" list={[...errors]} />

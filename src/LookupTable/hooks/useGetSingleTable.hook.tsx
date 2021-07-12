@@ -11,7 +11,8 @@ const initialStructureState: any = {
 }
 
 const useGetSingleTable = () => {
-  const GQL_TABLE_NAME_PREFIX = 'lookupTable'
+  const GQL_TABLE_NAME_PREFIX: string = 'lookupTable'
+  let gqlTableName: string = ''
 
   const [structure, setStructure]: any = useState(initialStructureState)
 
@@ -31,7 +32,8 @@ const useGetSingleTable = () => {
 
   useEffect(() => {
     if (structure?.id) {
-      setDynamicQuery(getDynamicSingleTable(structure))
+      gqlTableName = `${GQL_TABLE_NAME_PREFIX}${capitalizeFirstLetter(toCamelCase(structure.name))}`
+      setDynamicQuery(getDynamicSingleTable(structure, gqlTableName))
 
       // Note: After we have updated the structure and added/updated row is successful, structure query
       // successfully brings the updated structure but the lookup table call says the newly added field is
@@ -43,9 +45,7 @@ const useGetSingleTable = () => {
 
   useEffect(() => {
     if (structure?.name) {
-      const tableName = `${GQL_TABLE_NAME_PREFIX}${capitalizeFirstLetter(
-        toCamelCase(structure.name)
-      )}s`
+      const tableName = `${gqlTableName}s`
 
       if (!loading && called && !error && data[tableName]) {
         setLookupTable(data[tableName].nodes)

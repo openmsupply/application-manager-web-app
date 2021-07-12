@@ -1,9 +1,9 @@
 import { gql } from '@apollo/client'
-import { buildFieldList, capitalizeFirstLetter, toCamelCase } from '../utils'
+import { buildFieldList } from '../utils'
 
-const getDynamicSingleTable = (structure: any) => gql`
+const getDynamicSingleTable = (structure: any, gqlTableName: string) => gql`
     query getDynamicSingleTable {
-      lookupTable${capitalizeFirstLetter(toCamelCase(structure.name))}s {
+      lookupTable${gqlTableName}s {
         nodes {
           ${buildFieldList(structure.fieldMap)}
         }
