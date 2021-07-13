@@ -30,6 +30,10 @@ const UserArea: React.FC = () => {
 const MainMenuBar: React.FC = () => {
   // TO-DO: Logic for deducing what should show in menu bar
   // Probably passed in as props
+  const {
+    userState: { isAdmin },
+  } = useUserState()
+
   return (
     <div id="menu-bar">
       <List horizontal>
@@ -39,18 +43,17 @@ const MainMenuBar: React.FC = () => {
             {strings.MENU_ITEM_DASHBOARD}
           </Link>
         </List.Item>
-        {/* <List.Item>
-          <Link to="/layout">Layout helpers</Link>
-        </List.Item> */}
-        <List.Item>
-          <Link to="/lookup-tables">Lookup Tables</Link>
-        </List.Item>
         <List.Item>
           <Link to="/outcomes">Outcomes</Link>
         </List.Item>
         <List.Item>
           <Link to="/application/new?type=UserEdit">Edit User Account</Link>
         </List.Item>
+        {isAdmin && (
+          <List.Item>
+            <Link to="/admin">Admin Configurations</Link>
+          </List.Item>
+        )}
       </List>
     </div>
   )
@@ -68,8 +71,14 @@ const OrgSelector: React.FC<{ user: User; orgs: OrganisationSimple[]; onLogin: F
   const handleChange = async (_: SyntheticEvent, { value: orgId }: any) => {
     await attemptLoginOrg({ orgId, JWT, onLoginOrgSuccess })
   }
-  const onLoginOrgSuccess = async ({ user, orgList, templatePermissions, JWT }: LoginPayload) => {
-    await onLogin(JWT, user, templatePermissions, orgList)
+  const onLoginOrgSuccess = async ({
+    user,
+    orgList,
+    templatePermissions,
+    JWT,
+    isAdmin,
+  }: LoginPayload) => {
+    await onLogin(JWT, user, templatePermissions, orgList, isAdmin)
   }
   const dropdownOptions = orgs.map(({ orgId, orgName }) => ({
     key: orgId,

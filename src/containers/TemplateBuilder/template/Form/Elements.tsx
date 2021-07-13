@@ -9,7 +9,7 @@ import { useOperationState } from '../../shared/OperationContext'
 import { getRandomNumber } from '../../shared/OperationContextHelpers'
 
 import { disabledMessage, useTemplateState } from '../TemplateWrapper'
-import { useFullApplicationState } from './ApplicationWrapper'
+import { useFullApplicationState } from '../ApplicationWrapper'
 import ElementConfig from './ElementConfig'
 import { useFormState } from './Form'
 import { useFormStructureState } from './FormWrapper'

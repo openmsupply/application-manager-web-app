@@ -547,6 +547,7 @@ interface LoginPayload {
   JWT: string
   templatePermissions: TemplatePermissions
   orgList?: OrganisationSimple[]
+  isAdmin: boolean
 }
 
 interface UseGetReviewStructureForSectionProps {

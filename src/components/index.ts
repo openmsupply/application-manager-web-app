@@ -24,22 +24,18 @@ import TemplateNew from './TemplateNew'
 import Template from './Template'
 import Account from './Account'
 import { Organisation, OrgMemberEdit } from './Organisation'
-import { AdminUsers, AdminPermissions, Config } from './AdminOther'
 import { NotificationsList, Notification } from './Notification'
 import NoMatch from './NoMatch'
 import { ProductList, Product } from './Product'
 
 export {
   Account,
-  AdminPermissions,
-  AdminUsers,
   ApplicationContainer,
   ApplicationSections,
   ApplicationSelectType,
   ApplicationProgressBar,
   Approval,
   Admin,
-  Config,
   ConsolidationSectionProgressBar,
   FilterList,
   Footer,

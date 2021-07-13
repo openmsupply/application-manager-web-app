@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Loading } from '../../../../components'
-import { useUserState } from '../../../../contexts/UserState'
-import useGetApplicationStructure from '../../../../utils/hooks/useGetApplicationStructure'
-import useLoadApplication from '../../../../utils/hooks/useLoadApplication'
-import { FullStructure, User } from '../../../../utils/types'
-import { getDefaultValues } from '../../../Application/ApplicationCreate'
-import { useOperationState } from '../../shared/OperationContext'
-import { useTemplateState } from '../TemplateWrapper'
-import { useFormStructureState } from './FormWrapper'
+import { Loading } from '../../../components'
+import { useUserState } from '../../../contexts/UserState'
+import useGetApplicationStructure from '../../../utils/hooks/useGetApplicationStructure'
+import useLoadApplication from '../../../utils/hooks/useLoadApplication'
+import { FullStructure, User } from '../../../utils/types'
+import { getDefaultValues } from '../../Application/ApplicationCreate'
+import { useOperationState } from '../shared/OperationContext'
+import { useTemplateState } from './TemplateWrapper'
+import { useFormStructureState } from './Form/FormWrapper'
 
 type ApplicationOperationContextState = {
   resetApplication: () => Promise<void>
@@ -117,7 +117,7 @@ const FullApplicationContext = createContext<FullApplicationContextState>(
 )
 
 const FullAppllicationWrapper: React.FC = ({ children }) => {
-  const { structure } = useApplicationContext()
+  const { structure } = useApplicationState()
   const [state, setState] = useState<FullApplicationContextState | null>(null)
   const { fullStructure } = useGetApplicationStructure({
     structure,
@@ -139,12 +139,12 @@ const FullAppllicationWrapper: React.FC = ({ children }) => {
 
 const useApplicationOperationState = () => useContext(ApplicationOperationContext)
 const useFullApplicationState = () => useContext(FullApplicationContext)
-const useApplicationContext = () => useContext(AppicationContext)
+const useApplicationState = () => useContext(AppicationContext)
 export {
   CreateApplicationWrapper,
   ApplicationWrapper,
   FullAppllicationWrapper,
   useApplicationOperationState,
   useFullApplicationState,
-  useApplicationContext,
+  useApplicationState,
 }

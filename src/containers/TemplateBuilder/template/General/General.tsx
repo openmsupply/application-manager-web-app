@@ -1,23 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Header } from 'semantic-ui-react'
 
 import {
   TemplateStatus,
   useGetTeplatesAvailableForCodeQuery,
 } from '../../../../utils/generated/graphql'
 import ButtonWithFallback from '../../shared/ButtonWidthFallback'
+import Markdown from '../../../../utils/helpers/semanticReactMarkdown'
 import { useOperationState } from '../../shared/OperationContext'
 import TextIO from '../../shared/TextIO'
+import { useApplicationState } from '../ApplicationWrapper'
 import { useTemplateState } from '../TemplateWrapper'
 import Category from './Categories'
 import Filters from './Filters'
+import { IconButton } from '../../shared/IconButton'
+import MessagesConfig from './MessagesConfig'
 
 const General: React.FC = () => {
   const { updateTemplate } = useOperationState()
-  const { template } = useTemplateState()
+  const { structure } = useApplicationState()
+  const { template, fromQuery } = useTemplateState()
   const { data: availableTemplatesData, refetch: refetchAvailable } =
     useGetTeplatesAvailableForCodeQuery({
       variables: { code: template.code },
     })
+  const [isMessageConfigOpen, setIsMessageConfigOpen] = useState(false)
 
   const canSetAvailable =
     availableTemplatesData?.templates?.nodes?.length === 0 &&
@@ -77,6 +84,29 @@ const General: React.FC = () => {
       <Category />
 
       <Filters />
+      <div className="spacer-20" />
+      <div className="flex-row-start-center">
+        <Header className="no-margin-no-padding" as="h3">
+          Messages
+        </Header>
+        <IconButton name="setting" onClick={() => setIsMessageConfigOpen(true)} />
+      </div>
+      <div className="config-container">
+        <Header className="no-margin-no-padding" as="h6">
+          Start Message
+        </Header>
+        <div className="spacer-20" />
+        <Markdown text={structure.info.startMessage || ''} />
+      </div>
+
+      <div className="config-container">
+        <Header className="no-margin-no-padding" as="h6">
+          Submission Message
+        </Header>
+        <div className="spacer-20" />
+        <Markdown text={structure.info.submissionMessage || ''} />
+      </div>
+      <MessagesConfig isOpen={isMessageConfigOpen} onClose={() => setIsMessageConfigOpen(false)} />
     </div>
   )
 }

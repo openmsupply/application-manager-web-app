@@ -1,27 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Loading } from '../../../../components'
 
-import {
-  CreateApplicationWrapper,
-  FullAppllicationWrapper,
-  ApplicationWrapper,
-} from './ApplicationWrapper'
 import Elements from './Elements'
-import FormWrapper from './FormWrapper'
+
 import Pages from './Pages'
 import Sections from './Sections'
-
-const FormWithWrappers: React.FC = () => (
-  <FormWrapper>
-    <CreateApplicationWrapper>
-      <ApplicationWrapper>
-        <FullAppllicationWrapper>
-          <Form />
-        </FullAppllicationWrapper>
-      </ApplicationWrapper>
-    </CreateApplicationWrapper>
-  </FormWrapper>
-)
 
 type SetSelectedSectionId = (templateSectionId: number) => void
 type SetSelectedPageNumber = (selectedPageNumber: number) => void
@@ -74,4 +57,4 @@ const Form: React.FC = () => {
 
 export const useFormState = () => useContext(FormContext)
 
-export default FormWithWrappers
+export default Form

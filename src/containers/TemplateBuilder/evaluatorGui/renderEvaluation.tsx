@@ -1,9 +1,10 @@
 import evaluateExpression from '@openmsupply/expression-evaluator'
 import { IParameters, ValueNode } from '@openmsupply/expression-evaluator/lib/types'
 import React, { useState } from 'react'
-import { Header, Icon, Portal, Segment } from 'semantic-ui-react'
+import { Header, Icon, Modal, Portal, Segment } from 'semantic-ui-react'
 import { Loading } from '../../../components'
 import { guis } from './guiDefinitions'
+import Markdown from '../../../utils/helpers/semanticReactMarkdown'
 import {
   convertTypedEvaluationToBaseType,
   getTypedEvaluation,
@@ -27,7 +28,7 @@ const Evaluate: React.FC<{ typedEvaluation: EvaluationType; evaluatorParamers?: 
   typedEvaluation,
   evaluatorParamers,
 }) => {
-  const [evaluationResult, setEvaluationResult] = useState<ValueNode | undefined>()
+  const [evaluationResult, setEvaluationResult] = useState<ValueNode | undefined | null>(null)
 
   const evaluateNode = async () => {
     try {
@@ -43,25 +44,26 @@ const Evaluate: React.FC<{ typedEvaluation: EvaluationType; evaluatorParamers?: 
 
   return (
     <>
-      <Portal
-        trigger={<Icon className="clickable" name="lightning" onClick={() => evaluateNode()} />}
-        onClose={() => setEvaluationResult(undefined)}
+      <Icon className="clickable" name="lightning" onClick={() => evaluateNode()} />
+      <Modal
+        className="config-modal"
+        open={evaluationResult !== null}
+        onClose={() => setEvaluationResult(null)}
       >
-        <Segment
-          style={{
-            left: '40%',
-            position: 'fixed',
-            top: '50%',
-            zIndex: 1000,
-          }}
-        >
+        <div className="config-modal-container ">
           <Header>Evaluation Result</Header>
           {evaluationResult === undefined && <Loading />}
           {evaluationResult !== undefined && (
             <pre>{JSON.stringify(evaluationResult, null, ' ')}</pre>
           )}
-        </Segment>
-      </Portal>
+          {typeof evaluationResult === 'string' && (
+            <>
+              <Header as="h4">Markdown</Header>
+              <Markdown text={evaluationResult} />
+            </>
+          )}
+        </div>
+      </Modal>
     </>
   )
 }

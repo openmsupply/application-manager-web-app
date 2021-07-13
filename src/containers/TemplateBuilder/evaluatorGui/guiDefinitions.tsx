@@ -20,6 +20,7 @@ export const guis: GuisType = [
       <ComponentLibrary.TextInput
         key="stringType"
         text={evaluation.asString}
+        isTextArea={true}
         setText={(text) => setEvaluation(getTypedEvaluation(text))}
       />
     ),

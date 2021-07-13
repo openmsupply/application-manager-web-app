@@ -1,9 +1,19 @@
 import React from 'react'
 
-export const AdminUsers: React.FC = () => {
+export const AdminLocalisations: React.FC = () => {
   return (
     <div>
-      <h1>User Management page</h1>
+      <h1>Localisations Management page</h1>
+      not implemented
+    </div>
+  )
+}
+
+export const AdminPlugins: React.FC = () => {
+  return (
+    <div>
+      <h1>Plugin Management page </h1>
+      not implemented
     </div>
   )
 }
@@ -12,14 +22,16 @@ export const AdminPermissions: React.FC = () => {
   return (
     <div>
       <h1>Permissions Management page</h1>
+      not implemented
     </div>
   )
 }
 
-export const Config: React.FC = () => {
+export const AdminOutcomes: React.FC = () => {
   return (
     <div>
-      <h1>Configuration page</h1>
+      <h1>Outcome Configuration Page</h1>
+      not implemented
     </div>
   )
 }

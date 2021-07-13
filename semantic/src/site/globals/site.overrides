@@ -1411,6 +1411,30 @@ a:hover {
 }
 
 /*--------------------------------
+      Admin Menu
+---------------------------------*/
+
+#admin-display {
+  .flex-column();
+  align-items: center;
+
+  .admin-options-container {
+    .flex-row();
+    align-items: center;
+    flex-wrap: 1;
+
+    .admin-option {
+      margin: 15px;
+      max-width: 330px;
+      border-radius: @borderRadius;
+      background-color: @surfacesWhite;
+      box-shadow: @templateBoxShadow;
+      padding: 10px;
+    }
+  }
+}
+
+/*--------------------------------
       Template Builder
 ---------------------------------*/
 
@@ -1598,6 +1622,15 @@ a:hover {
   .flex-column-start-center();
   margin-left:30px;
 }
+.evaluator-operator-container {
+  .flex-column-start-start();
+  background: rgba(0,0,0, 0.03);
+  padding: 5px;
+  margin:2px;
+  border-radius: @borderRadius;
+  border: 2px solid rgba(0,0,0,0.2);
+  background-color: rgba(50, 252, 50, 0.01);
+}
 
 .config-container {
   .flex-column-start-start();
@@ -1606,7 +1639,6 @@ a:hover {
   background-color: @surfacesWhite;
   margin: 5px;
 }
-
 
 .config-container-alternate {
   .config-container();

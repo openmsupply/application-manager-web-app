@@ -13,6 +13,7 @@ export type ComponentLibraryType = {
     setText: (text: string) => void
     title?: string
     disabled?: boolean
+    isTextArea?: boolean
   }>
   NumberInput: React.FC<{
     number: number

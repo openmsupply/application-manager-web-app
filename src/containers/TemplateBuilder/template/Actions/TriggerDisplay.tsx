@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Header } from 'semantic-ui-react'
-import { ActionPlugin, TemplateAction, Trigger } from '../../../../utils/generated/graphql'
+import { TemplateAction, Trigger } from '../../../../utils/generated/graphql'
 import CheckboxIO from '../../shared/CheckboxIO'
 import { EvaluationHeader } from '../../shared/Evaluation'
 import { IconButton } from '../../shared/IconButton'
@@ -111,8 +111,8 @@ const TriggerDisplay: React.FC<TriggerDisplayProps> = ({ trigger, allTemplateAct
             {title}
           </Header>
           {templateActions.map((templateAction, index) => (
-            <div className="config-container-alternate">
-              <div key={templateAction.id} className="flex-row-start-center">
+            <div key={templateAction.id} className="config-container-alternate">
+              <div className="flex-row-start-center">
                 {!isAsynchronous(templateAction) && templateAction?.sequence !== firstSequence && (
                   <IconButton
                     name="angle up"

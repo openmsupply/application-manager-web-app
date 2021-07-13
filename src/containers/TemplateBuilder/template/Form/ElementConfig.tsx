@@ -10,7 +10,7 @@ import { useOperationState } from '../../shared/OperationContext'
 import { ParametersType, Parameters } from '../../shared/Parameters'
 import TextIO from '../../shared/TextIO'
 import { disabledMessage, useTemplateState } from '../TemplateWrapper'
-import { useFullApplicationState } from './ApplicationWrapper'
+import { useFullApplicationState } from '../ApplicationWrapper'
 import { useFormState } from './Form'
 import FromExistingElement from './FromExistingElement'
 

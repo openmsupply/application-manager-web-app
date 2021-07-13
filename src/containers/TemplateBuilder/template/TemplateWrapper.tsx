@@ -21,8 +21,14 @@ import { useRouter } from '../../../utils/hooks/useRouter'
 import OperationContext from '../shared/OperationContext'
 import TextIO from '../shared/TextIO'
 import Actions from './Actions/Actions'
+import {
+  CreateApplicationWrapper,
+  ApplicationWrapper,
+  FullAppllicationWrapper,
+} from './ApplicationWrapper'
 
 import Form from './Form/Form'
+import FormWrapper from './Form/FormWrapper'
 import General from './General/General'
 import Permissions from './Permissions/Permissions'
 
@@ -70,29 +76,27 @@ const TemplateContainer: React.FC = () => {
   if (!selected) return <NoMatch />
 
   return (
-    <OperationContext>
-      <div className="template-builder-wrapper">
-        <div className="template-builder-info-bar">
-          <TextIO title="version" text={String(version)} />
-          <TextIO title="name" text={name} />
-          <TextIO title="code" text={code} />
-          <TextIO title="status" text={status} />
-          <TextIO title="# applications" text={String(applicationCount)} />
-        </div>
-        <div className="template-builder-tabs">
-          {tabs.map(({ route, title }) => (
-            <div
-              key={title}
-              onClick={() => push(`/admin/template/${id}/${route}`)}
-              className={selected.route === route ? 'builder-selected ' : ''}
-            >
-              <Header as="h4">{title}</Header>
-            </div>
-          ))}
-        </div>
-        {selected.render()}
+    <div className="template-builder-wrapper">
+      <div className="template-builder-info-bar">
+        <TextIO title="version" text={String(version)} />
+        <TextIO title="name" text={name} />
+        <TextIO title="code" text={code} />
+        <TextIO title="status" text={status} />
+        <TextIO title="# applications" text={String(applicationCount)} />
       </div>
-    </OperationContext>
+      <div className="template-builder-tabs">
+        {tabs.map(({ route, title }) => (
+          <div
+            key={title}
+            onClick={() => push(`/admin/template/${id}/${route}`)}
+            className={selected.route === route ? 'builder-selected ' : ''}
+          >
+            <Header as="h4">{title}</Header>
+          </div>
+        ))}
+      </div>
+      {selected.render()}
+    </div>
   )
 }
 
@@ -186,7 +190,17 @@ const TemplateWrapper: React.FC = () => {
   if (!firstLoaded) return <Loading />
   return (
     <Context.Provider value={state}>
-      <TemplateContainer />
+      <OperationContext>
+        <FormWrapper>
+          <CreateApplicationWrapper>
+            <ApplicationWrapper>
+              <FullAppllicationWrapper>
+                <TemplateContainer />
+              </FullAppllicationWrapper>
+            </ApplicationWrapper>
+          </CreateApplicationWrapper>
+        </FormWrapper>
+      </OperationContext>
     </Context.Provider>
   )
 }

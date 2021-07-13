@@ -38,9 +38,9 @@ const UserSelection: React.FC = () => {
     }
 
     // Organisation login (auto-select first in list)
-    const { JWT, user, templatePermissions, orgList } = loginResult
+    const { JWT, user, templatePermissions, orgList, isAdmin } = loginResult
     if (orgList.length === 0) {
-      await onLogin(JWT, user, templatePermissions, orgList)
+      await onLogin(JWT, user, templatePermissions, orgList, isAdmin)
       return
     }
     const selectedOrg = orgList[0]
@@ -60,7 +60,8 @@ const UserSelection: React.FC = () => {
       verifyOrgResult.JWT,
       verifyOrgResult.user,
       verifyOrgResult.templatePermissions,
-      orgList
+      orgList,
+      verifyOrgResult.isAdmin
     )
   }
 

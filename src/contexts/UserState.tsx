@@ -9,6 +9,7 @@ type UserState = {
   orgList: OrganisationSimple[]
   isLoading: boolean
   isNonRegistered: boolean | null
+  isAdmin: boolean
 }
 
 export type UserActions =
@@ -20,6 +21,7 @@ export type UserActions =
       newUser: User
       newPermissions: TemplatePermissions
       newOrgList: OrganisationSimple[]
+      isAdmin: boolean
     }
   | {
       type: 'setLoading'
@@ -37,12 +39,13 @@ const reducer = (state: UserState, action: UserActions) => {
     case 'resetCurrentUser':
       return initialState
     case 'setCurrentUser':
-      const { newUser, newPermissions, newOrgList } = action
+      const { newUser, newPermissions, newOrgList, isAdmin } = action
       return {
         ...state,
         currentUser: newUser,
         templatePermissions: newPermissions,
         orgList: newOrgList,
+        isAdmin,
         isNonRegistered: newUser.username === strings.USER_NONREGISTERED,
       }
     case 'setLoading':
@@ -68,6 +71,7 @@ const initialState: UserState = {
   orgList: [],
   isLoading: false,
   isNonRegistered: null,
+  isAdmin: false,
 }
 
 // By setting the typings here, we ensure we get intellisense in VS Code
@@ -99,7 +103,8 @@ export function UserProvider({ children }: UserProviderProps) {
     JWT: string,
     user: User | undefined = undefined,
     permissions: TemplatePermissions | undefined = undefined,
-    orgList: OrganisationSimple[] = []
+    orgList: OrganisationSimple[] = [],
+    isAdmin: boolean = false
   ) => {
     if (JWT == undefined) logout()
     dispatch({ type: 'setLoading', isLoading: true })
@@ -110,6 +115,7 @@ export function UserProvider({ children }: UserProviderProps) {
         type: 'setCurrentUser',
         newUser: user,
         newPermissions: permissions,
+        isAdmin,
         newOrgList: orgList,
       })
       dispatch({ type: 'setLoading', isLoading: false })

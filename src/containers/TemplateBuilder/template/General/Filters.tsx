@@ -124,7 +124,7 @@ const Filters: React.FC = () => {
       <div className="flex-row-start-center">
         <DropdownIO
           value={selectedFilter.id}
-          title="Categories"
+          title="Filters"
           options={allFilters}
           getKey={'id'}
           getValue={'id'}
@@ -135,6 +135,7 @@ const Filters: React.FC = () => {
         />
         <Icon className="clickable" name="add square" onClick={addFilterJoin} />
       </div>
+      <div className="spacer-20" />
       <div className="filter-joins">
         {filterJoins.map((filterJoin) => (
           <Label
@@ -142,7 +143,9 @@ const Filters: React.FC = () => {
             onClick={() => {
               selectFilterJoin(filterJoin)
             }}
-            className={`${filterJoin?.id === selectedFilterJoin?.id ? 'selected' : ''}`}
+            className={`clickable ${
+              filterJoin?.id === selectedFilterJoin?.id ? 'builder-selected' : ''
+            }`}
           >
             {filterJoin?.filter?.code}
           </Label>
@@ -150,7 +153,7 @@ const Filters: React.FC = () => {
       </div>
 
       {updateState && (
-        <div key={selectedFilterJoin?.id} className="template-bulder-filter-input ">
+        <div key={selectedFilterJoin?.id} className="template-bulder-filter-input">
           <Header as="h5">{`Edit Filter`}</Header>
           <TextIO
             text={updateState.code}

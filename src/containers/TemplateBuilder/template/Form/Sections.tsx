@@ -7,7 +7,7 @@ import { getRandomNumber } from '../../shared/OperationContextHelpers'
 import TextIO from '../../shared/TextIO'
 import { disabledMessage, useTemplateState } from '../TemplateWrapper'
 
-import { useApplicationOperationState, useFullApplicationState } from './ApplicationWrapper'
+import { useApplicationOperationState, useFullApplicationState } from '../ApplicationWrapper'
 import { useFormState } from './Form'
 import { useFormStructureState } from './FormWrapper'
 

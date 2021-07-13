@@ -9,7 +9,7 @@ import { ComponentLibraryType } from './types'
 
 // All 'sets' are done onBlur (loose focus), to avoid excessible evaluations (especially for api types)
 const ComponentLibrary: ComponentLibraryType = {
-  TextInput: ({ text, setText, title = '', disabled = false }) => (
+  TextInput: ({ text, setText, title = '', disabled = false, isTextArea = false }) => (
     <div className="long">
       <TextIO
         isPropUpdated={true}
@@ -17,6 +17,7 @@ const ComponentLibrary: ComponentLibraryType = {
         text={text}
         setText={setText}
         disabled={disabled}
+        isTextArea={isTextArea}
       />
     </div>
   ),
