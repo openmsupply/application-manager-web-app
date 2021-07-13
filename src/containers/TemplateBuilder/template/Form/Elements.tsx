@@ -79,7 +79,7 @@ const Elements: React.FC = () => {
         title="New Element"
         onClick={createElement}
       />
-      <ElementConfig element={elementUpdateState} setElement={setElementUpdateState} />
+      <ElementConfig element={elementUpdateState} onClose={() => setElementUpdateState(null)} />
     </div>
   )
 }

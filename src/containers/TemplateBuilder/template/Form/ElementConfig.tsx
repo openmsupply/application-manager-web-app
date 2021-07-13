@@ -1,6 +1,6 @@
 import { EvaluatorNode } from '@openmsupply/expression-evaluator/lib/types'
 import React, { useEffect, useState } from 'react'
-import { Modal, Label, Icon } from 'semantic-ui-react'
+import { Modal, Label, Icon, Header } from 'semantic-ui-react'
 import { pluginProvider } from '../../../../formElementPlugins'
 import { TemplateElement, TemplateElementCategory } from '../../../../utils/generated/graphql'
 import ButtonWithFallback from '../../shared/ButtonWidthFallback'
@@ -16,7 +16,7 @@ import FromExistingElement from './FromExistingElement'
 
 type ElementConfigProps = {
   element: TemplateElement | null
-  setElement: (element: TemplateElement | null) => void
+  onClose: () => void
 }
 
 type ElementUpdateState = {
@@ -65,7 +65,7 @@ const evaluations: Evaluations = [
   { key: 'defaultValue', title: 'Default Value' },
 ]
 
-const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) => {
+const ElementConfig: React.FC<ElementConfigProps> = ({ element, onClose }) => {
   const { structure } = useFullApplicationState()
   const {
     template: { isDraft },
@@ -102,7 +102,7 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
     })
     if (!result) return
 
-    setElement(null)
+    onClose()
   }
 
   const updateElement = async () => {
@@ -113,12 +113,12 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
     })
     if (!result) return
 
-    setElement(null)
+    onClose()
   }
 
   return (
-    <Modal className="config-modal" open={true} onClose={() => setElement(null)}>
-      <div className="config-modal-container ">
+    <Modal className="config-modal" open={true} onClose={onClose}>
+      <div className="config-modal-container">
         {!isDraft && <Label color="red">Template form only editable on draft templates</Label>}
         <Label className="element-edit-info" attached="top right">
           <a
@@ -200,7 +200,8 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
             />
           </div>
         </div>
-        <div className="flex-column-start-start">
+        <div className="config-container-alternate">
+          <Header as="h4">Common Properties</Header>
           {evaluations.map(({ key, title }) => (
             <Evaluation
               label={title}
@@ -220,6 +221,7 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
           setParameters={(parameters) => setState({ ...state, parameters })}
         />
 
+        <div className="spacer-20" />
         <div className="flex-row-center-center">
           <ButtonWithFallback
             title="Save"
@@ -234,7 +236,7 @@ const ElementConfig: React.FC<ElementConfigProps> = ({ element, setElement }) =>
             title="Remove"
             onClick={removeElement}
           />
-          <ButtonWithFallback title="Cancel" onClick={() => setElement(null)} />
+          <ButtonWithFallback title="Cancel" onClick={onClose} />
         </div>
       </div>
     </Modal>

@@ -28,7 +28,7 @@ export const Parameters: React.FC<ParametersProps> = ({
     key1 > key2 ? -1 : key1 === key2 ? 0 : 1
   )
   return (
-    <Accordion className="evaluation-container">
+    <Accordion className="evaluation-container config-container-alternate">
       <Accordion.Title
         className="evaluation-container-title"
         active={isActive}
@@ -37,7 +37,7 @@ export const Parameters: React.FC<ParametersProps> = ({
         <Header
           as="h4"
           className="no-margin-no-padding"
-        >{`Parameters (${sortedParameters.length})`}</Header>
+        >{`Plugin Specific Parameters (${sortedParameters.length})`}</Header>
         <Icon size="large" name={isActive ? 'angle up' : 'angle down'} />
       </Accordion.Title>
       {isActive && (
@@ -46,6 +46,7 @@ export const Parameters: React.FC<ParametersProps> = ({
             <div className="flex-column-start-center">
               <div className="flex-row-center-center">
                 <CheckboxIO title="Show As GUI" value={asGui} setValue={setAsGui} />
+                <div className="spacer-10" />
                 {asGui && (
                   <Button
                     primary

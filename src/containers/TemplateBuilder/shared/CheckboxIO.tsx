@@ -30,21 +30,23 @@ const CheckboxIO: React.FC<CheckboxIOprops> = ({
       content={disabledMessage}
       disabled={!disabled || !disabledMessage}
       trigger={
-        <div className="io-wrapper checkbox">
+        <div className="io-wrapper">
           {title && <div className="io-component key">{title}</div>}
-          <Checkbox
-            checked={innerValue}
-            toggle
-            disabled={disabled}
-            size="small"
-            onChange={() => {
-              console.log('yow')
-              const newValue = !innerValue
-              const result = setValue(newValue)
-              if (typeof result === 'boolean') setInnerValue(result)
-              else setInnerValue(newValue)
-            }}
-          />
+          <div className="io-component value">
+            <Checkbox
+              checked={innerValue}
+              toggle
+              disabled={disabled}
+              size="small"
+              onChange={() => {
+                console.log('yow')
+                const newValue = !innerValue
+                const result = setValue(newValue)
+                if (typeof result === 'boolean') setInnerValue(result)
+                else setInnerValue(newValue)
+              }}
+            />
+          </div>
         </div>
       }
     />

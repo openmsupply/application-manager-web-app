@@ -100,6 +100,7 @@ const Evaluation: React.FC<EvaluationProps> = ({
           <>
             <div className="flex-column-start-center">
               <CheckboxIO title="Show As GUI" value={asGui} setValue={setAsGui} />
+              <div className="spacer-10" />
               {!asGui && (
                 <div className="long">
                   <JsonIO
@@ -121,6 +122,7 @@ const Evaluation: React.FC<EvaluationProps> = ({
             {fullStructure && (
               <div className="object-properties-container">
                 <Label>Object Properties</Label>
+                <div className="spacer-20" />
                 <ReactJson src={objects} collapsed={2} />
               </div>
             )}
