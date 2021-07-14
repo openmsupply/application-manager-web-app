@@ -5,6 +5,7 @@ import { NoMatch } from '.'
 import TemplateWrapper from '../containers/TemplateBuilder/template/TemplateWrapper'
 import Templates from '../containers/TemplateBuilder/Templates'
 import { useUserState } from '../contexts/UserState'
+import { LookupTableRoutes } from '../LookupTable'
 import { useRouter } from '../utils/hooks/useRouter'
 import { AdminLocalisations, AdminOutcomes, AdminPermissions, AdminPlugins } from './AdminOther'
 
@@ -18,72 +19,63 @@ const Admin: React.FC = () => {
 
   if (!isAdmin) return <NoMatch />
 
+  const adminOption = [
+    {
+      route: 'templates',
+      header: 'Templates/Procedures and Builder',
+      Element: () => <Templates />,
+    },
+    {
+      route: 'lookup-tables',
+      header: 'Lookup Tables',
+      Element: () => <LookupTableRoutes />,
+    },
+    {
+      route: 'outcomes',
+      header: 'Outcome Configurations',
+      Element: () => <AdminOutcomes />,
+    },
+    {
+      route: 'permissions',
+      header: 'Permission Policies and Names',
+      Element: () => <AdminPermissions />,
+    },
+    {
+      route: 'plugins',
+      header: 'Plugins',
+      Element: () => <AdminPlugins />,
+    },
+    {
+      route: 'localisations',
+      header: 'Localisations',
+      Element: () => <AdminLocalisations />,
+    },
+  ]
+
   return (
     <Switch>
-      <Route exact path={`${path}/templates`}>
-        <Templates />
-      </Route>
       <Route path={`${path}/template/:templateId`}>
         <TemplateWrapper />
       </Route>
-      <Route path={`${path}/permissions`}>
-        <AdminPermissions />
-      </Route>
-      <Route path={`${path}/outcomes`}>
-        <AdminOutcomes />
-      </Route>
-      <Route path={`${path}/plugins`}>
-        <AdminPlugins />
-      </Route>
-      <Route path={`${path}/localisations`}>
-        <AdminLocalisations />
-      </Route>
+      {adminOption.map(({ route, Element }) => (
+        <Route key={route} path={`${path}/${route}`}>
+          <Element />
+        </Route>
+      ))}
+
       <Route exact path={`${path}`}>
         <div id="admin-display">
           <Header as="h4">Admin</Header>
           <div className="admin-options-container">
-            <Link className="clickable" to={`/admin/templates`}>
-              <div className="admin-option">
-                <Header as="h3" className="clickable">
-                  {`Templates/Procedures and Builder`}
-                </Header>
-              </div>
-            </Link>
-            <Link className="clickable" to={`/lookup-tables`}>
-              <div className="admin-option">
-                <Header as="h3" className="clickable">
-                  {`Lookup Tables`}
-                </Header>
-              </div>
-            </Link>
-            <Link className="clickable" to={`/admin/outcomes`}>
-              <div className="admin-option">
-                <Header as="h3" className="clickable">
-                  {`Outcome Configurations`}
-                </Header>
-              </div>
-            </Link>
-            <Link className="clickable" to={`/admin/permissions`}>
-              <div className="admin-option">
-                <Header as="h3" className="clickable">
-                  {`Permission Policies and Names`}
-                </Header>
-              </div>
-            </Link>
-            <Link className="clickable" to={`/admin/plugins`}>
-              <div className="admin-option">
-                <Header as="h3" className="clickable">
-                  {`Plugins`}
-                </Header>
-              </div>
-            </Link>
-            <Link className="clickable" to={`/admin/localisations`}>
-              <div className="admin-option">
-                <Header as="h3" className="clickable">
-                  {`Localisations`}
-                </Header>
-              </div>
-            </Link>
+            {adminOption.map(({ route, header }) => (
+              <Link className="clickable" key={route} to={`${path}/${route}`}>
+                <div className="admin-option">
+                  <Header as="h3" className="clickable">
+                    {header}
+                  </Header>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </Route>

@@ -53,10 +53,6 @@ const SiteLayout: React.FC = () => {
               <Outcomes />
             </Route>
             <Route exact path="/products/:productId"></Route>
-            {/* Lookup Table routes wrapper */}
-            <Route path="/lookup-tables">
-              <LookupTableRoutes />
-            </Route>
             <Route>
               <NoMatch />
             </Route>

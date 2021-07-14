@@ -4,6 +4,7 @@ import { Button, Header, Icon, Message, Popup, Table } from 'semantic-ui-react'
 import { Loading } from '../../../components'
 import { FieldMapType, LookUpTableType } from '../../types'
 import { DownloadButton } from '..'
+import { useRouter } from '../../../utils/hooks/useRouter'
 
 const TABLE_PREFIX = 'lookup_table_'
 
@@ -13,6 +14,9 @@ const ListTable: React.FC<any> = ({
   setAllTableStructures,
 }: any) => {
   const { loading, error } = allTableStructuresLoadState
+  const {
+    match: { path },
+  } = useRouter()
 
   const handleExpansion = (lookupTable: LookUpTableType) => {
     if (!lookupTable) return
@@ -54,7 +58,7 @@ const ListTable: React.FC<any> = ({
                     <Popup
                       content="View lookup table"
                       trigger={
-                        <Button icon as={NavLink} to={'/lookup-tables/' + lookupTable.id}>
+                        <Button icon as={NavLink} to={`${path}/${lookupTable.id}`}>
                           <Icon name="eye" />
                         </Button>
                       }
@@ -62,11 +66,7 @@ const ListTable: React.FC<any> = ({
                     <Popup
                       content="Import lookup table"
                       trigger={
-                        <Button
-                          icon
-                          as={NavLink}
-                          to={'/lookup-tables/' + lookupTable.id + '/import'}
-                        >
+                        <Button icon as={NavLink} to={`${path}/${lookupTable.id}/import`}>
                           <Icon name="upload" />
                         </Button>
                       }
