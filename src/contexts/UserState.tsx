@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useReducer } from 'react'
 import fetchUserInfo from '../utils/helpers/fetchUserInfo'
-import { TemplatePermissions, User } from '../utils/types'
+import { OrganisationSimple, TemplatePermissions, User } from '../utils/types'
 import strings from '../utils/constants'
 
 type UserState = {
   currentUser: User | null
   templatePermissions: TemplatePermissions
+  orgList: OrganisationSimple[]
   isLoading: boolean
   isNonRegistered: boolean | null
 }
@@ -18,6 +19,7 @@ export type UserActions =
       type: 'setCurrentUser'
       newUser: User
       newPermissions: TemplatePermissions
+      newOrgList: OrganisationSimple[]
     }
   | {
       type: 'setLoading'
@@ -35,11 +37,12 @@ const reducer = (state: UserState, action: UserActions) => {
     case 'resetCurrentUser':
       return initialState
     case 'setCurrentUser':
-      const { newUser, newPermissions } = action
+      const { newUser, newPermissions, newOrgList } = action
       return {
         ...state,
         currentUser: newUser,
         templatePermissions: newPermissions,
+        orgList: newOrgList,
         isNonRegistered: newUser.username === strings.USER_NONREGISTERED,
       }
     case 'setLoading':
@@ -62,6 +65,7 @@ const reducer = (state: UserState, action: UserActions) => {
 const initialState: UserState = {
   currentUser: null,
   templatePermissions: {},
+  orgList: [],
   isLoading: false,
   isNonRegistered: null,
 }
@@ -94,14 +98,20 @@ export function UserProvider({ children }: UserProviderProps) {
   const onLogin = (
     JWT: string,
     user: User | undefined = undefined,
-    permissions: TemplatePermissions | undefined = undefined
+    permissions: TemplatePermissions | undefined = undefined,
+    orgList: OrganisationSimple[] = []
   ) => {
     if (JWT == undefined) logout()
     dispatch({ type: 'setLoading', isLoading: true })
     localStorage.setItem('persistJWT', JWT)
     if (!user || !permissions) fetchUserInfo({ dispatch: setUserState }, logout)
     else {
-      dispatch({ type: 'setCurrentUser', newUser: user, newPermissions: permissions })
+      dispatch({
+        type: 'setCurrentUser',
+        newUser: user,
+        newPermissions: permissions,
+        newOrgList: orgList,
+      })
       dispatch({ type: 'setLoading', isLoading: false })
     }
   }

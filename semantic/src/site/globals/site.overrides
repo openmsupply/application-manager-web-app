@@ -195,6 +195,13 @@ a:hover {
   height: 100%;
   max-height: 55px;
   margin-top: 10px;
+
+  .ui.dropdown .menu {
+    letter-spacing: @letterSpacingRegular;
+    min-width: 90%;
+    left: revert;
+    right: 0;
+  }
 }
 
 #org-selector .image {
