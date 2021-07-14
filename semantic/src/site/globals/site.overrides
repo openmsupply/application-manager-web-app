@@ -1282,49 +1282,6 @@ a:hover {
 
 
 /*--------------------------------
-      General used classes
----------------------------------*/
-
-// Not currently used, but should be appplied to the Link in the menu
-// bar that reflects the current page
-.selected-link {
-  font-weight: bold;
-}
-
-// Colours
-
-.dark-grey {
-  color: @darkGrey !important;
-}
-
-.information-colour {
-  color: @information !important;
-}
-
-.success-colour {
-  color: @success !important;
-}
-
-.error-colour {
-  color: @attention !important;
-}
-
-.interactive-color {
-  color: @interactiveHigh !important;
-}
-
-// Position adjustments
-.shift-up-1 {
-  transform: translateY(-1px);
-}
-
-.right-justify-content {
-  width: 100%;
-  text-align: right;
-}
-
-
-/*--------------------------------
       Date Picker
 ---------------------------------*/
 @weekDayRowBorder: 1px solid rgba(0,0,0, 0.05);
@@ -1476,6 +1433,48 @@ a:hover {
       }
     }
   }
+}
+
+/*--------------------------------
+      General used classes
+---------------------------------*/
+
+// Not currently used, but should be appplied to the Link in the menu
+// bar that reflects the current page
+.selected-link {
+  font-weight: bold;
+}
+
+// Colours
+
+.dark-grey {
+  color: @darkGrey !important;
+}
+
+.information-colour {
+  color: @information !important;
+}
+
+.success-colour {
+  color: @success !important;
+}
+
+.error-colour {
+  color: @attention !important;
+}
+
+.interactive-color {
+  color: @interactiveHigh !important;
+}
+
+// Position adjustments
+.shift-up-1 {
+  transform: translateY(-1px);
+}
+
+.right-justify-content {
+  width: 100%;
+  text-align: right;
 }
 
 /*--------------------------------
