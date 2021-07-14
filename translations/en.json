@@ -1,0 +1,26 @@
+{
+  "/8hLAT": {
+    "defaultMessage": "Registered Products",
+    "description": "Header 1"
+  },
+  "40Vz4g": {
+    "defaultMessage": "Just a simple try of addition",
+    "description": "Paragraph"
+  },
+  "CbGkFv": {
+    "defaultMessage": "{val1} - registered by {val2}. {exp, date, ::yyyy/MM/dd}",
+    "description": "Product Link"
+  },
+  "ECoj8e": {
+    "defaultMessage": "Can be filtered with query parameters, e.g:",
+    "description": "Header 3"
+  },
+  "ZJcj0x": {
+    "defaultMessage": "List of (public) registered products in the system",
+    "description": "Header 2"
+  },
+  "tm0XCA": {
+    "defaultMessage": "Today is {ts, date, ::yyyyMMdd}",
+    "description": "Paragraph"
+  }
+}

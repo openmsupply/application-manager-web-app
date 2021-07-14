@@ -13,6 +13,8 @@
   "scripts": {
     "dev": "webpack-dev-server --env.env=dev",
     "prebuild": "rimraf dist",
+    "extract": "formatjs extract 'src/**/*.{js,jsx,ts,tsx}' --out-file translations/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+    "compile": "formatjs compile-folder ./translations ./src/intl/compiled-lang",
     "build": "cross-env NODE_ENV=production webpack -p --env.env=prod",
     "serve": "serve dist",
     "generate": "graphql-codegen --config codegen.yml",
@@ -31,10 +33,13 @@
     "query-string": "^6.13.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-intl": "^5.20.2",
     "react-markdown": "^5.0.3",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
+    "@formatjs/cli": "^4.2.20",
+    "@formatjs/ts-transformer": "^3.4.2",
     "@graphql-codegen/cli": "^1.17.8",
     "@graphql-codegen/typescript": "^1.17.9",
     "@graphql-codegen/typescript-operations": "^1.17.8",
@@ -48,7 +53,6 @@
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.5",
     "autoprefixer": "^9.8.6",
-    "awesome-typescript-loader": "^5.2.1",
     "chalk": "^4.1.0",
     "cross-env": "^7.0.2",
     "css-loader": "^4.2.2",
@@ -71,6 +75,7 @@
     "serve": "^11.3.2",
     "source-map-loader": "^1.1.0",
     "style-loader": "^1.2.1",
+    "ts-loader": "^8.2.0",
     "terser-webpack-plugin": "^4.2.3",
     "typescript": "^4.0.2",
     "url-loader": "^4.1.0",

@@ -1,0 +1,26 @@
+{
+  "/8hLAT": {
+    "defaultMessage": "Produits enregistrés",
+    "description": "Header 1"
+  },
+  "CbGkFv": {
+    "defaultMessage": "{val1} - enregistré par {val2}. {exp, date, ::yyyy/MM/dd}",
+    "description": "Product Link"
+  },
+  "ECoj8e": {
+    "defaultMessage": "FR Peut être filtré avec des paramètres de requête, par exemple:",
+    "description": "Header 3"
+  },
+  "ZJcj0x": {
+    "defaultMessage": "Liste des produits (publics) enregistrés dans le système",
+    "description": "Header 2"
+  },
+  "tm0XCA": {
+    "defaultMessage": "Nous sommes aujourd'hui le {ts, date, ::yyyyMMdd}",
+    "description": "Paragraph"
+  },
+  "40Vz4g": {
+    "defaultMessage": "Juste un simple essai d'addition",
+    "description": "Paragraph"
+  }
+}

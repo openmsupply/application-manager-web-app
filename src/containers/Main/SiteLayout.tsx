@@ -30,6 +30,7 @@ import { Container } from 'semantic-ui-react'
 import DevOptions from '../Dev/DevOptions'
 import LayoutHelpers from '../../components/LayoutHelpers'
 import Outcomes from '../Outcomes/Outcomes'
+import ProductListDemo from '../../intl/ProductListDemo.component'
 
 const SiteLayout: React.FC = () => {
   return (
@@ -110,6 +111,9 @@ const SiteLayout: React.FC = () => {
             {/* Lookup Table routes wrapper */}
             <Route path="/lookup-tables">
               <LookupTableRoutes />
+            </Route>
+            <Route path="/intl/demo">
+              <ProductListDemo />
             </Route>
             <Route>
               <NoMatch />

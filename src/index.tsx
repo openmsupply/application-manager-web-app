@@ -8,6 +8,7 @@ import { ApolloClient, ApolloProvider, createHttpLink, NormalizedCacheObject } f
 import { setContext } from '@apollo/client/link/context'
 import { persistCache } from 'apollo3-cache-persist'
 import { Loading } from './components'
+import { LanguageProvider } from './intl/contexts/Language.context'
 
 // Adds authorisation header with token from local storage (to be used on every request)
 // see https://www.apollographql.com/docs/react/networking/authentication/#header
@@ -64,7 +65,9 @@ const App: React.FC = () => {
 
   return client ? (
     <ApolloProvider client={client}>
-      <AppWrapper />
+      <LanguageProvider>
+        <AppWrapper />
+      </LanguageProvider>
     </ApolloProvider>
   ) : (
     <Loading />

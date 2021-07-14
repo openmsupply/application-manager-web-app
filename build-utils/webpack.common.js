@@ -1,6 +1,7 @@
 const commonPaths = require('./common-paths')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const transform = require('@formatjs/ts-transformer').transform
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const config = {
@@ -21,7 +22,22 @@ const config = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        loader: 'awesome-typescript-loader',
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              getCustomTransformers() {
+                return {
+                  before: [
+                    transform({
+                      overrideIdFn: '[sha512:contenthash:base64:6]',
+                    }),
+                  ],
+                }
+              },
+            },
+          }
+        ]
       },
       {
         // Load fonts
