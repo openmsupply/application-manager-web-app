@@ -119,11 +119,12 @@ interface AssignmentDetails {
   review: ReviewDetails | null
   reviewer: GraphQLUser
   current: AssignmentStageAndStatus
+  isCurrentUserAssigner: boolean
+  isCurrentUserReviewer: boolean
+  isFinalDecision: boolean
   totalAssignedQuestions: number
   reviewQuestionAssignments: ReviewQuestionAssignment[]
-  isCurrentUserAssigner: boolean
   assignableSectionRestrictions: (string | null)[]
-  isCurrentUserReviewer: boolean
 }
 
 interface AssignmentStageAndStatus {
@@ -345,6 +346,7 @@ type ReviewSectionComponentProps = {
 interface ReviewDetails {
   id: number
   isLastLevel: boolean
+  isFinalDecision: boolean
   level: number
   reviewDecision?: ReviewDecision | null
   current: ReviewStageAndStatus

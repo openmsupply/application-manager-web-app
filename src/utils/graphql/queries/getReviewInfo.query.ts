@@ -10,8 +10,9 @@ export default gql`
         timeUpdated
         levelNumber
         reviewerId
-        isLastLevel
+        # isLastLevel - I don't think this is needed here?
         allowedSections
+        isFinalDecision
         stage {
           id
           number

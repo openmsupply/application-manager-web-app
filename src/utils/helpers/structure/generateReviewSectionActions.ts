@@ -21,11 +21,11 @@ type ActionDefinition = {
     reviewLevel: number
     isReviewable: boolean
     isAssignedToCurrentUser: boolean
+    isFinalDecision: boolean
     reviewAssignmentStatus: ReviewAssignmentStatus | null
     isPendingReview: boolean
     isReviewExisting: boolean
     reviewStatus: ReviewStatus | undefined
-    isCurrentUserReview: boolean
     isReviewActive: boolean
   }) => boolean
 }
@@ -33,11 +33,16 @@ type ActionDefinition = {
 const actionDefinitions: ActionDefinition[] = [
   {
     action: ReviewAction.canStartReview,
-    checkMethod: ({ reviewAssignmentStatus, isPendingReview, isReviewExisting }) => {
+    checkMethod: ({
+      reviewAssignmentStatus,
+      isFinalDecision,
+      isPendingReview,
+      isReviewExisting,
+    }) => {
       return (
         reviewAssignmentStatus === ReviewAssignmentStatus.Assigned &&
         !isReviewExisting &&
-        isPendingReview
+        (isFinalDecision || isPendingReview)
       )
     },
   },
@@ -96,8 +101,9 @@ const generateReviewSectionActions: GenerateSectionActions = ({
   thisReview,
   currentUserId,
 }) => {
-  const isCurrentUserReview = reviewAssignment.reviewer.id === currentUserId
+  const isAssignedToCurrentUser = reviewAssignment.reviewer.id === currentUserId
   const isConsolidation = reviewAssignment.level > 1
+  const { isFinalDecision } = reviewAssignment
 
   sections.forEach((section) => {
     const { totalReviewable, totalPendingReview, totalActive } = isConsolidation
@@ -105,12 +111,11 @@ const generateReviewSectionActions: GenerateSectionActions = ({
       : (section.reviewProgress as ReviewProgress)
 
     const isReviewable = (totalReviewable || 0) > 0
-    const isAssignedToCurrentUser = isCurrentUserReview && isReviewable
 
     const checkMethodProps = {
       isReviewable,
       isAssignedToCurrentUser,
-      isCurrentUserReview,
+      isFinalDecision,
       reviewLevel: reviewAssignment.level,
       reviewAssignmentStatus: reviewAssignment.current.assignmentStatus,
       isReviewExisting: !!thisReview,

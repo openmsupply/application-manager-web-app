@@ -188,6 +188,7 @@ export type Query = Node & {
   jwtGetText?: Maybe<Scalars['String']>;
   reviewApplicationId?: Maybe<Scalars['Int']>;
   reviewAssignmentTemplateId?: Maybe<Scalars['Int']>;
+  reviewIsFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewIsLastLevel?: Maybe<Scalars['Boolean']>;
   reviewLevel?: Maybe<Scalars['Int']>;
   reviewList?: Maybe<ReviewListConnection>;
@@ -1285,6 +1286,12 @@ export type QueryReviewApplicationIdArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryReviewAssignmentTemplateIdArgs = {
   applicationId?: Maybe<Scalars['Int']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryReviewIsFinalDecisionArgs = {
+  reviewAssignmentId?: Maybe<Scalars['Int']>;
 };
 
 
@@ -2429,6 +2436,8 @@ export type ReviewAssignmentFilter = {
   isLastLevel?: Maybe<BooleanFilter>;
   /** Filter by the object’s `isLocked` field. */
   isLocked?: Maybe<BooleanFilter>;
+  /** Filter by the object’s `isFinalDecision` field. */
+  isFinalDecision?: Maybe<BooleanFilter>;
   /** Filter by the object’s `reviewAssignmentAssignerJoins` relation. */
   reviewAssignmentAssignerJoins?: Maybe<ReviewAssignmentToManyReviewAssignmentAssignerJoinFilter>;
   /** Some related `reviewAssignmentAssignerJoins` exist. */
@@ -2796,6 +2805,8 @@ export type TemplatePermissionFilter = {
   allowedSections?: Maybe<StringListFilter>;
   /** Filter by the object’s `canSelfAssign` field. */
   canSelfAssign?: Maybe<BooleanFilter>;
+  /** Filter by the object’s `canMakeFinalDecision` field. */
+  canMakeFinalDecision?: Maybe<BooleanFilter>;
   /** Filter by the object’s `stageNumber` field. */
   stageNumber?: Maybe<IntFilter>;
   /** Filter by the object’s `levelNumber` field. */
@@ -3545,6 +3556,8 @@ export type ReviewFilter = {
   timeStageCreated?: Maybe<DatetimeFilter>;
   /** Filter by the object’s `isLastLevel` field. */
   isLastLevel?: Maybe<BooleanFilter>;
+  /** Filter by the object’s `isFinalDecision` field. */
+  isFinalDecision?: Maybe<BooleanFilter>;
   /** Filter by the object’s `status` field. */
   status?: Maybe<ReviewStatusFilter>;
   /** Filter by the object’s `timeStatusCreated` field. */
@@ -4863,6 +4876,8 @@ export enum ReviewAssignmentsOrderBy {
   IsLastLevelDesc = 'IS_LAST_LEVEL_DESC',
   IsLockedAsc = 'IS_LOCKED_ASC',
   IsLockedDesc = 'IS_LOCKED_DESC',
+  IsFinalDecisionAsc = 'IS_FINAL_DECISION_ASC',
+  IsFinalDecisionDesc = 'IS_FINAL_DECISION_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
@@ -4903,6 +4918,8 @@ export type ReviewAssignmentCondition = {
   isLastLevel?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `isLocked` field. */
   isLocked?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `isFinalDecision` field. */
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
 };
 
 /** A connection to a list of `ReviewAssignment` values. */
@@ -4939,6 +4956,7 @@ export type ReviewAssignment = Node & {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   /** Reads a single `User` that is related to this `ReviewAssignment`. */
   assigner?: Maybe<User>;
   /** Reads a single `User` that is related to this `ReviewAssignment`. */
@@ -5450,6 +5468,8 @@ export enum TemplatePermissionsOrderBy {
   AllowedSectionsDesc = 'ALLOWED_SECTIONS_DESC',
   CanSelfAssignAsc = 'CAN_SELF_ASSIGN_ASC',
   CanSelfAssignDesc = 'CAN_SELF_ASSIGN_DESC',
+  CanMakeFinalDecisionAsc = 'CAN_MAKE_FINAL_DECISION_ASC',
+  CanMakeFinalDecisionDesc = 'CAN_MAKE_FINAL_DECISION_DESC',
   StageNumberAsc = 'STAGE_NUMBER_ASC',
   StageNumberDesc = 'STAGE_NUMBER_DESC',
   LevelNumberAsc = 'LEVEL_NUMBER_ASC',
@@ -5472,6 +5492,8 @@ export type TemplatePermissionCondition = {
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Checks for equality with the object’s `canSelfAssign` field. */
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `canMakeFinalDecision` field. */
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `stageNumber` field. */
   stageNumber?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `levelNumber` field. */
@@ -5502,6 +5524,7 @@ export type TemplatePermission = Node & {
   templateId?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign: Scalars['Boolean'];
+  canMakeFinalDecision: Scalars['Boolean'];
   stageNumber?: Maybe<Scalars['Int']>;
   levelNumber?: Maybe<Scalars['Int']>;
   restrictions?: Maybe<Scalars['JSON']>;
@@ -6281,6 +6304,7 @@ export type Review = Node & {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   /** Reads a single `ReviewAssignment` that is related to this `Review`. */
   reviewAssignment?: Maybe<ReviewAssignment>;
   /** Reads a single `Application` that is related to this `Review`. */
@@ -6930,6 +6954,8 @@ export enum ReviewsOrderBy {
   TimeStageCreatedDesc = 'TIME_STAGE_CREATED_DESC',
   IsLastLevelAsc = 'IS_LAST_LEVEL_ASC',
   IsLastLevelDesc = 'IS_LAST_LEVEL_DESC',
+  IsFinalDecisionAsc = 'IS_FINAL_DECISION_ASC',
+  IsFinalDecisionDesc = 'IS_FINAL_DECISION_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
@@ -6954,6 +6980,8 @@ export type ReviewCondition = {
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   /** Checks for equality with the object’s `isLastLevel` field. */
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `isFinalDecision` field. */
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
 };
 
 /** A connection to a list of `Review` values. */
@@ -8987,6 +9015,8 @@ export enum PermissionsAllsOrderBy {
   AllowedSectionsDesc = 'ALLOWED_SECTIONS_DESC',
   CanSelfAssignAsc = 'CAN_SELF_ASSIGN_ASC',
   CanSelfAssignDesc = 'CAN_SELF_ASSIGN_DESC',
+  CanMakeFinalDecisionAsc = 'CAN_MAKE_FINAL_DECISION_ASC',
+  CanMakeFinalDecisionDesc = 'CAN_MAKE_FINAL_DECISION_DESC',
   RestrictionsAsc = 'RESTRICTIONS_ASC',
   RestrictionsDesc = 'RESTRICTIONS_DESC',
   PolicyNameAsc = 'POLICY_NAME_ASC',
@@ -9027,6 +9057,8 @@ export type PermissionsAllCondition = {
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Checks for equality with the object’s `canSelfAssign` field. */
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `canMakeFinalDecision` field. */
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `restrictions` field. */
   restrictions?: Maybe<Scalars['JSON']>;
   /** Checks for equality with the object’s `policyName` field. */
@@ -9067,6 +9099,8 @@ export type PermissionsAllFilter = {
   allowedSections?: Maybe<StringListFilter>;
   /** Filter by the object’s `canSelfAssign` field. */
   canSelfAssign?: Maybe<BooleanFilter>;
+  /** Filter by the object’s `canMakeFinalDecision` field. */
+  canMakeFinalDecision?: Maybe<BooleanFilter>;
   /** Filter by the object’s `restrictions` field. */
   restrictions?: Maybe<JsonFilter>;
   /** Filter by the object’s `policyName` field. */
@@ -9118,6 +9152,7 @@ export type PermissionsAll = {
   reviewLevel?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   restrictions?: Maybe<Scalars['JSON']>;
   policyName?: Maybe<Scalars['String']>;
   permissionType?: Maybe<PermissionPolicyType>;
@@ -12314,6 +12349,7 @@ export type UpdateTemplatePermissionOnTemplatePermissionForTemplatePermissionTem
   permissionNameId?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   stageNumber?: Maybe<Scalars['Int']>;
   levelNumber?: Maybe<Scalars['Int']>;
   restrictions?: Maybe<Scalars['JSON']>;
@@ -13089,6 +13125,7 @@ export type UpdateTemplatePermissionOnTemplatePermissionForTemplatePermissionPer
   templateId?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   stageNumber?: Maybe<Scalars['Int']>;
   levelNumber?: Maybe<Scalars['Int']>;
   restrictions?: Maybe<Scalars['JSON']>;
@@ -13552,6 +13589,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentForReviewAssignmentTemplateI
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -13768,6 +13806,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentForReviewAssignmentAssignerI
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -13876,6 +13915,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentForReviewAssignmentReviewerI
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -14092,6 +14132,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentForReviewAssignmentOrganisat
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -14592,6 +14633,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentForReviewAssignmentStageIdFk
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -15057,6 +15099,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentForReviewAssignmentApplicati
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -15252,6 +15295,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentForReviewAssignmentLevelIdFk
   levelNumber?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -15543,6 +15587,7 @@ export type UpdateReviewAssignmentOnReviewAssignmentAssignerJoinForReviewAssignm
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -15749,6 +15794,7 @@ export type UpdateReviewAssignmentOnReviewQuestionAssignmentForReviewQuestionAss
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -15820,6 +15866,7 @@ export type UpdateReviewOnReviewForReviewReviewAssignmentIdFkeyPatch = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -15873,6 +15920,7 @@ export type UpdateReviewAssignmentOnReviewForReviewReviewAssignmentIdFkeyPatch =
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -15912,6 +15960,7 @@ export type ReviewAssignmentPatch = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -15943,6 +15992,7 @@ export type ReviewReviewAssignmentIdFkeyReviewAssignmentCreateInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -16048,6 +16098,7 @@ export type UpdateReviewOnReviewForReviewApplicationIdFkeyPatch = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -16145,6 +16196,7 @@ export type UpdateReviewOnReviewForReviewReviewerIdFkeyPatch = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -16546,6 +16598,7 @@ export type UpdateReviewOnReviewResponseForReviewResponseReviewIdFkeyPatch = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -16649,6 +16702,7 @@ export type UpdateReviewOnReviewDecisionForReviewDecisionReviewIdFkeyPatch = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -16752,6 +16806,7 @@ export type UpdateReviewOnReviewStatusHistoryForReviewStatusHistoryReviewIdFkeyP
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -17429,6 +17484,7 @@ export type UpdateReviewOnNotificationForNotificationReviewIdFkeyPatch = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -17457,6 +17513,7 @@ export type ReviewPatch = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -17477,6 +17534,7 @@ export type NotificationReviewIdFkeyReviewCreateInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -18124,6 +18182,7 @@ export type ReviewStatusHistoryReviewIdFkeyReviewCreateInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -18179,6 +18238,7 @@ export type ReviewDecisionReviewIdFkeyReviewCreateInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -18234,6 +18294,7 @@ export type ReviewResponseReviewIdFkeyReviewCreateInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -18714,6 +18775,7 @@ export type ReviewReviewerIdFkeyReviewCreateInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -18776,6 +18838,7 @@ export type ReviewApplicationIdFkeyReviewCreateInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -18843,6 +18906,7 @@ export type ReviewReviewAssignmentIdFkeyReviewCreateInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -18879,6 +18943,7 @@ export type ReviewQuestionAssignmentReviewAssignmentIdFkeyReviewAssignmentCreate
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -18994,6 +19059,7 @@ export type ReviewAssignmentAssignerJoinReviewAssignmentIdFkeyReviewAssignmentCr
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -19182,6 +19248,7 @@ export type ReviewAssignmentLevelIdFkeyReviewAssignmentCreateInput = {
   levelNumber?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -19250,6 +19317,7 @@ export type ReviewAssignmentApplicationIdFkeyReviewAssignmentCreateInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -19650,6 +19718,7 @@ export type ReviewAssignmentStageIdFkeyReviewAssignmentCreateInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -20077,6 +20146,7 @@ export type ReviewAssignmentOrganisationIdFkeyReviewAssignmentCreateInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -20226,6 +20296,7 @@ export type ReviewAssignmentReviewerIdFkeyReviewAssignmentCreateInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -20299,6 +20370,7 @@ export type ReviewAssignmentAssignerIdFkeyReviewAssignmentCreateInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -20446,6 +20518,7 @@ export type ReviewAssignmentTemplateIdFkeyReviewAssignmentCreateInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -20636,6 +20709,7 @@ export type TemplatePermissionPatch = {
   templateId?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   stageNumber?: Maybe<Scalars['Int']>;
   levelNumber?: Maybe<Scalars['Int']>;
   restrictions?: Maybe<Scalars['JSON']>;
@@ -20649,6 +20723,7 @@ export type TemplatePermissionPermissionNameIdFkeyTemplatePermissionCreateInput 
   templateId?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   stageNumber?: Maybe<Scalars['Int']>;
   levelNumber?: Maybe<Scalars['Int']>;
   restrictions?: Maybe<Scalars['JSON']>;
@@ -21042,6 +21117,7 @@ export type TemplatePermissionTemplateIdFkeyTemplatePermissionCreateInput = {
   permissionNameId?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   stageNumber?: Maybe<Scalars['Int']>;
   levelNumber?: Maybe<Scalars['Int']>;
   restrictions?: Maybe<Scalars['JSON']>;
@@ -22706,6 +22782,7 @@ export type ReviewInput = {
   stageNumber?: Maybe<Scalars['Int']>;
   timeStageCreated?: Maybe<Scalars['Datetime']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   reviewAssignmentToReviewAssignmentId?: Maybe<ReviewReviewAssignmentIdFkeyInput>;
   applicationToApplicationId?: Maybe<ReviewApplicationIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewReviewerIdFkeyInput>;
@@ -22767,6 +22844,7 @@ export type ReviewAssignmentInput = {
   levelId?: Maybe<Scalars['Int']>;
   isLastLevel?: Maybe<Scalars['Boolean']>;
   isLocked?: Maybe<Scalars['Boolean']>;
+  isFinalDecision?: Maybe<Scalars['Boolean']>;
   userToAssignerId?: Maybe<ReviewAssignmentAssignerIdFkeyInput>;
   userToReviewerId?: Maybe<ReviewAssignmentReviewerIdFkeyInput>;
   organisationToOrganisationId?: Maybe<ReviewAssignmentOrganisationIdFkeyInput>;
@@ -23278,6 +23356,7 @@ export type TemplatePermissionInput = {
   templateId?: Maybe<Scalars['Int']>;
   allowedSections?: Maybe<Array<Maybe<Scalars['String']>>>;
   canSelfAssign?: Maybe<Scalars['Boolean']>;
+  canMakeFinalDecision?: Maybe<Scalars['Boolean']>;
   stageNumber?: Maybe<Scalars['Int']>;
   levelNumber?: Maybe<Scalars['Int']>;
   restrictions?: Maybe<Scalars['JSON']>;
@@ -27536,7 +27615,7 @@ export type GetReviewInfoQuery = (
     { __typename?: 'ReviewAssignmentsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'ReviewAssignment' }
-      & Pick<ReviewAssignment, 'id' | 'status' | 'timeUpdated' | 'levelNumber' | 'reviewerId' | 'isLastLevel' | 'allowedSections' | 'timeStageCreated' | 'trigger'>
+      & Pick<ReviewAssignment, 'id' | 'status' | 'timeUpdated' | 'levelNumber' | 'reviewerId' | 'allowedSections' | 'isFinalDecision' | 'timeStageCreated' | 'trigger'>
       & { stage?: Maybe<(
         { __typename?: 'TemplateStage' }
         & Pick<TemplateStage, 'id' | 'number' | 'title' | 'colour'>
@@ -28737,8 +28816,8 @@ export const GetReviewInfoDocument = gql`
       timeUpdated
       levelNumber
       reviewerId
-      isLastLevel
       allowedSections
+      isFinalDecision
       stage {
         id
         number

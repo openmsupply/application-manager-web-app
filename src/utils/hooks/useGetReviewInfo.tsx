@@ -91,6 +91,7 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
         reviewer,
         reviewAssignmentAssignerJoins,
         allowedSections,
+        isFinalDecision,
       } = reviewAssignment
 
       // Extra field just to use in initial example - might conflict with future queries
@@ -118,6 +119,7 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
         },
         isCurrentUserReviewer: reviewer?.id === (currentUser?.userId as number),
         isCurrentUserAssigner: reviewAssignmentAssignerJoins.nodes.length > 0,
+        isFinalDecision: !!isFinalDecision,
         assignableSectionRestrictions: allowedSections || [],
         totalAssignedQuestions,
         reviewQuestionAssignments,
@@ -125,6 +127,7 @@ const useGetReviewInfo = ({ applicationId }: UseGetReviewInfoProps) => {
           ? {
               id: review.id,
               isLastLevel: !!review?.isLastLevel,
+              isFinalDecision: !!review?.isFinalDecision,
               level: review.levelNumber || 0,
               current: {
                 stage,
