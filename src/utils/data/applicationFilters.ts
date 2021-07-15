@@ -1,4 +1,6 @@
 import { DocumentNode } from 'graphql'
+import { DateTime, DurationObjectUnits, DurationUnit } from 'luxon'
+import { today } from '../dateAndTime/parseDateRange'
 import {
   ApplicationOutcome,
   ApplicationStatus,
@@ -10,7 +12,7 @@ import getAssignerFilterList from '../graphql/queries/applicationListFilters/get
 import getOrganisationFilterList from '../graphql/queries/applicationListFilters/getOrganisationFilterList'
 import getReviewersFilterList from '../graphql/queries/applicationListFilters/getReviewersFilterList'
 import getStageFilterList from '../graphql/queries/applicationListFilters/getStageFilterList'
-import { FilterDefinitions, GetFilterListQuery } from '../types'
+import { FilterDefinitions, GetFilterListQuery, NamedDates } from '../types'
 
 const constructFilterListQuery = (query: DocumentNode, queryMethod: string) => {
   const getListQuery: GetFilterListQuery = ({ searchValue, filterListParameters }) => {
@@ -30,10 +32,68 @@ const constructFilterListQuery = (query: DocumentNode, queryMethod: string) => {
   return getListQuery
 }
 
+type GetDateRangeForUnit = (unit: keyof DurationObjectUnits, value?: number) => [DateTime, DateTime]
+
+const getDateRangeForUnit: GetDateRangeForUnit = (unit, value = 0) => {
+  if (value === 0) return [today().startOf(unit), today().endOf(unit).startOf('day')]
+
+  return [
+    today()
+      [value < 0 ? 'minus' : 'plus']({ [unit]: Math.abs(value) })
+      .startOf(unit),
+    today()
+      [value < 0 ? 'minus' : 'plus']({ [unit]: Math.abs(value) })
+      .endOf(unit)
+      .startOf('day'),
+  ]
+}
+
+const NAMED_DATE_RANGES: NamedDates = {
+  today: { getDates: () => [today(), today()], title: 'Today' },
+  yesterday: {
+    getDates: () => getDateRangeForUnit('day', -1),
+    title: 'Yesterday',
+  },
+  'this-week': {
+    getDates: () => getDateRangeForUnit('week'),
+    title: 'This Week',
+  },
+  'last-week': {
+    getDates: () => getDateRangeForUnit('week', -1),
+    title: 'Last Week',
+  },
+  'this-month': {
+    getDates: () => getDateRangeForUnit('month'),
+    title: 'This Month',
+  },
+  'last-month': {
+    getDates: () => getDateRangeForUnit('month', -1),
+
+    title: 'Last Month',
+  },
+  'next-month': {
+    getDates: () => getDateRangeForUnit('month', 1),
+    title: 'Next Month',
+  },
+  'this-year': {
+    getDates: () => getDateRangeForUnit('year'),
+    title: 'This Year',
+  },
+  'last-year': {
+    getDates: () => getDateRangeForUnit('year', -1),
+    title: 'Last Year',
+  },
+  'next-year': {
+    getDates: () => getDateRangeForUnit('year', 1),
+    title: 'Next Year',
+  },
+}
+
 export const APPLICATION_FILTERS: FilterDefinitions = {
   lastActiveDate: {
     type: 'date',
-    title: '',
+    title: 'Last Active',
+    options: { namedDates: NAMED_DATE_RANGES },
   },
   isFullyAssignedLevel1: {
     type: 'boolean',

@@ -1,4 +1,6 @@
-import { BooleanFilterMapping, GetFilterListQuery } from '../../../utils/types'
+import { ReactNode } from 'react'
+import { SemanticICONS } from 'semantic-ui-react'
+import { BooleanFilterMapping, FilterTypes, GetFilterListQuery } from '../../../utils/types'
 
 export type GetActiveOptions = () => string[]
 export type SetActiveOption = (option: string) => void
@@ -11,7 +13,7 @@ export type GetMethodsForOptionFilter = (filterName: string) => {
 }
 
 export type FiltersCommon = {
-  title: string
+  title?: string
   onRemove: () => void
 }
 
@@ -39,8 +41,11 @@ export type FilterOptionsProps = {
 }
 
 export type FilterContainerProps = FiltersCommon & {
-  selectedCount: number
+  selectedCount?: number
+  replacementTrigger?: ReactNode
 }
+
+export type FilterIconMapping = Partial<{ [key in FilterTypes]: SemanticICONS }>
 
 export type BooleanFilterProps = FiltersCommon & {
   activeOptions: string[]

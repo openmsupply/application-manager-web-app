@@ -1,14 +1,10 @@
-import { DateTime } from 'luxon'
+import { parseDateRange, formatDateGraphQl } from '../../dateAndTime/parseDateRange'
 import {
   BasicStringObject,
   FilterDefinition,
   FilterDefinitions,
   FilterTypeDefinitions,
 } from '../../types'
-
-interface NamedDateMap {
-  [key: string]: string[]
-}
 
 export default function buildQueryFilters(
   filters: BasicStringObject,
@@ -33,17 +29,15 @@ const filterTypeDefinitions: FilterTypeDefinitions = {
 
     return { greaterThanOrEqualTo, lessThanOrEqualTo }
   },
-  date: (filterValue) => {
-    const [startDate, endDate] = parseDateString(filterValue)
-    const greaterThanOrEqualTo = startDate ? startDate : undefined
-    const lessThan = endDate ? endDate : undefined
-
+  date: (filterValue, options) => {
+    const { startDate, endDate } = parseDateRange(filterValue, options?.namedDates)
+    const greaterThanOrEqualTo = startDate.date ? formatDateGraphQl(startDate.date) : undefined
+    const lessThan = endDate.date ? formatDateGraphQl(endDate.date.plus({ day: 1 })) : undefined
     return { greaterThanOrEqualTo, lessThan }
   },
   boolean: (filterValue) => ({
     equalTo: String(filterValue).toLowerCase() === 'true',
   }),
-
   equals: (filterValue) => ({ equalToInsensitive: filterValue }),
   // Use this if the values must conform to an Enum type (e.g. status, outcome)
   enumList: (filterValue, options) => ({
@@ -75,6 +69,8 @@ const constructFilter = (
   filterValue: string
 ) => {
   const filter = filterTypeDefinitions[type](filterValue, options)
+  // If all of the criteria is undefined skip filter
+  if (!Object.values(filter).find((value) => value !== undefined)) return {}
 
   const { orFieldNames = [], substituteColumnName = '' } = options || {}
   // If orFieldNames are provided return or statement
@@ -91,41 +87,3 @@ const splitCommaList = (values: string) => values.split(',')
 
 // Use this if the values can be free text strings (e.g. stage name)
 const inList = (values: string) => ({ inInsensitive: splitCommaList(values) })
-
-// Can represent dates as relative numbers (number of days), i.e. -1, +4, 4, -3
-const convertRelativeDates = (dateStrings: string[]) =>
-  dateStrings.map((dateString) => {
-    if (!dateString.trim().match(/^[-+\d]+$/g)) return dateString
-    return datePlusDays(Number(dateString))
-  })
-
-const parseDateString = (dateString: string) => {
-  if (dateString in mapNamedDates) return mapNamedDates[dateString]
-  const [startDate, endDate] = convertRelativeDates(dateString.split(':'))
-  if (endDate === undefined)
-    // Exact date -- add 1 to cover until start of the next day
-    return [startDate, datePlusDays(1, startDate)]
-  if (endDate === '') return [startDate, undefined] // No end date boundary
-  if (startDate === '') return [undefined, endDate] // No start date boundary
-  return [startDate, endDate]
-}
-
-const datePlusDays = (offset = 0, dateString: string | undefined = undefined) =>
-  dateString
-    ? DateTime.fromISO(dateString).plus({ days: offset }).toISODate()
-    : DateTime.local().plus({ days: offset }).toISODate()
-
-const mapNamedDates: NamedDateMap = {
-  today: [datePlusDays(), datePlusDays(1)],
-  yesterday: [datePlusDays(-1), datePlusDays()],
-  'this-week': [datePlusDays(-7), datePlusDays(1)],
-  // TO-DO:
-  //  last-week,
-  //  this-month,
-  //  last-month,
-  //  this-quarter,
-  //  last-quarter,
-  //  this-year,
-  //  last-year
-  //  etc...
-}

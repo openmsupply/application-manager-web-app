@@ -21,6 +21,7 @@ import { ValidationState } from '../formElementPlugins/types'
 import { EvaluatorNode } from '@openmsupply/expression-evaluator/lib/types'
 import { SemanticICONS } from 'semantic-ui-react'
 import { DocumentNode } from '@apollo/client'
+import { DateTime } from 'luxon'
 
 export {
   ApplicationDetails,
@@ -690,6 +691,9 @@ export type GetFilterListQuery = (props: {
   filterListParameters?: any
 }) => GetFilterListQueryResult
 
+export type NamedDates = {
+  [key: string]: { getDates: () => [DateTime, DateTime]; title: string }
+}
 export type BooleanFilterMapping = { true: string; false: string }
 
 export type FilterTypeOptions = {
@@ -701,6 +705,8 @@ export type FilterTypeOptions = {
   orFieldNames?: string[]
   // Substitue columnOrIdentifier
   substituteColumnName?: string
+  // For named dates
+  namedDates?: NamedDates
   // For boolean to show on and of criteria
   booleanMapping?: BooleanFilterMapping
 }

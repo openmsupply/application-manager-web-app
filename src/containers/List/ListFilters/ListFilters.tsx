@@ -4,8 +4,9 @@ import strings from '../../../utils/constants'
 import { useRouter } from '../../../utils/hooks/useRouter'
 import { FilterDefinitions } from '../../../utils/types'
 import BooleanFilter from './BooleanFilter'
-import { EnumFilter, SearchableListFilter, StaticListFilter } from './OptionFilters'
-import { GetMethodsForOptionFilter } from './types'
+import DateFilter from './DateFilter/DateFilter'
+import { EnumFilter, SearchableListFilter } from './OptionFilters'
+import { FilterIconMapping, GetMethodsForOptionFilter } from './types'
 
 const getArrayFromString = (string: string = '') =>
   string.split(',').filter((option) => !!option.trim())
@@ -75,6 +76,13 @@ const ListFilters: React.FC<{ filterDefinitions: FilterDefinitions; filterListPa
           <Dropdown.Menu>
             {availableFilterNames.map((filterName) => (
               <Dropdown.Item key={filterName} onClick={() => addFilter(filterName)}>
+                <Icon
+                  size="small"
+                  color="grey"
+                  name={
+                    iconMapping[displayableFilters[filterName].type] || 'list alternate outline'
+                  }
+                />
                 {displayableFilters[filterName].title}
               </Dropdown.Item>
             ))}
@@ -127,6 +135,22 @@ const ListFilters: React.FC<{ filterDefinitions: FilterDefinitions; filterListPa
                   }
                 />
               )
+
+            case 'date':
+              return (
+                <DateFilter
+                  key={filterName}
+                  title={filter.title}
+                  namedDates={filter.options?.namedDates}
+                  dateString={query[filterName]}
+                  onRemove={getOnRemove(filterName)}
+                  setDateString={(dateFtiler: string) => {
+                    updateQuery({
+                      [filterName]: dateFtiler,
+                    })
+                  }}
+                />
+              )
             default:
               return null
           }
@@ -134,5 +158,14 @@ const ListFilters: React.FC<{ filterDefinitions: FilterDefinitions; filterListPa
       </div>
     )
   }
+
+const iconMapping: FilterIconMapping = {
+  staticList: 'list alternate outline',
+  enumList: 'list alternate outline',
+  searchableListIn: 'search',
+  searchableListInArray: 'search',
+  date: 'calendar alternate',
+  boolean: 'toggle on',
+}
 
 export default ListFilters

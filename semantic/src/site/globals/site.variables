@@ -53,6 +53,11 @@
 @boxShadowColor: #d4d4d5;
 @fullyTransperant: rgba(0,0,0,0);
 
+// For date filters
+@weekDayHeaderColor: rgba(0,0,0, 0.5);
+@selectedDayColor: rgb(153, 183, 249);
+@dateFilterLightBlue: rgb(222, 232, 254);
+
 /*------------------------
       Headers and Text
 -------------------------*/

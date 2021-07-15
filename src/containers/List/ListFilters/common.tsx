@@ -8,9 +8,10 @@ const startCase = (string: string) => lodashStartCase(string.toLowerCase())
 
 const FilterContainer: React.FC<FilterContainerProps> = ({
   children,
-  title,
-  selectedCount,
+  title = '',
+  selectedCount = 0,
   onRemove,
+  replacementTrigger,
 }) => (
   <div className="active-filter">
     {selectedCount > 0 && (
@@ -18,7 +19,12 @@ const FilterContainer: React.FC<FilterContainerProps> = ({
         {selectedCount}
       </Label>
     )}
-    <Dropdown multiple text={title}>
+    <Dropdown
+      multiple
+      text={!replacementTrigger ? title : undefined}
+      trigger={replacementTrigger}
+      icon={replacementTrigger ? null : undefined}
+    >
       <Dropdown.Menu>
         {children}
         <Dropdown.Divider />
