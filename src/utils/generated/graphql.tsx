@@ -79,6 +79,8 @@ export type Query = Node & {
   permissionPolicies?: Maybe<PermissionPoliciesConnection>;
   /** Reads and enables pagination through a set of `PermissionsAll`. */
   permissionsAlls?: Maybe<PermissionsAllsConnection>;
+  /** Reads and enables pagination through a set of `PostgresRowLevel`. */
+  postgresRowLevels?: Maybe<PostgresRowLevelsConnection>;
   /** Reads and enables pagination through a set of `Review`. */
   reviews?: Maybe<ReviewsConnection>;
   /** Reads and enables pagination through a set of `ReviewAssignment`. */
@@ -167,6 +169,7 @@ export type Query = Node & {
   templateFilterJoin?: Maybe<TemplateFilterJoin>;
   templatePermission?: Maybe<TemplatePermission>;
   templateSection?: Maybe<TemplateSection>;
+  templateSectionByTemplateIdAndCode?: Maybe<TemplateSection>;
   templateStage?: Maybe<TemplateStage>;
   templateStageReviewLevel?: Maybe<TemplateStageReviewLevel>;
   triggerQueue?: Maybe<TriggerQueue>;
@@ -591,6 +594,19 @@ export type QueryPermissionsAllsArgs = {
   orderBy?: Maybe<Array<PermissionsAllsOrderBy>>;
   condition?: Maybe<PermissionsAllCondition>;
   filter?: Maybe<PermissionsAllFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPostgresRowLevelsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<PostgresRowLevelsOrderBy>>;
+  condition?: Maybe<PostgresRowLevelCondition>;
+  filter?: Maybe<PostgresRowLevelFilter>;
 };
 
 
@@ -1143,6 +1159,13 @@ export type QueryTemplatePermissionArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryTemplateSectionArgs = {
   id: Scalars['Int'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTemplateSectionByTemplateIdAndCodeArgs = {
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 
@@ -2830,6 +2853,8 @@ export type PermissionPolicyFilter = {
   rules?: Maybe<JsonFilter>;
   /** Filter by the object’s `type` field. */
   type?: Maybe<PermissionPolicyTypeFilter>;
+  /** Filter by the object’s `isAdmin` field. */
+  isAdmin?: Maybe<BooleanFilter>;
   /** Filter by the object’s `defaultRestrictions` field. */
   defaultRestrictions?: Maybe<JsonFilter>;
   /** Filter by the object’s `permissionNames` relation. */
@@ -2908,6 +2933,8 @@ export type ApplicationFilter = {
   orgId?: Maybe<IntFilter>;
   /** Filter by the object’s `sessionId` field. */
   sessionId?: Maybe<StringFilter>;
+  /** Filter by the object’s `isConfig` field. */
+  isConfig?: Maybe<BooleanFilter>;
   /** Filter by the object’s `serial` field. */
   serial?: Maybe<StringFilter>;
   /** Filter by the object’s `name` field. */
@@ -3156,6 +3183,8 @@ export type TemplateElementFilter = {
   templateCode?: Maybe<StringFilter>;
   /** Filter by the object’s `templateVersion` field. */
   templateVersion?: Maybe<IntFilter>;
+  /** Filter by the object’s `parametersString` field. */
+  parametersString?: Maybe<StringFilter>;
   /** Filter by the object’s `applicationResponses` relation. */
   applicationResponses?: Maybe<TemplateElementToManyApplicationResponseFilter>;
   /** Some related `applicationResponses` exist. */
@@ -4299,12 +4328,16 @@ export type TemplateActionFilter = {
   actionCode?: Maybe<StringFilter>;
   /** Filter by the object’s `trigger` field. */
   trigger?: Maybe<TriggerFilter>;
-  /** Filter by the object’s `sequence` field. */
-  sequence?: Maybe<IntFilter>;
   /** Filter by the object’s `condition` field. */
   condition?: Maybe<JsonFilter>;
   /** Filter by the object’s `parameterQueries` field. */
   parameterQueries?: Maybe<JsonFilter>;
+  /** Filter by the object’s `description` field. */
+  description?: Maybe<StringFilter>;
+  /** Filter by the object’s `sequence` field. */
+  sequence?: Maybe<IntFilter>;
+  /** Filter by the object’s `parametersQueriesString` field. */
+  parametersQueriesString?: Maybe<StringFilter>;
   /** Filter by the object’s `template` relation. */
   template?: Maybe<TemplateFilter>;
   /** A related `template` exists. */
@@ -5375,6 +5408,7 @@ export type PermissionPolicy = Node & {
   description?: Maybe<Scalars['String']>;
   rules?: Maybe<Scalars['JSON']>;
   type?: Maybe<PermissionPolicyType>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   defaultRestrictions?: Maybe<Scalars['JSON']>;
   /** Reads and enables pagination through a set of `PermissionName`. */
   permissionNames: PermissionNamesConnection;
@@ -5542,6 +5576,8 @@ export enum ApplicationsOrderBy {
   OrgIdDesc = 'ORG_ID_DESC',
   SessionIdAsc = 'SESSION_ID_ASC',
   SessionIdDesc = 'SESSION_ID_DESC',
+  IsConfigAsc = 'IS_CONFIG_ASC',
+  IsConfigDesc = 'IS_CONFIG_DESC',
   SerialAsc = 'SERIAL_ASC',
   SerialDesc = 'SERIAL_DESC',
   NameAsc = 'NAME_ASC',
@@ -5568,6 +5604,8 @@ export type ApplicationCondition = {
   orgId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `sessionId` field. */
   sessionId?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `isConfig` field. */
+  isConfig?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `serial` field. */
   serial?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `name` field. */
@@ -5602,6 +5640,7 @@ export type Application = Node & {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -5941,6 +5980,7 @@ export type TemplateElement = Node & {
   reviewQuestionAssignments: ReviewQuestionAssignmentsConnection;
   /** Reads and enables pagination through a set of `ReviewResponse`. */
   reviewResponses: ReviewResponsesConnection;
+  parametersString?: Maybe<Scalars['String']>;
 };
 
 
@@ -7328,12 +7368,14 @@ export enum TemplateActionsOrderBy {
   ActionCodeDesc = 'ACTION_CODE_DESC',
   TriggerAsc = 'TRIGGER_ASC',
   TriggerDesc = 'TRIGGER_DESC',
-  SequenceAsc = 'SEQUENCE_ASC',
-  SequenceDesc = 'SEQUENCE_DESC',
   ConditionAsc = 'CONDITION_ASC',
   ConditionDesc = 'CONDITION_DESC',
   ParameterQueriesAsc = 'PARAMETER_QUERIES_ASC',
   ParameterQueriesDesc = 'PARAMETER_QUERIES_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
+  SequenceAsc = 'SEQUENCE_ASC',
+  SequenceDesc = 'SEQUENCE_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
@@ -7348,12 +7390,14 @@ export type TemplateActionCondition = {
   actionCode?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `trigger` field. */
   trigger?: Maybe<Trigger>;
-  /** Checks for equality with the object’s `sequence` field. */
-  sequence?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `condition` field. */
   condition?: Maybe<Scalars['JSON']>;
   /** Checks for equality with the object’s `parameterQueries` field. */
   parameterQueries?: Maybe<Scalars['JSON']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `sequence` field. */
+  sequence?: Maybe<Scalars['Int']>;
 };
 
 /** A connection to a list of `TemplateAction` values. */
@@ -7377,11 +7421,13 @@ export type TemplateAction = Node & {
   templateId?: Maybe<Scalars['Int']>;
   actionCode?: Maybe<Scalars['String']>;
   trigger?: Maybe<Trigger>;
-  sequence?: Maybe<Scalars['Int']>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
+  sequence?: Maybe<Scalars['Int']>;
   /** Reads a single `Template` that is related to this `TemplateAction`. */
   template?: Maybe<Template>;
+  parametersQueriesString?: Maybe<Scalars['String']>;
 };
 
 /** A `TemplateAction` edge in the connection. */
@@ -8924,6 +8970,8 @@ export enum PermissionPoliciesOrderBy {
   RulesDesc = 'RULES_DESC',
   TypeAsc = 'TYPE_ASC',
   TypeDesc = 'TYPE_DESC',
+  IsAdminAsc = 'IS_ADMIN_ASC',
+  IsAdminDesc = 'IS_ADMIN_DESC',
   DefaultRestrictionsAsc = 'DEFAULT_RESTRICTIONS_ASC',
   DefaultRestrictionsDesc = 'DEFAULT_RESTRICTIONS_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
@@ -8942,6 +8990,8 @@ export type PermissionPolicyCondition = {
   rules?: Maybe<Scalars['JSON']>;
   /** Checks for equality with the object’s `type` field. */
   type?: Maybe<PermissionPolicyType>;
+  /** Checks for equality with the object’s `isAdmin` field. */
+  isAdmin?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `defaultRestrictions` field. */
   defaultRestrictions?: Maybe<Scalars['JSON']>;
 };
@@ -8993,6 +9043,8 @@ export enum PermissionsAllsOrderBy {
   PolicyNameDesc = 'POLICY_NAME_DESC',
   PermissionTypeAsc = 'PERMISSION_TYPE_ASC',
   PermissionTypeDesc = 'PERMISSION_TYPE_DESC',
+  IsAdminAsc = 'IS_ADMIN_ASC',
+  IsAdminDesc = 'IS_ADMIN_DESC',
   PermissionPolicyIdAsc = 'PERMISSION_POLICY_ID_ASC',
   PermissionPolicyIdDesc = 'PERMISSION_POLICY_ID_DESC',
   PermissionPolicyRulesAsc = 'PERMISSION_POLICY_RULES_ASC',
@@ -9033,6 +9085,8 @@ export type PermissionsAllCondition = {
   policyName?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `permissionType` field. */
   permissionType?: Maybe<PermissionPolicyType>;
+  /** Checks for equality with the object’s `isAdmin` field. */
+  isAdmin?: Maybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `permissionPolicyId` field. */
   permissionPolicyId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `permissionPolicyRules` field. */
@@ -9073,6 +9127,8 @@ export type PermissionsAllFilter = {
   policyName?: Maybe<StringFilter>;
   /** Filter by the object’s `permissionType` field. */
   permissionType?: Maybe<PermissionPolicyTypeFilter>;
+  /** Filter by the object’s `isAdmin` field. */
+  isAdmin?: Maybe<BooleanFilter>;
   /** Filter by the object’s `permissionPolicyId` field. */
   permissionPolicyId?: Maybe<IntFilter>;
   /** Filter by the object’s `permissionPolicyRules` field. */
@@ -9121,6 +9177,7 @@ export type PermissionsAll = {
   restrictions?: Maybe<Scalars['JSON']>;
   policyName?: Maybe<Scalars['String']>;
   permissionType?: Maybe<PermissionPolicyType>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   permissionPolicyId?: Maybe<Scalars['Int']>;
   permissionPolicyRules?: Maybe<Scalars['JSON']>;
   permissionNameId?: Maybe<Scalars['Int']>;
@@ -9137,6 +9194,107 @@ export type PermissionsAllsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `PermissionsAll` at the end of the edge. */
   node?: Maybe<PermissionsAll>;
+};
+
+/** Methods to use when ordering `PostgresRowLevel`. */
+export enum PostgresRowLevelsOrderBy {
+  Natural = 'NATURAL',
+  SchemanameAsc = 'SCHEMANAME_ASC',
+  SchemanameDesc = 'SCHEMANAME_DESC',
+  TablenameAsc = 'TABLENAME_ASC',
+  TablenameDesc = 'TABLENAME_DESC',
+  PolicynameAsc = 'POLICYNAME_ASC',
+  PolicynameDesc = 'POLICYNAME_DESC',
+  PermissiveAsc = 'PERMISSIVE_ASC',
+  PermissiveDesc = 'PERMISSIVE_DESC',
+  RolesAsc = 'ROLES_ASC',
+  RolesDesc = 'ROLES_DESC',
+  CmdAsc = 'CMD_ASC',
+  CmdDesc = 'CMD_DESC',
+  QualAsc = 'QUAL_ASC',
+  QualDesc = 'QUAL_DESC',
+  WithCheckAsc = 'WITH_CHECK_ASC',
+  WithCheckDesc = 'WITH_CHECK_DESC'
+}
+
+/** A condition to be used against `PostgresRowLevel` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type PostgresRowLevelCondition = {
+  /** Checks for equality with the object’s `schemaname` field. */
+  schemaname?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `tablename` field. */
+  tablename?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `policyname` field. */
+  policyname?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `permissive` field. */
+  permissive?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `roles` field. */
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Checks for equality with the object’s `cmd` field. */
+  cmd?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `qual` field. */
+  qual?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `withCheck` field. */
+  withCheck?: Maybe<Scalars['String']>;
+};
+
+/** A filter to be used against `PostgresRowLevel` object types. All fields are combined with a logical ‘and.’ */
+export type PostgresRowLevelFilter = {
+  /** Filter by the object’s `schemaname` field. */
+  schemaname?: Maybe<StringFilter>;
+  /** Filter by the object’s `tablename` field. */
+  tablename?: Maybe<StringFilter>;
+  /** Filter by the object’s `policyname` field. */
+  policyname?: Maybe<StringFilter>;
+  /** Filter by the object’s `permissive` field. */
+  permissive?: Maybe<StringFilter>;
+  /** Filter by the object’s `roles` field. */
+  roles?: Maybe<StringListFilter>;
+  /** Filter by the object’s `cmd` field. */
+  cmd?: Maybe<StringFilter>;
+  /** Filter by the object’s `qual` field. */
+  qual?: Maybe<StringFilter>;
+  /** Filter by the object’s `withCheck` field. */
+  withCheck?: Maybe<StringFilter>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<PostgresRowLevelFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<PostgresRowLevelFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<PostgresRowLevelFilter>;
+};
+
+/** A connection to a list of `PostgresRowLevel` values. */
+export type PostgresRowLevelsConnection = {
+  __typename?: 'PostgresRowLevelsConnection';
+  /** A list of `PostgresRowLevel` objects. */
+  nodes: Array<Maybe<PostgresRowLevel>>;
+  /** A list of edges which contains the `PostgresRowLevel` and cursor to aid in pagination. */
+  edges: Array<PostgresRowLevelsEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `PostgresRowLevel` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type PostgresRowLevel = {
+  __typename?: 'PostgresRowLevel';
+  schemaname?: Maybe<Scalars['String']>;
+  tablename?: Maybe<Scalars['String']>;
+  policyname?: Maybe<Scalars['String']>;
+  permissive?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  cmd?: Maybe<Scalars['String']>;
+  qual?: Maybe<Scalars['String']>;
+  withCheck?: Maybe<Scalars['String']>;
+};
+
+/** A `PostgresRowLevel` edge in the connection. */
+export type PostgresRowLevelsEdge = {
+  __typename?: 'PostgresRowLevelsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `PostgresRowLevel` at the end of the edge. */
+  node?: Maybe<PostgresRowLevel>;
 };
 
 /** Methods to use when ordering `SchemaColumn`. */
@@ -10005,6 +10163,8 @@ export type Mutation = {
   updateTemplateSectionByNodeId?: Maybe<UpdateTemplateSectionPayload>;
   /** Updates a single `TemplateSection` using a unique key and a patch. */
   updateTemplateSection?: Maybe<UpdateTemplateSectionPayload>;
+  /** Updates a single `TemplateSection` using a unique key and a patch. */
+  updateTemplateSectionByTemplateIdAndCode?: Maybe<UpdateTemplateSectionPayload>;
   /** Updates a single `TemplateStage` using its globally unique id and a patch. */
   updateTemplateStageByNodeId?: Maybe<UpdateTemplateStagePayload>;
   /** Updates a single `TemplateStage` using a unique key and a patch. */
@@ -10187,6 +10347,8 @@ export type Mutation = {
   deleteTemplateSectionByNodeId?: Maybe<DeleteTemplateSectionPayload>;
   /** Deletes a single `TemplateSection` using a unique key. */
   deleteTemplateSection?: Maybe<DeleteTemplateSectionPayload>;
+  /** Deletes a single `TemplateSection` using a unique key. */
+  deleteTemplateSectionByTemplateIdAndCode?: Maybe<DeleteTemplateSectionPayload>;
   /** Deletes a single `TemplateStage` using its globally unique id. */
   deleteTemplateStageByNodeId?: Maybe<DeleteTemplateStagePayload>;
   /** Deletes a single `TemplateStage` using a unique key. */
@@ -10215,6 +10377,7 @@ export type Mutation = {
   deleteVerification?: Maybe<DeleteVerificationPayload>;
   /** Deletes a single `Verification` using a unique key. */
   deleteVerificationByUniqueId?: Maybe<DeleteVerificationPayload>;
+  deleteWholeApplication?: Maybe<DeleteWholeApplicationPayload>;
 };
 
 
@@ -10921,6 +11084,12 @@ export type MutationUpdateTemplateSectionArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTemplateSectionByTemplateIdAndCodeArgs = {
+  input: UpdateTemplateSectionByTemplateIdAndCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTemplateStageByNodeIdArgs = {
   input: UpdateTemplateStageByNodeIdInput;
 };
@@ -11467,6 +11636,12 @@ export type MutationDeleteTemplateSectionArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTemplateSectionByTemplateIdAndCodeArgs = {
+  input: DeleteTemplateSectionByTemplateIdAndCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTemplateStageByNodeIdArgs = {
   input: DeleteTemplateStageByNodeIdInput;
 };
@@ -11547,6 +11722,12 @@ export type MutationDeleteVerificationArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteVerificationByUniqueIdArgs = {
   input: DeleteVerificationByUniqueIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWholeApplicationArgs = {
+  input: DeleteWholeApplicationInput;
 };
 
 /** All input for the create `ActionPlugin` mutation. */
@@ -12053,13 +12234,19 @@ export type TemplateSectionTemplateIdFkeyInverseInput = {
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectById?: Maybe<Array<TemplateSectionTemplateSectionPkeyConnect>>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  connectByTemplateIdAndCode?: Maybe<Array<TemplateSectionTemplateSectionTemplateIdCodeKeyConnect>>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectByNodeId?: Maybe<Array<TemplateSectionNodeIdConnect>>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteById?: Maybe<Array<TemplateSectionTemplateSectionPkeyDelete>>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  deleteByTemplateIdAndCode?: Maybe<Array<TemplateSectionTemplateSectionTemplateIdCodeKeyDelete>>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteByNodeId?: Maybe<Array<TemplateSectionNodeIdDelete>>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateById?: Maybe<Array<TemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyUsingTemplateSectionPkeyUpdate>>;
+  /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
+  updateByTemplateIdAndCode?: Maybe<Array<TemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate>>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateByNodeId?: Maybe<Array<TemplateOnTemplateSectionForTemplateSectionTemplateIdFkeyNodeIdUpdate>>;
   /** A `TemplateSectionInput` object that will be created and connected to this object. */
@@ -12071,6 +12258,12 @@ export type TemplateSectionTemplateSectionPkeyConnect = {
   id: Scalars['Int'];
 };
 
+/** The fields on `templateSection` to look up the row to connect. */
+export type TemplateSectionTemplateSectionTemplateIdCodeKeyConnect = {
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** The globally unique `ID` look up for the row to connect. */
 export type TemplateSectionNodeIdConnect = {
   /** The globally unique `ID` which identifies a single `templateSection` to be connected. */
@@ -12080,6 +12273,12 @@ export type TemplateSectionNodeIdConnect = {
 /** The fields on `templateSection` to look up the row to delete. */
 export type TemplateSectionTemplateSectionPkeyDelete = {
   id: Scalars['Int'];
+};
+
+/** The fields on `templateSection` to look up the row to delete. */
+export type TemplateSectionTemplateSectionTemplateIdCodeKeyDelete = {
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to delete. */
@@ -12464,6 +12663,7 @@ export type UpdatePermissionPolicyOnPermissionNameForPermissionNamePermissionPol
   description?: Maybe<Scalars['String']>;
   rules?: Maybe<Scalars['JSON']>;
   type?: Maybe<PermissionPolicyType>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   defaultRestrictions?: Maybe<Scalars['JSON']>;
   permissionNamesUsingId?: Maybe<PermissionNamePermissionPolicyIdFkeyInverseInput>;
 };
@@ -13215,6 +13415,7 @@ export type UpdateApplicationOnApplicationForApplicationTemplateIdFkeyPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -13431,9 +13632,10 @@ export type UpdateTemplateActionOnTemplateActionForTemplateActionTemplateIdFkeyP
   id?: Maybe<Scalars['Int']>;
   actionCode?: Maybe<Scalars['String']>;
   trigger?: Maybe<Trigger>;
-  sequence?: Maybe<Scalars['Int']>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
+  sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
 
@@ -13654,6 +13856,7 @@ export type UpdateApplicationOnApplicationForApplicationUserIdFkeyPatch = {
   templateId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -13978,6 +14181,7 @@ export type UpdateApplicationOnApplicationForApplicationOrgIdFkeyPatch = {
   templateId?: Maybe<Scalars['Int']>;
   userId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14339,6 +14543,7 @@ export type UpdateApplicationOnApplicationStageHistoryForApplicationStageHistory
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14452,6 +14657,7 @@ export type UpdateApplicationOnApplicationSectionForApplicationSectionApplicatio
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14642,6 +14848,7 @@ export type UpdateApplicationOnReviewAssignmentForReviewAssignmentApplicationIdF
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -14823,13 +15030,19 @@ export type TemplateElementSectionIdFkeyInput = {
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectById?: Maybe<TemplateSectionTemplateSectionPkeyConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  connectByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyConnect>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectByNodeId?: Maybe<TemplateSectionNodeIdConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteById?: Maybe<TemplateSectionTemplateSectionPkeyDelete>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  deleteByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyDelete>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteByNodeId?: Maybe<TemplateSectionNodeIdDelete>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateById?: Maybe<TemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyUsingTemplateSectionPkeyUpdate>;
+  /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
+  updateByTemplateIdAndCode?: Maybe<TemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateByNodeId?: Maybe<TemplateElementOnTemplateElementForTemplateElementSectionIdFkeyNodeIdUpdate>;
   /** A `TemplateSectionInput` object that will be created and connected to this object. */
@@ -14994,6 +15207,7 @@ export type UpdateApplicationOnApplicationResponseForApplicationResponseApplicat
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -15993,6 +16207,7 @@ export type UpdateApplicationOnReviewForReviewApplicationIdFkeyPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17091,6 +17306,7 @@ export type UpdateApplicationOnNotificationForNotificationApplicationIdFkeyPatch
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17197,6 +17413,7 @@ export type UpdateApplicationOnFileForFileApplicationSerialFkeyPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17332,6 +17549,7 @@ export type UpdateApplicationOnVerificationForVerificationApplicationIdFkeyPatch
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17549,6 +17767,7 @@ export type ApplicationPatch = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17574,6 +17793,7 @@ export type VerificationApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17658,6 +17878,7 @@ export type FileApplicationSerialFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -17917,6 +18138,7 @@ export type NotificationApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -18807,6 +19029,7 @@ export type ReviewApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19284,6 +19507,7 @@ export type ApplicationResponseApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19408,13 +19632,19 @@ export type ApplicationSectionTemplateSectionIdFkeyInput = {
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectById?: Maybe<TemplateSectionTemplateSectionPkeyConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  connectByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyConnect>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   connectByNodeId?: Maybe<TemplateSectionNodeIdConnect>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteById?: Maybe<TemplateSectionTemplateSectionPkeyDelete>;
   /** The primary key(s) for `templateSection` for the far side of the relationship. */
+  deleteByTemplateIdAndCode?: Maybe<TemplateSectionTemplateSectionTemplateIdCodeKeyDelete>;
+  /** The primary key(s) for `templateSection` for the far side of the relationship. */
   deleteByNodeId?: Maybe<TemplateSectionNodeIdDelete>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateById?: Maybe<TemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyUsingTemplateSectionPkeyUpdate>;
+  /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
+  updateByTemplateIdAndCode?: Maybe<TemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate>;
   /** The primary key(s) and patch data for `templateSection` for the far side of the relationship. */
   updateByNodeId?: Maybe<ApplicationSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyNodeIdUpdate>;
   /** A `TemplateSectionInput` object that will be created and connected to this object. */
@@ -19438,6 +19668,14 @@ export type UpdateTemplateSectionOnApplicationSectionForApplicationSectionTempla
   templateToTemplateId?: Maybe<TemplateSectionTemplateIdFkeyInput>;
   templateElementsUsingId?: Maybe<TemplateElementSectionIdFkeyInverseInput>;
   applicationSectionsUsingId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInverseInput>;
+};
+
+/** The fields on `templateSection` to look up the row to update. */
+export type TemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `templateSection` being updated. */
+  patch: UpdateTemplateSectionOnApplicationSectionForApplicationSectionTemplateSectionIdFkeyPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to update. */
@@ -19495,6 +19733,14 @@ export type ApplicationSectionTemplateSectionIdFkeyApplicationSectionCreateInput
   applicationId?: Maybe<Scalars['Int']>;
   applicationToApplicationId?: Maybe<ApplicationSectionApplicationIdFkeyInput>;
   templateSectionToTemplateSectionId?: Maybe<ApplicationSectionTemplateSectionIdFkeyInput>;
+};
+
+/** The fields on `templateSection` to look up the row to update. */
+export type TemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `templateSection` being updated. */
+  patch: UpdateTemplateSectionOnTemplateElementForTemplateElementSectionIdFkeyPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
 };
 
 /** The globally unique `ID` look up for the row to update. */
@@ -19606,6 +19852,7 @@ export type ReviewAssignmentApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19896,6 +20143,7 @@ export type ApplicationSectionApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -19952,6 +20200,7 @@ export type ApplicationStageHistoryApplicationIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -20146,6 +20395,7 @@ export type ApplicationOrgIdFkeyApplicationCreateInput = {
   templateId?: Maybe<Scalars['Int']>;
   userId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -20367,6 +20617,7 @@ export type ApplicationUserIdFkeyApplicationCreateInput = {
   templateId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -20503,9 +20754,10 @@ export type TemplateActionPatch = {
   templateId?: Maybe<Scalars['Int']>;
   actionCode?: Maybe<Scalars['String']>;
   trigger?: Maybe<Trigger>;
-  sequence?: Maybe<Scalars['Int']>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
+  sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
 
@@ -20514,9 +20766,10 @@ export type TemplateActionTemplateIdFkeyTemplateActionCreateInput = {
   id?: Maybe<Scalars['Int']>;
   actionCode?: Maybe<Scalars['String']>;
   trigger?: Maybe<Trigger>;
-  sequence?: Maybe<Scalars['Int']>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
+  sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
 
@@ -20572,6 +20825,7 @@ export type ApplicationTemplateIdFkeyApplicationCreateInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -20988,6 +21242,7 @@ export type PermissionPolicyPatch = {
   description?: Maybe<Scalars['String']>;
   rules?: Maybe<Scalars['JSON']>;
   type?: Maybe<PermissionPolicyType>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   defaultRestrictions?: Maybe<Scalars['JSON']>;
   permissionNamesUsingId?: Maybe<PermissionNamePermissionPolicyIdFkeyInverseInput>;
 };
@@ -20999,6 +21254,7 @@ export type PermissionNamePermissionPolicyIdFkeyPermissionPolicyCreateInput = {
   description?: Maybe<Scalars['String']>;
   rules?: Maybe<Scalars['JSON']>;
   type?: Maybe<PermissionPolicyType>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   defaultRestrictions?: Maybe<Scalars['JSON']>;
   permissionNamesUsingId?: Maybe<PermissionNamePermissionPolicyIdFkeyInverseInput>;
 };
@@ -21301,6 +21557,14 @@ export type TemplateSectionTemplateIdFkeyTemplateCreateInput = {
   reviewAssignmentsUsingId?: Maybe<ReviewAssignmentTemplateIdFkeyInverseInput>;
 };
 
+/** The fields on `templateSection` to look up the row to update. */
+export type TemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyUsingTemplateSectionTemplateIdCodeKeyUpdate = {
+  /** An object where the defined keys will be set on the `templateSection` being updated. */
+  patch: UpdateTemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** The globally unique `ID` look up for the row to update. */
 export type TemplateOnTemplateSectionForTemplateSectionTemplateIdFkeyNodeIdUpdate = {
   /** The globally unique `ID` which identifies a single `templateSection` to be connected. */
@@ -21564,6 +21828,7 @@ export type ApplicationInput = {
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
   sessionId?: Maybe<Scalars['String']>;
+  isConfig?: Maybe<Scalars['Boolean']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   outcome?: Maybe<ApplicationOutcome>;
@@ -22664,6 +22929,7 @@ export type PermissionPolicyInput = {
   description?: Maybe<Scalars['String']>;
   rules?: Maybe<Scalars['JSON']>;
   type?: Maybe<PermissionPolicyType>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   defaultRestrictions?: Maybe<Scalars['JSON']>;
   permissionNamesUsingId?: Maybe<PermissionNamePermissionPolicyIdFkeyInverseInput>;
 };
@@ -23106,9 +23372,10 @@ export type TemplateActionInput = {
   templateId?: Maybe<Scalars['Int']>;
   actionCode?: Maybe<Scalars['String']>;
   trigger?: Maybe<Trigger>;
-  sequence?: Maybe<Scalars['Int']>;
   condition?: Maybe<Scalars['JSON']>;
   parameterQueries?: Maybe<Scalars['JSON']>;
+  description?: Maybe<Scalars['String']>;
+  sequence?: Maybe<Scalars['Int']>;
   templateToTemplateId?: Maybe<TemplateActionTemplateIdFkeyInput>;
 };
 
@@ -25100,6 +25367,16 @@ export type UpdateTemplateSectionInput = {
   id: Scalars['Int'];
 };
 
+/** All input for the `updateTemplateSectionByTemplateIdAndCode` mutation. */
+export type UpdateTemplateSectionByTemplateIdAndCodeInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `TemplateSection` being updated. */
+  patch: TemplateSectionPatch;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** All input for the `updateTemplateStageByNodeId` mutation. */
 export type UpdateTemplateStageByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
@@ -26700,6 +26977,14 @@ export type DeleteTemplateSectionInput = {
   id: Scalars['Int'];
 };
 
+/** All input for the `deleteTemplateSectionByTemplateIdAndCode` mutation. */
+export type DeleteTemplateSectionByTemplateIdAndCodeInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  templateId: Scalars['Int'];
+  code: Scalars['String'];
+};
+
 /** All input for the `deleteTemplateStageByNodeId` mutation. */
 export type DeleteTemplateStageByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
@@ -26934,6 +27219,23 @@ export type DeleteVerificationByUniqueIdInput = {
   uniqueId: Scalars['String'];
 };
 
+/** All input for the `deleteWholeApplication` mutation. */
+export type DeleteWholeApplicationInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  applicationId?: Maybe<Scalars['Int']>;
+};
+
+/** The output of our `deleteWholeApplication` mutation. */
+export type DeleteWholeApplicationPayload = {
+  __typename?: 'DeleteWholeApplicationPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  boolean?: Maybe<Scalars['Boolean']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
 export type ApplicationFragment = (
   { __typename?: 'Application' }
   & Pick<Application, 'id' | 'serial' | 'name' | 'outcome' | 'trigger'>
@@ -26962,6 +27264,68 @@ export type ConsolidatorResponseFragmentFragment = (
 export type ElementFragmentFragment = (
   { __typename?: 'TemplateElement' }
   & Pick<TemplateElement, 'id' | 'code' | 'index' | 'title' | 'elementTypePluginCode' | 'category' | 'visibilityCondition' | 'isRequired' | 'isEditable' | 'validation' | 'validationMessage' | 'helpText' | 'defaultValue' | 'parameters'>
+);
+
+export type FullTemplateFragment = (
+  { __typename?: 'Template' }
+  & Pick<Template, 'nodeId' | 'version' | 'versionTimestamp'>
+  & { configApplications: (
+    { __typename?: 'ApplicationsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Application' }
+      & Pick<Application, 'serial' | 'id'>
+    )>> }
+  ), applications: (
+    { __typename?: 'ApplicationsConnection' }
+    & Pick<ApplicationsConnection, 'totalCount'>
+  ), templateSections: (
+    { __typename?: 'TemplateSectionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateSection' }
+      & { templateElementsBySectionId: (
+        { __typename?: 'TemplateElementsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateElement' }
+          & ElementFragmentFragment
+        )>> }
+      ) }
+      & SectionFragment
+    )>> }
+  ), templateActions: (
+    { __typename?: 'TemplateActionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateAction' }
+      & Pick<TemplateAction, 'actionCode' | 'condition' | 'id' | 'parameterQueries' | 'sequence' | 'trigger' | 'description' | 'templateId'>
+    )>> }
+  ), templatePermissions: (
+    { __typename?: 'TemplatePermissionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplatePermission' }
+      & Pick<TemplatePermission, 'allowedSections' | 'canSelfAssign' | 'id' | 'levelNumber' | 'restrictions' | 'stageNumber' | 'permissionNameId'>
+      & { permissionName?: Maybe<(
+        { __typename?: 'PermissionName' }
+        & Pick<PermissionName, 'id' | 'name' | 'permissionPolicyId'>
+        & { permissionPolicy?: Maybe<(
+          { __typename?: 'PermissionPolicy' }
+          & Pick<PermissionPolicy, 'defaultRestrictions' | 'description' | 'name' | 'id' | 'rules' | 'type'>
+        )> }
+      )> }
+    )>> }
+  ), templateStages: (
+    { __typename?: 'TemplateStagesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateStage' }
+      & Pick<TemplateStage, 'id' | 'number' | 'colour' | 'title' | 'description'>
+      & { templateStageReviewLevelsByStageId: (
+        { __typename?: 'TemplateStageReviewLevelsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateStageReviewLevel' }
+          & Pick<TemplateStageReviewLevel, 'description' | 'id' | 'name' | 'number'>
+        )>> }
+      ) }
+    )>> }
+  ) }
+  & TemplateFragment
 );
 
 export type OrganisationFragment = (
@@ -26997,17 +27361,18 @@ export type StageFragment = (
 
 export type TemplateFragment = (
   { __typename?: 'Template' }
-  & Pick<Template, 'code' | 'id' | 'name' | 'isLinear' | 'startMessage' | 'submissionMessage'>
+  & Pick<Template, 'code' | 'id' | 'name' | 'status' | 'isLinear' | 'startMessage' | 'submissionMessage'>
   & { templateCategory?: Maybe<(
     { __typename?: 'TemplateCategory' }
-    & Pick<TemplateCategory, 'title' | 'icon'>
+    & Pick<TemplateCategory, 'title' | 'icon' | 'code' | 'id'>
   )>, templateFilterJoins: (
     { __typename?: 'TemplateFilterJoinsConnection' }
     & { nodes: Array<Maybe<(
       { __typename?: 'TemplateFilterJoin' }
+      & Pick<TemplateFilterJoin, 'id'>
       & { filter?: Maybe<(
         { __typename?: 'Filter' }
-        & Pick<Filter, 'id' | 'iconColor' | 'icon' | 'query' | 'title' | 'userRole'>
+        & Pick<Filter, 'id' | 'icon' | 'code' | 'iconColor' | 'query' | 'title' | 'userRole'>
       )> }
     )>> }
   ) }
@@ -27025,6 +27390,7 @@ export type UserFragment = (
 
 export type CreateApplicationMutationVariables = Exact<{
   name: Scalars['String'];
+  isConfig: Scalars['Boolean'];
   serial: Scalars['String'];
   templateId: Scalars['Int'];
   userId?: Maybe<Scalars['Int']>;
@@ -27032,7 +27398,6 @@ export type CreateApplicationMutationVariables = Exact<{
   sessionId: Scalars['String'];
   outcome?: Maybe<ApplicationOutcome>;
   trigger?: Maybe<Trigger>;
-  sections?: Maybe<Array<ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput>>;
   responses?: Maybe<Array<ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput>>;
 }>;
 
@@ -27125,6 +27490,124 @@ export type SubmitReviewMutation = (
     & { review?: Maybe<(
       { __typename?: 'Review' }
       & Pick<Review, 'id' | 'trigger'>
+    )> }
+  )> }
+);
+
+export type DeleteWholeApplicationMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteWholeApplicationMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteWholeApplication?: Maybe<(
+    { __typename?: 'DeleteWholeApplicationPayload' }
+    & Pick<DeleteWholeApplicationPayload, 'clientMutationId'>
+  )> }
+);
+
+export type UpdateTemplateMutationVariables = Exact<{
+  id: Scalars['Int'];
+  templatePatch: TemplatePatch;
+}>;
+
+
+export type UpdateTemplateMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplate?: Maybe<(
+    { __typename?: 'UpdateTemplatePayload' }
+    & { template?: Maybe<(
+      { __typename?: 'Template' }
+      & FullTemplateFragment
+    )> }
+  )> }
+);
+
+export type UpdateTemplateFilterJoinMutationVariables = Exact<{
+  id: Scalars['Int'];
+  filterJoinPatch: TemplateFilterJoinPatch;
+}>;
+
+
+export type UpdateTemplateFilterJoinMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateFilterJoin?: Maybe<(
+    { __typename?: 'UpdateTemplateFilterJoinPayload' }
+    & Pick<UpdateTemplateFilterJoinPayload, 'clientMutationId'>
+    & { templateFilterJoin?: Maybe<(
+      { __typename?: 'TemplateFilterJoin' }
+      & Pick<TemplateFilterJoin, 'id' | 'filterId'>
+      & { filter?: Maybe<(
+        { __typename?: 'Filter' }
+        & Pick<Filter, 'id' | 'iconColor' | 'icon' | 'code' | 'query' | 'title' | 'userRole'>
+      )> }
+    )> }
+  )> }
+);
+
+export type UpdateTemplateSectionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  sectionPatch: TemplateSectionPatch;
+}>;
+
+
+export type UpdateTemplateSectionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateSection?: Maybe<(
+    { __typename?: 'UpdateTemplateSectionPayload' }
+    & { templateSection?: Maybe<(
+      { __typename?: 'TemplateSection' }
+      & Pick<TemplateSection, 'id' | 'index' | 'code' | 'templateId' | 'title'>
+      & { templateElementsBySectionId: (
+        { __typename?: 'TemplateElementsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateElement' }
+          & { applicationResponses: (
+            { __typename?: 'ApplicationResponsesConnection' }
+            & { nodes: Array<Maybe<(
+              { __typename?: 'ApplicationResponse' }
+              & Pick<ApplicationResponse, 'id'>
+              & { application?: Maybe<(
+                { __typename?: 'Application' }
+                & Pick<Application, 'id' | 'serial'>
+                & { applicationResponses: (
+                  { __typename?: 'ApplicationResponsesConnection' }
+                  & { nodes: Array<Maybe<(
+                    { __typename?: 'ApplicationResponse' }
+                    & Pick<ApplicationResponse, 'id'>
+                  )>> }
+                ) }
+              )> }
+            )>> }
+          ) }
+          & ElementFragmentFragment
+        )>> }
+      ) }
+    )> }
+  )> }
+);
+
+export type UpdateTemplateStageMutationVariables = Exact<{
+  id: Scalars['Int'];
+  templateStagePatch: TemplateStagePatch;
+}>;
+
+
+export type UpdateTemplateStageMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemplateStage?: Maybe<(
+    { __typename?: 'UpdateTemplateStagePayload' }
+    & { templateStage?: Maybe<(
+      { __typename?: 'TemplateStage' }
+      & Pick<TemplateStage, 'id' | 'number' | 'colour' | 'title' | 'description'>
+      & { templateStageReviewLevelsByStageId: (
+        { __typename?: 'TemplateStageReviewLevelsConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateStageReviewLevel' }
+          & Pick<TemplateStageReviewLevel, 'description' | 'id' | 'name' | 'number'>
+        )>> }
+      ) }
     )> }
   )> }
 );
@@ -27322,20 +27805,9 @@ export type GetApplicationQuery = (
     { __typename?: 'Application' }
     & { template?: Maybe<(
       { __typename?: 'Template' }
-      & { templateStages: (
-        { __typename?: 'TemplateStagesConnection' }
+      & { templateSections: (
+        { __typename?: 'TemplateSectionsConnection' }
         & { nodes: Array<Maybe<(
-          { __typename?: 'TemplateStage' }
-          & TemplateStageFragment
-        )>> }
-      ) }
-      & TemplateFragment
-    )>, applicationSections: (
-      { __typename?: 'ApplicationSectionsConnection' }
-      & { nodes: Array<Maybe<(
-        { __typename?: 'ApplicationSection' }
-        & Pick<ApplicationSection, 'id'>
-        & { templateSection?: Maybe<(
           { __typename?: 'TemplateSection' }
           & { templateElementsBySectionId: (
             { __typename?: 'TemplateElementsConnection' }
@@ -27345,9 +27817,16 @@ export type GetApplicationQuery = (
             )>> }
           ) }
           & SectionFragment
-        )> }
-      )>> }
-    ), user?: Maybe<(
+        )>> }
+      ), templateStages: (
+        { __typename?: 'TemplateStagesConnection' }
+        & { nodes: Array<Maybe<(
+          { __typename?: 'TemplateStage' }
+          & TemplateStageFragment
+        )>> }
+      ) }
+      & TemplateFragment
+    )>, user?: Maybe<(
       { __typename?: 'User' }
       & UserFragment
     )>, org?: Maybe<(
@@ -27689,6 +28168,223 @@ export type GetUsersQuery = (
   )> }
 );
 
+export type GeTemplateActionByCodeQueryVariables = Exact<{
+  pluginCode: Scalars['String'];
+}>;
+
+
+export type GeTemplateActionByCodeQuery = (
+  { __typename?: 'Query' }
+  & { templateActions?: Maybe<(
+    { __typename?: 'TemplateActionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateAction' }
+      & Pick<TemplateAction, 'id' | 'description' | 'condition' | 'parameterQueries' | 'trigger'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'name' | 'code'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type GetAllActionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllActionsQuery = (
+  { __typename?: 'Query' }
+  & { actionPlugins?: Maybe<(
+    { __typename?: 'ActionPluginsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'ActionPlugin' }
+      & Pick<ActionPlugin, 'id' | 'code' | 'description' | 'name' | 'optionalParameters' | 'outputProperties' | 'requiredParameters'>
+    )>> }
+  )> }
+);
+
+export type GetAllFiltersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllFiltersQuery = (
+  { __typename?: 'Query' }
+  & { filters?: Maybe<(
+    { __typename?: 'FiltersConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Filter' }
+      & Pick<Filter, 'code' | 'icon' | 'iconColor' | 'id' | 'query' | 'title' | 'userRole'>
+    )>> }
+  )> }
+);
+
+export type GetAllPermissionNamesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllPermissionNamesQuery = (
+  { __typename?: 'Query' }
+  & { permissionNames?: Maybe<(
+    { __typename?: 'PermissionNamesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'PermissionName' }
+      & Pick<PermissionName, 'id' | 'name' | 'permissionPolicyId'>
+      & { permissionPolicy?: Maybe<(
+        { __typename?: 'PermissionPolicy' }
+        & Pick<PermissionPolicy, 'id' | 'name' | 'rules' | 'type' | 'description' | 'defaultRestrictions'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type GetAllTemplatesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllTemplatesQuery = (
+  { __typename?: 'Query' }
+  & { templates?: Maybe<(
+    { __typename?: 'TemplatesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'code' | 'status' | 'id' | 'version' | 'versionTimestamp' | 'name'>
+      & { templateCategory?: Maybe<(
+        { __typename?: 'TemplateCategory' }
+        & Pick<TemplateCategory, 'title'>
+      )>, applications: (
+        { __typename?: 'ApplicationsConnection' }
+        & Pick<ApplicationsConnection, 'totalCount'>
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetTemplateCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTemplateCategoriesQuery = (
+  { __typename?: 'Query' }
+  & { templateCategories?: Maybe<(
+    { __typename?: 'TemplateCategoriesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateCategory' }
+      & Pick<TemplateCategory, 'code' | 'icon' | 'id' | 'title'>
+    )>> }
+  )> }
+);
+
+export type GetFullTemplateInfoQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetFullTemplateInfoQuery = (
+  { __typename?: 'Query' }
+  & { template?: Maybe<(
+    { __typename?: 'Template' }
+    & FullTemplateFragment
+  )> }
+);
+
+export type GetPermissionStatisticsQueryVariables = Exact<{
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  rowLeveSearch: Scalars['String'];
+}>;
+
+
+export type GetPermissionStatisticsQuery = (
+  { __typename?: 'Query' }
+  & { permissionName?: Maybe<(
+    { __typename?: 'PermissionName' }
+    & Pick<PermissionName, 'name'>
+    & { permissionJoins: (
+      { __typename?: 'PermissionJoinsConnection' }
+      & { nodes: Array<Maybe<(
+        { __typename?: 'PermissionJoin' }
+        & Pick<PermissionJoin, 'id'>
+        & { organisation?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'name'>
+        )>, user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'firstName' | 'lastName' | 'email' | 'username'>
+        )> }
+      )>> }
+    ), permissionPolicy?: Maybe<(
+      { __typename?: 'PermissionPolicy' }
+      & Pick<PermissionPolicy, 'description' | 'rules' | 'type' | 'name'>
+    )>, templatePermissions: (
+      { __typename?: 'TemplatePermissionsConnection' }
+      & { nodes: Array<Maybe<(
+        { __typename?: 'TemplatePermission' }
+        & Pick<TemplatePermission, 'id' | 'stageNumber' | 'levelNumber'>
+        & { template?: Maybe<(
+          { __typename?: 'Template' }
+          & Pick<Template, 'id' | 'name' | 'code' | 'version' | 'status'>
+        )> }
+      )>> }
+    ) }
+  )>, templateActions?: Maybe<(
+    { __typename?: 'TemplateActionsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateAction' }
+      & Pick<TemplateAction, 'id' | 'actionCode' | 'condition' | 'parameterQueries' | 'trigger'>
+      & { template?: Maybe<(
+        { __typename?: 'Template' }
+        & Pick<Template, 'code' | 'name' | 'version' | 'status'>
+      )> }
+    )>> }
+  )>, templateElements?: Maybe<(
+    { __typename?: 'TemplateElementsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateElement' }
+      & Pick<TemplateElement, 'id' | 'code' | 'parameters' | 'title'>
+      & { section?: Maybe<(
+        { __typename?: 'TemplateSection' }
+        & { template?: Maybe<(
+          { __typename?: 'Template' }
+          & Pick<Template, 'code' | 'name' | 'status' | 'version'>
+        )> }
+      )> }
+    )>> }
+  )>, postgresRowLevels?: Maybe<(
+    { __typename?: 'PostgresRowLevelsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'PostgresRowLevel' }
+      & Pick<PostgresRowLevel, 'policyname' | 'tablename' | 'withCheck' | 'qual' | 'roles' | 'schemaname' | 'permissive' | 'cmd'>
+    )>> }
+  )> }
+);
+
+export type GetTemplateElementsByPluginQueryVariables = Exact<{
+  pluginCode: Scalars['String'];
+}>;
+
+
+export type GetTemplateElementsByPluginQuery = (
+  { __typename?: 'Query' }
+  & { templateElements?: Maybe<(
+    { __typename?: 'TemplateElementsConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'TemplateElement' }
+      & Pick<TemplateElement, 'category' | 'helpText' | 'isEditable' | 'isRequired' | 'parameters' | 'validation' | 'code' | 'title' | 'id' | 'defaultValue' | 'validationMessage' | 'visibilityCondition' | 'templateCode'>
+    )>> }
+  )> }
+);
+
+export type GetTemplatesAvailableForCodeQueryVariables = Exact<{
+  code: Scalars['String'];
+}>;
+
+
+export type GetTemplatesAvailableForCodeQuery = (
+  { __typename?: 'Query' }
+  & { templates?: Maybe<(
+    { __typename?: 'TemplatesConnection' }
+    & { nodes: Array<Maybe<(
+      { __typename?: 'Template' }
+      & Pick<Template, 'id' | 'code' | 'status'>
+    )>> }
+  )> }
+);
+
 export const ApplicationFragmentDoc = gql`
     fragment Application on Application {
   id
@@ -27757,6 +28453,45 @@ export const ConsolidatorResponseFragmentFragmentDoc = gql`
   }
 }
     ${ReviewResponseFragmentFragmentDoc}`;
+export const TemplateFragmentDoc = gql`
+    fragment Template on Template {
+  code
+  id
+  name
+  status
+  isLinear
+  startMessage
+  submissionMessage
+  templateCategory {
+    title
+    icon
+    code
+    id
+  }
+  templateFilterJoins {
+    nodes {
+      id
+      filter {
+        id
+        icon
+        code
+        iconColor
+        query
+        title
+        userRole
+      }
+    }
+  }
+}
+    `;
+export const SectionFragmentDoc = gql`
+    fragment Section on TemplateSection {
+  id
+  title
+  index
+  code
+}
+    `;
 export const ElementFragmentFragmentDoc = gql`
     fragment elementFragment on TemplateElement {
   id
@@ -27775,6 +28510,88 @@ export const ElementFragmentFragmentDoc = gql`
   parameters
 }
     `;
+export const FullTemplateFragmentDoc = gql`
+    fragment FullTemplate on Template {
+  ...Template
+  nodeId
+  configApplications: applications(filter: {isConfig: {equalTo: true}}) {
+    nodes {
+      serial
+      id
+    }
+  }
+  applications(filter: {isConfig: {equalTo: false}}) {
+    totalCount
+  }
+  version
+  versionTimestamp
+  templateSections(orderBy: INDEX_ASC) {
+    nodes {
+      ...Section
+      templateElementsBySectionId(orderBy: INDEX_ASC) {
+        nodes {
+          ...elementFragment
+        }
+      }
+    }
+  }
+  templateActions(orderBy: SEQUENCE_ASC) {
+    nodes {
+      actionCode
+      condition
+      id
+      parameterQueries
+      sequence
+      trigger
+      description
+      templateId
+    }
+  }
+  templatePermissions {
+    nodes {
+      allowedSections
+      canSelfAssign
+      id
+      levelNumber
+      permissionName {
+        id
+        name
+        permissionPolicyId
+        permissionPolicy {
+          defaultRestrictions
+          description
+          name
+          id
+          rules
+          type
+        }
+      }
+      restrictions
+      stageNumber
+      permissionNameId
+    }
+  }
+  templateStages(orderBy: NUMBER_ASC) {
+    nodes {
+      id
+      number
+      colour
+      title
+      description
+      templateStageReviewLevelsByStageId(orderBy: NUMBER_ASC) {
+        nodes {
+          description
+          id
+          name
+          number
+        }
+      }
+    }
+  }
+}
+    ${TemplateFragmentDoc}
+${SectionFragmentDoc}
+${ElementFragmentFragmentDoc}`;
 export const OrganisationFragmentDoc = gql`
     fragment Organisation on Organisation {
   id
@@ -27782,14 +28599,6 @@ export const OrganisationFragmentDoc = gql`
   address
   registration
   logoUrl
-}
-    `;
-export const SectionFragmentDoc = gql`
-    fragment Section on TemplateSection {
-  id
-  title
-  index
-  code
 }
     `;
 export const StageFragmentDoc = gql`
@@ -27803,32 +28612,6 @@ export const StageFragmentDoc = gql`
   stageHistoryTimeCreated
 }
     `;
-export const TemplateFragmentDoc = gql`
-    fragment Template on Template {
-  code
-  id
-  name
-  isLinear
-  startMessage
-  submissionMessage
-  templateCategory {
-    title
-    icon
-  }
-  templateFilterJoins {
-    nodes {
-      filter {
-        id
-        iconColor
-        icon
-        query
-        title
-        userRole
-      }
-    }
-  }
-}
-    `;
 export const TemplateStageFragmentDoc = gql`
     fragment TemplateStage on TemplateStage {
   number
@@ -27839,8 +28622,8 @@ export const TemplateStageFragmentDoc = gql`
 }
     `;
 export const CreateApplicationDocument = gql`
-    mutation createApplication($name: String!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!], $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
-  createApplication(input: {application: {name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, sessionId: $sessionId, isActive: true, outcome: $outcome, trigger: $trigger, applicationSectionsUsingId: {create: $sections}, applicationResponsesUsingId: {create: $responses}}}) {
+    mutation createApplication($name: String!, $isConfig: Boolean!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
+  createApplication(input: {application: {isConfig: $isConfig, name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, sessionId: $sessionId, isActive: true, outcome: $outcome, trigger: $trigger, applicationResponsesUsingId: {create: $responses}}}) {
     application {
       userId
       orgId
@@ -27875,6 +28658,7 @@ export type CreateApplicationMutationFn = Apollo.MutationFunction<CreateApplicat
  * const [createApplicationMutation, { data, loading, error }] = useCreateApplicationMutation({
  *   variables: {
  *      name: // value for 'name'
+ *      isConfig: // value for 'isConfig'
  *      serial: // value for 'serial'
  *      templateId: // value for 'templateId'
  *      userId: // value for 'userId'
@@ -27882,7 +28666,6 @@ export type CreateApplicationMutationFn = Apollo.MutationFunction<CreateApplicat
  *      sessionId: // value for 'sessionId'
  *      outcome: // value for 'outcome'
  *      trigger: // value for 'trigger'
- *      sections: // value for 'sections'
  *      responses: // value for 'responses'
  *   },
  * });
@@ -28013,6 +28796,224 @@ export function useSubmitReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type SubmitReviewMutationHookResult = ReturnType<typeof useSubmitReviewMutation>;
 export type SubmitReviewMutationResult = Apollo.MutationResult<SubmitReviewMutation>;
 export type SubmitReviewMutationOptions = Apollo.BaseMutationOptions<SubmitReviewMutation, SubmitReviewMutationVariables>;
+export const DeleteWholeApplicationDocument = gql`
+    mutation deleteWholeApplication($id: Int!) {
+  deleteWholeApplication(input: {applicationId: $id}) {
+    clientMutationId
+  }
+}
+    `;
+export type DeleteWholeApplicationMutationFn = Apollo.MutationFunction<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>;
+
+/**
+ * __useDeleteWholeApplicationMutation__
+ *
+ * To run a mutation, you first call `useDeleteWholeApplicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWholeApplicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWholeApplicationMutation, { data, loading, error }] = useDeleteWholeApplicationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteWholeApplicationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>) {
+        return Apollo.useMutation<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>(DeleteWholeApplicationDocument, baseOptions);
+      }
+export type DeleteWholeApplicationMutationHookResult = ReturnType<typeof useDeleteWholeApplicationMutation>;
+export type DeleteWholeApplicationMutationResult = Apollo.MutationResult<DeleteWholeApplicationMutation>;
+export type DeleteWholeApplicationMutationOptions = Apollo.BaseMutationOptions<DeleteWholeApplicationMutation, DeleteWholeApplicationMutationVariables>;
+export const UpdateTemplateDocument = gql`
+    mutation updateTemplate($id: Int!, $templatePatch: TemplatePatch!) {
+  updateTemplate(input: {id: $id, patch: $templatePatch}) {
+    template {
+      ...FullTemplate
+    }
+  }
+}
+    ${FullTemplateFragmentDoc}`;
+export type UpdateTemplateMutationFn = Apollo.MutationFunction<UpdateTemplateMutation, UpdateTemplateMutationVariables>;
+
+/**
+ * __useUpdateTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateMutation, { data, loading, error }] = useUpdateTemplateMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      templatePatch: // value for 'templatePatch'
+ *   },
+ * });
+ */
+export function useUpdateTemplateMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateMutation, UpdateTemplateMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateMutation, UpdateTemplateMutationVariables>(UpdateTemplateDocument, baseOptions);
+      }
+export type UpdateTemplateMutationHookResult = ReturnType<typeof useUpdateTemplateMutation>;
+export type UpdateTemplateMutationResult = Apollo.MutationResult<UpdateTemplateMutation>;
+export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateMutation, UpdateTemplateMutationVariables>;
+export const UpdateTemplateFilterJoinDocument = gql`
+    mutation updateTemplateFilterJoin($id: Int!, $filterJoinPatch: TemplateFilterJoinPatch!) {
+  updateTemplateFilterJoin(input: {patch: $filterJoinPatch, id: $id}) {
+    clientMutationId
+    templateFilterJoin {
+      id
+      filterId
+      filter {
+        id
+        iconColor
+        icon
+        code
+        query
+        title
+        userRole
+      }
+    }
+  }
+}
+    `;
+export type UpdateTemplateFilterJoinMutationFn = Apollo.MutationFunction<UpdateTemplateFilterJoinMutation, UpdateTemplateFilterJoinMutationVariables>;
+
+/**
+ * __useUpdateTemplateFilterJoinMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateFilterJoinMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateFilterJoinMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateFilterJoinMutation, { data, loading, error }] = useUpdateTemplateFilterJoinMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      filterJoinPatch: // value for 'filterJoinPatch'
+ *   },
+ * });
+ */
+export function useUpdateTemplateFilterJoinMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateFilterJoinMutation, UpdateTemplateFilterJoinMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateFilterJoinMutation, UpdateTemplateFilterJoinMutationVariables>(UpdateTemplateFilterJoinDocument, baseOptions);
+      }
+export type UpdateTemplateFilterJoinMutationHookResult = ReturnType<typeof useUpdateTemplateFilterJoinMutation>;
+export type UpdateTemplateFilterJoinMutationResult = Apollo.MutationResult<UpdateTemplateFilterJoinMutation>;
+export type UpdateTemplateFilterJoinMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateFilterJoinMutation, UpdateTemplateFilterJoinMutationVariables>;
+export const UpdateTemplateSectionDocument = gql`
+    mutation updateTemplateSection($id: Int!, $sectionPatch: TemplateSectionPatch!) {
+  updateTemplateSection(input: {id: $id, patch: $sectionPatch}) {
+    templateSection {
+      id
+      index
+      code
+      templateId
+      title
+      templateElementsBySectionId {
+        nodes {
+          ...elementFragment
+          applicationResponses {
+            nodes {
+              id
+              application {
+                id
+                serial
+                applicationResponses {
+                  nodes {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    ${ElementFragmentFragmentDoc}`;
+export type UpdateTemplateSectionMutationFn = Apollo.MutationFunction<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>;
+
+/**
+ * __useUpdateTemplateSectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateSectionMutation, { data, loading, error }] = useUpdateTemplateSectionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      sectionPatch: // value for 'sectionPatch'
+ *   },
+ * });
+ */
+export function useUpdateTemplateSectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>(UpdateTemplateSectionDocument, baseOptions);
+      }
+export type UpdateTemplateSectionMutationHookResult = ReturnType<typeof useUpdateTemplateSectionMutation>;
+export type UpdateTemplateSectionMutationResult = Apollo.MutationResult<UpdateTemplateSectionMutation>;
+export type UpdateTemplateSectionMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateSectionMutation, UpdateTemplateSectionMutationVariables>;
+export const UpdateTemplateStageDocument = gql`
+    mutation updateTemplateStage($id: Int!, $templateStagePatch: TemplateStagePatch!) {
+  updateTemplateStage(input: {id: $id, patch: $templateStagePatch}) {
+    templateStage {
+      id
+      number
+      colour
+      title
+      description
+      templateStageReviewLevelsByStageId {
+        nodes {
+          description
+          id
+          name
+          number
+        }
+      }
+    }
+  }
+}
+    `;
+export type UpdateTemplateStageMutationFn = Apollo.MutationFunction<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>;
+
+/**
+ * __useUpdateTemplateStageMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateStageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateStageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateStageMutation, { data, loading, error }] = useUpdateTemplateStageMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      templateStagePatch: // value for 'templateStagePatch'
+ *   },
+ * });
+ */
+export function useUpdateTemplateStageMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>) {
+        return Apollo.useMutation<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>(UpdateTemplateStageDocument, baseOptions);
+      }
+export type UpdateTemplateStageMutationHookResult = ReturnType<typeof useUpdateTemplateStageMutation>;
+export type UpdateTemplateStageMutationResult = Apollo.MutationResult<UpdateTemplateStageMutation>;
+export type UpdateTemplateStageMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateStageMutation, UpdateTemplateStageMutationVariables>;
 export const UpdateApplicationDocument = gql`
     mutation updateApplication($serial: String!, $applicationTrigger: Trigger = ON_APPLICATION_SUBMIT, $responses: [ApplicationResponseOnApplicationResponseForApplicationResponseApplicationIdFkeyUsingApplicationResponsePkeyUpdate!]) {
   updateApplicationBySerial(input: {serial: $serial, patch: {trigger: $applicationTrigger, applicationResponsesUsingId: {updateById: $responses}}}) {
@@ -28353,22 +29354,19 @@ export const GetApplicationDocument = gql`
     ...Application
     template {
       ...Template
-      templateStages {
+      templateSections(orderBy: INDEX_ASC) {
         nodes {
-          ...TemplateStage
-        }
-      }
-    }
-    applicationSections {
-      nodes {
-        id
-        templateSection {
           ...Section
           templateElementsBySectionId(orderBy: INDEX_ASC) {
             nodes {
               ...elementFragment
             }
           }
+        }
+      }
+      templateStages {
+        nodes {
+          ...TemplateStage
         }
       }
     }
@@ -28387,9 +29385,9 @@ export const GetApplicationDocument = gql`
 }
     ${ApplicationFragmentDoc}
 ${TemplateFragmentDoc}
-${TemplateStageFragmentDoc}
 ${SectionFragmentDoc}
 ${ElementFragmentFragmentDoc}
+${TemplateStageFragmentDoc}
 ${UserFragmentDoc}
 ${OrganisationFragmentDoc}
 ${StageFragmentDoc}`;
@@ -28999,3 +29997,483 @@ export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const GeTemplateActionByCodeDocument = gql`
+    query geTemplateActionByCode($pluginCode: String!) {
+  templateActions(filter: {actionCode: {equalTo: $pluginCode}}) {
+    nodes {
+      id
+      description
+      condition
+      parameterQueries
+      trigger
+      description
+      template {
+        name
+        code
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGeTemplateActionByCodeQuery__
+ *
+ * To run a query within a React component, call `useGeTemplateActionByCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGeTemplateActionByCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGeTemplateActionByCodeQuery({
+ *   variables: {
+ *      pluginCode: // value for 'pluginCode'
+ *   },
+ * });
+ */
+export function useGeTemplateActionByCodeQuery(baseOptions?: Apollo.QueryHookOptions<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>) {
+        return Apollo.useQuery<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>(GeTemplateActionByCodeDocument, baseOptions);
+      }
+export function useGeTemplateActionByCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>) {
+          return Apollo.useLazyQuery<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>(GeTemplateActionByCodeDocument, baseOptions);
+        }
+export type GeTemplateActionByCodeQueryHookResult = ReturnType<typeof useGeTemplateActionByCodeQuery>;
+export type GeTemplateActionByCodeLazyQueryHookResult = ReturnType<typeof useGeTemplateActionByCodeLazyQuery>;
+export type GeTemplateActionByCodeQueryResult = Apollo.QueryResult<GeTemplateActionByCodeQuery, GeTemplateActionByCodeQueryVariables>;
+export const GetAllActionsDocument = gql`
+    query getAllActions {
+  actionPlugins {
+    nodes {
+      id
+      code
+      description
+      name
+      optionalParameters
+      outputProperties
+      requiredParameters
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllActionsQuery__
+ *
+ * To run a query within a React component, call `useGetAllActionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllActionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllActionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllActionsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllActionsQuery, GetAllActionsQueryVariables>) {
+        return Apollo.useQuery<GetAllActionsQuery, GetAllActionsQueryVariables>(GetAllActionsDocument, baseOptions);
+      }
+export function useGetAllActionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllActionsQuery, GetAllActionsQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllActionsQuery, GetAllActionsQueryVariables>(GetAllActionsDocument, baseOptions);
+        }
+export type GetAllActionsQueryHookResult = ReturnType<typeof useGetAllActionsQuery>;
+export type GetAllActionsLazyQueryHookResult = ReturnType<typeof useGetAllActionsLazyQuery>;
+export type GetAllActionsQueryResult = Apollo.QueryResult<GetAllActionsQuery, GetAllActionsQueryVariables>;
+export const GetAllFiltersDocument = gql`
+    query getAllFilters {
+  filters {
+    nodes {
+      code
+      icon
+      iconColor
+      id
+      query
+      title
+      userRole
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllFiltersQuery__
+ *
+ * To run a query within a React component, call `useGetAllFiltersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllFiltersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllFiltersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllFiltersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllFiltersQuery, GetAllFiltersQueryVariables>) {
+        return Apollo.useQuery<GetAllFiltersQuery, GetAllFiltersQueryVariables>(GetAllFiltersDocument, baseOptions);
+      }
+export function useGetAllFiltersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllFiltersQuery, GetAllFiltersQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllFiltersQuery, GetAllFiltersQueryVariables>(GetAllFiltersDocument, baseOptions);
+        }
+export type GetAllFiltersQueryHookResult = ReturnType<typeof useGetAllFiltersQuery>;
+export type GetAllFiltersLazyQueryHookResult = ReturnType<typeof useGetAllFiltersLazyQuery>;
+export type GetAllFiltersQueryResult = Apollo.QueryResult<GetAllFiltersQuery, GetAllFiltersQueryVariables>;
+export const GetAllPermissionNamesDocument = gql`
+    query getAllPermissionNames {
+  permissionNames {
+    nodes {
+      id
+      name
+      permissionPolicyId
+      permissionPolicy {
+        id
+        name
+        rules
+        type
+        description
+        defaultRestrictions
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllPermissionNamesQuery__
+ *
+ * To run a query within a React component, call `useGetAllPermissionNamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPermissionNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPermissionNamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllPermissionNamesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPermissionNamesQuery, GetAllPermissionNamesQueryVariables>) {
+        return Apollo.useQuery<GetAllPermissionNamesQuery, GetAllPermissionNamesQueryVariables>(GetAllPermissionNamesDocument, baseOptions);
+      }
+export function useGetAllPermissionNamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPermissionNamesQuery, GetAllPermissionNamesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllPermissionNamesQuery, GetAllPermissionNamesQueryVariables>(GetAllPermissionNamesDocument, baseOptions);
+        }
+export type GetAllPermissionNamesQueryHookResult = ReturnType<typeof useGetAllPermissionNamesQuery>;
+export type GetAllPermissionNamesLazyQueryHookResult = ReturnType<typeof useGetAllPermissionNamesLazyQuery>;
+export type GetAllPermissionNamesQueryResult = Apollo.QueryResult<GetAllPermissionNamesQuery, GetAllPermissionNamesQueryVariables>;
+export const GetAllTemplatesDocument = gql`
+    query getAllTemplates {
+  templates {
+    nodes {
+      code
+      status
+      id
+      version
+      versionTimestamp
+      name
+      status
+      templateCategory {
+        title
+      }
+      applications(filter: {isConfig: {equalTo: false}}) {
+        totalCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllTemplatesQuery__
+ *
+ * To run a query within a React component, call `useGetAllTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllTemplatesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllTemplatesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>) {
+        return Apollo.useQuery<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>(GetAllTemplatesDocument, baseOptions);
+      }
+export function useGetAllTemplatesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>(GetAllTemplatesDocument, baseOptions);
+        }
+export type GetAllTemplatesQueryHookResult = ReturnType<typeof useGetAllTemplatesQuery>;
+export type GetAllTemplatesLazyQueryHookResult = ReturnType<typeof useGetAllTemplatesLazyQuery>;
+export type GetAllTemplatesQueryResult = Apollo.QueryResult<GetAllTemplatesQuery, GetAllTemplatesQueryVariables>;
+export const GetTemplateCategoriesDocument = gql`
+    query getTemplateCategories {
+  templateCategories {
+    nodes {
+      code
+      icon
+      id
+      title
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTemplateCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetTemplateCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTemplateCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTemplateCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTemplateCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>) {
+        return Apollo.useQuery<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>(GetTemplateCategoriesDocument, baseOptions);
+      }
+export function useGetTemplateCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>) {
+          return Apollo.useLazyQuery<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>(GetTemplateCategoriesDocument, baseOptions);
+        }
+export type GetTemplateCategoriesQueryHookResult = ReturnType<typeof useGetTemplateCategoriesQuery>;
+export type GetTemplateCategoriesLazyQueryHookResult = ReturnType<typeof useGetTemplateCategoriesLazyQuery>;
+export type GetTemplateCategoriesQueryResult = Apollo.QueryResult<GetTemplateCategoriesQuery, GetTemplateCategoriesQueryVariables>;
+export const GetFullTemplateInfoDocument = gql`
+    query getFullTemplateInfo($id: Int!) {
+  template(id: $id) {
+    ...FullTemplate
+  }
+}
+    ${FullTemplateFragmentDoc}`;
+
+/**
+ * __useGetFullTemplateInfoQuery__
+ *
+ * To run a query within a React component, call `useGetFullTemplateInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFullTemplateInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFullTemplateInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetFullTemplateInfoQuery(baseOptions?: Apollo.QueryHookOptions<GetFullTemplateInfoQuery, GetFullTemplateInfoQueryVariables>) {
+        return Apollo.useQuery<GetFullTemplateInfoQuery, GetFullTemplateInfoQueryVariables>(GetFullTemplateInfoDocument, baseOptions);
+      }
+export function useGetFullTemplateInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFullTemplateInfoQuery, GetFullTemplateInfoQueryVariables>) {
+          return Apollo.useLazyQuery<GetFullTemplateInfoQuery, GetFullTemplateInfoQueryVariables>(GetFullTemplateInfoDocument, baseOptions);
+        }
+export type GetFullTemplateInfoQueryHookResult = ReturnType<typeof useGetFullTemplateInfoQuery>;
+export type GetFullTemplateInfoLazyQueryHookResult = ReturnType<typeof useGetFullTemplateInfoLazyQuery>;
+export type GetFullTemplateInfoQueryResult = Apollo.QueryResult<GetFullTemplateInfoQuery, GetFullTemplateInfoQueryVariables>;
+export const GetPermissionStatisticsDocument = gql`
+    query getPermissionStatistics($id: Int!, $name: String!, $rowLeveSearch: String!) {
+  permissionName(id: $id) {
+    name
+    permissionJoins {
+      nodes {
+        id
+        organisation {
+          name
+        }
+        user {
+          firstName
+          lastName
+          email
+          username
+        }
+      }
+    }
+    permissionPolicy {
+      description
+      rules
+      type
+      name
+    }
+    templatePermissions {
+      nodes {
+        id
+        stageNumber
+        levelNumber
+        template {
+          id
+          name
+          code
+          version
+          status
+        }
+      }
+    }
+  }
+  templateActions(filter: {parametersQueriesString: {includes: $name}}) {
+    nodes {
+      id
+      actionCode
+      condition
+      parameterQueries
+      trigger
+      template {
+        code
+        name
+        version
+        status
+      }
+    }
+  }
+  templateElements(filter: {parametersString: {includes: $name}}) {
+    nodes {
+      id
+      code
+      parameters
+      title
+      section {
+        template {
+          code
+          name
+          status
+          version
+        }
+      }
+    }
+  }
+  postgresRowLevels(filter: {policyname: {endsWith: $rowLeveSearch}}) {
+    nodes {
+      policyname
+      tablename
+      withCheck
+      qual
+      roles
+      schemaname
+      permissive
+      cmd
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPermissionStatisticsQuery__
+ *
+ * To run a query within a React component, call `useGetPermissionStatisticsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPermissionStatisticsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPermissionStatisticsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      rowLeveSearch: // value for 'rowLeveSearch'
+ *   },
+ * });
+ */
+export function useGetPermissionStatisticsQuery(baseOptions?: Apollo.QueryHookOptions<GetPermissionStatisticsQuery, GetPermissionStatisticsQueryVariables>) {
+        return Apollo.useQuery<GetPermissionStatisticsQuery, GetPermissionStatisticsQueryVariables>(GetPermissionStatisticsDocument, baseOptions);
+      }
+export function useGetPermissionStatisticsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPermissionStatisticsQuery, GetPermissionStatisticsQueryVariables>) {
+          return Apollo.useLazyQuery<GetPermissionStatisticsQuery, GetPermissionStatisticsQueryVariables>(GetPermissionStatisticsDocument, baseOptions);
+        }
+export type GetPermissionStatisticsQueryHookResult = ReturnType<typeof useGetPermissionStatisticsQuery>;
+export type GetPermissionStatisticsLazyQueryHookResult = ReturnType<typeof useGetPermissionStatisticsLazyQuery>;
+export type GetPermissionStatisticsQueryResult = Apollo.QueryResult<GetPermissionStatisticsQuery, GetPermissionStatisticsQueryVariables>;
+export const GetTemplateElementsByPluginDocument = gql`
+    query getTemplateElementsByPlugin($pluginCode: String!) {
+  templateElements(filter: {elementTypePluginCode: {equalTo: $pluginCode}}) {
+    nodes {
+      category
+      helpText
+      isEditable
+      isRequired
+      parameters
+      validation
+      code
+      title
+      id
+      defaultValue
+      validationMessage
+      visibilityCondition
+      templateCode
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTemplateElementsByPluginQuery__
+ *
+ * To run a query within a React component, call `useGetTemplateElementsByPluginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTemplateElementsByPluginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTemplateElementsByPluginQuery({
+ *   variables: {
+ *      pluginCode: // value for 'pluginCode'
+ *   },
+ * });
+ */
+export function useGetTemplateElementsByPluginQuery(baseOptions?: Apollo.QueryHookOptions<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>) {
+        return Apollo.useQuery<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>(GetTemplateElementsByPluginDocument, baseOptions);
+      }
+export function useGetTemplateElementsByPluginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>) {
+          return Apollo.useLazyQuery<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>(GetTemplateElementsByPluginDocument, baseOptions);
+        }
+export type GetTemplateElementsByPluginQueryHookResult = ReturnType<typeof useGetTemplateElementsByPluginQuery>;
+export type GetTemplateElementsByPluginLazyQueryHookResult = ReturnType<typeof useGetTemplateElementsByPluginLazyQuery>;
+export type GetTemplateElementsByPluginQueryResult = Apollo.QueryResult<GetTemplateElementsByPluginQuery, GetTemplateElementsByPluginQueryVariables>;
+export const GetTemplatesAvailableForCodeDocument = gql`
+    query getTemplatesAvailableForCode($code: String!) {
+  templates(filter: {status: {equalTo: AVAILABLE}, code: {equalTo: $code}}) {
+    nodes {
+      id
+      code
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTemplatesAvailableForCodeQuery__
+ *
+ * To run a query within a React component, call `useGetTemplatesAvailableForCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTemplatesAvailableForCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTemplatesAvailableForCodeQuery({
+ *   variables: {
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useGetTemplatesAvailableForCodeQuery(baseOptions?: Apollo.QueryHookOptions<GetTemplatesAvailableForCodeQuery, GetTemplatesAvailableForCodeQueryVariables>) {
+        return Apollo.useQuery<GetTemplatesAvailableForCodeQuery, GetTemplatesAvailableForCodeQueryVariables>(GetTemplatesAvailableForCodeDocument, baseOptions);
+      }
+export function useGetTemplatesAvailableForCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTemplatesAvailableForCodeQuery, GetTemplatesAvailableForCodeQueryVariables>) {
+          return Apollo.useLazyQuery<GetTemplatesAvailableForCodeQuery, GetTemplatesAvailableForCodeQueryVariables>(GetTemplatesAvailableForCodeDocument, baseOptions);
+        }
+export type GetTemplatesAvailableForCodeQueryHookResult = ReturnType<typeof useGetTemplatesAvailableForCodeQuery>;
+export type GetTemplatesAvailableForCodeLazyQueryHookResult = ReturnType<typeof useGetTemplatesAvailableForCodeLazyQuery>;
+export type GetTemplatesAvailableForCodeQueryResult = Apollo.QueryResult<GetTemplatesAvailableForCodeQuery, GetTemplatesAvailableForCodeQueryVariables>;

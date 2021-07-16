@@ -2,9 +2,13 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Button, Header, Icon } from 'semantic-ui-react'
 import { DownloadButton, MainMenu } from '..'
+import { useRouter } from '../../../utils/hooks/useRouter'
 
 const LookUpMainMenu: React.FC<any> = (props) => {
   const { tableLabel, tableId } = props
+  const {
+    match: { path },
+  } = useRouter()
 
   return (
     <MainMenu
@@ -16,7 +20,7 @@ const LookUpMainMenu: React.FC<any> = (props) => {
       }
       actions={
         <Button.Group>
-          <Button icon as={NavLink} labelPosition="left" to="/lookup-tables">
+          <Button icon as={NavLink} labelPosition="left" to="/admin/lookup-tables">
             <Icon name="arrow alternate circle left" />
             Back
           </Button>
@@ -25,7 +29,7 @@ const LookUpMainMenu: React.FC<any> = (props) => {
             labelPosition="left"
             as={NavLink}
             color="green"
-            to={`/lookup-tables/${tableId}/import`}
+            to={`/admin/lookup-tables/${tableId}/import`}
           >
             <Icon name="upload" />
             Import

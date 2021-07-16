@@ -9,7 +9,7 @@ const addApplicationResponses = (
   const groupedApplicationResponse: { [key: string]: ApplicationResponse[] } = {}
 
   // Group Application responses by templateElement id
-  applicationResponses.forEach((applicationResponse) => {
+  applicationResponses?.forEach((applicationResponse) => {
     const templateElementId = applicationResponse?.templateElementId || ''
     if (!groupedApplicationResponse[templateElementId])
       groupedApplicationResponse[templateElementId] = []

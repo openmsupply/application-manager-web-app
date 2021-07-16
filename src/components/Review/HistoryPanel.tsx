@@ -6,7 +6,7 @@ import HistoryResponseElement from '../PageElements/Elements/HistoryResponseElem
 import { useUserState } from '../../contexts/UserState'
 import { Stage } from '../Review'
 import strings from '../../utils/constants'
-import { StageDetails } from 'utils/types'
+import { StageDetails } from '../../utils/types'
 
 interface HistoryPanelProps {
   templateCode: string

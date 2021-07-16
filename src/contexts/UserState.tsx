@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer } from 'react'
 import fetchUserInfo from '../utils/helpers/fetchUserInfo'
-import { TemplatePermissions, User } from '../utils/types'
+import { OrganisationSimple, TemplatePermissions, User } from '../utils/types'
 import strings from '../utils/constants'
 
 type UserState = {
@@ -8,7 +8,16 @@ type UserState = {
   templatePermissions: TemplatePermissions
   isLoading: boolean
   isNonRegistered: boolean | null
+  isAdmin: boolean
 }
+
+type OnLogin = (
+  JWT: string,
+  user?: User,
+  permissions?: TemplatePermissions,
+  orgList?: OrganisationSimple[],
+  isAdmin?: boolean
+) => void
 
 export type UserActions =
   | {
@@ -18,28 +27,30 @@ export type UserActions =
       type: 'setCurrentUser'
       newUser: User
       newPermissions: TemplatePermissions
+      newOrgList: OrganisationSimple[]
+      newIsAdmin: boolean
     }
   | {
       type: 'setLoading'
       isLoading: boolean
     }
-  | {
-      type: 'setTemplatePermissions'
-      templatePermissions: TemplatePermissions
-    }
 
 type UserProviderProps = { children: React.ReactNode }
 
 const reducer = (state: UserState, action: UserActions) => {
+  console.log(state, action)
   switch (action.type) {
     case 'resetCurrentUser':
       return initialState
     case 'setCurrentUser':
-      const { newUser, newPermissions } = action
+      const { newUser, newPermissions, newOrgList, newIsAdmin } = action
+      console.log(action)
       return {
         ...state,
         currentUser: newUser,
         templatePermissions: newPermissions,
+        orgList: newOrgList,
+        isAdmin: newIsAdmin,
         isNonRegistered: newUser.username === strings.USER_NONREGISTERED,
       }
     case 'setLoading':
@@ -47,12 +58,6 @@ const reducer = (state: UserState, action: UserActions) => {
       return {
         ...state,
         isLoading,
-      }
-    case 'setTemplatePermissions':
-      const { templatePermissions } = action
-      return {
-        ...state,
-        templatePermissions,
       }
     default:
       return state
@@ -64,14 +69,15 @@ const initialState: UserState = {
   templatePermissions: {},
   isLoading: false,
   isNonRegistered: null,
+  isAdmin: false,
 }
 
 // By setting the typings here, we ensure we get intellisense in VS Code
 const initialUserContext: {
   userState: UserState
   setUserState: React.Dispatch<UserActions>
-  onLogin: Function
-  logout: Function
+  onLogin: OnLogin
+  logout: () => void
 } = {
   userState: initialState,
   setUserState: () => {},
@@ -91,24 +97,28 @@ export function UserProvider({ children }: UserProviderProps) {
     window.location.href = '/login'
   }
 
-  const onLogin = (
-    JWT: string,
-    user: User | undefined = undefined,
-    permissions: TemplatePermissions | undefined = undefined
-  ) => {
-    if (JWT == undefined) logout()
+  const onLogin: OnLogin = (JWT: string, user, permissions, orgList, isAdmin) => {
+    // NOTE: quotes are required in 'undefined', refer to https://github.com/openmsupply/application-manager-web-app/pull/841#discussion_r670822649
+    if (JWT == 'undefined' || JWT == undefined) logout()
     dispatch({ type: 'setLoading', isLoading: true })
     localStorage.setItem('persistJWT', JWT)
     if (!user || !permissions) fetchUserInfo({ dispatch: setUserState }, logout)
     else {
-      dispatch({ type: 'setCurrentUser', newUser: user, newPermissions: permissions })
+      dispatch({
+        type: 'setCurrentUser',
+        newUser: user,
+        newPermissions: permissions || {},
+        newOrgList: orgList || [],
+        newIsAdmin: !!isAdmin,
+      })
       dispatch({ type: 'setLoading', isLoading: false })
     }
   }
 
   // Initial check for persisted user in local storage
   const JWT = localStorage.getItem('persistJWT')
-  if (JWT == 'undefined') logout()
+  // NOTE: quotes are required in 'undefined', refer to https://github.com/openmsupply/application-manager-web-app/pull/841#discussion_r670822649
+  if (JWT == 'undefined' || JWT == undefined) logout()
   if (JWT && !userState.currentUser && !userState.isLoading) {
     onLogin(JWT)
   }

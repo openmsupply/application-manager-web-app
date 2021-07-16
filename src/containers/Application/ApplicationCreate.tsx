@@ -22,16 +22,15 @@ const ApplicationCreate: React.FC = () => {
     push,
     query: { type },
   } = useRouter()
+  const {
+    userState: { currentUser },
+  } = useUserState()
 
   const { error, loading, template } = useLoadTemplate({
     templateCode: type,
   })
 
   usePageTitle(strings.PAGE_TITLE_CREATE)
-
-  const {
-    userState: { currentUser },
-  } = useUserState()
 
   // If template has no start message, go straight to first page of new application
   useEffect(() => {
@@ -64,19 +63,13 @@ const ApplicationCreate: React.FC = () => {
     const serialNumber = Math.round(Math.random() * 10000).toString()
     setApplicationState({ type: 'setSerialNumber', serialNumber })
 
-    const { name, elementsIds, elementsDefaults, sections } = template
-    const defaultValues = await getDefaults(elementsDefaults || [], currentUser)
+    const { name, elementsIds, elementsDefaults } = template
+    const defaultValues = await getDefaultValues(elementsDefaults || [], currentUser)
 
     create({
       name,
       serial: serialNumber,
       templateId: template.id,
-      userId: currentUser?.userId,
-      orgId: currentUser?.organisation?.orgId,
-      sessionId: currentUser?.sessionId as string,
-      templateSections: sections.map(({ id }) => {
-        return { templateSectionId: id }
-      }),
       templateResponses: (elementsIds as number[]).map((id, index) => {
         return { templateElementId: id, value: defaultValues[index] }
       }),
@@ -121,7 +114,10 @@ const ApplicationCreate: React.FC = () => {
   ) : null
 }
 
-const getDefaults = async (defaultValueExpressions: EvaluatorNode[], currentUser: User | null) => {
+const getDefaultValues = async (
+  defaultValueExpressions: EvaluatorNode[],
+  currentUser: User | null
+) => {
   const evaluationElements: ElementForEvaluation[] = defaultValueExpressions.map(
     (defaultValueExpression) => ({ defaultValueExpression, code: '' })
   )
@@ -132,4 +128,5 @@ const getDefaults = async (defaultValueExpressions: EvaluatorNode[], currentUser
   return evaluatedElements.map(({ defaultValue }) => defaultValue)
 }
 
+export { getDefaultValues }
 export default ApplicationCreate

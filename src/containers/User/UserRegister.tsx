@@ -30,8 +30,8 @@ const UserRegister: React.FC = () => {
   }, [])
 
   const onLoginSuccess = async (loginResult: LoginPayload) => {
-    const { JWT, user, templatePermissions } = loginResult
-    await onLogin(JWT, user, templatePermissions)
+    const { JWT, user, templatePermissions, orgList, isAdmin } = loginResult
+    await onLogin(JWT, user, templatePermissions, orgList, isAdmin)
     push('/application/new?type=UserRegistration')
   }
 

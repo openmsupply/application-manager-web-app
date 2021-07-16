@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Form, Icon, Label, Segment } from 'semantic-ui-react'
 import {
   ApplicationDetails,
@@ -33,6 +33,7 @@ interface PageElementProps {
   isUpdating?: boolean
   // userLevel?: number
   serial?: string
+  renderConfigElement?: (element: ElementState) => ReactNode
   sectionAndPage?: SectionAndPage
 }
 
@@ -47,6 +48,8 @@ const PageElements: React.FC<PageElementProps> = ({
   isStrictPage = false,
   isSummary = false,
   isUpdating = false,
+  renderConfigElement = () => null,
+
   // userLevel,
   serial,
   sectionAndPage,
@@ -68,51 +71,50 @@ const PageElements: React.FC<PageElementProps> = ({
   if (canEdit && !isReview && !isSummary)
     return (
       <Form className="form-area">
-        {visibleElements.map(
-          ({ element, isChangeRequest, isChanged, previousApplicationResponse }) => {
-            const currentReview = previousApplicationResponse?.reviewResponses.nodes[0]
-            const changesRequired =
-              isChangeRequest || isChanged
-                ? {
-                    isChangeRequest: isChangeRequest as boolean,
-                    isChanged: isChanged as boolean,
-                    reviewerComment: currentReview?.comment || undefined,
-                  }
-                : undefined
+        {elements.map(({ element, isChangeRequest, isChanged, previousApplicationResponse }) => {
+          const currentReview = previousApplicationResponse?.reviewResponses.nodes[0]
+          const changesRequired =
+            isChangeRequest || isChanged
+              ? {
+                  isChangeRequest: isChangeRequest as boolean,
+                  isChanged: isChanged as boolean,
+                  reviewerComment: currentReview?.comment || undefined,
+                }
+              : undefined
 
-            const props: ApplicationViewWrapperProps = {
-              element,
-              isStrictPage,
-              changesRequired,
-              allResponses: responsesByCode,
-              applicationData,
-              currentResponse: responsesByCode?.[element.code],
-            }
+          const props: ApplicationViewWrapperProps = {
+            element,
+            isStrictPage,
+            changesRequired,
+            allResponses: responsesByCode,
+            applicationData,
+            currentResponse: responsesByCode?.[element.code],
+          }
 
-            // Wrapper displays response & changes requested warning for LOQ re-submission
-            return (
-              <div className="form-element-wrapper" key={`question_${element.code}`}>
-                <div className="form-element">
-                  {element.category === TemplateElementCategory.Information ? (
-                    <RenderElementWrapper key={element.code}>
-                      <SummaryViewWrapper {...getSummaryViewProps(element)} />
-                    </RenderElementWrapper>
-                  ) : (
-                    <ApplicationViewWrapper {...props} />
-                  )}
-                </div>
-
-                {element.helpText && (
-                  <div className="help-tips hide-on-mobile">
-                    <div className="help-tips-content">
-                      <Markdown text={element.helpText} />
-                    </div>
-                  </div>
+          // Wrapper displays response & changes requested warning for LOQ re-submission
+          return (
+            <div className="form-element-wrapper" key={`question_${element.code}`}>
+              {renderConfigElement(element)}
+              <div className="form-element">
+                {element.category === TemplateElementCategory.Information ? (
+                  <RenderElementWrapper key={element.code}>
+                    <SummaryViewWrapper {...getSummaryViewProps(element)} />
+                  </RenderElementWrapper>
+                ) : (
+                  <ApplicationViewWrapper {...props} />
                 )}
               </div>
-            )
-          }
-        )}
+
+              {element.helpText && (
+                <div className="help-tips hide-on-mobile">
+                  <div className="help-tips-content">
+                    <Markdown text={element.helpText} />
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
       </Form>
     )
 

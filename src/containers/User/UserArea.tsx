@@ -28,6 +28,10 @@ const UserArea: React.FC = () => {
 const MainMenuBar: React.FC = () => {
   // TO-DO: Logic for deducing what should show in menu bar
   // Probably passed in as props
+  const {
+    userState: { isAdmin },
+  } = useUserState()
+
   return (
     <div id="menu-bar">
       <List horizontal>
@@ -37,18 +41,17 @@ const MainMenuBar: React.FC = () => {
             {strings.MENU_ITEM_DASHBOARD}
           </Link>
         </List.Item>
-        {/* <List.Item>
-          <Link to="/layout">Layout helpers</Link>
-        </List.Item> */}
-        <List.Item>
-          <Link to="/lookup-tables">Lookup Tables</Link>
-        </List.Item>
         <List.Item>
           <Link to="/outcomes">Outcomes</Link>
         </List.Item>
         <List.Item>
           <Link to="/application/new?type=UserEdit">Edit User Account</Link>
         </List.Item>
+        {isAdmin && (
+          <List.Item>
+            <Link to="/admin">Admin Configurations</Link>
+          </List.Item>
+        )}
       </List>
     </div>
   )
@@ -56,6 +59,7 @@ const MainMenuBar: React.FC = () => {
 
 const OrgSelector: React.FC<{ user: User }> = ({ user }) => {
   // TO-DO: Make into Dropdown so Org can be selected
+
   return (
     <div id="org-selector">
       {user?.organisation?.logoUrl && (

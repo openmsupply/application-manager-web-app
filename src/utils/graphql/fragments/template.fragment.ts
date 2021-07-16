@@ -5,19 +5,24 @@ export default gql`
     code
     id
     name
+    status
     isLinear
     startMessage
     submissionMessage
     templateCategory {
       title
       icon
+      code
+      id
     }
     templateFilterJoins {
       nodes {
+        id
         filter {
           id
-          iconColor
           icon
+          code
+          iconColor
           query
           title
           userRole

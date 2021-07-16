@@ -19,11 +19,13 @@ type TemplatesData = {
   templatesByCategory: TemplatesByCategory
 }
 
+const emptyTemplateData = {
+  templates: [],
+  templatesByCategory: [],
+}
+
 const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: boolean) => {
-  const [templatesData, setTemplatesData] = useState<TemplatesData>({
-    templates: [],
-    templatesByCategory: [],
-  })
+  const [templatesData, setTemplatesData] = useState<TemplatesData>(emptyTemplateData)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -42,7 +44,10 @@ const useListTemplates = (templatePermissions: TemplatePermissions, isLoading: b
       const filteredTemplates = (data?.templates?.nodes || []).filter(
         (template) => templatePermissions[String(template?.code)]
       ) as Template[]
-      if (filteredTemplates.length === 0) return setLoading(false)
+      if (filteredTemplates.length === 0) {
+        setTemplatesData(emptyTemplateData)
+        return setLoading(false)
+      }
 
       const templates = filteredTemplates.map((template) =>
         convertFromTemplateToTemplateDetails(template, templatePermissions)
