@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 export default gql`
   mutation createApplication(
     $name: String!
-    $serial: String!
+    $serial: String
     $templateId: Int!
     $userId: Int
     $orgId: Int

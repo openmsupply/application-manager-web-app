@@ -53,6 +53,8 @@ export type Query = Node & {
   applicationStatusHistories?: Maybe<ApplicationStatusHistoriesConnection>;
   /** Reads and enables pagination through a set of `ConstraintsInfo`. */
   constraintsInfos?: Maybe<ConstraintsInfosConnection>;
+  /** Reads and enables pagination through a set of `Counter`. */
+  counters?: Maybe<CountersConnection>;
   /** Reads and enables pagination through a set of `ElementTypePlugin`. */
   elementTypePlugins?: Maybe<ElementTypePluginsConnection>;
   /** Reads and enables pagination through a set of `File`. */
@@ -132,6 +134,8 @@ export type Query = Node & {
   applicationSection?: Maybe<ApplicationSection>;
   applicationStageHistory?: Maybe<ApplicationStageHistory>;
   applicationStatusHistory?: Maybe<ApplicationStatusHistory>;
+  counter?: Maybe<Counter>;
+  counterByName?: Maybe<Counter>;
   elementTypePlugin?: Maybe<ElementTypePlugin>;
   file?: Maybe<File>;
   fileByUniqueId?: Maybe<File>;
@@ -209,6 +213,8 @@ export type Query = Node & {
   applicationStageHistoryByNodeId?: Maybe<ApplicationStageHistory>;
   /** Reads a single `ApplicationStatusHistory` using its globally unique `ID`. */
   applicationStatusHistoryByNodeId?: Maybe<ApplicationStatusHistory>;
+  /** Reads a single `Counter` using its globally unique `ID`. */
+  counterByNodeId?: Maybe<Counter>;
   /** Reads a single `ElementTypePlugin` using its globally unique `ID`. */
   elementTypePluginByNodeId?: Maybe<ElementTypePlugin>;
   /** Reads a single `File` using its globally unique `ID`. */
@@ -422,6 +428,19 @@ export type QueryConstraintsInfosArgs = {
   orderBy?: Maybe<Array<ConstraintsInfosOrderBy>>;
   condition?: Maybe<ConstraintsInfoCondition>;
   filter?: Maybe<ConstraintsInfoFilter>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCountersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  after?: Maybe<Scalars['Cursor']>;
+  orderBy?: Maybe<Array<CountersOrderBy>>;
+  condition?: Maybe<CounterCondition>;
+  filter?: Maybe<CounterFilter>;
 };
 
 
@@ -935,6 +954,18 @@ export type QueryApplicationStatusHistoryArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryCounterArgs = {
+  id: Scalars['Int'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCounterByNameArgs = {
+  name: Scalars['String'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryElementTypePluginArgs = {
   code: Scalars['String'];
 };
@@ -1375,6 +1406,12 @@ export type QueryApplicationStageHistoryByNodeIdArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryApplicationStatusHistoryByNodeIdArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCounterByNodeIdArgs = {
   nodeId: Scalars['ID'];
 };
 
@@ -7701,6 +7738,10 @@ export enum ApplicationStageStatusAllsOrderBy {
   ApplicationIdDesc = 'APPLICATION_ID_DESC',
   TemplateIdAsc = 'TEMPLATE_ID_ASC',
   TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  TemplateNameAsc = 'TEMPLATE_NAME_ASC',
+  TemplateNameDesc = 'TEMPLATE_NAME_DESC',
+  TemplateCodeAsc = 'TEMPLATE_CODE_ASC',
+  TemplateCodeDesc = 'TEMPLATE_CODE_DESC',
   SerialAsc = 'SERIAL_ASC',
   SerialDesc = 'SERIAL_DESC',
   NameAsc = 'NAME_ASC',
@@ -7741,6 +7782,10 @@ export type ApplicationStageStatusAllCondition = {
   applicationId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `templateId` field. */
   templateId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateName` field. */
+  templateName?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `templateCode` field. */
+  templateCode?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `serial` field. */
   serial?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `name` field. */
@@ -7781,6 +7826,10 @@ export type ApplicationStageStatusAllFilter = {
   applicationId?: Maybe<IntFilter>;
   /** Filter by the object’s `templateId` field. */
   templateId?: Maybe<IntFilter>;
+  /** Filter by the object’s `templateName` field. */
+  templateName?: Maybe<StringFilter>;
+  /** Filter by the object’s `templateCode` field. */
+  templateCode?: Maybe<StringFilter>;
   /** Filter by the object’s `serial` field. */
   serial?: Maybe<StringFilter>;
   /** Filter by the object’s `name` field. */
@@ -7838,6 +7887,8 @@ export type ApplicationStageStatusAll = {
   __typename?: 'ApplicationStageStatusAll';
   applicationId?: Maybe<Scalars['Int']>;
   templateId?: Maybe<Scalars['Int']>;
+  templateName?: Maybe<Scalars['String']>;
+  templateCode?: Maybe<Scalars['String']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['Int']>;
@@ -7872,6 +7923,10 @@ export enum ApplicationStageStatusLatestsOrderBy {
   ApplicationIdDesc = 'APPLICATION_ID_DESC',
   TemplateIdAsc = 'TEMPLATE_ID_ASC',
   TemplateIdDesc = 'TEMPLATE_ID_DESC',
+  TemplateNameAsc = 'TEMPLATE_NAME_ASC',
+  TemplateNameDesc = 'TEMPLATE_NAME_DESC',
+  TemplateCodeAsc = 'TEMPLATE_CODE_ASC',
+  TemplateCodeDesc = 'TEMPLATE_CODE_DESC',
   SerialAsc = 'SERIAL_ASC',
   SerialDesc = 'SERIAL_DESC',
   NameAsc = 'NAME_ASC',
@@ -7912,6 +7967,10 @@ export type ApplicationStageStatusLatestCondition = {
   applicationId?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `templateId` field. */
   templateId?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `templateName` field. */
+  templateName?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `templateCode` field. */
+  templateCode?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `serial` field. */
   serial?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `name` field. */
@@ -7952,6 +8011,10 @@ export type ApplicationStageStatusLatestFilter = {
   applicationId?: Maybe<IntFilter>;
   /** Filter by the object’s `templateId` field. */
   templateId?: Maybe<IntFilter>;
+  /** Filter by the object’s `templateName` field. */
+  templateName?: Maybe<StringFilter>;
+  /** Filter by the object’s `templateCode` field. */
+  templateCode?: Maybe<StringFilter>;
   /** Filter by the object’s `serial` field. */
   serial?: Maybe<StringFilter>;
   /** Filter by the object’s `name` field. */
@@ -8009,6 +8072,8 @@ export type ApplicationStageStatusLatest = {
   __typename?: 'ApplicationStageStatusLatest';
   applicationId?: Maybe<Scalars['Int']>;
   templateId?: Maybe<Scalars['Int']>;
+  templateName?: Maybe<Scalars['String']>;
+  templateCode?: Maybe<Scalars['String']>;
   serial?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['Int']>;
@@ -8272,6 +8337,76 @@ export type ConstraintsInfosEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `ConstraintsInfo` at the end of the edge. */
   node?: Maybe<ConstraintsInfo>;
+};
+
+/** Methods to use when ordering `Counter`. */
+export enum CountersOrderBy {
+  Natural = 'NATURAL',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  ValueAsc = 'VALUE_ASC',
+  ValueDesc = 'VALUE_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
+/** A condition to be used against `Counter` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type CounterCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: Maybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `value` field. */
+  value?: Maybe<Scalars['Int']>;
+};
+
+/** A filter to be used against `Counter` object types. All fields are combined with a logical ‘and.’ */
+export type CounterFilter = {
+  /** Filter by the object’s `id` field. */
+  id?: Maybe<IntFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: Maybe<StringFilter>;
+  /** Filter by the object’s `value` field. */
+  value?: Maybe<IntFilter>;
+  /** Checks for all expressions in this list. */
+  and?: Maybe<Array<CounterFilter>>;
+  /** Checks for any expressions in this list. */
+  or?: Maybe<Array<CounterFilter>>;
+  /** Negates the expression. */
+  not?: Maybe<CounterFilter>;
+};
+
+/** A connection to a list of `Counter` values. */
+export type CountersConnection = {
+  __typename?: 'CountersConnection';
+  /** A list of `Counter` objects. */
+  nodes: Array<Maybe<Counter>>;
+  /** A list of edges which contains the `Counter` and cursor to aid in pagination. */
+  edges: Array<CountersEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Counter` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type Counter = Node & {
+  __typename?: 'Counter';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  value?: Maybe<Scalars['Int']>;
+};
+
+/** A `Counter` edge in the connection. */
+export type CountersEdge = {
+  __typename?: 'CountersEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `Counter` at the end of the edge. */
+  node?: Maybe<Counter>;
 };
 
 /** Methods to use when ordering `ElementTypePlugin`. */
@@ -9787,6 +9922,8 @@ export type Mutation = {
   createApplicationStageHistory?: Maybe<CreateApplicationStageHistoryPayload>;
   /** Creates a single `ApplicationStatusHistory`. */
   createApplicationStatusHistory?: Maybe<CreateApplicationStatusHistoryPayload>;
+  /** Creates a single `Counter`. */
+  createCounter?: Maybe<CreateCounterPayload>;
   /** Creates a single `ElementTypePlugin`. */
   createElementTypePlugin?: Maybe<CreateElementTypePluginPayload>;
   /** Creates a single `File`. */
@@ -9883,6 +10020,12 @@ export type Mutation = {
   updateApplicationStatusHistoryByNodeId?: Maybe<UpdateApplicationStatusHistoryPayload>;
   /** Updates a single `ApplicationStatusHistory` using a unique key and a patch. */
   updateApplicationStatusHistory?: Maybe<UpdateApplicationStatusHistoryPayload>;
+  /** Updates a single `Counter` using its globally unique id and a patch. */
+  updateCounterByNodeId?: Maybe<UpdateCounterPayload>;
+  /** Updates a single `Counter` using a unique key and a patch. */
+  updateCounter?: Maybe<UpdateCounterPayload>;
+  /** Updates a single `Counter` using a unique key and a patch. */
+  updateCounterByName?: Maybe<UpdateCounterPayload>;
   /** Updates a single `ElementTypePlugin` using its globally unique id and a patch. */
   updateElementTypePluginByNodeId?: Maybe<UpdateElementTypePluginPayload>;
   /** Updates a single `ElementTypePlugin` using a unique key and a patch. */
@@ -10065,6 +10208,12 @@ export type Mutation = {
   deleteApplicationStatusHistoryByNodeId?: Maybe<DeleteApplicationStatusHistoryPayload>;
   /** Deletes a single `ApplicationStatusHistory` using a unique key. */
   deleteApplicationStatusHistory?: Maybe<DeleteApplicationStatusHistoryPayload>;
+  /** Deletes a single `Counter` using its globally unique id. */
+  deleteCounterByNodeId?: Maybe<DeleteCounterPayload>;
+  /** Deletes a single `Counter` using a unique key. */
+  deleteCounter?: Maybe<DeleteCounterPayload>;
+  /** Deletes a single `Counter` using a unique key. */
+  deleteCounterByName?: Maybe<DeleteCounterPayload>;
   /** Deletes a single `ElementTypePlugin` using its globally unique id. */
   deleteElementTypePluginByNodeId?: Maybe<DeleteElementTypePluginPayload>;
   /** Deletes a single `ElementTypePlugin` using a unique key. */
@@ -10263,6 +10412,12 @@ export type MutationCreateApplicationStageHistoryArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateApplicationStatusHistoryArgs = {
   input: CreateApplicationStatusHistoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateCounterArgs = {
+  input: CreateCounterInput;
 };
 
 
@@ -10551,6 +10706,24 @@ export type MutationUpdateApplicationStatusHistoryByNodeIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateApplicationStatusHistoryArgs = {
   input: UpdateApplicationStatusHistoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateCounterByNodeIdArgs = {
+  input: UpdateCounterByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateCounterArgs = {
+  input: UpdateCounterInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateCounterByNameArgs = {
+  input: UpdateCounterByNameInput;
 };
 
 
@@ -11097,6 +11270,24 @@ export type MutationDeleteApplicationStatusHistoryByNodeIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteApplicationStatusHistoryArgs = {
   input: DeleteApplicationStatusHistoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCounterByNodeIdArgs = {
+  input: DeleteCounterByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCounterArgs = {
+  input: DeleteCounterInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCounterByNameArgs = {
+  input: DeleteCounterByNameInput;
 };
 
 
@@ -21832,6 +22023,40 @@ export type CreateApplicationStatusHistoryPayloadApplicationStatusHistoryEdgeArg
   orderBy?: Maybe<Array<ApplicationStatusHistoriesOrderBy>>;
 };
 
+/** All input for the create `Counter` mutation. */
+export type CreateCounterInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Counter` to be created by this mutation. */
+  counter: CounterInput;
+};
+
+/** An input for mutations affecting `Counter` */
+export type CounterInput = {
+  id?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  value?: Maybe<Scalars['Int']>;
+};
+
+/** The output of our create `Counter` mutation. */
+export type CreateCounterPayload = {
+  __typename?: 'CreateCounterPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Counter` that was created by this mutation. */
+  counter?: Maybe<Counter>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `Counter`. May be used by Relay 1. */
+  counterEdge?: Maybe<CountersEdge>;
+};
+
+
+/** The output of our create `Counter` mutation. */
+export type CreateCounterPayloadCounterEdgeArgs = {
+  orderBy?: Maybe<Array<CountersOrderBy>>;
+};
+
 /** All input for the create `ElementTypePlugin` mutation. */
 export type CreateElementTypePluginInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
@@ -23923,6 +24148,60 @@ export type UpdateApplicationStatusHistoryInput = {
   id: Scalars['Int'];
 };
 
+/** All input for the `updateCounterByNodeId` mutation. */
+export type UpdateCounterByNodeIdInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Counter` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `Counter` being updated. */
+  patch: CounterPatch;
+};
+
+/** Represents an update to a `Counter`. Fields that are set will be updated. */
+export type CounterPatch = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['Int']>;
+};
+
+/** The output of our update `Counter` mutation. */
+export type UpdateCounterPayload = {
+  __typename?: 'UpdateCounterPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Counter` that was updated by this mutation. */
+  counter?: Maybe<Counter>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `Counter`. May be used by Relay 1. */
+  counterEdge?: Maybe<CountersEdge>;
+};
+
+
+/** The output of our update `Counter` mutation. */
+export type UpdateCounterPayloadCounterEdgeArgs = {
+  orderBy?: Maybe<Array<CountersOrderBy>>;
+};
+
+/** All input for the `updateCounter` mutation. */
+export type UpdateCounterInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `Counter` being updated. */
+  patch: CounterPatch;
+  id: Scalars['Int'];
+};
+
+/** All input for the `updateCounterByName` mutation. */
+export type UpdateCounterByNameInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `Counter` being updated. */
+  patch: CounterPatch;
+  name: Scalars['String'];
+};
+
 /** All input for the `updateElementTypePluginByNodeId` mutation. */
 export type UpdateElementTypePluginByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
@@ -25639,6 +25918,48 @@ export type DeleteApplicationStatusHistoryInput = {
   id: Scalars['Int'];
 };
 
+/** All input for the `deleteCounterByNodeId` mutation. */
+export type DeleteCounterByNodeIdInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Counter` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `Counter` mutation. */
+export type DeleteCounterPayload = {
+  __typename?: 'DeleteCounterPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Counter` that was deleted by this mutation. */
+  counter?: Maybe<Counter>;
+  deletedCounterNodeId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** An edge for our `Counter`. May be used by Relay 1. */
+  counterEdge?: Maybe<CountersEdge>;
+};
+
+
+/** The output of our delete `Counter` mutation. */
+export type DeleteCounterPayloadCounterEdgeArgs = {
+  orderBy?: Maybe<Array<CountersOrderBy>>;
+};
+
+/** All input for the `deleteCounter` mutation. */
+export type DeleteCounterInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+};
+
+/** All input for the `deleteCounterByName` mutation. */
+export type DeleteCounterByNameInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+};
+
 /** All input for the `deleteElementTypePluginByNodeId` mutation. */
 export type DeleteElementTypePluginByNodeIdInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
@@ -27025,7 +27346,7 @@ export type UserFragment = (
 
 export type CreateApplicationMutationVariables = Exact<{
   name: Scalars['String'];
-  serial: Scalars['String'];
+  serial?: Maybe<Scalars['String']>;
   templateId: Scalars['Int'];
   userId?: Maybe<Scalars['Int']>;
   orgId?: Maybe<Scalars['Int']>;
@@ -27361,6 +27682,19 @@ export type GetApplicationQuery = (
       { __typename?: 'ApplicationStageStatusLatest' }
       & StageFragment
     )>> }
+  )> }
+);
+
+export type GetApplicationSerialQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetApplicationSerialQuery = (
+  { __typename?: 'Query' }
+  & { application?: Maybe<(
+    { __typename?: 'Application' }
+    & Pick<Application, 'serial' | 'name' | 'trigger'>
   )> }
 );
 
@@ -27839,7 +28173,7 @@ export const TemplateStageFragmentDoc = gql`
 }
     `;
 export const CreateApplicationDocument = gql`
-    mutation createApplication($name: String!, $serial: String!, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!], $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
+    mutation createApplication($name: String!, $serial: String, $templateId: Int!, $userId: Int, $orgId: Int, $sessionId: String!, $outcome: ApplicationOutcome = PENDING, $trigger: Trigger = ON_APPLICATION_CREATE, $sections: [ApplicationSectionApplicationIdFkeyApplicationSectionCreateInput!], $responses: [ApplicationResponseApplicationIdFkeyApplicationResponseCreateInput!]) {
   createApplication(input: {application: {name: $name, serial: $serial, templateId: $templateId, userId: $userId, orgId: $orgId, sessionId: $sessionId, isActive: true, outcome: $outcome, trigger: $trigger, applicationSectionsUsingId: {create: $sections}, applicationResponsesUsingId: {create: $responses}}}) {
     application {
       userId
@@ -28419,6 +28753,41 @@ export function useGetApplicationLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetApplicationQueryHookResult = ReturnType<typeof useGetApplicationQuery>;
 export type GetApplicationLazyQueryHookResult = ReturnType<typeof useGetApplicationLazyQuery>;
 export type GetApplicationQueryResult = Apollo.QueryResult<GetApplicationQuery, GetApplicationQueryVariables>;
+export const GetApplicationSerialDocument = gql`
+    query getApplicationSerial($id: Int!) {
+  application(id: $id) {
+    serial
+    name
+    trigger
+  }
+}
+    `;
+
+/**
+ * __useGetApplicationSerialQuery__
+ *
+ * To run a query within a React component, call `useGetApplicationSerialQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetApplicationSerialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetApplicationSerialQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetApplicationSerialQuery(baseOptions?: Apollo.QueryHookOptions<GetApplicationSerialQuery, GetApplicationSerialQueryVariables>) {
+        return Apollo.useQuery<GetApplicationSerialQuery, GetApplicationSerialQueryVariables>(GetApplicationSerialDocument, baseOptions);
+      }
+export function useGetApplicationSerialLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetApplicationSerialQuery, GetApplicationSerialQueryVariables>) {
+          return Apollo.useLazyQuery<GetApplicationSerialQuery, GetApplicationSerialQueryVariables>(GetApplicationSerialDocument, baseOptions);
+        }
+export type GetApplicationSerialQueryHookResult = ReturnType<typeof useGetApplicationSerialQuery>;
+export type GetApplicationSerialLazyQueryHookResult = ReturnType<typeof useGetApplicationSerialLazyQuery>;
+export type GetApplicationSerialQueryResult = Apollo.QueryResult<GetApplicationSerialQuery, GetApplicationSerialQueryVariables>;
 export const GetApplicationListDocument = gql`
     query getApplicationList($filters: ApplicationListShapeFilter, $sortFields: [ApplicationListShapesOrderBy!], $paginationOffset: Int!, $numberToFetch: Int!, $userId: Int! = 0) {
   applicationList(filter: $filters, orderBy: $sortFields, offset: $paginationOffset, first: $numberToFetch, userid: $userId) {

@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useCreateApplicationMutation } from '../../utils/generated/graphql'
 
 interface CreateApplicationProps {
-  serial: string
   name: string
   templateId: number
   userId?: number
@@ -13,18 +12,13 @@ interface CreateApplicationProps {
   templateResponses: { templateElementId: number; value: any }[]
 }
 
-interface UseCreateApplicationProps {
-  onCompleted: () => void
-}
-
-const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
+const useCreateApplication = () => {
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<ApolloError | undefined>()
 
   const [applicationMutation] = useCreateApplicationMutation({
     onCompleted: () => {
       setProcessing(false)
-      onCompleted()
     },
     onError: (error) => {
       setProcessing(false)
@@ -32,8 +26,7 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
     },
   })
 
-  const createApplication = ({
-    serial,
+  const createApplication = async ({
     name,
     templateId,
     userId,
@@ -43,10 +36,9 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
     templateResponses,
   }: CreateApplicationProps) => {
     setProcessing(true)
-    applicationMutation({
+    const mutationResult = await applicationMutation({
       variables: {
         name,
-        serial,
         templateId,
         userId,
         orgId,
@@ -55,6 +47,7 @@ const useCreateApplication = ({ onCompleted }: UseCreateApplicationProps) => {
         responses: templateResponses,
       },
     })
+    return mutationResult
   }
 
   return {

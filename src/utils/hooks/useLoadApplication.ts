@@ -77,7 +77,6 @@ const useLoadApplication = ({ serialNumber, networkFetch }: UseGetApplicationPro
     } else {
       if (refetchAttempts < MAX_REFETCH) {
         setTimeout(() => {
-          console.log('Will refetch loadApplication', refetchAttempts) // TODO: Remove log
           setRefetchAttempts(refetchAttempts + 1)
           refetch()
         }, 500)
