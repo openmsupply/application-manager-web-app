@@ -3,6 +3,7 @@ const DEBOUNCE_TIMEOUT = 350 //milliseconds
 import React, { useEffect, useState } from 'react'
 import { Search, Label, Card, Icon } from 'semantic-ui-react'
 import { ApplicationViewProps } from '../../types'
+import { useUserState } from '../../../contexts/UserState'
 import strings from '../constants'
 import evaluateExpression from '@openmsupply/expression-evaluator'
 import useDebounce from './useDebounce'
@@ -21,6 +22,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   onSave,
   Markdown,
   applicationData,
+  allResponses,
 }) => {
   const {
     label,
@@ -34,6 +36,10 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
     resultFormat = displayFormat,
     textFormat,
   } = parameters
+
+  const {
+    userState: { currentUser },
+  } = useUserState()
 
   const graphQLEndpoint = applicationData.config.serverGraphQL
 
@@ -52,7 +58,6 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
         : selection.length > 0
         ? JSON.stringify(selection)
         : undefined,
-      // text: selection.length > 0 ? JSON.stringify(selection) : undefined,
       selection: selection,
     })
   }, [selection])
@@ -65,7 +70,7 @@ const ApplicationView: React.FC<ApplicationViewProps> = ({
   const evaluateSearchQuery = (text: string) => {
     const search = { text }
     evaluateExpression(source, {
-      objects: { search },
+      objects: { search, currentUser, applicationData, responses: allResponses },
       APIfetch: fetch,
       graphQLConnection: { fetch: fetch.bind(window), endpoint: graphQLEndpoint },
     })

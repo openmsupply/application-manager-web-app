@@ -46,7 +46,6 @@ These fields are common to all element types and have their own field in the `te
 
 **Note**: all parameter fields can also have a dynamic query object instead of a primitive. The [`evaluateExpression`](https://github.com/openmsupply/application-manager-server/wiki/Query-Syntax) function will return literal strings (or numbers, booleans) as is. The types described for the parameters below are the type that is expected to be _returned_ from a query expression.
 
-**Note**: parameters marked with \* can be defined as dynamic expressions -- these are specified in the `pluginConfig.json` file of each plugin.
 <a name="short-text"/>
 
 ### Short Text Input
@@ -58,8 +57,8 @@ _Free-form, single-line text input element_
 
 #### Input parameters (in the `parameters` JSON)
 
-- **label\***: `string` -- Text that shows in the HTML "label" attribute of the form element (Markdown string, with dynamic expression evaluation)
-- **description\***: `string` -- additional explanatory text (usually not required) [Optional]
+- **label**: `string` -- Text that shows in the HTML "label" attribute of the form element (Markdown string, with dynamic expression evaluation)
+- **description**: `string` -- additional explanatory text (usually not required) [Optional]
 - **placeholder**: `string`-- text to display before user input (HTML "placeholder" attribute) [Optional]
 - **maskedInput**: `boolean` -- if `true`, displays user input as masked (hidden) characters -- i.e. for passwords. [Optional]
 - **maxWidth**: `number` -- the maximum width (in pixels) for the text input box (defaults to fill the width of the container)
@@ -98,8 +97,8 @@ _Free-form, multi-line text input element_
 
 #### Input parameters (in the `parameters` JSON)
 
-- **label\***: `string` -- Text that shows in the HTML "label" attribute of the form element (Markdown string, with dynamic expression evaluation)
-- **description\***: `string` -- additional explanatory text (usually not required) [Optional]
+- **label**: `string` -- Text that shows in the HTML "label" attribute of the form element (Markdown string, with dynamic expression evaluation)
+- **description**: `string` -- additional explanatory text (usually not required) [Optional]
 - **placeholder**: `string`-- text to display before user input (HTML "placeholder" attribute) [Optional]
 - **lines**: `number` -- height of the TextArea input, in number of lines/rows (default: 5)
 - **maxLength**: `number` -- response must be no longer than this many characters. If the user tries to type more, the response will be truncated to the maximum length. (See Note in ShortText above for how to integrate `maxLength` with validation.)
@@ -158,10 +157,11 @@ _For displaying blocks of text in the application_
 
 #### Input parameters
 
-- **title\***: `string` -- Heading text to display [Optional]
-- **text\***: `string` -- body text to display
-- **style\***: `string` -- a range of present visual styles [Optional]. Options are: `none` (default), `basic`, `info`, `warning`, `success`, `positive`, `error`, `negative`  
+- **title**: `string` -- Heading text to display [Optional]
+- **text**: `string` -- body text to display
+- **style**: `string` -- a range of present visual styles [Optional]. Options are: `none` (default), `basic`, `info`, `warning`, `success`, `positive`, `error`, `negative`  
   (see screenshots below)
+- **newTabLinks**: `boolean` -- `true` forces any hyperlinks in the Markdown text to open in a new tab [Optional] (default: `true`)
 
 **Note**: `title` and `text` strings support basic [**Markdown**](https://en.wikipedia.org/wiki/Markdown) formatting
 
@@ -212,12 +212,12 @@ _For displaying images in applications_
 
 #### Input parameters
 
-- **label\***: `string` -- Label for image (above) [Optional]
-- **description\***: `string` -- Detailed text [Optional]
-- **url\***: `string` -- URL of the source image file
-- **size\***: `string` -- From SemanticUI "size" parameter, one of the following values: `mini`, `tiny`, `small`, `medium`, `large`, `big`, `huge`, `massive` (default `medium`)
-- **alignment\***: `string` -- one of `left`, `center`, `right` (default `left`)
-- **altText\***: `string` -- text for the HTML `alt` and `title` attributes (will show as tool-tip) [Optional]
+- **label**: `string` -- Label for image (above) [Optional]
+- **description**: `string` -- Detailed text [Optional]
+- **url**: `string` -- URL of the source image file
+- **size**: `string` -- From SemanticUI "size" parameter, one of the following values: `mini`, `tiny`, `small`, `medium`, `large`, `big`, `huge`, `massive` (default `medium`)
+- **alignment**: `string` -- one of `left`, `center`, `right` (default `left`)
+- **altText**: `string` -- text for the HTML `alt` and `title` attributes (will show as tool-tip) [Optional]
 
 ---
 
@@ -232,9 +232,9 @@ _Multi-choice question, with one allowed option, displayed as Drop-down list (Co
 
 #### Input parameters
 
-- **label\***: `string` -- as above
-- **description\***: `string` -- as above [Optional]
-- **options\***: `array[string | object]` -- array of options for the user to select from. If an array of **strings** is provided, these strings will be displayed to the user. However, if an array of **objects** is provided, you will also need to specify an `optionsDisplayProperty` (see below)
+- **label**: `string` -- as above
+- **description**: `string` -- as above [Optional]
+- **options**: `array[string | object]` -- array of options for the user to select from. If an array of **strings** is provided, these strings will be displayed to the user. However, if an array of **objects** is provided, you will also need to specify an `optionsDisplayProperty` (see below)
 - **default**: `string`/`number` -- if not provided, defaults to index 0.
 - **search**: `boolean` (default: `false`) -- if `true`, the list of options can be searched and filtered by user
 - **optionsDisplayProperty**: If `options` (above) consists of an array of objects, this parameter specifies the field of each object to be displayed in the options list. For example, if `options` was a list of organisation objects (i.e. `{orgId, name, licenceNumber}`), you'd probably specify `name` as the `optionsDisplayProperty`. Note that even though one field is displayed to the user in the Dropdown list, the _entire_ selected object is saved as the selection. And if `optionsDisplayProperty` refers to a field that doesn't exist on the supplied object, the plugin will fail and show in error in the application.
@@ -264,9 +264,9 @@ _Multi-choice question, with one allowed selection, displayed as labelled radio 
 
 #### Input parameters
 
-- **label\***: `string` -- as above
-- **description\***: `string` -- as above [Optional]
-- **options\***: `array[string | object]` -- as above (in [Drop-down](#dropdown))
+- **label**: `string` -- as above
+- **description**: `string` -- as above [Optional]
+- **options**: `array[string | object]` -- as above (in [Drop-down](#dropdown))
 - **default**: `string`/`number` -- the value initially selected before user input. If `number`, refers to the index of the options array. If not provided, no options will be pre-selected.
 - **optionsDisplayProperty**: -- as above (in Drop-down)
 - **layout**: `string` -- if "inline", displays radio buttons horizontally, rather than stacked vertically (default)
@@ -300,9 +300,9 @@ _One or more checkboxes, any number of which can be selected/toggled_
 
 #### Input parameters
 
-- **label\***: `string` -- as above
-- **description\***: `string` -- as above [Optional]
-- **checkboxes\***: `array[string | checkbox]` -- an array of labels, one per checkbox. For more complexity, an array of Checkbox objects can be provided, with the following properties:
+- **label**: `string` -- as above
+- **description**: `string` -- as above [Optional]
+- **checkboxes**: `array[string | checkbox]` -- an array of labels, one per checkbox. For more complexity, an array of Checkbox objects can be provided, with the following properties:
 
 ```
 
@@ -347,8 +347,8 @@ _Interface for uploading documents or other files_
 
 #### Input parameters
 
-- **label\***: `string` -- as above
-- **description\***: `string` -- as above [Optional]
+- **label**: `string` -- as above
+- **description**: `string` -- as above [Optional]
 - **fileCountLimit**: `number` -- maximum number of files allowed to upload for this question (default: 1)
 - **fileExtensions**: `array[string]` -- list of allowed file extensions (default: no restrictions). e.g. `["pdf", "doc", "txt", "jpg", "png"]`
 - **fileSizeLimit**: `number` -- maximum file size in KB (default: no limit)
@@ -387,8 +387,8 @@ _Allows user to build a list of items, such as an **Ingredients List**_
 
 #### Input parameters
 
-- **label\***: `string` -- as above
-- **description\***: `string` -- as above [Optional]
+- **label**: `string` -- as above
+- **description**: `string` -- as above [Optional]
 - **createModalButtonText** `string` -- text to display on the button to launch the new item interface (modal) (default: "Add item")
 - **addButtonText** `string` -- text to display on the button to add a new item from the item editing modal (default: "Add")
 - **updateButtonText** `string` -- text to display on the button to update an existing item from the item editing modal (default: "Update")

@@ -2,10 +2,11 @@ import { gql } from '@apollo/client'
 
 export default gql`
   fragment reviewResponseFragment on ReviewResponse {
+    id
     applicationResponseId
     decision
     comment
-    id
+    stageNumber
     status
     timeUpdated
     originalReviewResponseId

@@ -5,6 +5,7 @@ export default gql`
     id
     isValid
     value
+    stageNumber
     templateElement {
       code
     }

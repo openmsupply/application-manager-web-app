@@ -13,13 +13,14 @@ interface MarkdownBlockProps {
   semanticComponent?: SemanticComponent
   info?: boolean
   error?: boolean
+  newTabLinks?: boolean
 }
 type Renderers = {
   [key: string]: any
 }
 
 const MarkdownBlock: React.FC<MarkdownBlockProps> = (props) => {
-  const { text, semanticComponent, info, error } = props
+  const { text, semanticComponent, info, error, newTabLinks } = props
 
   // These methods override the default HTML output for each type of
   // Markdown node (heading, paragraph, etc.) so we can render them as Semantic
@@ -49,7 +50,13 @@ const MarkdownBlock: React.FC<MarkdownBlockProps> = (props) => {
 
   const renderer = semanticComponent ? renderers[semanticComponent] : null
 
-  return <ReactMarkdown children={text} renderers={renderer}></ReactMarkdown>
+  return (
+    <ReactMarkdown
+      children={text}
+      renderers={renderer}
+      linkTarget={newTabLinks ? '_blank' : undefined}
+    ></ReactMarkdown>
+  )
 }
 
 export default MarkdownBlock

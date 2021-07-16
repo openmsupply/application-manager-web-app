@@ -15,6 +15,7 @@ interface ConsolidateReviewDecisionProps {
   isActiveReviewResponse: boolean
   isNewReviewResponse: boolean
   enableViewHistory: boolean
+  stageNumber: number
   reviewResponse?: ReviewResponse
   previousReviewResponse?: ReviewResponse
   originalReviewResponse?: ReviewResponse
@@ -26,6 +27,7 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
   isActiveReviewResponse,
   isNewReviewResponse,
   enableViewHistory,
+  stageNumber,
   reviewResponse,
   previousReviewResponse,
   originalReviewResponse,
@@ -57,6 +59,7 @@ const ConsolidateReviewDecision: React.FC<ConsolidateReviewDecisionProps> = ({
             setIsActiveEdit={setIsActiveEdit}
             reviewResponse={reviewResponse as ReviewResponse}
             isConsolidation={isConsolidation}
+            stageNumber={stageNumber}
           />
         </div>
       ) : (

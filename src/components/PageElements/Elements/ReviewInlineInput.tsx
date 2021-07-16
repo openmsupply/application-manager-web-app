@@ -31,12 +31,14 @@ interface ReviewInlineInputProps {
   setIsActiveEdit: (_: boolean) => void
   reviewResponse: ReviewResponse
   isConsolidation: boolean
+  stageNumber: number
 }
 
 const ReviewInlineInput: React.FC<ReviewInlineInputProps> = ({
   setIsActiveEdit,
   reviewResponse: initialReviewResponse,
   isConsolidation,
+  stageNumber,
 }) => {
   const [reviewResponse, setReviewResponse] = useState(initialReviewResponse)
   const updateResponse = useUpdateReviewResponse()
@@ -45,7 +47,7 @@ const ReviewInlineInput: React.FC<ReviewInlineInputProps> = ({
 
   const submit = async () => {
     // TODO do we need to handle update error ?
-    await updateResponse(reviewResponse)
+    await updateResponse(reviewResponse, stageNumber)
     setIsActiveEdit(false)
   }
 

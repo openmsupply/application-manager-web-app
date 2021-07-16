@@ -6,6 +6,7 @@ import {
   PageElement,
   ResponsesByCode,
   SectionAndPage,
+  StageDetails,
 } from '../../utils/types'
 import { ApplicationViewWrapper, SummaryViewWrapper } from '../../formElementPlugins'
 import { ApplicationViewWrapperProps } from '../../formElementPlugins/types'
@@ -23,6 +24,7 @@ interface PageElementProps {
   elements: PageElement[]
   responsesByCode: ResponsesByCode
   applicationData: ApplicationDetails
+  stages: StageDetails[]
   canEdit: boolean
   isConsolidation?: boolean
   isReview?: boolean
@@ -38,6 +40,7 @@ const PageElements: React.FC<PageElementProps> = ({
   elements,
   responsesByCode,
   applicationData,
+  stages,
   canEdit = false,
   isConsolidation = false,
   isReview = false,
@@ -166,7 +169,11 @@ const PageElements: React.FC<PageElementProps> = ({
           })}
         </Form>
         {showHistory && (
-          <HistoryPanel templateCode={applicationData.template.code} isApplicant={true} />
+          <HistoryPanel
+            templateCode={applicationData.template.code}
+            stages={stages}
+            isApplicant={true}
+          />
         )}
       </div>
     )
@@ -209,6 +216,7 @@ const PageElements: React.FC<PageElementProps> = ({
                 isActiveReviewResponse: !!isActiveReviewResponse,
                 enableViewHistory,
                 summaryViewProps: summaryViewProps,
+                stageNumber: applicationData.current.stage.number,
               }
 
               return (
@@ -235,6 +243,7 @@ const PageElements: React.FC<PageElementProps> = ({
         {showHistory && (
           <HistoryPanel
             templateCode={applicationData.template.code}
+            stages={stages}
             // userLevel={userLevel || 1 + 1} // Get reviews for current level and level+1
           />
         )}
@@ -245,7 +254,7 @@ const PageElements: React.FC<PageElementProps> = ({
   return null
 }
 
-const RenderElementWrapper: React.FC = ({ children }) => (
+const RenderElementWrapper: React.FC<{ extraSpacing?: boolean }> = ({ children, extraSpacing }) => (
   <Segment basic className="summary-page-element-container">
     {children}
   </Segment>

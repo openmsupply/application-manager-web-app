@@ -32,7 +32,7 @@ const styledValues: TextInfoStyle[] = [
 // Extract main content to another Component so it can be shared with SummaryView (and TemplateView)
 export const TextInfoElement: React.FC<TextInfoProps> = (props) => {
   const { parameters, Markdown } = props
-  const { title, text } = parameters
+  const { title, text, newTabLinks = true } = parameters
   const style: TextInfoStyle = parameters?.style
   if (styledValues.includes(style)) {
     const info = style === 'info'
@@ -41,9 +41,6 @@ export const TextInfoElement: React.FC<TextInfoProps> = (props) => {
     const success = style === 'success'
     const negative = style === 'negative'
     const error = style === 'error'
-
-    console.log('Title', title)
-    console.log('text', text)
 
     // Styled Message box
     return (
@@ -57,8 +54,8 @@ export const TextInfoElement: React.FC<TextInfoProps> = (props) => {
           error={error}
           visible
         >
-          <Markdown text={title} />
-          <Markdown text={text} />
+          <Markdown text={title} newTabLinks={newTabLinks} />
+          <Markdown text={text} newTabLinks={newTabLinks} />
         </Message>
       </div>
     )
@@ -67,8 +64,8 @@ export const TextInfoElement: React.FC<TextInfoProps> = (props) => {
   else
     return (
       <div className="text-info">
-        <Markdown text={title} />
-        <Markdown text={text} />
+        <Markdown text={title} newTabLinks={newTabLinks} />
+        <Markdown text={text} newTabLinks={newTabLinks} />
       </div>
     )
 }

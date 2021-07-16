@@ -483,9 +483,13 @@ a:hover {
   padding-right: 0;
 }
 
-// Seperation between Section title and form elements
 .form-area {
+  // Seperation between Section title and form elements
   margin-top: 30px;
+  // When SummaryView elements are displayed in application form
+  .summary-page-element-container {
+    margin-bottom: @summaryViewElementSpacing !important;
+  }
 }
 
 // Contains form-element and help-tips
@@ -578,7 +582,7 @@ a:hover {
 // Element plugins
 
 .element-application-view {
-  margin-bottom: 20px !important;
+  margin-bottom: @applicationViewElementSpacing !important;
   .reviewer-comment {
     font-size: 0.9em;
     display: none;

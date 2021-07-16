@@ -18,6 +18,7 @@ interface ReviewApplicantResponseProps {
   elementCode: string
   applicationResponse: ApplicationResponse
   summaryViewProps: SummaryViewWrapperProps
+  stageNumber: number
   reviewResponse?: ReviewResponse
   previousReviewResponse?: ReviewResponse
   isActiveReviewResponse: boolean
@@ -31,6 +32,7 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
   elementCode,
   applicationResponse,
   summaryViewProps,
+  stageNumber,
   reviewResponse,
   previousReviewResponse,
   isNewApplicationResponse,
@@ -89,6 +91,7 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
                 setIsActiveEdit={setIsActiveEdit}
                 reviewResponse={reviewResponse as ReviewResponse}
                 isConsolidation={false}
+                stageNumber={stageNumber}
               />
             </div>
           ) : (
@@ -142,6 +145,7 @@ const ReviewApplicantResponse: React.FC<ReviewApplicantResponseProps> = ({
                 setIsActiveEdit={setIsActiveEdit}
                 reviewResponse={reviewResponse as ReviewResponse}
                 isConsolidation={false}
+                stageNumber={stageNumber}
               />
             </div>
           ) : (

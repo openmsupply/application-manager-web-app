@@ -170,3 +170,7 @@
 
 // Box shadow -- used in Dashboard
 @templateBoxShadow: 0 1px 3px 0 @boxShadowColor, 0 0 0 1px @boxShadowColor;
+
+// Spacing for elements in Application Form
+@applicationViewElementSpacing: 20px;
+@summaryViewElementSpacing: @applicationViewElementSpacing;

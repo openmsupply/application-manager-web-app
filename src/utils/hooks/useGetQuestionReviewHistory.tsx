@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Review,
   ReviewResponseDecision,
   TemplateElement,
   useGetHistoryForApplicantQuery,
@@ -19,12 +18,21 @@ interface UseGetQuestionHistoryProps {
   isApplicant: boolean
 }
 
-interface ResponsesByDate {
-  [date: string]: HistoryElement
+type HistoryElementsByStage = StageHistoryElements[]
+
+interface StageHistoryElements {
+  stageNumber: number
+  historyElements: HistoryElement[]
+}
+
+interface ResponsesByStageByDate {
+  [stage: string]: {
+    [date: string]: HistoryElement
+  }
 }
 
 const useGetQuestionReviewHistory = ({ isApplicant, ...variables }: UseGetQuestionHistoryProps) => {
-  const [historyList, setHistoryList] = useState<HistoryElement[]>([])
+  const [historyList, setHistoryList] = useState<HistoryElementsByStage>([])
   const { data, error, loading } = isApplicant
     ? useGetHistoryForApplicantQuery({ variables })
     : useGetHistoryForReviewerQuery({ variables })
@@ -35,15 +43,23 @@ const useGetQuestionReviewHistory = ({ isApplicant, ...variables }: UseGetQuesti
     const { applicationResponses, reviewResponses } =
       data?.templateElementByTemplateCodeAndCodeAndTemplateVersion as TemplateElement
 
-    const allResponses: ResponsesByDate = {}
+    const allResponsesByStage: ResponsesByStageByDate = {}
 
     applicationResponses.nodes.forEach((applicantResponse) => {
       if (!applicantResponse) return
-      const { timeUpdated, application, value } = applicantResponse
+      let { stageNumber } = applicantResponse
+      const { timeUpdated, application, id, value } = applicantResponse
       const { firstName, lastName } = application?.user as User
 
+      if (!stageNumber) {
+        console.log(`Warning: application_reponse ${id} without any stage_number`)
+        stageNumber = 0
+      }
+
+      if (!allResponsesByStage[stageNumber]) allResponsesByStage[stageNumber] = {}
+
       // Set each entry using HistoryElement values
-      allResponses[timeUpdated] = {
+      allResponsesByStage[stageNumber][timeUpdated] = {
         author: firstName || '' + ' ' + lastName || '',
         title: strings.TITLE_HISTORY_SUBMITTED_BY_APPLICANT,
         message: value.text,
@@ -53,13 +69,21 @@ const useGetQuestionReviewHistory = ({ isApplicant, ...variables }: UseGetQuesti
 
     reviewResponses.nodes.forEach((reviewResponse) => {
       if (!reviewResponse) return
-      const { timeUpdated, decision, comment, review } = reviewResponse
-      const { levelNumber, reviewer } = review as Review
-      const { id, firstName, lastName } = reviewer as User
+      let { stageNumber } = reviewResponse
+      const { id, timeUpdated, decision, comment, review } = reviewResponse
+      // Avoid breaking app when review is restricted so not returned in query (for Applicant)
+      const { levelNumber, reviewer } = review ? review : { levelNumber: 1, reviewer: null }
+
+      if (!stageNumber) {
+        console.log(`Warning: review_reponse ${id} without any stage_number`)
+        stageNumber = 0
+      }
+
+      if (!allResponsesByStage[stageNumber]) allResponsesByStage[stageNumber] = {}
 
       // Set each entry using HistoryElement values
-      allResponses[timeUpdated] = {
-        author: firstName || '' + ' ' + lastName || '',
+      allResponsesByStage[stageNumber][timeUpdated] = {
+        author: reviewer ? reviewer?.firstName || '' + ' ' + reviewer?.lastName || '' : '',
         title:
           (levelNumber || 1) > 1
             ? strings.TITLE_HISTORY_CONSOLIDATION
@@ -70,16 +94,26 @@ const useGetQuestionReviewHistory = ({ isApplicant, ...variables }: UseGetQuesti
       }
     })
 
-    const responsesOrderedByLatest: HistoryElement[] = []
+    // Order by latest per stage
+    const orderedHistoryElementsByStage: HistoryElementsByStage = []
 
-    Object.keys(allResponses)
-      .sort()
+    Object.entries(allResponsesByStage)
       .reverse()
-      .forEach((key) => responsesOrderedByLatest.push(allResponses[key]))
+      .map(([stage, elements]) => {
+        const stageHistoryElementsList: HistoryElement[] = []
 
-    setHistoryList(responsesOrderedByLatest) // Change order to show latest on the top
+        Object.keys(elements)
+          .sort()
+          .reverse()
+          .forEach((key) => stageHistoryElementsList.push(allResponsesByStage[stage][key]))
 
-    // Find stages - Maybe done straight into HistoryPanel - or have in HistoryStructure?
+        orderedHistoryElementsByStage.push({
+          stageNumber: Number(stage),
+          historyElements: stageHistoryElementsList,
+        })
+      })
+
+    setHistoryList(orderedHistoryElementsByStage)
   }, [data])
 
   return {

@@ -1,6 +1,12 @@
-import React, { CSSProperties, useRef } from 'react'
-import { Accordion, Grid, Header, Icon, Sticky } from 'semantic-ui-react'
-import { ResponsesByCode, SectionState, Page, ApplicationDetails } from '../../utils/types'
+import React, { useRef } from 'react'
+import { Accordion, Header, Icon, Sticky } from 'semantic-ui-react'
+import {
+  ResponsesByCode,
+  SectionState,
+  Page,
+  ApplicationDetails,
+  StageDetails,
+} from '../../utils/types'
 import { useUserState } from '../../contexts/UserState'
 import styleConstants from '../../utils/data/styleConstants'
 import { PageElements } from '../'
@@ -13,6 +19,7 @@ interface SectionProps {
   section: SectionState
   responsesByCode: ResponsesByCode
   applicationData: ApplicationDetails
+  stages: StageDetails[]
   isActive: boolean
   isConsolidation?: boolean
   isReview?: boolean
@@ -32,6 +39,7 @@ const SectionWrapper: React.FC<SectionProps> = ({
   serial,
   responsesByCode,
   applicationData,
+  stages,
   isActive,
   isConsolidation = false,
   isReview = false,
@@ -78,6 +86,7 @@ const SectionWrapper: React.FC<SectionProps> = ({
                 elements={page.state}
                 responsesByCode={responsesByCode}
                 applicationData={applicationData}
+                stages={stages}
                 serial={serial}
                 sectionAndPage={{ sectionCode: details.code, pageNumber: page.number }}
                 isReview={isReview}

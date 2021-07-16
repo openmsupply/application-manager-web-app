@@ -113,7 +113,7 @@ export default {
   TITLE_REVIEW_SUMMARY: 'Review Summary',
   TITLE_STEPS: 'Steps to complete',
   TITLE_OVERVIEW: 'Overview',
-  STAGE_PLACEHOLDER: 'Assessment',
+  STAGE_NOT_FOUND: 'Not Found',
   STATUS_IN_PROGRESS: 'In progress',
   STATUS_NOT_STARTED: 'Not started',
   REVIEW_STARTED: 'Review started',
