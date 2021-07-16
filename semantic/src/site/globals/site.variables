@@ -51,6 +51,7 @@
 @activeCommentBackground: azure;
 //
 @boxShadowColor: #d4d4d5;
+@fullyTransperant: rgba(0,0,0,0);
 
 /*------------------------
       Headers and Text
