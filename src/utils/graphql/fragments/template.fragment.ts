@@ -5,6 +5,7 @@ export default gql`
     code
     id
     name
+    namePlural
     isLinear
     startMessage
     submissionMessage
@@ -16,13 +17,14 @@ export default gql`
       nodes {
         filter {
           id
-          iconColor
-          icon
           query
           title
           userRole
         }
       }
+    }
+    applications {
+      totalCount
     }
   }
 `

@@ -4,6 +4,9 @@
 
 .ui.label {
   font-weight: @semiboldWeight;
+  a {
+    opacity: 1;
+  }
 }
 
 // Uppercase label title
@@ -39,6 +42,7 @@
   background-color: transparent;
   color: @black;
   font-weight: @semiboldWeight;
+  font-size: @fontMedium;
 }
 
 .ui.label.relevant-text {

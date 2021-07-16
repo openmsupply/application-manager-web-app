@@ -43,10 +43,6 @@ a:hover {
   color: @attention;
 }
 
-//.information {
-//  color: @information;
-//}
-
 .clickable {
   cursor: pointer;
 }
@@ -952,12 +948,12 @@ a:hover {
 
 // Layouts
 #dashboard {
-  .flex-row-center();
-  flex-wrap: wrap;
+  .flex-column();
+  width: 100%;
 
   .template-category {
-    .flex-column-center();
-    align-items: center;
+    .flex-column();
+    flex-wrap: wrap;
 
     .title {
       .flex-row();
@@ -966,94 +962,84 @@ a:hover {
   }
 
   .templates {
-    .flex-row-center();
+    .flex-row();
     flex-wrap: wrap;
-    align-items: center;
   }
 
   .template {
-    .flex-column();
+    .flex-row();
 
-    .title {
-      .flex-row-center();
-      align-items: start;
+    .content {
+      justify-content: space-between;
+      .header {
+        .flex-row-center();
+        align-items: start;
+      }
+
+      .filters {
+        .flex-column();
+        flex-grow: 1;
+      }
+
+      .filter {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 
-  .filters {
-    .flex-column();
-    flex-grow: 1;
-  }
-
-  .filter {
-    display: flex;
-    align-items: center;
-  }
-
-  .view-all-area {
-    display: flex;
-    max-width: 100%;
-  }
-
-  .view-all {
-    .flex-row-center();
-    align-items: center;
+  .no-applications {
     text-align: center;
-    flex-grow: 1;
-
-    div {
-      display: flex;
-      align-items: center;
+    .label {
+      width: 100%;
     }
   }
 }
 
 // Margin and padding
 #dashboard {
+  .template-category {
+    .title {
+      margin-left: 10px;
+      .header {
+        margin: 10px;
+      }
+    }
+
+    .templates {
+      padding-bottom: 10px;
+    }
+  }
   .template {
-    margin: 15px;
-    max-width: 330px;
+    margin: 0px 10px 5px 0px;
+    width: 330px;
+    padding: 10px;
+    justify-content: space-between;
+    border: 2px solid @surfacesDark;
     border-radius: @borderRadius;
     background-color: @surfacesWhite;
-    box-shadow: @templateBoxShadow;
 
-    .title {
+    .content {
+      min-height: 65px;
+    }
+
+    .button {
       padding: 10px;
-      padding-bottom: 3px;
-
-      .header {
-        margin: 2px;
-      }
+      width: 70px;
     }
-  }
 
-  .template-category {
-    margin: 10px;
-
-    .title {
-      a {
-        margin-left: 10px;
+    .filters {
+      margin: 2px;
+      .strong-label {
+        padding-top: 0px;
       }
-
-      .header {
-        margin: 2px;
+      .label {
+        padding-left: 0px !important;
+        .icon {
+          margin-left: 5px;
+          margin-right: 0px;
+        }
       }
-    }
-  }
-
-  .filters {
-    margin: 5px;
-    padding: 3px;
-  }
-
-  .view-all {
-    padding: 5px;
-    font-weight: @semiboldWeight;
-    color: grey !important;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-
-    i {
-      padding-right: 6px;
     }
   }
 }

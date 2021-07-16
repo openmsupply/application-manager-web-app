@@ -1,8 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, Button, Icon, SemanticCOLORS, SemanticICONS } from 'semantic-ui-react'
+import { Header, Button, Icon, Label } from 'semantic-ui-react'
 import { useUserState } from '../contexts/UserState'
-import constants from '../utils/constants'
 import strings from '../utils/constants'
 import { USER_ROLES } from '../utils/data'
 import { PermissionPolicyType, Filter } from '../utils/generated/graphql'
@@ -28,6 +27,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div id="dashboard">
+      <Header as="h2" content={strings.MENU_ITEM_DASHBOARD} />
       {templatesByCategory.map(
         ({ templates, templateCategory: { icon: categoryIcon, title: categoryTitle } }) => (
           <div key={categoryTitle} className="template-category">
@@ -48,26 +48,37 @@ const Dashboard: React.FC = () => {
 }
 
 const TemplateComponent: React.FC<{ template: TemplateInList }> = ({ template }) => {
-  const { name, code, hasApplyPermission, filters } = template
+  const { name, code, hasApplyPermission, filters, permissions, totalApplications } = template
+
+  const userRole =
+    permissions.filter((type) => type === PermissionPolicyType.Apply).length > 0
+      ? USER_ROLES.APPLICANT
+      : USER_ROLES.REVIEWER
+
   return (
     <div className="template">
-      <div className="title">
-        <Header as="h5">{name}</Header>
-
-        {hasApplyPermission && (
-          <Button inverted size="small" as={Link} to={`/application/new?type=${code}`} primary>
-            {constants.BUTTON_DASHBOARD_NEW}
+      <div className="content">
+        <div className="filters">
+          <Label className="strong-label clickable">
+            <a href={`/applications?type=${code}&user-role=${userRole}`}>
+              {template?.namePlural || `${name} ${strings.LABEL_APPLICATIONS}`}
+            </a>
+            <Icon name="chevron right" />
+          </Label>
+          {filters.map((filter) => (
+            <FilterComponent key={filter.id} template={template} filter={filter} />
+          ))}
+        </div>
+        {totalApplications === 0 && hasApplyPermission && <StartNewTemplate template={template} />}
+      </div>
+      <div>
+        {totalApplications > 0 && hasApplyPermission && (
+          <Button as={Link} to={`/application/new?type=${code}`} inverted color="blue">
+            <Icon name="plus" size="tiny" color="blue" />
+            {strings.BUTTON_DASHBOARD_NEW}
           </Button>
         )}
       </div>
-
-      <div className="filters">
-        {filters.map((filter) => (
-          <FilterComponent key={filter.id} template={template} filter={filter} />
-        ))}
-      </div>
-
-      <ViewAll template={template} />
     </div>
   )
 }
@@ -98,61 +109,21 @@ const FilterComponent: React.FC<{ template: TemplateDetails; filter: Filter }> =
 
   return (
     <div className="filter">
-      <Link to={constructLink()}>
-        {filter.icon && (
-          <Icon style={{ color: filter.iconColor }} name={filter.icon as SemanticICONS} />
-        )}
-        {`${applicationCount} ${filter.title}`}
-      </Link>
+      <Link to={constructLink()}>{`${filter.title} (${applicationCount})`}</Link>
     </div>
   )
 }
 
-const rolesDisplay: {
-  [key: string]: {
-    icon: SemanticICONS
-  }
-} = {
-  [PermissionPolicyType.Apply]: {
-    icon: 'edit',
-  },
-  [PermissionPolicyType.Review]: {
-    icon: 'gavel',
-  },
-  [PermissionPolicyType.Assign]: {
-    icon: 'user plus',
-  },
-}
-
-const ViewAll: React.FC<{ template: TemplateInList }> = ({ template: { code, permissions } }) => {
-  const applicantRoles = permissions.filter((type) => type === PermissionPolicyType.Apply)
-  const reviewerRoles = permissions.filter((type) => type !== PermissionPolicyType.Apply)
-
-  const renderLink = (permissionTypes: string[], applicationListRole: USER_ROLES) => {
-    if (permissionTypes.length === 0) return null
-    return (
-      <Link
-        key={applicationListRole}
-        className="view-all clickable"
-        to={`/applications?type=${code}&user-role=${applicationListRole}`}
-      >
-        <div>
-          {permissionTypes.map((policyType) => {
-            const roleDisplay = rolesDisplay[policyType]
-            return <Icon key={policyType} name={roleDisplay.icon} size="small" />
-          })}
-          {constants.BUTTON_DASHBOARD_VIEW_ALL}
-        </div>
-      </Link>
-    )
-  }
-
-  return (
-    <div className="view-all-area">
-      {renderLink(applicantRoles, USER_ROLES.APPLICANT)}
-      {renderLink(reviewerRoles, USER_ROLES.REVIEWER)}
-    </div>
-  )
-}
+const StartNewTemplate: React.FC<{ template: TemplateInList }> = ({ template: { name, code } }) => (
+  <div className="no-applications">
+    <Label
+      className="simple-label"
+      content={strings.LABEL_DASHBOARD_NO_APPLICATIONS.replace('%1', name)}
+    />
+    <Link to={`/application/new?type=${code}`}>
+      {strings.LABEL_DASHBOARD_START_NEW.replace('%1', name)}
+    </Link>
+  </div>
+)
 
 export default Dashboard

@@ -2179,6 +2179,8 @@ export type TemplateFilter = {
   id?: Maybe<IntFilter>;
   /** Filter by the object’s `name` field. */
   name?: Maybe<StringFilter>;
+  /** Filter by the object’s `namePlural` field. */
+  namePlural?: Maybe<StringFilter>;
   /** Filter by the object’s `code` field. */
   code?: Maybe<StringFilter>;
   /** Filter by the object’s `isLinear` field. */
@@ -4217,10 +4219,6 @@ export type FilterFilter = {
   id?: Maybe<IntFilter>;
   /** Filter by the object’s `code` field. */
   code?: Maybe<StringFilter>;
-  /** Filter by the object’s `iconColor` field. */
-  iconColor?: Maybe<StringFilter>;
-  /** Filter by the object’s `icon` field. */
-  icon?: Maybe<StringFilter>;
   /** Filter by the object’s `title` field. */
   title?: Maybe<StringFilter>;
   /** Filter by the object’s `query` field. */
@@ -4430,6 +4428,7 @@ export type Template = Node & {
   nodeId: Scalars['ID'];
   id: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -4585,6 +4584,8 @@ export enum TemplatesOrderBy {
   IdDesc = 'ID_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
+  NamePluralAsc = 'NAME_PLURAL_ASC',
+  NamePluralDesc = 'NAME_PLURAL_DESC',
   CodeAsc = 'CODE_ASC',
   CodeDesc = 'CODE_DESC',
   IsLinearAsc = 'IS_LINEAR_ASC',
@@ -4611,6 +4612,8 @@ export type TemplateCondition = {
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `name` field. */
   name?: Maybe<Scalars['String']>;
+  /** Checks for equality with the object’s `namePlural` field. */
+  namePlural?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `code` field. */
   code?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `isLinear` field. */
@@ -7287,8 +7290,6 @@ export type Filter = Node & {
   nodeId: Scalars['ID'];
   id: Scalars['Int'];
   code: Scalars['String'];
-  iconColor?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<PermissionPolicyType>;
@@ -8386,10 +8387,6 @@ export enum FiltersOrderBy {
   IdDesc = 'ID_DESC',
   CodeAsc = 'CODE_ASC',
   CodeDesc = 'CODE_DESC',
-  IconColorAsc = 'ICON_COLOR_ASC',
-  IconColorDesc = 'ICON_COLOR_DESC',
-  IconAsc = 'ICON_ASC',
-  IconDesc = 'ICON_DESC',
   TitleAsc = 'TITLE_ASC',
   TitleDesc = 'TITLE_DESC',
   QueryAsc = 'QUERY_ASC',
@@ -8406,10 +8403,6 @@ export type FilterCondition = {
   id?: Maybe<Scalars['Int']>;
   /** Checks for equality with the object’s `code` field. */
   code?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `iconColor` field. */
-  iconColor?: Maybe<Scalars['String']>;
-  /** Checks for equality with the object’s `icon` field. */
-  icon?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `title` field. */
   title?: Maybe<Scalars['String']>;
   /** Checks for equality with the object’s `query` field. */
@@ -11796,6 +11789,7 @@ export type TemplateOnActionQueueForActionQueueTemplateIdFkeyUsingTemplatePkeyUp
 export type UpdateTemplateOnActionQueueForActionQueueTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -11918,6 +11912,7 @@ export type TemplateOnTemplateForTemplateTemplateCategoryIdFkeyUsingTemplatePkey
 export type UpdateTemplateOnTemplateForTemplateTemplateCategoryIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -12027,6 +12022,7 @@ export type TemplateOnTemplateStageForTemplateStageTemplateIdFkeyUsingTemplatePk
 export type UpdateTemplateOnTemplateStageForTemplateStageTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -12135,6 +12131,7 @@ export type TemplateOnTemplateSectionForTemplateSectionTemplateIdFkeyUsingTempla
 export type UpdateTemplateOnTemplateSectionForTemplateSectionTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -12240,6 +12237,7 @@ export type TemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyUsing
 export type UpdateTemplateOnTemplateFilterJoinForTemplateFilterJoinTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -13125,6 +13123,7 @@ export type TemplateOnTemplatePermissionForTemplatePermissionTemplateIdFkeyUsing
 export type UpdateTemplateOnTemplatePermissionForTemplatePermissionTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -13262,6 +13261,7 @@ export type TemplateOnApplicationForApplicationTemplateIdFkeyUsingTemplatePkeyUp
 export type UpdateTemplateOnApplicationForApplicationTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -13466,6 +13466,7 @@ export type TemplateOnTemplateActionForTemplateActionTemplateIdFkeyUsingTemplate
 export type UpdateTemplateOnTemplateActionForTemplateActionTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -15098,6 +15099,7 @@ export type TemplateOnReviewAssignmentForReviewAssignmentTemplateIdFkeyUsingTemp
 export type UpdateTemplateOnReviewAssignmentForReviewAssignmentTemplateIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -15129,6 +15131,7 @@ export type ReviewAssignmentOnReviewAssignmentForReviewAssignmentTemplateIdFkeyN
 export type TemplatePatch = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -15152,6 +15155,7 @@ export type TemplatePatch = {
 export type ReviewAssignmentTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -20470,6 +20474,7 @@ export type TemplateActionOnTemplateActionForTemplateActionTemplateIdFkeyNodeIdU
 export type TemplateActionTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -20532,6 +20537,7 @@ export type ApplicationOnApplicationForApplicationTemplateIdFkeyNodeIdUpdate = {
 export type ApplicationTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -20602,6 +20608,7 @@ export type TemplatePermissionOnTemplatePermissionForTemplatePermissionTemplateI
 export type TemplatePermissionTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -21061,6 +21068,7 @@ export type TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinTemplateI
 export type TemplateFilterJoinTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -21147,8 +21155,6 @@ export type FilterOnTemplateFilterJoinForTemplateFilterJoinFilterIdFkeyUsingFilt
 export type UpdateFilterOnTemplateFilterJoinForTemplateFilterJoinFilterIdFkeyPatch = {
   id?: Maybe<Scalars['Int']>;
   code?: Maybe<Scalars['String']>;
-  iconColor?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<PermissionPolicyType>;
@@ -21234,8 +21240,6 @@ export type TemplateFilterJoinOnTemplateFilterJoinForTemplateFilterJoinFilterIdF
 export type FilterPatch = {
   id?: Maybe<Scalars['Int']>;
   code?: Maybe<Scalars['String']>;
-  iconColor?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<PermissionPolicyType>;
@@ -21246,8 +21250,6 @@ export type FilterPatch = {
 export type TemplateFilterJoinFilterIdFkeyFilterCreateInput = {
   id?: Maybe<Scalars['Int']>;
   code: Scalars['String'];
-  iconColor?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<PermissionPolicyType>;
@@ -21282,6 +21284,7 @@ export type TemplateSectionOnTemplateSectionForTemplateSectionTemplateIdFkeyNode
 export type TemplateSectionTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -21332,6 +21335,7 @@ export type TemplateStageOnTemplateStageForTemplateStageTemplateIdFkeyNodeIdUpda
 export type TemplateStageTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -21384,6 +21388,7 @@ export type TemplateCategoryOnTemplateForTemplateTemplateCategoryIdFkeyNodeIdUpd
 export type TemplateTemplateCategoryIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -21447,6 +21452,7 @@ export type ActionQueueOnActionQueueForActionQueueTemplateIdFkeyNodeIdUpdate = {
 export type ActionQueueTemplateIdFkeyTemplateCreateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -21934,8 +21940,6 @@ export type CreateFilterInput = {
 export type FilterInput = {
   id?: Maybe<Scalars['Int']>;
   code: Scalars['String'];
-  iconColor?: Maybe<Scalars['String']>;
-  icon?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   query?: Maybe<Scalars['JSON']>;
   userRole?: Maybe<PermissionPolicyType>;
@@ -23052,6 +23056,7 @@ export type CreateTemplateInput = {
 export type TemplateInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  namePlural?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   isLinear?: Maybe<Scalars['Boolean']>;
   startMessage?: Maybe<Scalars['JSON']>;
@@ -26997,7 +27002,7 @@ export type StageFragment = (
 
 export type TemplateFragment = (
   { __typename?: 'Template' }
-  & Pick<Template, 'code' | 'id' | 'name' | 'isLinear' | 'startMessage' | 'submissionMessage'>
+  & Pick<Template, 'code' | 'id' | 'name' | 'namePlural' | 'isLinear' | 'startMessage' | 'submissionMessage'>
   & { templateCategory?: Maybe<(
     { __typename?: 'TemplateCategory' }
     & Pick<TemplateCategory, 'title' | 'icon'>
@@ -27007,9 +27012,12 @@ export type TemplateFragment = (
       { __typename?: 'TemplateFilterJoin' }
       & { filter?: Maybe<(
         { __typename?: 'Filter' }
-        & Pick<Filter, 'id' | 'iconColor' | 'icon' | 'query' | 'title' | 'userRole'>
+        & Pick<Filter, 'id' | 'query' | 'title' | 'userRole'>
       )> }
     )>> }
+  ), applications: (
+    { __typename?: 'ApplicationsConnection' }
+    & Pick<ApplicationsConnection, 'totalCount'>
   ) }
 );
 
@@ -27808,6 +27816,7 @@ export const TemplateFragmentDoc = gql`
   code
   id
   name
+  namePlural
   isLinear
   startMessage
   submissionMessage
@@ -27819,13 +27828,14 @@ export const TemplateFragmentDoc = gql`
     nodes {
       filter {
         id
-        iconColor
-        icon
         query
         title
         userRole
       }
     }
+  }
+  applications {
+    totalCount
   }
 }
     `;
